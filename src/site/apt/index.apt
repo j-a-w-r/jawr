@@ -1,0 +1,95 @@
+																		------
+                                    More than a Javascript/CSS compressor
+                                    ------
+                                    ------
+                                    ------
+
+Jawr: bundling and compression for web application resources. 
+	
+	Jawr is a tunable packaging solution for Javascript and CSS which allows for rapid development of resources in separate module files. 
+	Writing a simple descriptor properties file, and using a servlet and a tag library are all the requirements to use it. 
+	
+	
+[./images/index/jawr.png] How Jawr will help you
+	
+	It is common knowledge that it is faster to serve one large file rather than two smaller ones, because of increased HTTP negotiation and the fact 
+	that most browsers only keep two connections open to the same host at any given time. 
+	Jawr will reduce the number of requests needed to load a page and the amount of data to transfer to clients, achieving drastic improvement of 
+	loading times. With a simple configuration file, resources can be distributed in bundles to best suit the usage pattern for a site. 
+	
+	A tag library is used to import the resources to pages. In development mode, the tags generate \<script\> and \<style\> links for each resource 
+	mapped to a bundle. 
+	In production mode, the tags generate a single link pointing to the bundle file. Thus, there is no need to change code in pages when switching 
+	from development to production mode. 
+	
+	There is an increasing trend towards richer client interfaces with complex javascript implementations. Using Jawr will ease the development process 
+	by allowing to distribute modules in separate files without worrying about how the application will be served to clients. 
+	
+	The alternatives to using Jawr are: 
+	
+	* Developing all-in-one script files which conform to the deployment scheme. That is, cram all the modules into a few files. Version control becomes
+	unmanageable and it is hard to find a component that needs change. As the project grows, the code becomes near to impossible to mantain. 
+	
+	* Use a build script to join and compress the files, which forces developers to build and redeploy the whole application for testing  even the 
+	slightest of changes in their code. 
+	
+	[]
+	
+	Jawr offers the best of both worlds, by combining a powerful bundling-minifying-compressing scheme for optimal service in 
+	production, with a rapid development mode for quick change-save-test cycles. 
+	
+	You can download the latest release of Jawr {{{https://jawr.dev.java.net/servlets/ProjectDocumentList?folderID=8543}here}}. 
+	
+	
+* Features
+
+	* <<Lightweight>>: Bundling and compression is done once at server startup so there is no overhead to requests. Also, a cache component
+	is available and enabled by default to serve resources directly from memory instead of from the filesystem. 
+	
+	
+	* <<Easy to setup>>: All you need to start using Jawr is to declare a couple of servlets in you deployment descriptor, create a simple .properties configuration file, 
+	and use the Jawr tag library to import css and javascript resources to your pages. 
+	
+	
+	* <<Built-in minification and postprocessing>>: Jawr includes JSMin, the minification library by Douglas Crockford of Yahoo!. A custom minificator for 
+	CSS is also included. For each bundle, a customizable postprocessing chain is executed during startup. Relative URLs in CSS are rewritten by a 
+	postprocessor so they keep working with a different relative path. Future Jawr versions will include other postprocessors such as different 
+	minificators. 
+	
+	* <<Proxy-friendly gzip support>>: For each bundle there are two URLs that point to a gzipped and a regular version of the resource. Since the URLs 
+	are be generated within a JSP, the request headers are analyzed to decide if the browser will support gzipping and the appropiate URL is written out. 
+	With this system, caching proxies will not be a problem since it works around known Internet Explorer problems with the VARY header. 
+	
+	
+	* <<Caching enforcement>>: Jawr will try its best to force your clients to cache the resources. If a browser asks if a file changed, a 304 (not modified) 
+	header is sent back with no content. On the other hand, with Jawr you will be 100% sure that new versions of your bundles are downloaded by all 
+	clients. Every URL to your resources will include a prefix that you can change in the configuration file. Once you deploy a new version, the URL to 
+	the bundle will change as well so it will be impossible that a client uses an older, cached version. 
+	
+	
+	* <<Flexible bundling scheme>>: Choose which files go into which bundle, and in which order. Choose wether you want a bundle minified or not. 
+	Choose wether a bundle will be used only in development mode (for adding things such as console loggers). Create partially minified bundles. 
+	All with a very easy to use configuration system. 
+	
+	
+	* <<Global bundles>>: Some bundles such as libraries will be needed anywhere in your site where there is javascript code. Same goes for base CSS 
+	stylesheets. With Jawr, these will be added to pages automatically so you don't need to repeat the same import statement everywhere. 
+	
+	
+	* <<Library friendly>>: Open source libraries can be used seamlessly with Jawr. Most of these are modular or have plugins: add the modules or 
+	plugins you need and bundle all together. And, even if you minify them (thus eliminating comments), you can still keep the mandatory licenses in
+	the bundle. 
+		
+	
+	[]
+		
+	
+* Requirements
+	
+	You can use Jawr with any compliant Java Web Container implementation (i.e. Tomcat, Jetty, BEA Weblogic etc.), as long as the virtual machine 
+	version is 1.4 or higher. Jawr uses Apache log4j for logging messages, so it is a required library. There are no other requirements, although if 
+	your virtual machine version is 1.4, you can improve performance by using the backport-util-concurrent library, which can be found at: 
+	{{{http://backport-jsr166.sourceforge.net/}http://backport-jsr166.sourceforge.net/}}. However, this is completely optional and Jawr will work 
+	just fine if you choose not to use it.  
+	
+	
