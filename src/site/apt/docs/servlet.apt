@@ -1,0 +1,113 @@
+																		------
+                                    The Jawr servlet
+                                    ------
+                                    ------
+                                    ------
+
+The Jawr servlet
+	
+	For each type of supported resource (CSS or Javascript), you need an instance of net.java.jawr.web.servlet.JawrServlet running. 
+	Of course, you may choose to use Jawr for only one of these types of resources. \ 
+	
+	All bundles are created and postprocessed when this servlet starts up and stored at the application server's temporary directory. 
+	This way there is no processing overhead on requests, but you must remember to use the load-on-startup tag to force the Jawr 
+	servlet to initialize with your application server. \ 
+	
+	For every request, the servlet will make an attempt at forcing the client to keep a resource in cache for as long as possible using response headers. 
+	Also, if a request containt the If-Modified-Since header, the response status is set to 304(not modified) and no content is sent since such header 
+	means that the resource is already cached by the client.  \ 
+	
+	Here is an example configuration of the servlet in a web.xml file: 	
+	
++------------------------------------------+
+	<servlet>
+		<servlet-name>JavascriptServlet</servlet-name>
+		<servlet-class>net.java.jawr.web.servlet.JawrServlet</servlet-class>
+		<init-param>
+			<param-name>configLocation</param-name>
+			<param-value>/jawr.properties</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	
++------------------------------------------+
+	
+	We would use this servlet to manage javascript bundles. The init params for a Jawr servlet are the following: 
+	
+	* <<configLocation>>: This is a mandatory parameter. Its value points to a classpath resource that Jawr will use to configure itself. See the 
+	{{{./descriptor_syntax.html}config file syntax page}}for more information. You can use the same properties file for both instances of the servlet. 
+	
+	* <<type>>: Refers to the type of resource the servlet will manage. It can receive two possible values: <js> or <css>. You can omit this parameter 
+	for the javascript servlet, since <js> is the default value. \ 
+	
+	* <<mapping>>: In normal situations, you will have the Jawr servlet attend all requests for a certain type of resource, using a servlet-mapping 
+	like this: 
+	
++------------------------------------------+
+	
+	<servlet-mapping>
+		<servlet-name>JavascriptServlet</servlet-name>
+		<url-pattern>*.js</url-pattern>
+	</servlet-mapping> 
+	
++------------------------------------------+
+	
+	However, you might be forced to serve some of your scripts in the traditional way. You can then use a mapping in the form of /jsJawrPath/*, so that 
+	all URLs created by the tag library start with this path mapping. You will then need to specify the <<mapping>> init param to let Jawr know about 
+	this so that URLs are properly formed. So if you map the servlet to /jsJawrPath/*, the mapping init param should have a value of /jsJawrPath/. \ 
+	
+	Note that for CSS resources, this will break relative resource paths (such as background-image urls) in development mode, so using a mapping for 
+	a CSS servlet is not recommended until this problem is addressed in a future version.  
+	
+	[]
+	
+* Example web.xml configuration
+	
++------------------------------------------+
+	<?xml version="1.0" encoding="ISO-8859-1"?> 
+
+	<!DOCTYPE web-app
+	   PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
+	   "http://java.sun.com/dtd/web-app_2_3.dtd">
+	
+	<web-app>
+
+	<display-name>Jawr enabled application</display-name>
+	
+	<description>
+		
+	</description>
+	<servlet>
+		<servlet-name>JavascriptServlet</servlet-name>
+		<servlet-class>net.java.jawr.web.servlet.JawrServlet</servlet-class>
+		<init-param>
+			<param-name>configLocation</param-name>
+			<param-value>/jawr.properties</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet>
+		<servlet-name>CssServlet</servlet-name>
+		<servlet-class>net.java.jawr.web.servlet.JawrServlet</servlet-class>
+		<init-param>
+			<param-name>configLocation</param-name>
+			<param-value>/jawr.properties</param-value>
+		</init-param>
+		<init-param>
+			<param-name>type</param-name>
+			<param-value>css</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	
+	<servlet-mapping>
+		<servlet-name>JavascriptServlet</servlet-name>
+		<url-pattern>*.js</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>CssServlet</servlet-name>
+		<url-pattern>*.css</url-pattern>
+	</servlet-mapping>	
+ 
+</web-app>
++------------------------------------------+
