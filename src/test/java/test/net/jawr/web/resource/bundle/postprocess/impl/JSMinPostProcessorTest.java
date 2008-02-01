@@ -1,4 +1,4 @@
-package test.net.java.jawr.web.resource.bundle.postprocess.impl;
+package test.net.jawr.web.resource.bundle.postprocess.impl;
 
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
@@ -6,9 +6,9 @@ import java.util.Properties;
 
 import junit.framework.TestCase;
 
-import net.java.jawr.web.config.JawrConfig;
-import net.java.jawr.web.resource.bundle.postprocess.BundleProcessingStatus;
-import net.java.jawr.web.resource.bundle.postprocess.impl.JSMinPostProcessor;
+import net.jawr.web.config.JawrConfig;
+import net.jawr.web.resource.bundle.postprocess.BundleProcessingStatus;
+import net.jawr.web.resource.bundle.postprocess.impl.JSMinPostProcessor;
 
 public class JSMinPostProcessorTest extends TestCase {
 

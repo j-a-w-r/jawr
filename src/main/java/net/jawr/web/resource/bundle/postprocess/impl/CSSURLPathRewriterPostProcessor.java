@@ -11,7 +11,7 @@
  * either express or implied. See the License for the specific language governing permissions
  * and limitations under the License.
  */
-package net.java.jawr.web.resource.bundle.postprocess.impl;
+package net.jawr.web.resource.bundle.postprocess.impl;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -20,8 +20,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import net.java.jawr.web.resource.bundle.postprocess.AbstractChainedResourceBundlePostProcessor;
-import net.java.jawr.web.resource.bundle.postprocess.BundleProcessingStatus;
+import net.jawr.web.resource.bundle.postprocess.AbstractChainedResourceBundlePostProcessor;
+import net.jawr.web.resource.bundle.postprocess.BundleProcessingStatus;
 
 /**
  * Single file postprocessor used to rewrite CSS URLs according to the new relative locations of the references when
@@ -45,7 +45,7 @@ public class CSSURLPathRewriterPostProcessor extends
 	private static final Pattern URLSeparatorPattern = Pattern.compile("/");
 	
 	/* (non-Javadoc)
-	 * @see net.java.jawr.web.resource.bundle.postprocess.impl.AbstractChainedResourceBundlePostProcessor#doPostProcessBundle(net.java.jawr.web.resource.bundle.postprocess.BundleProcessingStatus, java.lang.StringBuffer)
+	 * @see net.jawr.web.resource.bundle.postprocess.impl.AbstractChainedResourceBundlePostProcessor#doPostProcessBundle(net.jawr.web.resource.bundle.postprocess.BundleProcessingStatus, java.lang.StringBuffer)
 	 */
 	protected StringBuffer doPostProcessBundle(BundleProcessingStatus status,
 			StringBuffer bundleData) throws IOException {

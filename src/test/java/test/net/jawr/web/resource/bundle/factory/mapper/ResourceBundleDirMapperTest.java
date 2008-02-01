@@ -1,18 +1,18 @@
 /**
  * 
  */
-package test.net.java.jawr.web.resource.bundle.factory.mapper;
+package test.net.jawr.web.resource.bundle.factory.mapper;
 
 import java.nio.charset.Charset;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import net.java.jawr.web.exception.DuplicateBundlePathException;
-import net.java.jawr.web.resource.ResourceHandler;
-import net.java.jawr.web.resource.bundle.factory.mapper.ResourceBundleDirMapper;
+import net.jawr.web.exception.DuplicateBundlePathException;
+import net.jawr.web.resource.ResourceHandler;
+import net.jawr.web.resource.bundle.factory.mapper.ResourceBundleDirMapper;
 
-import test.net.java.jawr.web.resource.bundle.handler.ResourceHandlerBasedTest;
+import test.net.jawr.web.resource.bundle.handler.ResourceHandlerBasedTest;
 
 
 /**
@@ -43,7 +43,7 @@ public class ResourceBundleDirMapperTest extends  ResourceHandlerBasedTest {
 	}
 
 	/**
-	 * Test method for {@link net.java.jawr.web.resource.bundle.factory.mapper.ResourceBundleDirMapper#getMappings()}.
+	 * Test method for {@link net.jawr.web.resource.bundle.factory.mapper.ResourceBundleDirMapper#getMappings()}.
 	 */
 	public void testGetMappings() {
 		Map mappings = null;

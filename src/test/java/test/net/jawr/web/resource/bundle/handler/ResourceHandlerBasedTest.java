@@ -1,4 +1,4 @@
-package test.net.java.jawr.web.resource.bundle.handler;
+package test.net.jawr.web.resource.bundle.handler;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -11,9 +11,9 @@ import java.util.zip.GZIPInputStream;
 
 import junit.framework.TestCase;
 
-import net.java.jawr.web.resource.FileSystemResourceHandler;
+import net.jawr.web.resource.FileSystemResourceHandler;
 
-import test.net.java.jawr.web.FileUtils;
+import test.net.jawr.web.FileUtils;
 
 /**
  *

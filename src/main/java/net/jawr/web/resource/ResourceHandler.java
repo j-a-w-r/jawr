@@ -11,13 +11,13 @@
  * either express or implied. See the License for the specific language governing permissions
  * and limitations under the License.
  */
-package net.java.jawr.web.resource;
+package net.jawr.web.resource;
 
 import java.io.Reader;
 import java.nio.channels.FileChannel;
 import java.util.Set;
 
-import net.java.jawr.web.exception.ResourceNotFoundException;
+import net.jawr.web.exception.ResourceNotFoundException;
 
 /**
  * Helps in identifying, retrieving and listing of resources. An abstraction of a file system, 

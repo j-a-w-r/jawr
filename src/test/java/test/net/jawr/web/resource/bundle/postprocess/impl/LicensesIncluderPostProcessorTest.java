@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 
-package test.net.java.jawr.web.resource.bundle.postprocess.impl;
+package test.net.jawr.web.resource.bundle.postprocess.impl;
 
 import java.io.ByteArrayOutputStream;
 import java.io.Writer;
@@ -15,17 +15,17 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 
-import net.java.jawr.web.config.JawrConfig;
-import net.java.jawr.web.resource.FileSystemResourceHandler;
-import net.java.jawr.web.resource.bundle.InclusionPattern;
-import net.java.jawr.web.resource.bundle.JoinableResourceBundle;
-import net.java.jawr.web.resource.bundle.JoinableResourceBundleImpl;
-import net.java.jawr.web.resource.bundle.handler.ResourceBundlesHandler;
-import net.java.jawr.web.resource.bundle.handler.ResourceBundlesHandlerImpl;
-import net.java.jawr.web.resource.bundle.postprocess.BundleProcessingStatus;
-import net.java.jawr.web.resource.bundle.postprocess.impl.LicensesIncluderPostProcessor;
+import net.jawr.web.config.JawrConfig;
+import net.jawr.web.resource.FileSystemResourceHandler;
+import net.jawr.web.resource.bundle.InclusionPattern;
+import net.jawr.web.resource.bundle.JoinableResourceBundle;
+import net.jawr.web.resource.bundle.JoinableResourceBundleImpl;
+import net.jawr.web.resource.bundle.handler.ResourceBundlesHandler;
+import net.jawr.web.resource.bundle.handler.ResourceBundlesHandlerImpl;
+import net.jawr.web.resource.bundle.postprocess.BundleProcessingStatus;
+import net.jawr.web.resource.bundle.postprocess.impl.LicensesIncluderPostProcessor;
 
-import test.net.java.jawr.web.resource.bundle.handler.ResourceHandlerBasedTest;
+import test.net.jawr.web.resource.bundle.handler.ResourceHandlerBasedTest;
 /**
  *
  * @author jhernandez

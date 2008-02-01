@@ -11,7 +11,7 @@
  * either express or implied. See the License for the specific language governing permissions
  * and limitations under the License.
  */
-package net.java.jawr.web.servlet;
+package net.jawr.web.servlet;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -25,14 +25,14 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import net.java.jawr.web.config.JawrConfig;
-import net.java.jawr.web.exception.DuplicateBundlePathException;
-import net.java.jawr.web.exception.ResourceNotFoundException;
-import net.java.jawr.web.resource.ResourceHandler;
-import net.java.jawr.web.resource.ServletContextResourceHandler;
-import net.java.jawr.web.resource.bundle.factory.PropertiesBasedBundlesHandlerFactory;
-import net.java.jawr.web.resource.bundle.handler.ResourceBundlesHandler;
-import net.java.jawr.web.resource.bundle.renderer.BundleRenderer;
+import net.jawr.web.config.JawrConfig;
+import net.jawr.web.exception.DuplicateBundlePathException;
+import net.jawr.web.exception.ResourceNotFoundException;
+import net.jawr.web.resource.ResourceHandler;
+import net.jawr.web.resource.ServletContextResourceHandler;
+import net.jawr.web.resource.bundle.factory.PropertiesBasedBundlesHandlerFactory;
+import net.jawr.web.resource.bundle.handler.ResourceBundlesHandler;
+import net.jawr.web.resource.bundle.renderer.BundleRenderer;
 
 import org.apache.log4j.Logger;
 

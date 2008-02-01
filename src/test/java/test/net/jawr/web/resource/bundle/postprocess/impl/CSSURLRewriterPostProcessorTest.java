@@ -1,4 +1,4 @@
-package test.net.java.jawr.web.resource.bundle.postprocess.impl;
+package test.net.jawr.web.resource.bundle.postprocess.impl;
 
 import java.util.List;
 import java.util.Properties;
@@ -6,12 +6,12 @@ import java.util.Set;
 
 import junit.framework.TestCase;
 
-import net.java.jawr.web.config.JawrConfig;
-import net.java.jawr.web.resource.bundle.InclusionPattern;
-import net.java.jawr.web.resource.bundle.JoinableResourceBundle;
-import net.java.jawr.web.resource.bundle.postprocess.BundleProcessingStatus;
-import net.java.jawr.web.resource.bundle.postprocess.ResourceBundlePostProcessor;
-import net.java.jawr.web.resource.bundle.postprocess.impl.CSSURLPathRewriterPostProcessor;
+import net.jawr.web.config.JawrConfig;
+import net.jawr.web.resource.bundle.InclusionPattern;
+import net.jawr.web.resource.bundle.JoinableResourceBundle;
+import net.jawr.web.resource.bundle.postprocess.BundleProcessingStatus;
+import net.jawr.web.resource.bundle.postprocess.ResourceBundlePostProcessor;
+import net.jawr.web.resource.bundle.postprocess.impl.CSSURLPathRewriterPostProcessor;
 
 public class CSSURLRewriterPostProcessorTest extends TestCase {
 	

@@ -11,11 +11,11 @@
  * either express or implied. See the License for the specific language governing permissions
  * and limitations under the License.
  */
-package net.java.jawr.web.resource.bundle.postprocess;
+package net.jawr.web.resource.bundle.postprocess;
 
-import net.java.jawr.web.config.JawrConfig;
-import net.java.jawr.web.resource.ResourceHandler;
-import net.java.jawr.web.resource.bundle.JoinableResourceBundle;
+import net.jawr.web.config.JawrConfig;
+import net.jawr.web.resource.ResourceHandler;
+import net.jawr.web.resource.bundle.JoinableResourceBundle;
 
 /**
  * This class encapsulates the status of a bundling process. It is meant to let 

@@ -1,13 +1,13 @@
-package test.net.java.jawr.web.resource;
+package test.net.jawr.web.resource;
 
 import java.io.Reader;
 import java.nio.channels.FileChannel;
 import java.nio.charset.Charset;
 import java.util.Set;
 
-import net.java.jawr.web.resource.FileSystemResourceHandler;
+import net.jawr.web.resource.FileSystemResourceHandler;
 
-import test.net.java.jawr.web.resource.bundle.handler.ResourceHandlerBasedTest;
+import test.net.jawr.web.resource.bundle.handler.ResourceHandlerBasedTest;
 
 
 

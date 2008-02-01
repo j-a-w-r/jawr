@@ -11,7 +11,7 @@
  * either express or implied. See the License for the specific language governing permissions
  * and limitations under the License.
  */
-package net.java.jawr.web.resource.bundle.factory;
+package net.jawr.web.resource.bundle.factory;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -20,12 +20,12 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.StringTokenizer;
 
-import net.java.jawr.web.config.JawrConfig;
-import net.java.jawr.web.exception.DuplicateBundlePathException;
-import net.java.jawr.web.resource.ResourceHandler;
-import net.java.jawr.web.resource.bundle.factory.util.PropertiesConfigHelper;
-import net.java.jawr.web.resource.bundle.factory.util.ResourceBundleDefinition;
-import net.java.jawr.web.resource.bundle.handler.ResourceBundlesHandler;
+import net.jawr.web.config.JawrConfig;
+import net.jawr.web.exception.DuplicateBundlePathException;
+import net.jawr.web.resource.ResourceHandler;
+import net.jawr.web.resource.bundle.factory.util.PropertiesConfigHelper;
+import net.jawr.web.resource.bundle.factory.util.ResourceBundleDefinition;
+import net.jawr.web.resource.bundle.handler.ResourceBundlesHandler;
 
 /**
  * Properties based configuration entry point. 

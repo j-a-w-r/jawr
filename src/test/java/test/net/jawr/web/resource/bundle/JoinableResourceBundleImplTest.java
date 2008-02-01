@@ -1,19 +1,19 @@
 /**
  * 
  */
-package test.net.java.jawr.web.resource.bundle;
+package test.net.jawr.web.resource.bundle;
 
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import net.java.jawr.web.resource.ResourceHandler;
-import net.java.jawr.web.resource.bundle.InclusionPattern;
-import net.java.jawr.web.resource.bundle.JoinableResourceBundle;
-import net.java.jawr.web.resource.bundle.JoinableResourceBundleImpl;
+import net.jawr.web.resource.ResourceHandler;
+import net.jawr.web.resource.bundle.InclusionPattern;
+import net.jawr.web.resource.bundle.JoinableResourceBundle;
+import net.jawr.web.resource.bundle.JoinableResourceBundleImpl;
 
-import test.net.java.jawr.web.resource.bundle.handler.ResourceHandlerBasedTest;
+import test.net.jawr.web.resource.bundle.handler.ResourceHandlerBasedTest;
 
 
 /**
@@ -50,7 +50,7 @@ public class JoinableResourceBundleImplTest extends  ResourceHandlerBasedTest  {
 	}
  
 	/**
-	 * Test method for {@link net.java.jawr.web.resource.bundle.JoinableResourceBundleImpl#belongsToBundle(java.lang.String)}.
+	 * Test method for {@link net.jawr.web.resource.bundle.JoinableResourceBundleImpl#belongsToBundle(java.lang.String)}.
 	 * Test if the bundle recognizzes which items belong to it. 
 	 */
 	public void testBelongsToBundle() {
@@ -70,7 +70,7 @@ public class JoinableResourceBundleImplTest extends  ResourceHandlerBasedTest  {
 
 
 	/**
-	 * Test method for {@link net.java.jawr.web.resource.bundle.JoinableResourceBundleImpl#getItemPathList()}.
+	 * Test method for {@link net.jawr.web.resource.bundle.JoinableResourceBundleImpl#getItemPathList()}.
 	 */
 	public void testGetItemPathList() {
 		// Full collection

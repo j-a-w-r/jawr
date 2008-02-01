@@ -11,7 +11,7 @@
  * either express or implied. See the License for the specific language governing permissions
  * and limitations under the License.
  */
-package net.java.jawr.web.resource;
+package net.jawr.web.resource;
 
 import java.io.File;
 import java.io.InputStream;
@@ -24,7 +24,7 @@ import java.util.Set;
 
 import javax.servlet.ServletContext;
 
-import net.java.jawr.web.exception.ResourceNotFoundException;
+import net.jawr.web.exception.ResourceNotFoundException;
 
 /**
  * Implementation of resourcehandler that gets its resources
@@ -51,7 +51,7 @@ public class ServletContextResourceHandler extends AbstractResourceHandler imple
 	}
 
 	/* (non-Javadoc)
-	 * @see net.java.jawr.web.resource.bundle.ResourceHandler#getResource(java.lang.String)
+	 * @see net.jawr.web.resource.bundle.ResourceHandler#getResource(java.lang.String)
 	 */
 	public Reader getResource(String resourceName)  throws ResourceNotFoundException{
 		InputStream is = context.getResourceAsStream(resourceName);		
@@ -62,7 +62,7 @@ public class ServletContextResourceHandler extends AbstractResourceHandler imple
 	}
 
 	/* (non-Javadoc)
-	 * @see net.java.jawr.web.resource.bundle.ResourceHandler#getResourceNames(java.lang.String)
+	 * @see net.jawr.web.resource.bundle.ResourceHandler#getResourceNames(java.lang.String)
 	 */
 	public Set getResourceNames(String path) {
 		Set paths = context.getResourcePaths(path);
@@ -76,7 +76,7 @@ public class ServletContextResourceHandler extends AbstractResourceHandler imple
 	}
 
 	/* (non-Javadoc)
-	 * @see net.java.jawr.web.resource.bundle.ResourceHandler#isDirectory(java.lang.String)
+	 * @see net.jawr.web.resource.bundle.ResourceHandler#isDirectory(java.lang.String)
 	 */
 	public boolean isDirectory(String path) {
 		Set paths = context.getResourcePaths(path);

@@ -11,7 +11,7 @@
  * either express or implied. See the License for the specific language governing permissions
  * and limitations under the License.
  */
-package net.java.jawr.web.resource.bundle;
+package net.jawr.web.resource.bundle;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -19,13 +19,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import net.java.jawr.web.collections.ConcurrentCollectionsFactory;
-import net.java.jawr.web.exception.ResourceNotFoundException;
-import net.java.jawr.web.resource.ResourceHandler;
-import net.java.jawr.web.resource.bundle.factory.util.PathNormalizer;
-import net.java.jawr.web.resource.bundle.postprocess.ResourceBundlePostProcessor;
-import net.java.jawr.web.resource.bundle.renderer.BundleRenderer;
-import net.java.jawr.web.resource.bundle.sorting.SortFileParser;
+import net.jawr.web.collections.ConcurrentCollectionsFactory;
+import net.jawr.web.exception.ResourceNotFoundException;
+import net.jawr.web.resource.ResourceHandler;
+import net.jawr.web.resource.bundle.factory.util.PathNormalizer;
+import net.jawr.web.resource.bundle.postprocess.ResourceBundlePostProcessor;
+import net.jawr.web.resource.bundle.renderer.BundleRenderer;
+import net.jawr.web.resource.bundle.sorting.SortFileParser;
 
 import org.apache.log4j.Logger;
 
@@ -235,42 +235,42 @@ public class JoinableResourceBundleImpl implements JoinableResourceBundle {
 	}
 
 	/* (non-Javadoc)
-	 * @see net.java.jawr.web.resource.bundle.JoinableResourceBundle#belongsTobundle(java.lang.String)
+	 * @see net.jawr.web.resource.bundle.JoinableResourceBundle#belongsTobundle(java.lang.String)
 	 */
 	public boolean belongsToBundle(String itemPath) {		
 		return itemPathList.contains(itemPath);
 	}
 
 	/* (non-Javadoc)
-	 * @see net.java.jawr.web.resource.bundle.JoinableResourceBundle#getInclusionPattern()
+	 * @see net.jawr.web.resource.bundle.JoinableResourceBundle#getInclusionPattern()
 	 */
 	public InclusionPattern getInclusionPattern() {
 		return this.inclusionPattern;
 	}
 
 	/* (non-Javadoc)
-	 * @see net.java.jawr.web.resource.bundle.JoinableResourceBundle#getItemPathList()
+	 * @see net.jawr.web.resource.bundle.JoinableResourceBundle#getItemPathList()
 	 */
 	public List getItemPathList() {
 		return itemPathList;
 	}
 
 	/* (non-Javadoc)
-	 * @see net.java.jawr.web.resource.bundle.JoinableResourceBundle#getName()
+	 * @see net.jawr.web.resource.bundle.JoinableResourceBundle#getName()
 	 */
 	public String getName() {
 		return this.name;
 	}
 
 	/* (non-Javadoc)
-	 * @see net.java.jawr.web.resource.bundle.JoinableResourceBundle#getLicensesPathList()
+	 * @see net.jawr.web.resource.bundle.JoinableResourceBundle#getLicensesPathList()
 	 */
 	public Set getLicensesPathList() {
 		return this.licensesPathList;
 	}
 
     /* (non-Javadoc)
-	* @see net.java.jawr.web.resource.bundle.JoinableResourceBundle#getURLPrefix()
+	* @see net.jawr.web.resource.bundle.JoinableResourceBundle#getURLPrefix()
 	*/
     public String getURLPrefix() {
     	return this.urlPrefix;
@@ -279,7 +279,7 @@ public class JoinableResourceBundleImpl implements JoinableResourceBundle {
 
 
 	/* (non-Javadoc)
-	 * @see net.java.jawr.web.resource.bundle.JoinableResourceBundle#getUnitaryPostProcessor()
+	 * @see net.jawr.web.resource.bundle.JoinableResourceBundle#getUnitaryPostProcessor()
 	 */
 	public ResourceBundlePostProcessor getUnitaryPostProcessor() {
 		return unitaryPostProcessor;
@@ -295,7 +295,7 @@ public class JoinableResourceBundleImpl implements JoinableResourceBundle {
 
 
 	/* (non-Javadoc)
-	 * @see net.java.jawr.web.resource.bundle.JoinableResourceBundle#getBundlePostProcessor()
+	 * @see net.jawr.web.resource.bundle.JoinableResourceBundle#getBundlePostProcessor()
 	 */
 	public ResourceBundlePostProcessor getBundlePostProcessor() {
 		return bundlePostProcessor;

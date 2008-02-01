@@ -11,10 +11,10 @@
  * either express or implied. See the License for the specific language governing permissions
  * and limitations under the License.
  */
-package net.java.jawr.web.resource.bundle.renderer;
+package net.jawr.web.resource.bundle.renderer;
 
-import net.java.jawr.web.resource.bundle.factory.util.PathNormalizer;
-import net.java.jawr.web.resource.bundle.handler.ResourceBundlesHandler;
+import net.jawr.web.resource.bundle.factory.util.PathNormalizer;
+import net.jawr.web.resource.bundle.handler.ResourceBundlesHandler;
 
 /**
  * Renderer that creates css link tags. 

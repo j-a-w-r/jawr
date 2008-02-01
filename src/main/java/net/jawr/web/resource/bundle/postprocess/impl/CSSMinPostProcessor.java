@@ -11,13 +11,13 @@
  * either express or implied. See the License for the specific language governing permissions
  * and limitations under the License.
  */
-package net.java.jawr.web.resource.bundle.postprocess.impl;
+package net.jawr.web.resource.bundle.postprocess.impl;
 
 import java.io.IOException;
 
-import net.java.jawr.web.minification.CSSMinifier;
-import net.java.jawr.web.resource.bundle.postprocess.AbstractChainedResourceBundlePostProcessor;
-import net.java.jawr.web.resource.bundle.postprocess.BundleProcessingStatus;
+import net.jawr.web.minification.CSSMinifier;
+import net.jawr.web.resource.bundle.postprocess.AbstractChainedResourceBundlePostProcessor;
+import net.jawr.web.resource.bundle.postprocess.BundleProcessingStatus;
 
 /**
  * Preforms minification on CSS files by removing newlines, expendable whitespace and comments. 
@@ -33,7 +33,7 @@ public class CSSMinPostProcessor extends AbstractChainedResourceBundlePostProces
 	}
 	
 	/* (non-Javadoc)
-	 * @see net.java.jawr.web.resource.bundle.postprocess.impl.AbstractChainedResourceBundlePostProcessor#doPostProcessBundle(net.java.jawr.web.resource.bundle.postprocess.BundleProcessingStatus, java.lang.StringBuffer)
+	 * @see net.jawr.web.resource.bundle.postprocess.impl.AbstractChainedResourceBundlePostProcessor#doPostProcessBundle(net.jawr.web.resource.bundle.postprocess.BundleProcessingStatus, java.lang.StringBuffer)
 	 */
 	protected StringBuffer doPostProcessBundle(BundleProcessingStatus status, StringBuffer bundleData) throws IOException {
 		return minifier.minifyCSS(bundleData);

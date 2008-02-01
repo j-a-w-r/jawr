@@ -11,12 +11,12 @@
  * either express or implied. See the License for the specific language governing permissions
  * and limitations under the License.
  */
-package net.java.jawr.web.resource.bundle;
+package net.jawr.web.resource.bundle;
 
 import java.util.List;
 import java.util.Set;
 
-import net.java.jawr.web.resource.bundle.postprocess.ResourceBundlePostProcessor;
+import net.jawr.web.resource.bundle.postprocess.ResourceBundlePostProcessor;
 
 /**
  * Represents a group of related resources which will be referred to by 

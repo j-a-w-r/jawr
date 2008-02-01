@@ -11,14 +11,14 @@
  * either express or implied. See the License for the specific language governing permissions
  * and limitations under the License.
  */
-package net.java.jawr.web.resource.bundle.factory.processor;
+package net.jawr.web.resource.bundle.factory.processor;
 
 import java.util.StringTokenizer;
 
-import net.java.jawr.web.resource.bundle.postprocess.AbstractChainedResourceBundlePostProcessor;
-import net.java.jawr.web.resource.bundle.postprocess.EmptyResourceBundlePostProcessor;
-import net.java.jawr.web.resource.bundle.postprocess.ResourceBundlePostProcessor;
-import net.java.jawr.web.resource.bundle.postprocess.impl.LicensesIncluderPostProcessor;
+import net.jawr.web.resource.bundle.postprocess.AbstractChainedResourceBundlePostProcessor;
+import net.jawr.web.resource.bundle.postprocess.EmptyResourceBundlePostProcessor;
+import net.jawr.web.resource.bundle.postprocess.ResourceBundlePostProcessor;
+import net.jawr.web.resource.bundle.postprocess.impl.LicensesIncluderPostProcessor;
 
 /**
  * Abstract implementation of the PostProcessorChainFactory with functionalities common to js and css resources.  
@@ -34,7 +34,7 @@ public abstract class AbstractPostProcessorChainFactory implements	PostProcessor
 	
 
 	/* (non-Javadoc)
-	 * @see net.java.jawr.web.resource.bundle.factory.processor.PostProcessorChainFactory#buildPostProcessorChain(java.lang.String)
+	 * @see net.jawr.web.resource.bundle.factory.processor.PostProcessorChainFactory#buildPostProcessorChain(java.lang.String)
 	 */
 	public ResourceBundlePostProcessor buildPostProcessorChain(String processorKeys) {
 		if(null == processorKeys)

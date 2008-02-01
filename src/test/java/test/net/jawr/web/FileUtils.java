@@ -1,4 +1,4 @@
-package test.net.java.jawr.web;
+package test.net.jawr.web;
 
 import java.io.File;
 import java.io.FileInputStream;

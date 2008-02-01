@@ -11,7 +11,7 @@
  * either express or implied. See the License for the specific language governing permissions
  * and limitations under the License.
  */
-package net.java.jawr.web.minification;
+package net.jawr.web.minification;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

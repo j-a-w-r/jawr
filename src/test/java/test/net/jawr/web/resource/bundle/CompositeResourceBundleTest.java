@@ -1,4 +1,4 @@
-package test.net.java.jawr.web.resource.bundle;
+package test.net.jawr.web.resource.bundle;
 
 import java.nio.charset.Charset;
 import java.util.ArrayList;
@@ -6,14 +6,14 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 
-import net.java.jawr.web.config.JawrConfig;
-import net.java.jawr.web.resource.ResourceHandler;
-import net.java.jawr.web.resource.bundle.CompositeResourceBundle;
-import net.java.jawr.web.resource.bundle.InclusionPattern;
-import net.java.jawr.web.resource.bundle.JoinableResourceBundle;
-import net.java.jawr.web.resource.bundle.JoinableResourceBundleImpl;
+import net.jawr.web.config.JawrConfig;
+import net.jawr.web.resource.ResourceHandler;
+import net.jawr.web.resource.bundle.CompositeResourceBundle;
+import net.jawr.web.resource.bundle.InclusionPattern;
+import net.jawr.web.resource.bundle.JoinableResourceBundle;
+import net.jawr.web.resource.bundle.JoinableResourceBundleImpl;
 
-import test.net.java.jawr.web.resource.bundle.handler.ResourceHandlerBasedTest;
+import test.net.jawr.web.resource.bundle.handler.ResourceHandlerBasedTest;
 
 public class CompositeResourceBundleTest extends ResourceHandlerBasedTest {
 	private static final String ROOT_TESTDIR = "/compositeresourcebundle/";

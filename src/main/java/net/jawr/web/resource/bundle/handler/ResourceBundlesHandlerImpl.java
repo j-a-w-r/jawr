@@ -11,7 +11,7 @@
  * either express or implied. See the License for the specific language governing permissions
  * and limitations under the License.
  */
-package net.java.jawr.web.resource.bundle.handler;
+package net.jawr.web.resource.bundle.handler;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -28,16 +28,16 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import net.java.jawr.web.collections.ConcurrentCollectionsFactory;
-import net.java.jawr.web.config.JawrConfig;
-import net.java.jawr.web.exception.ResourceNotFoundException;
-import net.java.jawr.web.resource.ResourceHandler;
-import net.java.jawr.web.resource.bundle.CompositeResourceBundle;
-import net.java.jawr.web.resource.bundle.JoinableResourceBundle;
-import net.java.jawr.web.resource.bundle.factory.util.PathNormalizer;
-import net.java.jawr.web.resource.bundle.postprocess.BundleProcessingStatus;
-import net.java.jawr.web.resource.bundle.postprocess.ResourceBundlePostProcessor;
-import net.java.jawr.web.resource.bundle.sorting.GlobalResourceBundleComparator;
+import net.jawr.web.collections.ConcurrentCollectionsFactory;
+import net.jawr.web.config.JawrConfig;
+import net.jawr.web.exception.ResourceNotFoundException;
+import net.jawr.web.resource.ResourceHandler;
+import net.jawr.web.resource.bundle.CompositeResourceBundle;
+import net.jawr.web.resource.bundle.JoinableResourceBundle;
+import net.jawr.web.resource.bundle.factory.util.PathNormalizer;
+import net.jawr.web.resource.bundle.postprocess.BundleProcessingStatus;
+import net.jawr.web.resource.bundle.postprocess.ResourceBundlePostProcessor;
+import net.jawr.web.resource.bundle.sorting.GlobalResourceBundleComparator;
 
 import org.apache.log4j.Logger;
 
@@ -142,7 +142,7 @@ public class ResourceBundlesHandlerImpl implements ResourceBundlesHandler {
 	}
 
 	/* (non-Javadoc)
-	 * @see net.java.jawr.web.resource.bundle.ResourceCollector#getBundlePaths(java.lang.String)
+	 * @see net.jawr.web.resource.bundle.ResourceCollector#getBundlePaths(java.lang.String)
 	 */
 	public List getBundlePaths(String bundleId) {
 		List paths = new ArrayList();
@@ -192,7 +192,7 @@ public class ResourceBundlesHandlerImpl implements ResourceBundlesHandler {
 	}
 	
 	/* (non-Javadoc)
-	 * @see net.java.jawr.web.resource.bundle.ResourceCollector#writeBundleTo(java.lang.String, java.io.Writer)
+	 * @see net.jawr.web.resource.bundle.ResourceCollector#writeBundleTo(java.lang.String, java.io.Writer)
 	 */
 	public void writeBundleTo(String bundlePath, Writer writer)  throws ResourceNotFoundException{
 		Reader rd;
@@ -219,7 +219,7 @@ public class ResourceBundlesHandlerImpl implements ResourceBundlesHandler {
 	}
 
 	/* (non-Javadoc)
-	 * @see net.java.jawr.web.resource.bundle.ResourceBundlesHandler#streamBundleTo(java.lang.String, java.io.OutputStream)
+	 * @see net.jawr.web.resource.bundle.ResourceBundlesHandler#streamBundleTo(java.lang.String, java.io.OutputStream)
 	 */
 	public void streamBundleTo(String bundlePath, OutputStream out)  throws ResourceNotFoundException{
 		bundlePath = removePreffixFromPath(bundlePath);
@@ -235,14 +235,14 @@ public class ResourceBundlesHandlerImpl implements ResourceBundlesHandler {
 	}
 
 	/* (non-Javadoc)
-	 * @see net.java.jawr.web.resource.bundle.ResourceCollector#getConfig()
+	 * @see net.jawr.web.resource.bundle.ResourceCollector#getConfig()
 	 */
 	public JawrConfig getConfig() {
 		return config;
 	}
 
 	/* (non-Javadoc)
-	 * @see net.java.jawr.web.resource.bundle.ResourceCollector#initAllBundles()
+	 * @see net.jawr.web.resource.bundle.ResourceCollector#initAllBundles()
 	 */
 	public void initAllBundles() {
 		
@@ -352,7 +352,7 @@ public class ResourceBundlesHandlerImpl implements ResourceBundlesHandler {
 	}
 
 	/* (non-Javadoc)
-	 * @see net.java.jawr.web.resource.bundle.ResourceCollector#resolveBundleForPath(java.lang.String)
+	 * @see net.jawr.web.resource.bundle.ResourceCollector#resolveBundleForPath(java.lang.String)
 	 */
 	public String resolveBundleForPath(String path) {
 		

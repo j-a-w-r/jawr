@@ -11,11 +11,11 @@
  * either express or implied. See the License for the specific language governing permissions
  * and limitations under the License.
  */
-package net.java.jawr.web.taglib;
+package net.jawr.web.taglib;
 
-import net.java.jawr.web.resource.bundle.handler.ResourceBundlesHandler;
-import net.java.jawr.web.resource.bundle.renderer.BundleRenderer;
-import net.java.jawr.web.resource.bundle.renderer.JavascriptHTMLBundleLinkRenderer;
+import net.jawr.web.resource.bundle.handler.ResourceBundlesHandler;
+import net.jawr.web.resource.bundle.renderer.BundleRenderer;
+import net.jawr.web.resource.bundle.renderer.JavascriptHTMLBundleLinkRenderer;
 
 /**
  * Implementation of AbstractResourceBundleTag used to render javascript bundles. 
@@ -26,7 +26,7 @@ import net.java.jawr.web.resource.bundle.renderer.JavascriptHTMLBundleLinkRender
 public class JavascriptBundleTag extends AbstractResourceBundleTag {
 
 	/* (non-Javadoc)
-	 * @see net.java.jawr.web.taglib.AbstractResourceBundleTag#createRenderer()
+	 * @see net.jawr.web.taglib.AbstractResourceBundleTag#createRenderer()
 	 */
 	protected BundleRenderer createRenderer() {
 		if(null == pageContext.getServletContext().getAttribute(ResourceBundlesHandler.JS_CONTEXT_ATTRIBUTE))

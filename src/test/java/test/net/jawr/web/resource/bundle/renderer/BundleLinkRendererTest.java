@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 
-package test.net.java.jawr.web.resource.bundle.renderer;
+package test.net.jawr.web.resource.bundle.renderer;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -17,16 +17,16 @@ import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.regex.Pattern;
 
-import net.java.jawr.web.config.JawrConfig;
-import net.java.jawr.web.exception.DuplicateBundlePathException;
-import net.java.jawr.web.resource.FileSystemResourceHandler;
-import net.java.jawr.web.resource.bundle.handler.ResourceBundlesHandler;
-import net.java.jawr.web.resource.bundle.renderer.BundleRenderer;
-import net.java.jawr.web.resource.bundle.renderer.CSSHTMLBundleLinkRenderer;
-import net.java.jawr.web.resource.bundle.renderer.JavascriptHTMLBundleLinkRenderer;
+import net.jawr.web.config.JawrConfig;
+import net.jawr.web.exception.DuplicateBundlePathException;
+import net.jawr.web.resource.FileSystemResourceHandler;
+import net.jawr.web.resource.bundle.handler.ResourceBundlesHandler;
+import net.jawr.web.resource.bundle.renderer.BundleRenderer;
+import net.jawr.web.resource.bundle.renderer.CSSHTMLBundleLinkRenderer;
+import net.jawr.web.resource.bundle.renderer.JavascriptHTMLBundleLinkRenderer;
 
-import test.net.java.jawr.web.resource.bundle.PredefinedBundlesHandlerUtil;
-import test.net.java.jawr.web.resource.bundle.handler.ResourceHandlerBasedTest;
+import test.net.jawr.web.resource.bundle.PredefinedBundlesHandlerUtil;
+import test.net.jawr.web.resource.bundle.handler.ResourceHandlerBasedTest;
 /**
  *
  * @author jhernandez

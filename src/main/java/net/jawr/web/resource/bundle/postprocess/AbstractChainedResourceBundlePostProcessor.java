@@ -11,7 +11,7 @@
  * either express or implied. See the License for the specific language governing permissions
  * and limitations under the License.
  */
-package net.java.jawr.web.resource.bundle.postprocess;
+package net.jawr.web.resource.bundle.postprocess;
 
 import java.io.IOException;
 
@@ -31,7 +31,7 @@ public abstract class AbstractChainedResourceBundlePostProcessor implements
 	private static final Logger log = Logger.getLogger(ResourceBundlePostProcessor.class);
 	
 	/* (non-Javadoc)
-	 * @see net.java.jawr.web.resource.bundle.postprocess.ResourceBundlePostProcessor#postProcessBundle(java.lang.StringBuffer)
+	 * @see net.jawr.web.resource.bundle.postprocess.ResourceBundlePostProcessor#postProcessBundle(java.lang.StringBuffer)
 	 */
 	public StringBuffer postProcessBundle(BundleProcessingStatus status, StringBuffer bundleData) {
 		StringBuffer processedBundle = null;

@@ -11,11 +11,11 @@
  * either express or implied. See the License for the specific language governing permissions
  * and limitations under the License.
  */
-package net.java.jawr.web.resource.bundle.sorting;
+package net.jawr.web.resource.bundle.sorting;
 
 import java.util.Comparator;
 
-import net.java.jawr.web.resource.bundle.JoinableResourceBundle;
+import net.jawr.web.resource.bundle.JoinableResourceBundle;
 
 /**
  * Implementation of Comparator interface used to determine the inclusion order

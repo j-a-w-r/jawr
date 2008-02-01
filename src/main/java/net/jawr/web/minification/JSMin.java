@@ -38,7 +38,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.java.jawr.web.minification;
+package net.jawr.web.minification;
 
 
 import java.io.IOException;

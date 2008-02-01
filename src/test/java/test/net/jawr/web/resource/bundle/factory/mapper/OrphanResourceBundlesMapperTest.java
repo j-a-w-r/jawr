@@ -1,7 +1,7 @@
 /**
  * 
  */
-package test.net.java.jawr.web.resource.bundle.factory.mapper;
+package test.net.jawr.web.resource.bundle.factory.mapper;
 
 import java.nio.charset.Charset;
 import java.util.ArrayList;
@@ -9,14 +9,14 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-import net.java.jawr.web.exception.DuplicateBundlePathException;
-import net.java.jawr.web.resource.ResourceHandler;
-import net.java.jawr.web.resource.bundle.InclusionPattern;
-import net.java.jawr.web.resource.bundle.JoinableResourceBundle;
-import net.java.jawr.web.resource.bundle.factory.mapper.OrphanResourceBundlesMapper;
-import net.java.jawr.web.resource.bundle.postprocess.ResourceBundlePostProcessor;
+import net.jawr.web.exception.DuplicateBundlePathException;
+import net.jawr.web.resource.ResourceHandler;
+import net.jawr.web.resource.bundle.InclusionPattern;
+import net.jawr.web.resource.bundle.JoinableResourceBundle;
+import net.jawr.web.resource.bundle.factory.mapper.OrphanResourceBundlesMapper;
+import net.jawr.web.resource.bundle.postprocess.ResourceBundlePostProcessor;
 
-import test.net.java.jawr.web.resource.bundle.handler.ResourceHandlerBasedTest;
+import test.net.jawr.web.resource.bundle.handler.ResourceHandlerBasedTest;
 
 /**
  * @author jhernandez
@@ -54,7 +54,7 @@ public class OrphanResourceBundlesMapperTest extends  ResourceHandlerBasedTest {
 	}
 	
 	/**
-	 * Test method for {@link net.java.jawr.web.resource.bundle.factory.mapper.OrphanResourceBundlesMapper#getOrphans()}.
+	 * Test method for {@link net.jawr.web.resource.bundle.factory.mapper.OrphanResourceBundlesMapper#getOrphans()}.
 	 */
 	public void testGetOrphans() {
 		

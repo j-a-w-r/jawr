@@ -11,7 +11,7 @@
  * either express or implied. See the License for the specific language governing permissions
  * and limitations under the License.
  */
-package net.java.jawr.web.resource;
+package net.jawr.web.resource;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -24,8 +24,8 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import net.java.jawr.web.exception.InvalidPathException;
-import net.java.jawr.web.exception.ResourceNotFoundException;
+import net.jawr.web.exception.InvalidPathException;
+import net.jawr.web.exception.ResourceNotFoundException;
 
 /**
  * Implementation of resourcehandler that gets its resources from the filesystem.  
@@ -50,7 +50,7 @@ public class FileSystemResourceHandler extends AbstractResourceHandler implement
 	}
 
 	/* (non-Javadoc)
-	 * @see net.java.jawr.web.resource.bundle.ResourceHandler#getResource(java.lang.String)
+	 * @see net.jawr.web.resource.bundle.ResourceHandler#getResource(java.lang.String)
 	 */
 	public Reader getResource(String resourceName) throws ResourceNotFoundException {
 		Reader rd = null;
@@ -71,7 +71,7 @@ public class FileSystemResourceHandler extends AbstractResourceHandler implement
 	}
 
 	/* (non-Javadoc)
-	 * @see net.java.jawr.web.resource.bundle.ResourceHandler#getResourceNames(java.lang.String)
+	 * @see net.jawr.web.resource.bundle.ResourceHandler#getResourceNames(java.lang.String)
 	 */
 	public Set getResourceNames(String path) {
 		path = path.replace('/', File.separatorChar);
@@ -93,7 +93,7 @@ public class FileSystemResourceHandler extends AbstractResourceHandler implement
 	}
 
 	/* (non-Javadoc)
-	 * @see net.java.jawr.web.resource.bundle.ResourceHandler#isDirectory(java.lang.String)
+	 * @see net.jawr.web.resource.bundle.ResourceHandler#isDirectory(java.lang.String)
 	 */
 	public boolean isDirectory(String path) {
 		path = path.replace('/', File.separatorChar);

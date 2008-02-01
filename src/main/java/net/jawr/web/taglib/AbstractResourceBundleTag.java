@@ -11,7 +11,7 @@
  * either express or implied. See the License for the specific language governing permissions
  * and limitations under the License.
  */
-package net.java.jawr.web.taglib;
+package net.jawr.web.taglib;
 
 import java.io.IOException;
 import java.util.HashSet;
@@ -22,8 +22,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.TagSupport;
 
-import net.java.jawr.web.config.JawrConfig;
-import net.java.jawr.web.resource.bundle.renderer.BundleRenderer;
+import net.jawr.web.config.JawrConfig;
+import net.jawr.web.resource.bundle.renderer.BundleRenderer;
 
 import org.apache.log4j.Logger;
 
@@ -38,7 +38,7 @@ import org.apache.log4j.Logger;
 public abstract class AbstractResourceBundleTag extends TagSupport {
 	
 	private static final Logger log = Logger.getLogger(AbstractResourceBundleTag.class.getName());
-	private static final String ADDED_COLLECTIONS_LOG = "net.java.jawr.web.taglib.ADDED_COLLECTIONS_LOG";
+	private static final String ADDED_COLLECTIONS_LOG = "net.jawr.web.taglib.ADDED_COLLECTIONS_LOG";
 	
 	private String src;
         protected BundleRenderer renderer;

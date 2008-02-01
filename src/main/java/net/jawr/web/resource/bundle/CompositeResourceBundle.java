@@ -11,13 +11,13 @@
  * either express or implied. See the License for the specific language governing permissions
  * and limitations under the License.
  */
-package net.java.jawr.web.resource.bundle;
+package net.jawr.web.resource.bundle;
 
 import java.util.Iterator;
 import java.util.List;
 
-import net.java.jawr.web.config.JawrConfig;
-import net.java.jawr.web.resource.ResourceHandler;
+import net.jawr.web.config.JawrConfig;
+import net.jawr.web.resource.ResourceHandler;
 
 /**
  * This class acts as a proxy for a group of bundles which are created independently but share a common id and 

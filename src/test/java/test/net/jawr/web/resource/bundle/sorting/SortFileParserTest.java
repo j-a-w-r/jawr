@@ -1,4 +1,4 @@
-package test.net.java.jawr.web.resource.bundle.sorting;
+package test.net.jawr.web.resource.bundle.sorting;
 
 import java.io.StringReader;
 import java.util.HashSet;
@@ -7,7 +7,7 @@ import java.util.Set;
 
 import junit.framework.TestCase;
 
-import net.java.jawr.web.resource.bundle.sorting.SortFileParser;
+import net.jawr.web.resource.bundle.sorting.SortFileParser;
 
 public class SortFileParserTest extends TestCase {
 

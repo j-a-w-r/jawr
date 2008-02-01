@@ -1,12 +1,12 @@
-package test.net.java.jawr.web.minification;
+package test.net.jawr.web.minification;
 
 import java.io.File;
 
 import junit.framework.TestCase;
 
-import net.java.jawr.web.minification.CSSMinifier;
+import net.jawr.web.minification.CSSMinifier;
 
-import test.net.java.jawr.web.FileUtils;
+import test.net.jawr.web.FileUtils;
 
 public class CSSMinifierTest extends TestCase {
 	private StringBuffer source;

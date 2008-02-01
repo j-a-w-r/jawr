@@ -1,15 +1,15 @@
-package test.net.java.jawr.web.resource.bundle;
+package test.net.jawr.web.resource.bundle;
 
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import net.java.jawr.web.config.JawrConfig;
-import net.java.jawr.web.exception.DuplicateBundlePathException;
-import net.java.jawr.web.resource.ResourceHandler;
-import net.java.jawr.web.resource.bundle.factory.BundlesHandlerFactory;
-import net.java.jawr.web.resource.bundle.factory.util.ResourceBundleDefinition;
-import net.java.jawr.web.resource.bundle.handler.ResourceBundlesHandler;
+import net.jawr.web.config.JawrConfig;
+import net.jawr.web.exception.DuplicateBundlePathException;
+import net.jawr.web.resource.ResourceHandler;
+import net.jawr.web.resource.bundle.factory.BundlesHandlerFactory;
+import net.jawr.web.resource.bundle.factory.util.ResourceBundleDefinition;
+import net.jawr.web.resource.bundle.handler.ResourceBundlesHandler;
 
 public class PredefinedBundlesHandlerUtil {
 

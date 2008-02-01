@@ -11,7 +11,7 @@
  * either express or implied. See the License for the specific language governing permissions
  * and limitations under the License.
  */
-package net.java.jawr.web.resource.bundle.renderer;
+package net.jawr.web.resource.bundle.renderer;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
-import net.java.jawr.web.resource.bundle.handler.ResourceBundlesHandler;
+import net.jawr.web.resource.bundle.handler.ResourceBundlesHandler;
 
 /**
  * Abstract base class for implementations of a link renderer. 

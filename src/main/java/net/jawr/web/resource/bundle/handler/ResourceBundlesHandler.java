@@ -11,14 +11,14 @@
  * either express or implied. See the License for the specific language governing permissions
  * and limitations under the License.
  */
-package net.java.jawr.web.resource.bundle.handler;
+package net.jawr.web.resource.bundle.handler;
 
 import java.io.OutputStream;
 import java.io.Writer;
 import java.util.List;
 
-import net.java.jawr.web.config.JawrConfig;
-import net.java.jawr.web.exception.ResourceNotFoundException;
+import net.jawr.web.config.JawrConfig;
+import net.jawr.web.exception.ResourceNotFoundException;
 
 /**
  * Main interface to work with resource bundles. It helps in resolving groups of resources
@@ -30,8 +30,8 @@ import net.java.jawr.web.exception.ResourceNotFoundException;
  */
 public interface ResourceBundlesHandler {
 	
-	public static final String JS_CONTEXT_ATTRIBUTE  = "net.java.jawr.web.resource.bundle.JS_CONTEXT_ATTRIBUTE";
-	public static final String CSS_CONTEXT_ATTRIBUTE = "net.java.jawr.web.resource.bundle.CSS_CONTEXT_ATTRIBUTE";
+	public static final String JS_CONTEXT_ATTRIBUTE  = "net.jawr.web.resource.bundle.JS_CONTEXT_ATTRIBUTE";
+	public static final String CSS_CONTEXT_ATTRIBUTE = "net.jawr.web.resource.bundle.CSS_CONTEXT_ATTRIBUTE";
 	
 	/**
 	 * Determines which bundle corresponds to a path. The path may be

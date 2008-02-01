@@ -11,7 +11,7 @@
  * either express or implied. See the License for the specific language governing permissions
  * and limitations under the License.
  */
-package net.java.jawr.web.resource.bundle.postprocess.impl;
+package net.jawr.web.resource.bundle.postprocess.impl;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -22,9 +22,9 @@ import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 import java.nio.charset.Charset;
 
-import net.java.jawr.web.minification.JSMin;
-import net.java.jawr.web.resource.bundle.postprocess.AbstractChainedResourceBundlePostProcessor;
-import net.java.jawr.web.resource.bundle.postprocess.BundleProcessingStatus;
+import net.jawr.web.minification.JSMin;
+import net.jawr.web.resource.bundle.postprocess.AbstractChainedResourceBundlePostProcessor;
+import net.jawr.web.resource.bundle.postprocess.BundleProcessingStatus;
 
 /**
  * This postprocessor will minify a javascript bundle using Douglas Crockford's JSMin,
@@ -45,7 +45,7 @@ public class JSMinPostProcessor extends
 	}
 
 	/* (non-Javadoc)
-	 * @see net.java.jawr.web.resource.bundle.postprocess.impl.AbstractChainedResourceBundlePostProcessor#doPostProcessBundle(java.lang.StringBuffer)
+	 * @see net.jawr.web.resource.bundle.postprocess.impl.AbstractChainedResourceBundlePostProcessor#doPostProcessBundle(java.lang.StringBuffer)
 	 */
 	protected StringBuffer doPostProcessBundle(BundleProcessingStatus status,StringBuffer bundleString)
 			throws IOException {

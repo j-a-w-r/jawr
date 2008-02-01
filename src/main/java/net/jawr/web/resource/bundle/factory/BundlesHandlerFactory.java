@@ -11,7 +11,7 @@
  * either express or implied. See the License for the specific language governing permissions
  * and limitations under the License.
  */
-package net.java.jawr.web.resource.bundle.factory;
+package net.jawr.web.resource.bundle.factory;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -20,24 +20,24 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import net.java.jawr.web.config.JawrConfig;
-import net.java.jawr.web.exception.DuplicateBundlePathException;
-import net.java.jawr.web.resource.ResourceHandler;
-import net.java.jawr.web.resource.bundle.CompositeResourceBundle;
-import net.java.jawr.web.resource.bundle.InclusionPattern;
-import net.java.jawr.web.resource.bundle.JoinableResourceBundle;
-import net.java.jawr.web.resource.bundle.JoinableResourceBundleImpl;
-import net.java.jawr.web.resource.bundle.factory.mapper.OrphanResourceBundlesMapper;
-import net.java.jawr.web.resource.bundle.factory.mapper.ResourceBundleDirMapper;
-import net.java.jawr.web.resource.bundle.factory.processor.CSSPostProcessorChainFactory;
-import net.java.jawr.web.resource.bundle.factory.processor.JSPostProcessorChainFactory;
-import net.java.jawr.web.resource.bundle.factory.processor.PostProcessorChainFactory;
-import net.java.jawr.web.resource.bundle.factory.util.PathNormalizer;
-import net.java.jawr.web.resource.bundle.factory.util.ResourceBundleDefinition;
-import net.java.jawr.web.resource.bundle.handler.CachedResourceBundlesHandler;
-import net.java.jawr.web.resource.bundle.handler.ResourceBundlesHandler;
-import net.java.jawr.web.resource.bundle.handler.ResourceBundlesHandlerImpl;
-import net.java.jawr.web.resource.bundle.postprocess.ResourceBundlePostProcessor;
+import net.jawr.web.config.JawrConfig;
+import net.jawr.web.exception.DuplicateBundlePathException;
+import net.jawr.web.resource.ResourceHandler;
+import net.jawr.web.resource.bundle.CompositeResourceBundle;
+import net.jawr.web.resource.bundle.InclusionPattern;
+import net.jawr.web.resource.bundle.JoinableResourceBundle;
+import net.jawr.web.resource.bundle.JoinableResourceBundleImpl;
+import net.jawr.web.resource.bundle.factory.mapper.OrphanResourceBundlesMapper;
+import net.jawr.web.resource.bundle.factory.mapper.ResourceBundleDirMapper;
+import net.jawr.web.resource.bundle.factory.processor.CSSPostProcessorChainFactory;
+import net.jawr.web.resource.bundle.factory.processor.JSPostProcessorChainFactory;
+import net.jawr.web.resource.bundle.factory.processor.PostProcessorChainFactory;
+import net.jawr.web.resource.bundle.factory.util.PathNormalizer;
+import net.jawr.web.resource.bundle.factory.util.ResourceBundleDefinition;
+import net.jawr.web.resource.bundle.handler.CachedResourceBundlesHandler;
+import net.jawr.web.resource.bundle.handler.ResourceBundlesHandler;
+import net.jawr.web.resource.bundle.handler.ResourceBundlesHandlerImpl;
+import net.jawr.web.resource.bundle.postprocess.ResourceBundlePostProcessor;
 
 import org.apache.log4j.Logger;
 

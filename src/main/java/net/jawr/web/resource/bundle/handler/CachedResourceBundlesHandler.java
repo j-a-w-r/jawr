@@ -11,7 +11,7 @@
  * either express or implied. See the License for the specific language governing permissions
  * and limitations under the License.
  */
-package net.java.jawr.web.resource.bundle.handler;
+package net.jawr.web.resource.bundle.handler;
 
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
@@ -24,9 +24,9 @@ import java.nio.channels.WritableByteChannel;
 import java.util.List;
 import java.util.Map;
 
-import net.java.jawr.web.collections.ConcurrentCollectionsFactory;
-import net.java.jawr.web.config.JawrConfig;
-import net.java.jawr.web.exception.ResourceNotFoundException;
+import net.jawr.web.collections.ConcurrentCollectionsFactory;
+import net.jawr.web.config.JawrConfig;
+import net.jawr.web.exception.ResourceNotFoundException;
 
 /**
  * ResourceBundlesHandler wrapper implementation that uses a ConcurrentHashMap to cache the resources. 
@@ -56,35 +56,35 @@ public class CachedResourceBundlesHandler implements ResourceBundlesHandler {
 	}
 
 	/* (non-Javadoc)
-	 * @see net.java.jawr.web.resource.bundle.ResourceBundlesHandler#getBundlePaths(java.lang.String)
+	 * @see net.jawr.web.resource.bundle.ResourceBundlesHandler#getBundlePaths(java.lang.String)
 	 */
 	public List getBundlePaths(String bundleId) {
 		return rsHandler.getBundlePaths(bundleId);
 	}
 
 	/* (non-Javadoc)
-	 * @see net.java.jawr.web.resource.bundle.ResourceBundlesHandler#getConfig()
+	 * @see net.jawr.web.resource.bundle.ResourceBundlesHandler#getConfig()
 	 */
 	public JawrConfig getConfig() {
 		return rsHandler.getConfig();
 	}
 
 	/* (non-Javadoc)
-	 * @see net.java.jawr.web.resource.bundle.ResourceBundlesHandler#initAllBundles()
+	 * @see net.jawr.web.resource.bundle.ResourceBundlesHandler#initAllBundles()
 	 */
 	public void initAllBundles() {
 		rsHandler.initAllBundles();
 	}
 
 	/* (non-Javadoc)
-	 * @see net.java.jawr.web.resource.bundle.ResourceBundlesHandler#resolveBundleForPath(java.lang.String)
+	 * @see net.jawr.web.resource.bundle.ResourceBundlesHandler#resolveBundleForPath(java.lang.String)
 	 */
 	public String resolveBundleForPath(String path) {
 		return rsHandler.resolveBundleForPath(path);
 	}
 
 	/* (non-Javadoc)
-	 * @see net.java.jawr.web.resource.bundle.ResourceBundlesHandler#streamBundleTo(java.lang.String, java.io.OutputStream)
+	 * @see net.jawr.web.resource.bundle.ResourceBundlesHandler#streamBundleTo(java.lang.String, java.io.OutputStream)
 	 */
 	public void streamBundleTo(String bundlePath, OutputStream out)
 			throws ResourceNotFoundException {
@@ -119,7 +119,7 @@ public class CachedResourceBundlesHandler implements ResourceBundlesHandler {
 	}
 
 	/* (non-Javadoc)
-	 * @see net.java.jawr.web.resource.bundle.ResourceBundlesHandler#writeBundleTo(java.lang.String, java.io.Writer)
+	 * @see net.jawr.web.resource.bundle.ResourceBundlesHandler#writeBundleTo(java.lang.String, java.io.Writer)
 	 */
 	public void writeBundleTo(String bundlePath, Writer writer)
 			throws ResourceNotFoundException {

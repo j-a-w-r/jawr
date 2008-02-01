@@ -11,7 +11,7 @@
  * either express or implied. See the License for the specific language governing permissions
  * and limitations under the License.
  */
-package net.java.jawr.web.exception;
+package net.jawr.web.exception;
 
 /**
  * Exception to throw during configuration process, if the mappings result in a duplicate mapping for a given path.

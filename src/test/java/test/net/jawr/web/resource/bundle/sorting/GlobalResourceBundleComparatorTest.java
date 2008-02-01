@@ -1,7 +1,7 @@
 /**
  * 
  */
-package test.net.java.jawr.web.resource.bundle.sorting;
+package test.net.jawr.web.resource.bundle.sorting;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -10,10 +10,10 @@ import java.util.Set;
 
 import junit.framework.TestCase;
 
-import net.java.jawr.web.resource.bundle.InclusionPattern;
-import net.java.jawr.web.resource.bundle.JoinableResourceBundle;
-import net.java.jawr.web.resource.bundle.postprocess.ResourceBundlePostProcessor;
-import net.java.jawr.web.resource.bundle.sorting.GlobalResourceBundleComparator;
+import net.jawr.web.resource.bundle.InclusionPattern;
+import net.jawr.web.resource.bundle.JoinableResourceBundle;
+import net.jawr.web.resource.bundle.postprocess.ResourceBundlePostProcessor;
+import net.jawr.web.resource.bundle.sorting.GlobalResourceBundleComparator;
 
 /**
  * @author jhernandez

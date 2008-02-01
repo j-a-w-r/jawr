@@ -18,7 +18,7 @@ Quick Jawr setup
 	
 +------------------------------------------+
 	<dependency>
-	  <groupId>net.java.jawr</groupId>
+	  <groupId>net.jawr</groupId>
 	  <artifactId>jawr</artifactId>
 	  <version>1.1</version>
 	</dependency>
@@ -49,13 +49,13 @@ Quick Jawr setup
 	
 * Configure instances of the Jawr Servlet
 
-	Add <<net.java.jawr.web.servlet.JawrServlet>> to your web.xml descriptor. You will need an instance for handling Javascript, and another one 
+	Add <<net.jawr.web.servlet.JawrServlet>> to your web.xml descriptor. You will need an instance for handling Javascript, and another one 
 	for CSS stylesheets. For instance: 
 	
 +------------------------------------------+
 	<servlet>
 		<servlet-name>JavascriptServlet</servlet-name>
-		<servlet-class>net.java.jawr.web.servlet.JawrServlet</servlet-class>
+		<servlet-class>net.jawr.web.servlet.JawrServlet</servlet-class>
 		<init-param>
 			<param-name>configLocation</param-name>
 			<param-value>/jawr.properties</param-value>
@@ -65,7 +65,7 @@ Quick Jawr setup
 	
 	<servlet>
 		<servlet-name>CSSServlet</servlet-name>
-		<servlet-class>net.java.jawr.web.servlet.JawrServlet</servlet-class>
+		<servlet-class>net.jawr.web.servlet.JawrServlet</servlet-class>
 		<init-param>
 			<param-name>configLocation</param-name>
 			<param-value>/jawr.properties</param-value>
@@ -145,7 +145,7 @@ log4j.appender.A1.layout=org.apache.log4j.PatternLayout
 log4j.appender.A1.layout.ConversionPattern=%-4r [%t] %-5p %c %x - %m%n
 
 # Print messages up to level DEBUG
-log4j.logger.net.java.jawr=INFO
+log4j.logger.net.jawr=INFO
 +------------------------------------------+
 
 	Note that the log level is set to INFO. The DEBUG level would ouput verbose log messages, and you should use it only if you experience problems 

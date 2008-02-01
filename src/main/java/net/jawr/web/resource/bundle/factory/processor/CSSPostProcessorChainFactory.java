@@ -11,12 +11,12 @@
  * either express or implied. See the License for the specific language governing permissions
  * and limitations under the License.
  */
-package net.java.jawr.web.resource.bundle.factory.processor;
+package net.jawr.web.resource.bundle.factory.processor;
 
-import net.java.jawr.web.resource.bundle.postprocess.AbstractChainedResourceBundlePostProcessor;
-import net.java.jawr.web.resource.bundle.postprocess.ResourceBundlePostProcessor;
-import net.java.jawr.web.resource.bundle.postprocess.impl.CSSMinPostProcessor;
-import net.java.jawr.web.resource.bundle.postprocess.impl.CSSURLPathRewriterPostProcessor;
+import net.jawr.web.resource.bundle.postprocess.AbstractChainedResourceBundlePostProcessor;
+import net.jawr.web.resource.bundle.postprocess.ResourceBundlePostProcessor;
+import net.jawr.web.resource.bundle.postprocess.impl.CSSMinPostProcessor;
+import net.jawr.web.resource.bundle.postprocess.impl.CSSURLPathRewriterPostProcessor;
 
 /**
  * PostProcessorChainFactory for css resources. 
@@ -31,7 +31,7 @@ public class CSSPostProcessorChainFactory extends
 	private static final String URL_PATH_REWRITER = "csspathrewriter";
 		
 	/* (non-Javadoc)
-	 * @see net.java.jawr.web.resource.bundle.factory.processor.PostProcessorChainFactory#buildDefaultProcessorChain()
+	 * @see net.jawr.web.resource.bundle.factory.processor.PostProcessorChainFactory#buildDefaultProcessorChain()
 	 */
 	public ResourceBundlePostProcessor buildDefaultProcessorChain() {
 		CSSMinPostProcessor processor = new CSSMinPostProcessor();
@@ -40,7 +40,7 @@ public class CSSPostProcessorChainFactory extends
 	}
 
 	/* (non-Javadoc)
-	 * @see net.java.jawr.web.resource.bundle.factory.processor.PostProcessorChainFactory#buildDefaultUnitProcessorChain()
+	 * @see net.jawr.web.resource.bundle.factory.processor.PostProcessorChainFactory#buildDefaultUnitProcessorChain()
 	 */
 	public ResourceBundlePostProcessor buildDefaultUnitProcessorChain() {
 		return new CSSURLPathRewriterPostProcessor();
@@ -48,7 +48,7 @@ public class CSSPostProcessorChainFactory extends
 	
 	
 	/* (non-Javadoc)
-	 * @see net.java.jawr.web.resource.bundle.factory.processor.PostProcessorChainFactory#getPostProcessor(java.lang.String)
+	 * @see net.jawr.web.resource.bundle.factory.processor.PostProcessorChainFactory#getPostProcessor(java.lang.String)
 	 */
 	protected AbstractChainedResourceBundlePostProcessor buildProcessorByKey(String processorKey){
 		if (LICENSE_INCLUDER.equals(processorKey))

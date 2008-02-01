@@ -95,6 +95,11 @@ Jawr: bundling and compression for web application resources.
 		
 * Announcements
 
+	* <<2/1/2008>>: Version 1.2 released. The project packages are all renamed to remove all references to java (i.e. packages named net.java.jawr are 
+	now simply net.jawr). This is due to the standard naming scheme not being valid for java.net because of copyright issues. Therefore the 
+	servlet and other components have a new name, so if you were already using jawr you will need to change any references. Hopefully there will be no 
+	more changes to the packaging scheme. 
+
 	* <<1/31/2008>>: Version 1.1 released, fixes a major problem with the taglib descriptor and adds the option to use @startup for generating 
 		bundle prefixes upon deployment. 
 	

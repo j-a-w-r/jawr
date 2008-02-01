@@ -11,7 +11,7 @@
  * either express or implied. See the License for the specific language governing permissions
  * and limitations under the License.
  */
-package net.java.jawr.web.resource;
+package net.jawr.web.resource;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -25,7 +25,7 @@ import java.nio.charset.Charset;
 import java.util.StringTokenizer;
 import java.util.zip.GZIPOutputStream;
 
-import net.java.jawr.web.exception.ResourceNotFoundException;
+import net.jawr.web.exception.ResourceNotFoundException;
 
 import org.apache.log4j.Logger;
 
@@ -77,7 +77,7 @@ public abstract class AbstractResourceHandler  implements ResourceHandler{
 	}
 
 	/* (non-Javadoc)
-	 * @see net.java.jawr.web.resource.bundle.ResourceHandler#getResourcebundleReader(java.lang.String)
+	 * @see net.jawr.web.resource.bundle.ResourceHandler#getResourcebundleReader(java.lang.String)
 	 */
 	public Reader getResourceBundleReader(String bundleName)  throws ResourceNotFoundException {
 		Reader rd = null;
@@ -128,7 +128,7 @@ public abstract class AbstractResourceHandler  implements ResourceHandler{
 	
 	
 	/* (non-Javadoc)
-	 * @see net.java.jawr.web.resource.bundle.ResourceHandler#getResourceBundleBytes(java.lang.String)
+	 * @see net.jawr.web.resource.bundle.ResourceHandler#getResourceBundleBytes(java.lang.String)
 	 */
 	public FileChannel getResourceBundleChannel(String bundleName) throws ResourceNotFoundException {
 		String tempFileName = null;
@@ -151,7 +151,7 @@ public abstract class AbstractResourceHandler  implements ResourceHandler{
 	}
 
 	/* (non-Javadoc)
-	 * @see net.java.jawr.web.resource.bundle.ResourceHandler#storebundle(java.lang.String, java.lang.StringBuffer)
+	 * @see net.jawr.web.resource.bundle.ResourceHandler#storebundle(java.lang.String, java.lang.StringBuffer)
 	 */
 	public void storeBundle(String bundleName, StringBuffer bundledResources) {
 		// Text version

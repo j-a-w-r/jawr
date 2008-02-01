@@ -6,7 +6,7 @@
 
 The Jawr servlet
 	
-	For each type of supported resource (CSS or Javascript), you need an instance of net.java.jawr.web.servlet.JawrServlet running. 
+	For each type of supported resource (CSS or Javascript), you need an instance of net.jawr.web.servlet.JawrServlet running. 
 	Of course, you may choose to use Jawr for only one of these types of resources. \ 
 	
 	All bundles are created and postprocessed when this servlet starts up and stored at the application server's temporary directory. 
@@ -22,7 +22,7 @@ The Jawr servlet
 +------------------------------------------+
 	<servlet>
 		<servlet-name>JavascriptServlet</servlet-name>
-		<servlet-class>net.java.jawr.web.servlet.JawrServlet</servlet-class>
+		<servlet-class>net.jawr.web.servlet.JawrServlet</servlet-class>
 		<init-param>
 			<param-name>configLocation</param-name>
 			<param-value>/jawr.properties</param-value>
@@ -79,7 +79,7 @@ The Jawr servlet
 	</description>
 	<servlet>
 		<servlet-name>JavascriptServlet</servlet-name>
-		<servlet-class>net.java.jawr.web.servlet.JawrServlet</servlet-class>
+		<servlet-class>net.jawr.web.servlet.JawrServlet</servlet-class>
 		<init-param>
 			<param-name>configLocation</param-name>
 			<param-value>/jawr.properties</param-value>
@@ -88,7 +88,7 @@ The Jawr servlet
 	</servlet>
 	<servlet>
 		<servlet-name>CssServlet</servlet-name>
-		<servlet-class>net.java.jawr.web.servlet.JawrServlet</servlet-class>
+		<servlet-class>net.jawr.web.servlet.JawrServlet</servlet-class>
 		<init-param>
 			<param-name>configLocation</param-name>
 			<param-value>/jawr.properties</param-value>

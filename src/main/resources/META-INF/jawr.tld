@@ -6,12 +6,12 @@
 	<tlib-version>2.8</tlib-version>
 	<jsp-version>1.2</jsp-version>
 	<short-name>Jawr</short-name>
-	<uri>http://jawr.java.net/tags</uri>
+	<uri>http://jawr.net/tags</uri>
 	<display-name>JSP jawr Library</display-name>
 
 	<tag>
 		<name>script</name>
-		<tag-class>net.java.jawr.web.taglib.JavascriptBundleTag</tag-class>
+		<tag-class>net.jawr.web.taglib.JavascriptBundleTag</tag-class>
 		<body-content>tagdependent</body-content>
 		<attribute>
 			<name>src</name>
@@ -22,7 +22,7 @@
 
 	<tag>
 		<name>style</name>
-		<tag-class>net.java.jawr.web.taglib.CSSBundleTag</tag-class>
+		<tag-class>net.jawr.web.taglib.CSSBundleTag</tag-class>
 		<body-content>tagdependent</body-content>
 		<attribute>
 			<name>src</name>

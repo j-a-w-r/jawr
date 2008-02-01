@@ -11,11 +11,11 @@
  * either express or implied. See the License for the specific language governing permissions
  * and limitations under the License.
  */
-package net.java.jawr.web.resource.bundle.factory.processor;
+package net.jawr.web.resource.bundle.factory.processor;
 
-import net.java.jawr.web.resource.bundle.postprocess.AbstractChainedResourceBundlePostProcessor;
-import net.java.jawr.web.resource.bundle.postprocess.ResourceBundlePostProcessor;
-import net.java.jawr.web.resource.bundle.postprocess.impl.JSMinPostProcessor;
+import net.jawr.web.resource.bundle.postprocess.AbstractChainedResourceBundlePostProcessor;
+import net.jawr.web.resource.bundle.postprocess.ResourceBundlePostProcessor;
+import net.jawr.web.resource.bundle.postprocess.impl.JSMinPostProcessor;
 
 /**
  * PostProcessorChainFactory for javascript resources. 
@@ -29,7 +29,7 @@ public class JSPostProcessorChainFactory extends AbstractPostProcessorChainFacto
 
 		
 	/* (non-Javadoc)
-	 * @see net.java.jawr.web.resource.bundle.factory.processor.PostProcessorChainFactory#buildDefaultProcessor()
+	 * @see net.jawr.web.resource.bundle.factory.processor.PostProcessorChainFactory#buildDefaultProcessor()
 	 */
 	public ResourceBundlePostProcessor buildDefaultProcessorChain() {
 		JSMinPostProcessor processor = buildJSMinPostProcessor();
@@ -38,14 +38,14 @@ public class JSPostProcessorChainFactory extends AbstractPostProcessorChainFacto
 	}
 	
 	/* (non-Javadoc)
-	 * @see net.java.jawr.web.resource.bundle.factory.processor.PostProcessorChainFactory#buildDefaultUnitProcessor()
+	 * @see net.jawr.web.resource.bundle.factory.processor.PostProcessorChainFactory#buildDefaultUnitProcessor()
 	 */
 	public ResourceBundlePostProcessor buildDefaultUnitProcessorChain() {
 		return null;
 	}
 	
 	/* (non-Javadoc)
-	 * @see net.java.jawr.web.resource.bundle.factory.processor.PostProcessorChainFactory#getPostProcessor(java.lang.String)
+	 * @see net.jawr.web.resource.bundle.factory.processor.PostProcessorChainFactory#getPostProcessor(java.lang.String)
 	 */
 	protected AbstractChainedResourceBundlePostProcessor buildProcessorByKey(String procesorKey){
 		if(JSMIN.equals(procesorKey))
