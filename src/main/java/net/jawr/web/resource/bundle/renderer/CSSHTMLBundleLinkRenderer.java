@@ -37,7 +37,7 @@ public class CSSHTMLBundleLinkRenderer extends AbstractBundleLinkRenderer implem
     protected String createBundleLink(String bundleId, String contextPath) {
     	String fullPath = PathNormalizer.joinPaths(getBundler().getConfig().getServletMapping(), bundleId);
         fullPath = PathNormalizer.joinPaths(contextPath,fullPath);
-        StringBuilder sb = new StringBuilder(PRE_TAG);
+        StringBuffer sb = new StringBuffer(PRE_TAG);
 		sb.append(media).append(MID_TAG)
 						.append(fullPath)	
 						.append(POST_TAG); 

@@ -35,7 +35,7 @@ public class JavascriptHTMLBundleLinkRenderer extends AbstractBundleLinkRenderer
      * @see net.jawr.web.resource.bundle.renderer.AbstractBundleLinkRenderer#createBundleLink(java.lang.String, java.lang.String)
      */
     protected String createBundleLink(String bundleId, String contextPath) {
-    	StringBuilder sb = new StringBuilder(PRE_TAG);
+    	StringBuffer sb = new StringBuffer(PRE_TAG);
         String fullPath = PathNormalizer.joinPaths(getBundler().getConfig().getServletMapping(), bundleId);
         fullPath = PathNormalizer.joinPaths(contextPath,fullPath);
 		sb.append(fullPath)

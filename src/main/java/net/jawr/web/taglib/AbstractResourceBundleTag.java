@@ -58,7 +58,7 @@ public abstract class AbstractResourceBundleTag extends TagSupport {
             try {
                 HttpServletRequest request = (HttpServletRequest)pageContext.getRequest();
                 renderer.renderBundleLinks( src,
-                                            pageContext.getServletContext().getContextPath(),
+                                            request.getContextPath(),
                                             getAddedBundlesLog(request),
                                             shouldUseGZIP(request),
                                             pageContext.getOut());

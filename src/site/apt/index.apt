@@ -86,9 +86,9 @@ Jawr: bundling and compression for web application resources.
 	
 * Requirements
 	
-	You can use Jawr with any compliant Java Web Container implementation (i.e. Tomcat, Jetty, BEA Weblogic etc.), as long as the virtual machine 
-	version is 1.4 or higher. Jawr uses Apache log4j for logging messages, so it is a required library. There are no other requirements, although if 
-	your virtual machine version is 1.4, you can improve performance by using the backport-util-concurrent library, which can be found at: 
+	You can use Jawr with any compliant Java Servlet 2.3 or higher container implementation (i.e. Tomcat, Jetty, BEA Weblogic etc.), as long as the 
+	virtual machine it runs on is 1.4 or higher. Jawr uses Apache log4j for logging messages, so it is a required library. There are no other requirements, 
+	although if your JVM version is 1.4, you can improve performance by using the backport-util-concurrent library, which can be found at: 
 	{{{http://backport-jsr166.sourceforge.net/}http://backport-jsr166.sourceforge.net/}}. However, this is completely optional and Jawr will work 
 	just fine if you choose not to use it.  
 	
@@ -98,7 +98,7 @@ Jawr: bundling and compression for web application resources.
 	* <<2/1/2008>>: Version 1.2 released. The project packages are all renamed to remove all references to java (i.e. packages named net.java.jawr are 
 	now simply net.jawr). This is due to the standard naming scheme not being valid for java.net because of copyright issues. Therefore the 
 	servlet and other components have a new name, so if you were already using jawr you will need to change any references. Hopefully there will be no 
-	more changes to the packaging scheme. 
+	more changes to the packaging scheme. Also, the servlet API version dependency was set to 2.3 in the POM (was 2.5 by mistake). 
 
 	* <<1/31/2008>>: Version 1.1 released, fixes a major problem with the taglib descriptor and adds the option to use @startup for generating 
 		bundle prefixes upon deployment. 

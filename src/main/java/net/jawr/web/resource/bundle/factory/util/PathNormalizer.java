@@ -58,7 +58,7 @@ public class PathNormalizer {
 	public static final String joinPaths(String prefix,String path) {
 		prefix = PathNormalizer.normalizePath(prefix);
 		path = PathNormalizer.normalizePath(path);
-		StringBuilder sb = new StringBuilder(SEPARATOR);
+		StringBuffer sb = new StringBuffer(SEPARATOR);
 		if(!"".equals(prefix))
 			sb.append(prefix).append(SEPARATOR);
 		sb.append(path);
@@ -76,7 +76,7 @@ public class PathNormalizer {
 	public static final String normalizePath(String path) {
 		path = path.replaceAll("//", SEPARATOR);
 		StringTokenizer tk = new StringTokenizer(path,SEPARATOR);
-		StringBuilder sb = new StringBuilder();
+		StringBuffer sb = new StringBuffer();
 		while(tk.hasMoreTokens()) {
 			sb.append(tk.nextToken());
 			if(tk.hasMoreTokens())

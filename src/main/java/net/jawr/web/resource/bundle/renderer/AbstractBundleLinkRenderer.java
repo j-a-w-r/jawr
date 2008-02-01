@@ -100,7 +100,7 @@ public abstract class AbstractBundleLinkRenderer implements BundleRenderer {
      * @throws IOException
      */
     protected final void addComment(String commentText, Writer out)  throws IOException {
-    		StringBuilder sb = new StringBuilder("<!-- ");
+    	StringBuffer sb = new StringBuffer("<!-- ");
             sb.append(commentText).append(" -->").append("\n");
             out.write(sb.toString());
     }

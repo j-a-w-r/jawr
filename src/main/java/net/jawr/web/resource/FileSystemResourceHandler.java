@@ -20,7 +20,7 @@ import java.io.Reader;
 import java.nio.channels.Channels;
 import java.nio.channels.FileChannel;
 import java.nio.charset.Charset;
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -88,7 +88,8 @@ public class FileSystemResourceHandler extends AbstractResourceHandler implement
 				resArray[i] += '/';
 		}
 		Set ret = new HashSet();
-		Collections.addAll(ret, resArray);
+		ret.addAll(Arrays.asList(resArray));
+
 		return ret;
 	}
 
