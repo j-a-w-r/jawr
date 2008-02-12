@@ -1,0 +1,133 @@
+																		------
+                                    Tag libraries
+                                    ------
+                                    ------
+                                    ------
+
+Jawr tag libraries
+
+	Jawr comes with two tag libraries used to generate tags that import our bundles to clients of our application. One of them will be used to generate 
+	script tags for javascript resources, and another will generate link tags for CSS resources. \ 
+	
+	Both taglibs have a <<src>> attribute in which you specify either the name of a bundle or the path to a member of a bundle. In either case, the taglib
+	will do as follows: 
+	
+	* The page request headers will be analyzed to check wether the current client browser will accept gzip encoding or not. Depending on this, the 
+	generated URLs will point to the regular or the gzipped versions of the bundles. 
+	
+		* Internet Explorer has certain issues with gzip encoded resources under certain circumstances. This affects version 6 partially, since 
+		Service Pack 2 fixed all problems. If you wish to be 100% sure that you will not run into such problems, you may set the 
+		<<jawr.gzip.ie6.on>> flag to <<false>> in the descritor. This will disable gzipping for IE versions 6 and lower. However, the worst problems 
+		in Internet Explorer are related to Vary headers needed when the same URL points to a resource that is gzipped on demand. Jawr does not 
+		use this header by having a completely different path for gzipped and regular versions of the same file, so for most cases it should be 
+		fine to use gzipping with IE. \ 
+		
+		On some versions, though, it is said that compressed CSS in cache is not decompressed after restarting the 
+		browser and visiting a page that uses the resource, which results in the CSS not working properly. \ 
+		
+		The bottom line is that, unless your application runs on a controlled environment such as a corporate intranet, it will be 
+		the safest to set the <<jawr.gzip.ie6.on>> flag to <<false>>. 
+	
+	* Any global bundle will be added in the specified order. See the bundle definition manual for more info on this. 
+	If the global bundles have already been added to the page by a previous tag, this step is skipped. 
+	
+	* Then the corresponding bundle is resolved, either by name or by finding a bundle to which the path belongs to. 
+	
+		** If the debug mode is off, a link to the bundle is then rendered, unless it had already been included by a previous tag. 
+		
+		** Otherwise, a link is rendered to each member of the bundle, ading a random request parameter to the URL, to prevent the browser from caching
+		any resource. Again, no resources will be linked again if a previous tag did it first. Also, processing HTML comments are added so a developer 
+		will easily follow how bundles would be processed in production mode. 
+	
+	[]
+
+* Usage
+	
+	In order to use any of the tags, you will need to import the taglib to your page, like this: 
+	
++------------------------------------------+
+
+	<%@ taglib uri="http://jawr.net/tags" prefix="jwr" %>
+	
++------------------------------------------+
+
+* The script taglib
+
+	This tag has only one mandatory attribute, the aforementioned <<src>>. To see how it works, imagine we had a mapping like this in our config file: 
+		
++------------------------------------------+
+	jawr.js.bundle.names=globalBundle, fooBundle
+	
+	jawr.js.bundle.globalBundle.id=/bundles/global.js
+	jawr.js.bundle.globalBundle.global=true
+	jawr.js.bundle.globalBundle.mappings=/js/lib/**	
+	jawr.js.bundle.globalBundle.prefix=/global01
+	
+	jawr.js.bundle.fooBundle.id=/bundles/fooBundle.js
+	jawr.js.bundle.fooBundle.mappings=/js/foo.js,/js/bar.js	
+	jawr.js.bundle.fooBundle.prefix=/foo01
++------------------------------------------+
+	
+	Then, in a JSP we type the following: 
+	
++------------------------------------------+
+
+	<%@ taglib uri="http://jawr.net/tags" prefix="jwr" %>
+	<html>
+	<head>
+		<!-- Invoking the bundle by name -->
+		<jwr:script src="/bundles/fooBundle.js"/> 
+		
+		<!-- Invoking the bundle by using the path of one of its members -->
+		<jwr:script src="/js/bar.js"/> 
+	</head>
+	...
+	
++------------------------------------------+
+
+	The result is that when the JSP is executed with Jawr in production mode, something like the following is written to the page: 
+
++------------------------------------------+
+	<script type="text/javascript" src="/myWarContext/global01/bundles/global.js" ></script>
+	<script type="text/javascript" src="/myWarContext/foo01/bundles/fooBundle.js" ></script>
++------------------------------------------+
+
+	This might be unexpected: a link to the global bundle was writen first, even though no specific tag invoked it. That is precisely what global bundles 
+	are about: they will always be included whenever you use a Jawr tag in a page, before any other bundle. This way, commonly used libraries are 
+	implicitly availabe everywhere. \ 
+	
+	Although we wrote two tags in the JSP with paths corresponding to the foo bundle, only one script link is written out. It would be pointless to link 
+	twice to the same resource in a page, so Jawr will only write each different link once. \ 
+	
+	The link itself, as you can see, is composed of the application context path, the prefix we specified for the bundle, and the bundle id. \ 
+
+
+* The style taglib
+
+	Aside from the mandatory <<src>> attribute, this tag has an optional <<media>> attribute. Use it if you need to set a specific media type 
+	for a CSS bundle. If this attribute is not set it will be rendered as media="screen". For example:  
+
+	
++------------------------------------------+
+
+	<!-- 
+			Invoking the bundle by name. 
+			The generated link will have media="screen"  
+	-->
+	<jwr:style src="/bundles/someCSSbundle.css"/>
+	
+	<!-- Invoking the bundle by using the path of one of its members and setting the media attribute. -->
+	<jwr:style src="/css/printer.css" media="print" />
+	
++------------------------------------------+
+
+
+	
+
+		
+	
+
+
+	
+	
+	
