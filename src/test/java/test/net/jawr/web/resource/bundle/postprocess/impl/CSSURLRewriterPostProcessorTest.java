@@ -91,11 +91,8 @@ public class CSSURLRewriterPostProcessorTest extends TestCase {
 		StringBuffer data = new StringBuffer(".rule1{background:url(some\\(Image\\).gif);background:url(hue_bg.png) no-repeat;top:4px;}");
 		status.setLastPathAdded("/css/someCSS.css");
 		// Expected: goes 1 back for servlet mapping, 1 back for prefix , 1 back for the id having a subdir path. 
-		String expectedURL = ".rule1{background:url(../../../css/some\\(Image\\).gif);background:url(../../../css/hue_bg.png) no-repeat;top:4px;}";
-		System.out.println(data);
-		System.out.println(expectedURL);
+		String expectedURL = ".rule1{background:url(../../../css/some\\(Image\\).gif);background:url(../../../css/hue_bg.png) no-repeat;top:4px;}";		
 		String result = processor.postProcessBundle(status, data).toString();
-		System.out.println(result);
 		assertEquals("URL was not rewritten properly : " +expectedURL + "    \n:  " + result,expectedURL, result);
 	}
 	
@@ -105,9 +102,17 @@ public class CSSURLRewriterPostProcessorTest extends TestCase {
 		// An image at the same path as the css
 		status.setLastPathAdded("/css/subpath/someCSS.css");
 		StringBuffer data = new StringBuffer("background-image:url(  '../folder/subfolder/subfolder/someImage.gif' );");
-		// Expected: goes 1 back for prefix , 1 back for the id having a subdir path. 
+		// Test several URLs
+		data.append("background-image:url(  '../folder/subfolder/subfolder/someOtherImage.gif' );");
+		
+		// Expected: goes 1 back for prefix , 1 back for the id having a subdir path. 		
 		String expectedURL = "background-image:url('../../../css/folder/subfolder/subfolder/someImage.gif');";
+		expectedURL += "background-image:url('../../../css/folder/subfolder/subfolder/someOtherImage.gif');";
 		String result = processor.postProcessBundle(status, data).toString();	
+		
+		System.out.println(expectedURL);
+		
+		System.out.println(result);
 		assertEquals("URL was not rewritten properly",expectedURL, result);
 		
 	}

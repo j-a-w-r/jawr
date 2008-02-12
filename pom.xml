@@ -4,7 +4,7 @@
   <groupId>net.jawr</groupId>
   <artifactId>jawr</artifactId>
   <name>Java web resources bundling and compression</name>
-  <version>1.2</version>
+  <version>1.3</version>
   <url>https://jawr.dev.java.net/</url>
   <description>
   	Javascript/CSS bundling and compressing tool for java web apps.

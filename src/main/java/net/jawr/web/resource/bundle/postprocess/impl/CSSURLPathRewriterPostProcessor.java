@@ -63,7 +63,9 @@ public class CSSURLPathRewriterPostProcessor extends
 		Matcher matcher = urlPattern.matcher(data);
 		StringBuffer sb = new StringBuffer();
 		while(matcher.find()) {
-			String url = getUrlPath(matcher.group(), initialBackRefs, resourceBackRefs);
+			List backRefs = new ArrayList();
+			backRefs.addAll(resourceBackRefs);
+			String url = getUrlPath(matcher.group(), initialBackRefs, backRefs);
 			matcher.appendReplacement(sb, adaptToMatcher(url));
 		}
 		matcher.appendTail(sb);
