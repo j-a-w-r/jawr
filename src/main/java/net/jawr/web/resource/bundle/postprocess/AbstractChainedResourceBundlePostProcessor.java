@@ -36,8 +36,8 @@ public abstract class AbstractChainedResourceBundlePostProcessor implements
 	public StringBuffer postProcessBundle(BundleProcessingStatus status, StringBuffer bundleData) {
 		StringBuffer processedBundle = null;
 		try {
-			if(log.isInfoEnabled())
-				log.info("postprocessing bundle:" + status.getCurrentBundle());
+			if(log.isDebugEnabled())
+				log.debug("postprocessing bundle:" + status.getCurrentBundle());
 			processedBundle = doPostProcessBundle(status,bundleData);
 		} catch (IOException e) {
 			throw new RuntimeException("Unexpected IOException during execution of a postprocessor.");

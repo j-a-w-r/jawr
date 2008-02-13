@@ -14,18 +14,14 @@
 package net.jawr.web.taglib;
 
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.Set;
 
-import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.TagSupport;
 
 import net.jawr.web.config.JawrConfig;
 import net.jawr.web.resource.bundle.renderer.BundleRenderer;
-
-import org.apache.log4j.Logger;
+import net.jawr.web.servlet.RendererRequestUtils;
 
 /**
  * Abstract implementation of a tag lib component which will retrieve a Jawr config
@@ -37,11 +33,10 @@ import org.apache.log4j.Logger;
  */
 public abstract class AbstractResourceBundleTag extends TagSupport {
 	
-	private static final Logger log = Logger.getLogger(AbstractResourceBundleTag.class.getName());
-	private static final String ADDED_COLLECTIONS_LOG = "net.jawr.web.taglib.ADDED_COLLECTIONS_LOG";
+	//private static final Logger log = Logger.getLogger(AbstractResourceBundleTag.class.getName());
 	
 	private String src;
-        protected BundleRenderer renderer;
+	protected BundleRenderer renderer;
         
 
 
@@ -59,7 +54,7 @@ public abstract class AbstractResourceBundleTag extends TagSupport {
                 HttpServletRequest request = (HttpServletRequest)pageContext.getRequest();
                 renderer.renderBundleLinks( src,
                                             request.getContextPath(),
-                                            getAddedBundlesLog(request),
+                                            RendererRequestUtils.getAddedBundlesLog(request),
                                             shouldUseGZIP(request),
                                             pageContext.getOut());
             } catch (IOException ex) {
@@ -68,61 +63,19 @@ public abstract class AbstractResourceBundleTag extends TagSupport {
 
             return super.doStartTag();
 	}
-	
-	/**
-	 * Retrieve or create the set to store all added bundles, which is used
-	 * to avoid adding a bundle more than once during a single request. 
-	 * @param request
-	 * @return
-	 */
-	private Set getAddedBundlesLog(ServletRequest request)
-	{
-		Set set = null;
-		if(null != request.getAttribute(ADDED_COLLECTIONS_LOG))
-			set = (Set) request.getAttribute(ADDED_COLLECTIONS_LOG);
-		else
-		{
-			set = new HashSet();
-			request.setAttribute(ADDED_COLLECTIONS_LOG, set);
-		}
-		return set;
-	}
         
-        /**
-         * Determines wether gzip is suitable for the current request. 
-         * @param req 
-         * @return 
-         */
-        private boolean shouldUseGZIP(HttpServletRequest req) {
-            boolean rets;
-            JawrConfig jeesConfig = renderer.getBundler().getConfig();
-            // If gzip is completely off, return false. 
-            if(!jeesConfig.isGzipResourcesModeOn())
-                rets = false;
-            else if(req.getHeader("Accept-Encoding") != null && 
-		    req.getHeader("Accept-Encoding").indexOf("gzip") != -1 ) {
-                
-                // If gzip for IE6 or less is off, the user agent is checked to avoid compression. 
-                if(!jeesConfig.isGzipResourcesForIESixOn()) {
-                    String agent = req.getHeader("User-Agent");
-                    if(log.isInfoEnabled())
-                        log.info("User-Agent for this request:" +agent);                    
-                    
-                    if(null != agent && agent.indexOf("MSIE") != -1) {
-                        rets =  agent.indexOf("MSIE 4") == -1 && 
-                                agent.indexOf("MSIE 5") == -1 && 
-                                agent.indexOf("MSIE 6") == -1;
-                        if(log.isInfoEnabled())
-                            log.info("Gzip enablement for IE executed, with result:" + rets);
-                    }
-                    else rets = true;
-                }
-                else rets = true;                
-            }
-            else rets = false;
-            
-            return rets;
-        }
+    /**
+     * Determines wether gzip is suitable for the current request. 
+     * @param req 
+     * @return 
+     */
+    private boolean shouldUseGZIP(HttpServletRequest req) {
+        boolean rets;
+        JawrConfig jeesConfig = renderer.getBundler().getConfig();
+        rets = RendererRequestUtils.isRequestGzippable(req, jeesConfig);
+        return rets;
+    }
+
 	
 	/**
 	 * Set the source of the resource or collection to retrieve. 

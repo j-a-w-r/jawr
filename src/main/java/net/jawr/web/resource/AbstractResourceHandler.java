@@ -1,5 +1,5 @@
 /**
- * Copyright 2007 Jordi Hernández Sellés
+ * Copyright 2007  Jordi Hernández Sellés
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -32,7 +32,7 @@ import org.apache.log4j.Logger;
 /**
  * Abstract resourcehandler implementation with common functionality.  
  * 
- * @author Jordi Hernández Sellés
+ * Copyright 2007  Jordi Hernández Sellés
  *
  */
 public abstract class AbstractResourceHandler  implements ResourceHandler{
@@ -168,9 +168,9 @@ public abstract class AbstractResourceHandler  implements ResourceHandler{
 	 * @param gzipFile
 	 */
 	private void storeBundle(String bundleName, StringBuffer bundledResources,boolean gzipFile) {
-		if(log.isInfoEnabled()){
+		if(log.isDebugEnabled()){
 			String msg = "Storing a generated " + (gzipFile ? "and gzipped" : "") + " bundle with an id of:" + bundleName;
-			log.info(msg);
+			log.debug(msg);
 		}
 		
 		String rootdir = gzipFile ? gzipDirPath : textDirPath;

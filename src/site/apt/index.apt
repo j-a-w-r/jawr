@@ -38,7 +38,8 @@ Jawr: bundling and compression for web application resources.
 	Jawr offers the best of both worlds, by combining a powerful bundling-minifying-compressing scheme for optimal service in 
 	production, with a rapid development mode for quick change-save-test cycles. 
 	
-	You can download the latest release of Jawr {{{https://jawr.dev.java.net/servlets/ProjectDocumentList?folderID=8543}here}}. 
+	You can download the latest release of Jawr {{{https://jawr.dev.java.net/servlets/ProjectDocumentList?folderID=8543}here}}. Also, check out the 
+	{{{https://jawr.dev.java.net/tutorials/quickstart.html}quick start tutorial}} to see how easy it is to use Jawr in your project. 
 	
 	
 * Features
@@ -78,7 +79,8 @@ Jawr: bundling and compression for web application resources.
 	
 	* <<Library friendly>>: Open source libraries can be used seamlessly with Jawr. Most of these are modular or have plugins: add the modules or 
 	plugins you need and bundle all together. And, even if you minify them (thus eliminating comments), you can still keep the mandatory licenses in
-	the bundle. 
+	the bundle. The {{{https://jawr.dev.java.net/tutorials/quickstart.html}libraries tutorial}} will show you how to integrate popular js libraries such 
+	as Protoype, JQuery or YUI. 
 		
 	
 	[]
@@ -94,6 +96,11 @@ Jawr: bundling and compression for web application resources.
 	
 		
 * Announcements
+
+	* <<2/13/2008>>: Version 1.3 released. Fixes a major bug in the CSS URL rewriter (issue #2). Many log statements are changed from info to debug (issue 
+	#4). Some refactoring to abstract base tag library, to allow for easier custom implementations of tag renderers not depending on JSP technology. 
+
+	* <<2/13/2008>>: New developer joins the project: Suresh Thalluri volunteered to join the project and will be helping improve Jawr. Welcome aboard!
 
 	* <<2/1/2008>>: Version 1.2 released. The project packages are all renamed to remove all references to java (i.e. packages named net.java.jawr are 
 	now simply net.jawr). This is due to the standard naming scheme not being valid for java.net because of copyright issues. Therefore the 

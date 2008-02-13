@@ -1,5 +1,5 @@
 /**
- * Copyright 2007 Jordi Hernández Sellés
+ * Copyright 2007  Jordi Hernández Sellés
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -96,9 +96,9 @@ public class JawrRequestHandler {
 		if(null != mapping)
 			jawrConfig.setServletMapping(mapping);
 		
-		if(log.isInfoEnabled()) {
-			log.info("Configuration read. Current config:");
-			log.info(jawrConfig);
+		if(log.isDebugEnabled()) {
+			log.debug("Configuration read. Current config:");
+			log.debug(jawrConfig);
 		}
 		
 		// Create a resource handler to read files from the WAR archive or exploded dir. 
@@ -118,11 +118,13 @@ public class JawrRequestHandler {
 		
 		long totaltime = System.currentTimeMillis() - initialTime;
 		
-		if(log.isInfoEnabled()) {
-			log.info("content type set to: " + contentType);
-			log.info(bundlesHandler);
-			log.info("Init method sucesful. jawr started in " + (totaltime/1000) + " seconds.");
+		if(log.isDebugEnabled()) {
+			log.debug("content type set to: " + contentType);
+			log.debug(bundlesHandler);
 		}
+		
+		if(log.isInfoEnabled()) 
+			log.info("Init method sucesful. jawr started in " + (totaltime/1000) + " seconds.");
 		
 		// Warn when in debug mode
 		if(jawrConfig.isDebugModeOn()){
@@ -150,14 +152,14 @@ public class JawrRequestHandler {
 		String requestedPath = "".equals(jawrConfig.getServletMapping()) ? request.getServletPath() : request.getPathInfo();
 		
 		
-		if(log.isInfoEnabled())
-			log.info("Request received for path:" + requestedPath);
+		if(log.isDebugEnabled())
+			log.debug("Request received for path:" + requestedPath);
 		
         // If a browser checks for changes, always respond 'no changes'. 
         if(null != request.getHeader("If-Modified-Since")) {
             response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
-            if(log.isInfoEnabled())
-				log.info("Returning 'not modified' header. ");
+            if(log.isDebugEnabled())
+				log.debug("Returning 'not modified' header. ");
             return;
         }
         
@@ -199,8 +201,8 @@ public class JawrRequestHandler {
 	private Properties readConfigProperties(String configLocation)
 			throws ServletException {
 		
-		if(log.isInfoEnabled())
-			log.info("Reading properties from file at classpath: " + configLocation);
+		if(log.isDebugEnabled())
+			log.debug("Reading properties from file at classpath: " + configLocation);
 		
 		Properties props = new Properties();	
 		

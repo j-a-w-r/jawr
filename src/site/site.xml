@@ -28,6 +28,11 @@
       <item name="Using popular libraries" href="/tutorials/libraries.html"/>   
     </menu>
     
+		<menu name="API and sources">
+      <item name="JavaDocs" href="/nonav/apidocs/index.html"/>
+      <item name="Source XREF" href="/nonav/xref/index.html"/>
+    </menu>
+    
     <menu name="Project tools">
       <item name="Project home" href="/servlets/ProjectHome"/>
       <item name="Membership" href="/servlets/ProjectMemberList"/>
@@ -39,7 +44,6 @@
       <item name="Issue tracker" href="/servlets/ProjectIssues"/>
     </menu>
 
-    <menu ref="reports"/>
 
   </body>
 </project>

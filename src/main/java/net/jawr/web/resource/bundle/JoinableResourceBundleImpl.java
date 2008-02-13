@@ -1,5 +1,5 @@
 /**
- * Copyright 2007 Jordi Hern·ndez SellÈs
+ * Copyright 2007 Jordi Hern√°ndez Sell√©s
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -32,7 +32,7 @@ import org.apache.log4j.Logger;
 /**
  * Basic implementation of JoinableResourceBundle. 
  * 
- * @author Jordi Hern·ndez SellÈs
+ * @author Jordi Hern√°ndez Sell√©s
  *
  */
 public class JoinableResourceBundleImpl implements JoinableResourceBundle {
@@ -115,13 +115,13 @@ public class JoinableResourceBundleImpl implements JoinableResourceBundle {
                                             String urlPrefix) {
 		this(name, fileExtension, inclusionPattern, resourceHandler, urlPrefix);
       
-		if(log.isInfoEnabled())
-			log.info("Adding mapped files for bundle " + getName());
+		if(log.isDebugEnabled())
+			log.debug("Adding mapped files for bundle " + getName());
 		this.pathMappings = pathMappings;
 		
 		initPathList();
-		if(log.isInfoEnabled())
-			log.info("Added " + this.itemPathList .size() + " files and " + licensesPathList.size() + " licenses for the bundle " + getName());
+		if(log.isDebugEnabled())
+			log.debug("Added " + this.itemPathList .size() + " files and " + licensesPathList.size() + " licenses for the bundle " + getName());
 		
 	}
 	

@@ -109,10 +109,7 @@ public class CSSURLRewriterPostProcessorTest extends TestCase {
 		String expectedURL = "background-image:url('../../../css/folder/subfolder/subfolder/someImage.gif');";
 		expectedURL += "background-image:url('../../../css/folder/subfolder/subfolder/someOtherImage.gif');";
 		String result = processor.postProcessBundle(status, data).toString();	
-		
-		System.out.println(expectedURL);
-		
-		System.out.println(result);
+
 		assertEquals("URL was not rewritten properly",expectedURL, result);
 		
 	}
