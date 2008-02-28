@@ -1,0 +1,20 @@
+/* 
+
+	Test css for minifier. 
+
+*/
+someRule {
+	text-align :center ; 
+	background: url( '  this quoted text  should remain just   as badly spaced ');
+
+}
+
+/* more comments */ /*  */
+anotherRule
+{
+	font: 12px   solid  black; /* Rule with double spaces in between parameters */
+	background: url( "  this double quoted text  should remain just   as badly spaced");
+	
+}
+/* done! */
+	 
