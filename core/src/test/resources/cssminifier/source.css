@@ -1,0 +1,22 @@
+/* 
+
+	Test css for minifier. 
+
+*/
+someRule 	.someSelector {
+	text-align :center ; 
+	background: url( '  this {quoted text } should remain just   as badly spaced ') no-repeat;
+	background: url( 'someURL') ;
+
+}
+
+/* more comments */ /*  */
+anotherRule	
+.withOddlySpacedSelector
+{
+	font: 12px   solid  black; /* Rule with double spaces in between parameters */
+	background: url( "  this double quoted text  should remain just   as badly spaced") no-repeat;
+	
+}
+/* done! */
+	 
