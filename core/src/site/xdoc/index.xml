@@ -1,0 +1,246 @@
+<document>
+
+  <properties>
+    <title>More than a Javascript/CSS compressor</title>
+  </properties>
+	
+	<head>
+		<style>
+			h2{display:none}
+			#firstPara{
+				clear:right;
+				margin-top:100px
+			}
+			#mainJawrLogo {
+				border:0 !important;
+				margin:auto 0 auto;
+				float:left;
+			}
+			#jawrlinks {
+				float:right;
+				width:45%;
+				text-align:right;
+				margin-right:-20px;
+			}
+			#jawrlinks img {
+				margin-bottom:10px;
+			}
+			#badges{
+				float:right;
+				clear:right;
+			}
+			#badges img  { border:0 !important;}
+		</style>
+	</head>
+	
+  <body>
+	
+    <section>
+	
+	<img src="./images/index/logo.png" style="border:0 !important" id="mainJawrLogo"  />
+	
+	<div id="jawrlinks">
+		<a href="https://jawr.dev.java.net/servlets/ProjectDocumentList?folderID=8543">
+			<img src="./images/index/download.png" style="border:0 !important" title="Download the latest version of Jawr"  /></a> 
+		<a href="https://jawr.dev.java.net/tutorials/quickstart.html" >
+			<img src="./images/index/get-started.png" style="border:0 !important" title="Go to the quickstart tutorial and start using Jawr" /></a> 		
+	</div>
+	<div id="badges">
+		<!-- FURL -->
+	<a href="http://www.furl.net/storeIt.jsp?t=JAWR%20-%20More%20than%20a%20javascript/css%20compressor&amp;u=https://jawr.dev.java.net" target="_blank"><img border="0" src="/images/badges/furl.png" alt="add to furl"/></a>  
+	
+	<!-- DEL.ICIO.US -->
+	<a href="http://del.icio.us/post?v=4&amp;noui&amp;jump=close&amp;url=https://jawr.dev.java.net&amp;title=JAWR%20-%20More%20than%20a%20javascript/css%20compressor" target="_blank"><img border="0" src="/images/badges/delicious.png" alt="add to del.icio.us"/></a>  
+	
+	<!-- TECHNORATI -->
+	<a href="http://technorati.com/faves?add=https://jawr.dev.java.net" target="_blank"><img border="0" src="/images/badges/technorati.png" alt="add to technorati"/></a>  
+	
+	<!-- BLINKLIST -->
+	<a href="http://www.blinklist.com/index.php?Action=Blink/addblink.php&amp;Url=https://jawr.dev.java.net&amp;Title=JAWR%20-%20More%20than%20a%20javascript/css%20compressor" target="_blank"><img border="0" src="/images/badges/blinklist.png" alt="add to blinklist"/></a>  
+	
+	<!-- DIGG -->
+	<a href="http://digg.com/submit?phase=2&amp;url=https://jawr.dev.java.net&amp;title=JAWR%20-%20More%20than%20a%20javascript/css%20compressor" target="_blank"><img border="0" src="/images/badges/digg.png" alt="add to digg"/></a>  
+	
+	<!-- GOOGLE -->
+	<a href="http://www.google.com/bookmarks/mark?op=edit&amp;output=popup&amp;bkmk=https://jawr.dev.java.net&amp;title=JAWR%20-%20More%20than%20a%20javascript/css%20compressor" target="_blank"><img border="0" src="/images/badges/google.png" alt="add to google"/></a>  
+	
+	<!-- STUMBLEUPON -->
+	<a href="http://www.stumbleupon.com/submit?url=https://jawr.dev.java.net&amp;title=JAWR%20-%20More%20than%20a%20javascript/css%20compressor" target="_blank"><img border="0" src="/images/badges/stumbleupon.png" alt="add to stumbleupon"/></a>  
+	
+	<!-- YAHOO -->
+	<a href="http://myweb.yahoo.com/myresults/bookmarklet?t=JAWR%20-%20More%20than%20a%20javascript/css%20compressor&amp;u=https://jawr.dev.java.net&amp;ei=UTF" target="_blank"><img border="0" src="/images/badges/yahoo.png" alt="add to yahoo"/></a> 
+
+	</div>
+		
+	<div id="firstPara">	
+	
+	
+	
+	<p>Jawr is a tunable packaging solution for Javascript and CSS which allows for rapid development of resources in separate module files. 
+	Developers can work with a large set of split javascript files in development mode, then Jawr bundles all together into one or several files 
+	in a configurable way. 
+	<br/>By using a tag library, Jawr allows you to use the same, unchanged pages for development and production. 
+	Jawr also minifies and compresses the files, resulting in reduced page load times. 
+	<br/>Jawr is configured using a simple .properties descriptor, and aside of standard java web applications it can also be used with 
+	<a href="https://facelets.dev.java.net/">Facelets</a> and <a href="http://grails.org/">Grails</a> applications.   
+	</p>
+	</div>
+  	
+  	<img src="./images/index/jawr.png" />
+	<p>
+	It is common knowledge that it is faster to serve one large file rather than two smaller ones, because of increased HTTP negotiation and the fact 
+	that most browsers only keep two connections open to the same host at any given time. 
+	Jawr will reduce the number of requests needed to load a page and the amount of data to transfer to clients, achieving drastic improvement of 
+	loading times. With a simple configuration file, resources can be distributed in bundles to best suit the usage pattern for a site. 
+	Files not added to bundles also benefit from minification and compression (if no bundles are declared, Jawr will work as an easy to configure
+	resources compressor). 
+	</p>	
+	<p>
+	A JSP tag library (Facelets also supported) is used to import the resources to pages. In development mode, the tags generate &lt;script&gt; and &lt;style&gt; links for each resource 
+	mapped to a bundle.
+	In production mode, the tags generate a single link pointing to the bundle file. Thus, there is no need to change code in pages when switching 
+	from development to production mode. 
+	</p>	
+	<p>
+	There is an increasing trend towards richer client interfaces with complex javascript implementations. Using Jawr will ease the development process 
+	by allowing to distribute modules in separate files without worrying about how the application will be served to clients. 
+	</p>	
+	<p>
+		The alternatives to using Jawr are: 
+		<ul>
+			<li>Developing all-in-one script files which conform to the deployment scheme. That is, cram all the modules into a few files. Version control becomes
+			unmanageable and it is hard to find a component that needs change. As the project grows, the code becomes near to impossible to mantain. 
+			</li>
+			<li>Use a build script to join and compress the files, which forces developers to build and redeploy the whole application for testing  even the 
+				slightest of changes in their code. 
+				</li>
+		</ul>
+	</p>
+	<p>
+		Jawr offers the best of both worlds, by combining a powerful bundling-minifying-compressing scheme for optimal service in 
+		production, with a rapid development mode for quick change-save-test cycles. 
+	</p>
+	<p>
+		You can download the latest release of Jawr 
+		<a href="https://jawr.dev.java.net/servlets/ProjectDocumentList?folderID=8543">here</a>. Also, check out the 
+		<a href="https://jawr.dev.java.net/tutorials/quickstart.html">quick start tutorial</a> to see how easy it is to use Jawr in your project. 
+
+	</p>
+	
+	
+      <subsection name="Features">
+		<ul>
+			
+			<li> <strong>Free and open source</strong>: Released under an Apache 2.0 license, Jawr can be used free of charge with or 
+			without modifications, for both commercial and noncommercial purposes.</li> 
+			
+			<li> <strong>Easy to setup</strong>: All you need to start using Jawr is to declare a couple of servlets in you deployment descriptor, create a simple .properties configuration file, 
+			and use the Jawr tag library to import css and javascript resources to your pages. A complete setup takes a matter of minutes and requires little or no modifications over time. </li> 
+			
+			<li> <strong>Lightweight</strong>: Bundling and compression is done once at server startup so there is no overhead to requests. Also, a cache component
+			is available and enabled by default to serve resources directly from memory instead of from the filesystem.</li> 
+			
+			
+			<li> <strong>Built-in minification and postprocessing</strong>: Jawr includes JSMin and the YUI compressor, both from Yahoo!. A custom minificator for 
+			CSS is also included, although the YUI compressor can be used for CSS too. For each bundle, a customizable postprocessing chain is executed 
+			during startup. Relative URLs in CSS files are rewritten by a postprocessor so they keep working with a different relative path. It is also 
+			easy to create custom postprocessors to perform any modifications to your js and css files at deploy time. </li> 
+			
+			<li> <strong>Proxy-friendly gzip support</strong>: For each bundle there are two URLs that point to a gzipped and a regular version of the resource. Since the URLs 
+			are be generated within a JSP, the request headers are analyzed to decide if the browser will support gzipping and the appropiate URL is written out. 
+			With this system, caching proxies will not be a problem since it works around known Internet Explorer problems with the VARY header.</li> 
+			
+			
+			<li> <strong>Caching enforcement</strong>: Jawr will try its best to force your clients to cache the resources. If a browser asks if a file changed, a 304 (not modified) 
+			header is sent back with no content. On the other hand, with Jawr you will be 100% sure that new versions of your bundles are downloaded by all 
+			clients. Every URL to your resources will include an automatically generated, content-based prefix that changes automatically whenever a 
+			resurce is updated. Once you deploy a new version, the URL to the bundle will change as well so it will be impossible that a client uses an 
+			older, cached version.</li> 
+			
+			
+			<li> <strong>Flexible bundling scheme</strong>: Choose which files go into which bundle, and in which order. Choose wether you want a bundle minified or not. 
+			Choose wether a bundle will be used only in development mode (for adding things such as console loggers). Create partially minified bundles. 
+			Create bundles which are automatically added within an Internet Explorer conditional comment.  
+			All with a very easy to use configuration system.</li> 
+			
+			
+			<li> <strong>Global bundles</strong>: Some bundles such as libraries will be needed anywhere in your site where there is javascript code. Same goes for base CSS 
+			stylesheets. With Jawr, these will be added to pages automatically so you don't need to repeat the same import statement everywhere.</li> 
+			
+			<li> <strong>JSF/Facelets support</strong>: If you are using JSF with Facelets as the view technology, you can still use Jawr using a specific tag library.</li> 
+			
+			<li> <strong>Grails plugin</strong>: Jawr can be used seamlessly in Grails applications, using a provided plugin that includes a GSP tag library.</li> 
+						
+			<li> <strong>Library friendly</strong>: Open source javascript libraries can be used seamlessly with Jawr. Most of these are modular or have plugins: add the modules or 
+			plugins you need and bundle all together. And, even if you minify them (thus eliminating comments), you can still keep the mandatory licenses in
+			the bundle. The <a href="https://jawr.dev.java.net/tutorials/quickstart.html">libraries tutorial</a> will show you how to integrate popular js libraries such 
+			as Protoype, JQuery or YUI. </li>
+		</ul>
+      </subsection>
+      <subsection name="Requirements">
+      	<p>
+      		You can use Jawr with any compliant Java Servlet 2.3 or higher container implementation (i.e. Tomcat, Jetty, BEA Weblogic etc.), as long as the 
+			virtual machine it runs on is 1.4 or higher. Jawr uses Apache log4j for logging messages, so it is a required library. There are no other requirements, 
+			although if your JVM version is 1.4, you can improve performance by using the backport-util-concurrent library, which can be found at: 
+			<a href="http://backport-jsr166.sourceforge.net/">http://backport-jsr166.sourceforge.net</a>. However, this is completely optional and Jawr will work 
+			just fine if you choose not to use it.  
+      	</p>
+      </subsection>
+      <subsection name="Announcements">
+      <ul>
+      	<li> <strong>5/19/2008</strong>: Version 2.1 released: <strong>i18n messages mapping from java ResourceBundles to javascript:</strong> 
+      	your internationalized messages that you keep in properties files can be easily converted into a script that allows for easy access to 
+      	every message and supports variable substitution. According tho the user's locale, the script generated will correspond to his language.   
+      	<br/>Other than that, mostly internal changes and bugfixes. The internal changes include a new system to 
+      	map to Generators. These are java components which generate javascript/CSS, or read it from a different place than the usual WAR directories.
+      	This opens interesting possibilities for the near future. 
+      	</li>
+      	<li> <strong>4/5/2008</strong>: Version 2.0 released: new automatic prefixing system, conditional comments support, grails and facelets 
+      	plugins, YUI compressor... Check the <a href="./docs/changes_20.html" >what's new in 2.0 page</a> for a description of all the new features and fixes.    
+      	</li>
+      	<li> <strong>2/28/2008</strong>: Version 1.4 released. Many issues resolved: 
+			<ul>
+				<li> #5: It is now possible to add a custom class to handle the loading of properties configuration. Check the <a href="/docs/servlet.html">servlet documentation</a> for details. 
+					</li>
+				<li> #7: Added <em>useRandomParam</em> attribute to the taglibs, so that in development mode you can have Jawr not use random parameters in URLs. 
+				</li>
+				<li> #8: Fixed an invalid log message. 
+				</li>
+				<li> #9: Bug in initialization process for CSS postprocessors. 
+				</li>
+				<li> #10: <strong>(cool!)</strong> You can now use custom made postprocessors in Jawr. Check the <a href="/docs/postprocessors.html">postprocessors documentation</a> for details. 
+				</li>
+				<li> #11: Jawr can now be configured to use a different prefix other than the context path for generated URLs. 
+				</li>
+				<li> #13: Fixed a Classloader issue that arises when Jawr is on a different classloader than that of the web application using it. 
+				</li>
+				</ul>
+				Also, Jawr can now be configured to reload itself when the configuration file changes, without having to restart the server. Set the 
+				<em>jawr.config.reload.interval</em> param to a value for an interval in seconds and you are ready to go. 
+		</li>
+		
+		<li> <strong>2/13/2008</strong>: Version 1.3 released. Fixes a major bug in the CSS URL rewriter (issue #2). Many log statements are changed from info to debug (issue 
+			#4). Some refactoring to abstract base tag library, to allow for easier custom implementations of tag renderers not depending on JSP technology. 
+		</li>
+		
+		<li> <strong>2/13/2008</strong>: New developer joins the project: Suresh Thalluri volunteered to join the project and will be helping improve Jawr. Welcome aboard!
+		</li>
+		
+		<li> <strong>2/1/2008</strong>: Version 1.2 released. The project packages are all renamed to remove all references to java (i.e. packages named net.java.jawr are 
+			now simply net.jawr). This is due to the standard naming scheme not being valid for java.net because of copyright issues. Therefore the 
+			servlet and other components have a new name, so if you were already using jawr you will need to change any references. Hopefully there will be no 
+			more changes to the packaging scheme. Also, the servlet API version dependency was set to 2.3 in the POM (was 2.5 by mistake). 
+		</li>
+		
+		<li> <strong>1/31/2008</strong>: Version 1.1 released, fixes a major problem with the taglib descriptor and adds the option to use @startup for generating 
+				bundle prefixes upon deployment. 
+		</li>
+		
+      </ul>
+      </subsection>
+      
+
+    </section>
+  </body>
+
+</document>

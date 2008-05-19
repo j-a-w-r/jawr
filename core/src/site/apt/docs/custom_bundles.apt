@@ -1,0 +1,219 @@
+																		------
+                                    Definition of custom bundles
+                                    ------
+                                    ------
+                                    ------
+
+Definition of custom bundles
+
+	Bundles are the core functionality of Jawr. A bundle is a group of resources joined together in a single file that has an associated logical name. 
+	
+=====================
+	<<Common misconception>>: Note that you are not required to add each and every resource to a bundle in order to achieve compression. Standalone resources can also be referred 
+	by a tag library and they will be compressed as well (see the orphan resources section below for more information). 
+	
+	
+=====================
+
+	To create a bundle the bare minimum you will need is a name and a group of resources. For instance, the following lines in your descriptor 
+	file would create a bundle named /bundles/fooBundle.js: 
+	
++------------------------------------------+
+	jawr.js.bundle.names=foo	
+	jawr.js.bundle.foo.id=/bundles/fooBundle.js
+	jawr.js.bundle.foo.mappings=/js/foo.js, /js/bar.js
++------------------------------------------+
+
+	The newly created bundle would be the union of foo.js and bar.js. Once created, you could then use any of three ways to import the whole bundle to 
+	your pages: 
+
++------------------------------------------+
+	Id of the bundle:
+	<jwr:script src="/bundles/fooBundle.js"/> 
+	
+	Path to foo.js: 
+	<jwr:script src="/js/foo.js"/> 
+	
+	Path to bar.js
+	<jwr:script src="/js/bar.js"/> 
++------------------------------------------+
+	
+	As you can see, a bundle can be invoked by using either its id or the path to any of its members. The page link rendered will be the same in 
+	all the three sample cases:
+	
++------------------------------------------+
+<script type="text/javascript" src="/myWarContext/prefix/bundles/fooBundle.js" ></script>
++------------------------------------------+ 
+		 
+	
+	Normally, it would be a best practice to use the resource names directly, since: 
+
+	* By using a resource name, you will later be able to change your bundles according to real life usage of your site, without the need to change 
+	your pages. 
+
+	* Using the resource name will make it explicit to other developers which parts of the code you are using. 
+	
+	[]
+	
+	This holds true even if you use several members of a bundle on the same page. Jawr will only include the same bundle once per page, even when several
+	tags match it. On the other hand, if a bundle conveys a single general functionality (such as validation), then it is probably best to invoke it 
+	by id. \ 
+	
+	It is recommended that you use a virtual prefix for bundle ids  (such as '/bundles/'). The prefix should not correspond to any actual 
+	directory in the root resources dir, to avoid namespace collisions.
+	
+* Mapping resources
+	
+	There are three ways to map resources: 
+		
+	* Directly by resource path: simply type the relative path to the resource, starting at the root of the WAR file, as in: '/js/foo.js'. 
+	
+	* By directory, non-recurring: add the path to a directory and every resource under it will be added to the bundle, as in: '/js/'. 
+	
+	* By directory, recurring: same as before but adding '**' at the end. This will add every resource under the specified directory <<and>> 
+	any directory below it. For example: '/js/**'. 
+	
+	[]
+	
+	
+	You can add any combination of the three types of mapping to your bundles. for instance, let's add another bundle to the previous example. 
+	We will name this bundle /bundles/bazBundle.js. It will contain every file under /js/baz/ and any of its subdirs, a script located at 
+	/js/someScript.js, and every file directly under /js/someSubdir/. 
+	
++------------------------------------------+
+	jawr.js.bundle.names=foo, baz	
+	
+	jawr.js.bundle.foo.id=/bundles/fooBundle.js
+	jawr.js.bundle.foo.mappings=/js/foo.js, /js/bar.js
+	
+	jawr.js.bundle.baz.id=/bundles/bazBundle.js
+	jawr.js.bundle.baz.mappings=/js/baz/**, /js/someScript.js, /js/someSubdir/		
++------------------------------------------+
+
+	For details on how the resources are ordered within the bundle, refer to the {{{./source_ordering.html}source ordering manual page}}. 
+	
+* Global bundles
+	
+	Global bundles are useful for including common libraries and modules used throughout you site. Any bundle defined as global will always be 
+	included before any other bundle. Most of the time you will not need to explicitly invoke it since Jawr will automatically include all global 
+	bundles before any particular bundle in a page. So when you add a link to whichever bundle in your page, links will be created to all 
+	global bundles and then one more for the bundle you specified. \ 
+	
+	To define a global bundle you would do as follows: 
+	
++------------------------------------------+
+	jawr.js.bundle.names=foo, baz, lib	
+	
+	...	
+	jawr.js.bundle.lib.id=/lib.js
+	jawr.js.bundle.lib.mappings=/js/lib/**
+	jawr.js.bundle.lib.global=true
+	jawr.js.bundle.lib.order=1
++------------------------------------------+
+
+	We set the global parameter to true and then we specified an order number. The order value is only needed if you define more than one global bundle 
+	and you need a specific order of inclusion. 
+	
+* Bundle prefix
+
+	Every HTML link that Jawr creates has a section of its path dedicated to versioning. Jawr will serve its resources using aggressive caching 
+	headers, in order to keep clients from requesting the same bundle over and over. But, when you make changes you want to be sure that every client 
+	will download the new version. Thus, the best way to do this is to actually change the URL for the resource whenever the resource changes. \ 
+	
+	While in the past the prefix for a bundle had to be specified manually, now Jawr creates this prefix automatically, based upon the hash of the 
+	bundle contents. Since the generation has repeatable results, this prefix remains the same until you make a change to any member of the bundle, 
+	even across redeployments. 
+	
+	
+* Postprocessors 
+
+	Postprocessors are filters that Jawr applies to resources and bundles during startup. Check the  {{{./postprocessors.html}postprocessors manual page}}  for more info. \ 
+	
+	Each bundle you define can override the global postprocessing options. This is useful for example if you only want to minify a subset of your files. 
+	
+	To change the global postprocessor chain for a bundle, specify the <<bundlepostprocessors>> and/or the  <<filepostprocessors>> attribute: 
+	
++------------------------------------------+
+
+	jawr.js.bundle.foo.bundlepostprocessors=license
+	jawr.js.bundle.foo.fileprocessors=none
+	
++------------------------------------------+
+
+	In this example, the bundle postprocessor for the <foo> bundle is set to <license>, meaning no minification will occur. And for the file-by-file
+	postprocessor, it is specified that none will be used. 
+	
+* Composite bundles
+	
+	A composite bundle is made up of several bundles that may have different configuration attributes. For example, you might have a pre minified 
+	javascript library and need to bundle it along some of your own scripts. You can could then create a composite bundle in which your scripts are 
+	minified but the library is not. \ 
+	
+	Another use case for composites is to have part of a bundle appear in debug mode but not in production, such as loggers and the like. \ 
+	
+	Creating a composite is just like creating any other bundle, only instead of the mappings, you specify the child bundles that make the 
+	composite up using the <<child.names>> attribute. You also need to specify that the bundle is a composite by setting the <<composite>> 
+	attribute to true: 
+	
++------------------------------------------+
+jawr.js.bundle.names=comp
+
+jawr.js.bundle.comp.id=/bundles/composite.js
+jawr.js.bundle.comp.global=true
+jawr.js.bundle.comp.composite=true
+jawr.js.bundle.comp.prefix=comp_001
+
+jawr.js.bundle.comp.child.names=foo, bar
+
++------------------------------------------+
+	
+	For this composite, we declared two children: <foo> and <bar>. The child bundles for a composite differ from normal bundles in that they do not 
+	need an id or prefix, and they cannot be declared as global. Otherwise, every other attribute can be specified individually, such as 
+	postprocessors and the <<debugnever>> and <<debugonly>> attributes: 
+
++------------------------------------------+	
+	
+	jawr.js.bundle.foo.mappings=/js/foo.js, /js/bar.js
+	jawr.js.bundle.foo.debugnever=true
+	
+	jawr.js.bundle.bar.mappings=/js/baz/**, /js/someScript.js, /js/someSubdir/		
+	jawr.js.bundle.bar.bundlepostprocessors=none
+	
++------------------------------------------+
+	
+	With such mapping, we specify that, when in development mode, the composite will not contain the files mapped by the <foo> bundle, and that the 
+	<baz> bundle will not use any postprocessor even if there were globally defined ones. 
+	
+* Orphan resources
+
+	In Jawr terminology, orphan resources are those not mapped to any bundle after initial configuration. For instance, if you do not define any bundle 
+	at all, then <<all>> your resources will be orphan. This isn't necesarily a bad thing: sometimes you will want to serve standalone resources instead 
+	of bundles ones, and creating an explicit mapping for each would be very verbose. \ 
+	
+	That said, Jawr will need to take care of serving orphan files. You can configure it to do one of two things: 
+	
+	* <<Create one-file bundles with each orphan resource>>: This is what Jawr will do by default. The generated bundles will have a name equal to 
+	the path to the resource and they will benefit from the same postprocessing scheme (minification, etc) as any regular bundle. \ 
+	
+	If the path of an orphan file accidentally matches the name of any of your bundles an exception will be thrown since bundles can not share the same 
+	path. Therefore it is recommended to reserve some namespace prefix for bundles, such as /bundles/. 
+	
+	
+	* <<Join all orphan files into a single bundle>>: This is useful if you want to just put all your resources into a single file. In this case your 
+	configuration file will be very simple since you will not need to define any bundle at all. The only thing you need to do to use this feature is to 
+	activate it in you configuration and to set the name for the <all-in-one> bundle: 
+	
++------------------------------------------+
+	
+	# For js resources. CSS is the same but properties start with jawr.css.*
+	jawr.js.factory.use.singlebundle=true
+	
+	# Use any name you want
+	jawr.js.factory.singlebundle.bundlename=/bundles/allInOne.js
+	
++------------------------------------------+
+
+	Note that you may actually define some bundles and then use this feature if that suits you. Also, the usual ordering scheme will apply to the 
+	orphans bundle. Check the {{{./source_ordering.html}source ordering manual}} for more info. \ 
+	
+	
