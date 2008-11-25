@@ -1,0 +1,211 @@
+																		------
+                                    Generators
+                                    ------
+                                    ------
+                                    ------
+
+Jawr Generators
+
+	In some cases it is convenient to generate scripts or CSS dynamically. For instance, Jawr will create certain scripts to, say, copy i18n 
+	messages from a ResourceBundle over to a special script. You may need to retrieve some data from a database and create parameters that 
+	scripts will need, or simply grab parameters from a configuration file and pass them over to the scripting context. For any case where you 
+	may need to generate content you can implement a ResourceGenerator and register it in Jawr to suit your needs. \ 
+	
+	Note that a ResourceGenerator is <<not>> a <script servlet>: it will be only invoked once during application startup. The result of this 
+	invocation will be added to whichever bundle you decide and reused until the next redeployment. The point is to be able to generate some 
+	script dynamically but still to be able to minify it and add it to your bundles. A perfect example is the DWR generator: all DWR script 
+	interfaces are created from java classes once during startup but they can be  minified and bundled together.   
+	
+*	Using a generator
+
+	Generators are mapped to bundles 
+	as if they were regular script or CSS files, only using a special syntax: 
+	
++------------------------------------------+
+	prefix:path(params)[params]
++------------------------------------------+
+
+	The prefix is a key you will specify when implementing the Generator, and the path is a string which will have different meaning depending on 
+	your generator's functionality. Also, you have params in parentheses and in brackets (both of which are optional), that further help in 
+	parameterizing the mappings. A simple mapping example, with no params, is as follows: 
+	
++------------------------------------------+
+	jawr.js.bundle.one.mappings=jar:net/jawr/cpscript.js
++------------------------------------------+	
+	
+	In this case we are using the already existing classpath script generator, which reads a script from the classpath, as opposed to reading it 
+	from the web application dir structure. So the path in this case is the classpath where the script will be found. The prefix is 'jar', which 
+	lets Jawr know that this path must be resolved using the classpath generator. 		
+	
+	This is an example in which the mapping uses two different parameters: 
+	
+------------------------------------------+
+	jawr.js.bundle.one.mappings=messages:com.myapp.messages(mynamespace)[javascript.messages]
+------------------------------------------+
+	
+	Note that if you use the parameters, the order must always be paraentheses firs, brackets last. If you need only one parameter, you can omit 
+	the brackets param. 
+		 
+*	Jawr generators
+
+	Jawr comes with several generators, each accomplishing a special kind of task. The currently provided generators are: 
+	
+	
+	* <<i18n messages script generator>>: generates javascript code with locale specifica variants which are loaded depending on the user's 
+	specific language. Full documentation is {{{./messages_gen.html}here}}. 
+	
+	* <<DWR scripts generator>>: allows you to bundle and compress together DWR generated interfaces, plus all the utility scripts required 
+	by them. Full documentation is {{{../integration/dwr.html}here}}. 
+	
+	* <<Commons Validator generator>>: this one will let you generate compressed and cacheable versions of the validation scripts 
+	generated in Struts by the Apache Commons Validator taglib. Full docs  {{{../integration/validator.html}here}}. 
+	
+	[]
+	
+	Also available is the <<classpath resource generator>>. It allows you to include resources present within jar files or simply located 
+	anywhere in the application classpath. You will need to use different prefixes if you are generating js or css files. 
+	To add javascript resources from the classpath you use <<jar:>> as the prefix, followed by the path to the resource using / as separator: 
+	
++------------------------------------------+
+	jawr.js.bundle.names=foo, baz	
+	
+	jawr.js.bundle.foo.id=/bundles/fooBundle.js
+	# Map to a script in the com.mycompany.myapp package and to another from the WAR 
+	jawr.js.bundle.foo.mappings=jar:/com/mycompany/myapp/foo.js, /js/bar.js
+	
++------------------------------------------+
+
+	Note the leading slash in the mapping, which is also required. You can of course combine this kind of mappings with regular ones, so you can 
+	bundle together resources from the WAR and from the classpath. 
+	
+	If you need to load CSS files from the classpath, you would use the exact same syntax, only changing the prefix from <<jar:>> 
+	to <<jar_css:>> 
+	
++------------------------------------------+
+	jawr.css.bundle.styles.mappings=jar_css:/com/mycompany/myapp/stylesheet.css, /css/bar.css	
++------------------------------------------+
+	
+	Unlike the normal mapping, this way of referring to resources does not yet allow wildcards (i.e.: <jar:/com/mycompany/myapp/**> would not 
+	work).  
+	
+*	Implementing a generator
+
+	A generator is an implementation of the interface net.jawr.web.resource.bundle.generator.ResourceGenerator. This is a simple interface which 
+	exposes three methods: 
+	
+	* public Reader createResource(GeneratorContext context);
+	
+	* public String getMappingPrefix();
+	
+	* public String getDebugModeRequestPath();
+	
+	[]
+	
+	The getDebugModeRequestPath	simply returns a path to be used in debug mode. This is simply a fake script or CSS name and it really has no 
+	importance unless you are mapping the Jawr servlet to a suffix different from *.css or .js. 99% of the use cases don't need to care about 
+	this so you can simply return one of two constants: ResourceGenerator.JAVASCRIPT_DEBUGPATH or ResourceGenerator.CSS_DEBUGPATH:  
+	
++------------------------------------------+
+public String getDebugModeRequestPath() {
+	return ResourceGenerator.JAVASCRIPT_DEBUGPATH;
+}
++------------------------------------------+			
+	
+	The getMappingPrefix() method returns a key you will use when mapping you generator to bundles. Jawr will recognize this key in the 
+	bundle mappings and use your generator when it applies. So, if you returned 'foo' in this method, you would map your generator like this: 
+	
++------------------------------------------+
+	jawr.js.bundle.one.mappings=foo:somePath
++------------------------------------------+	
+
+
+	Finally, the createResource() method is where the actual generation takes place. This method takes a single parameter of type GeneratorContext, 
+	which contains all the information you need to build a dynamic script or CSS. The useful methods are: 
+	
+	* getPath(): this contains the mapping, without the prefix and parameters. For instance, in a mapping of the form 'prefix:thePath(param)', 
+	this method returns 'thePath'. 
+	
+	* getConfig(): returns the JawrConfig object used throughout the application. It contains data about the Jawr configuration, such as wether 
+	debug mode is on or off, the current servlet mapping, and so on. 
+	
+	* getCharset(): returns the current charset, which the returned script or CSS must conform to. 
+	
+	* getServletContext(): returns the application's ServletContext. 
+	
+	* getParenthesesParam(): returns the params in parentheses, if any were declared. For instance, in a mapping such as 'foo:path(aParam)', this 
+	would return 'aParam'. 
+	
+	* getBracketsParam(): returns the params in brackets, if any were declared. For instance, in a mapping such as 'foo:path(aParam)[anotherParam],
+	 this would return 'anotherParam'.
+	 
+	Using this information, you should be able to generate a script or CSS and return in in the form of a Reader object (typically a StringReader 
+	is sufficient for the task).  
+	 
+*	Mapping a generator
+	
+	Once you have your Generator implemented, you need to register into Jawr in order to use it. This is simply a matter of mapping its classname 
+	in the configuration properties file under the key 'jawr.custom.generators'. If there is more than one, you simply declare them separated 
+	by commas: 
+	
++------------------------------------------+
+	jawr.custom.generators=com.mycompany.myapp.MyCustomGeneratorImplementation,com.mycompany.myapp.AnotherGenerator
++------------------------------------------+	
+
+*	A simple example: an alert message generator
+
+	Here is a sample class which you can use to get started. It simply creates a script that displays an alert message with whichever text is used 
+	as the path in the mapping: 
+	
++------------------------------------------+
+package net.jawr.example;
+
+	public class TestGenerator implements ResourceGenerator {
+
+	public Reader createResource(GeneratorContext context) {
+		
+		return new StringReader(";alert('Mapping contained:" + context.getPath() +  "');");
+	}
+
+	public String getMappingPrefix() {
+		return "example";
+	}
+	
+	public String getDebugModeRequestPath() {
+		return ResourceGenerator.JAVASCRIPT_DEBUGPATH;
+	}
+}
++------------------------------------------+	
+
+	With this class in hand, we first register it in our properties config file: 
+	
+	
++------------------------------------------+
+	jawr.custom.generators=net.jawr.example.TestGenerator
++------------------------------------------+	
+	
+	And now it's a matter of creating a bundle and use the generator: 
+	
++------------------------------------------+
+	jawr.js.bundle.names=global
+	jawr.js.bundle.global.id=/bundles/global.js
+	jawr.js.bundle.global.mappings=example:Hello World!,example:And Hello Again!
++------------------------------------------+
+
+	And that's it, now add the bundle to any page and when it's loaded, you should get an alert box with the text 'Mapping contained:Hello World!' 
+	followed by a second alert box with the text 'Mapping contained:And Hello Again!'. 
+	
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
