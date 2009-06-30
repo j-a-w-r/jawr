@@ -13,24 +13,25 @@ Debug and production modes
 	Thus, when you activate Jawr development mode, things change in the way Jawr works to make 
 	your life as a developer a lot easier. \ 
 	
-	There are three different ways to toggle debug mode: 
+	To toggle debug mode, you can set the flag jawr.debug.on in the config file. 
 	
-	* Set the flag <<jawr.debug.on>> to either true or false in the config file. 
+=====================
+	While running in production mode, you may view your bundles in debug mode by using jawr.debug.overrideKey.  
+	This can be very helpfull when you need to debug issues in a production environment.
+	Simply append overrideKey=(jawr.debug.overrideKey value) to the end of the url.  Now your production bundles 
+	will be exploded; but only for that request.  You may also view individual css and js files by adding the 
+	overrideKey to the end of the request.
 	
-	*  While running in production mode, you may view your bundles in debug mode by using <<jawr.debug.overrideKey>>.  
-	This can be helpful when you need to debug issues in a production environment without having to redeploy.
-	Simply append ?overrideKey=(jawr.debug.overrideKey value) to the end of the url of the page you need to debug.  The request will 
-	be atreated as if Jawr were in debug mode witout affecting the rest of the application. You may also view individual css and js files by adding the 
-	the override key to the individual URL.
-	
-	* You can also start the virtual machine setting the config 
-		key <<net.jawr.debug.on>> (-Dnet.jawr.debug.on=false, for instance). 
+=====================
+			You can also start the virtual machine setting the config 
+		key net.jawr.debug.on (-Dnet.jawr.debug.on=false, for instance). 
 		The JVM config param will always take precedence over the key in 
 		the config file, so it's a good idea to use it within the startup 
 		script of your production server. This way, you will never deploy 
-		Jawr in debug mode by mistake.  
-	
-	[]
+		Jawr in debug mode by mistake.   
+
+=====================
+
 	
 	The main difference between production and development modes is that bundle files are not served directly. Rather, each of the components in a bundle 
 	will be served sepparately in the same order that it would be included in the bundle. To understand this, we need an example. Imagine we had a very 

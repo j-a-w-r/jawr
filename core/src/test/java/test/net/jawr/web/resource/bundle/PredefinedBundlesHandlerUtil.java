@@ -9,6 +9,7 @@ import net.jawr.web.exception.DuplicateBundlePathException;
 import net.jawr.web.resource.ResourceHandler;
 import net.jawr.web.resource.bundle.factory.BundlesHandlerFactory;
 import net.jawr.web.resource.bundle.factory.util.ResourceBundleDefinition;
+import net.jawr.web.resource.bundle.generator.GeneratorRegistry;
 import net.jawr.web.resource.bundle.handler.ResourceBundlesHandler;
 
 public class PredefinedBundlesHandlerUtil {
@@ -28,6 +29,8 @@ public class PredefinedBundlesHandlerUtil {
 	
 	public static final ResourceBundlesHandler buildSimpleBundles(ResourceHandler handler,String baseDir, String type,
 																JawrConfig config) throws DuplicateBundlePathException {		
+		
+		config.setGeneratorRegistry(new GeneratorRegistry(type));
 		BundlesHandlerFactory factory = new BundlesHandlerFactory();
 		factory.setResourceHandler(handler);
 		factory.setBaseDir(baseDir);

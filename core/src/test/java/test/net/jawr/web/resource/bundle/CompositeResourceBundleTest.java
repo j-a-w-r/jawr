@@ -29,7 +29,6 @@ public class CompositeResourceBundleTest extends ResourceHandlerBasedTest {
 		}
 		
 		String COMPOSITE_ID = "/bundles/composite.js";
-		//String COMPOSITE_ID = "/bundles/composite.js";
 
 		List mappingA = new ArrayList();
 		mappingA.add("/js/subfolder/");
@@ -40,8 +39,8 @@ public class CompositeResourceBundleTest extends ResourceHandlerBasedTest {
 		InclusionPattern onDebug = new InclusionPattern(false,0,true,false);
 		InclusionPattern excludedOnDebug = new InclusionPattern(false,0,false,true);
 		
-		JoinableResourceBundleImpl bundleA = new JoinableResourceBundleImpl(COMPOSITE_ID,".js", onDebug,mappingA,rsHandler);
-		JoinableResourceBundleImpl bundleB = new JoinableResourceBundleImpl(COMPOSITE_ID,".js", excludedOnDebug,mappingB,rsHandler);
+		JoinableResourceBundleImpl bundleA = new JoinableResourceBundleImpl(COMPOSITE_ID,"composite", ".js", onDebug,mappingA,rsHandler);
+		JoinableResourceBundleImpl bundleB = new JoinableResourceBundleImpl(COMPOSITE_ID,"composite", ".js", excludedOnDebug,mappingB,rsHandler);
 		List bundles = new ArrayList();
 		bundles.add(bundleA);
 		bundles.add(bundleB);
@@ -49,9 +48,9 @@ public class CompositeResourceBundleTest extends ResourceHandlerBasedTest {
 		Properties props = new Properties();
 		JawrConfig config = new JawrConfig(props);
 		config.setDebugModeOn(false);
-		compositeCollectionNoDebug = new CompositeResourceBundle(COMPOSITE_ID,bundles,new InclusionPattern(),rsHandler,".js",config);
+		compositeCollectionNoDebug = new CompositeResourceBundle(COMPOSITE_ID,"composite",bundles,new InclusionPattern(),rsHandler,".js",config);
 		config.setDebugModeOn(true);
-		compositeCollectionDebug = new CompositeResourceBundle(COMPOSITE_ID,bundles,new InclusionPattern(),rsHandler,".js",config);
+		compositeCollectionDebug = new CompositeResourceBundle(COMPOSITE_ID,"composite",bundles,new InclusionPattern(),rsHandler,".js",config);
 	}
 	
 	

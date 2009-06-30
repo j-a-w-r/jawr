@@ -1,5 +1,5 @@
 /**
- * Copyright 2007-2008 Jordi Hernández Sellés
+ * Copyright 2007-2009 Jordi Hernández Sellés, Ibrahim Chaehoi
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -20,13 +20,17 @@ import java.io.Reader;
  * it from the contents of a WAR file. It is used for creating resources programatically or to 
  * retrieve them from sources outsied the scope of a WAR file. 
  * 
- * @author  Jordi Hernández Sellés
+ * @author  Jordi Hernández Sellés, Ibrahim Chaehoi
  *
  */
 public interface ResourceGenerator {
 
+	/** The javascript debug path */
 	public static final String JAVASCRIPT_DEBUGPATH = "/jawr_generator.js";
+	
+	/** The css debug path */
 	public static final String CSS_DEBUGPATH = "/jawr_generator.css";
+	
 	/**
 	 * Create a reader on a generated resource (any script not read from the war file 
 	 * structure). 
@@ -58,4 +62,13 @@ public interface ResourceGenerator {
 	 * @return
 	 */
 	public String getDebugModeRequestPath();
+
+
+	/**
+	 * Returns the path to use when generating a resource for the "build time processor". 
+	 * The path should just take in account the parameter used. 
+	 *   
+	 * @return the path to use when generating a resource for the "build time processor". 
+	 */
+	public String getDebugModeBuildTimeGenerationPath(String parameter);
 }

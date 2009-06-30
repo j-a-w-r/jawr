@@ -1,5 +1,5 @@
 /**
- * Copyright 2007 Jordi Hernández Sellés
+ * Copyright 2007-2009 Jordi Hernández Sellés, Ibrahim Chaehoi
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -33,16 +33,37 @@ import org.apache.log4j.Logger;
  * any defined bundle. Will return a mapping for each of them. 
  * 
  * @author Jordi Hernández Sellés
+ * @author Ibrahim Chaehoi
  *
  */
 public class OrphanResourceBundlesMapper {
+	
+	/** The logger */
 	private static final Logger log = Logger.getLogger(OrphanResourceBundlesMapper.class);
+	
+	/** The base directory */
 	protected String baseDir;
+	
+	/** The resource handler */
 	protected ResourceHandler rsHandler;
+	
+	/** The list of current bundles */
 	protected List currentBundles;
+	
+	/** The resourcefile extension */
 	protected String resourceExtension;
+	
+	/** The bundle mapping */
 	private List bundleMapping;
 	
+	/**
+	 * Constructor
+	 * 
+	 * @param baseDir the base directory of the resource mapper
+	 * @param rsHandler the resource handler
+	 * @param currentBundles the list of current bundles
+	 * @param resourceExtension the resource file extension
+	 */
 	public OrphanResourceBundlesMapper(String baseDir,
 			ResourceHandler rsHandler, List currentBundles,
 			String resourceExtension) {
@@ -66,7 +87,7 @@ public class OrphanResourceBundlesMapper {
 	public List getOrphansList() throws DuplicateBundlePathException {
 		
 		// Create a mapping for every resource available
-		JoinableResourceBundleImpl tempBundle = new JoinableResourceBundleImpl("orphansTemp",
+		JoinableResourceBundleImpl tempBundle = new JoinableResourceBundleImpl("orphansTemp", "orphansTemp",
 																				this.resourceExtension,
 																				new InclusionPattern(),
 																				Collections.singletonList(this.baseDir),
@@ -108,7 +129,7 @@ public class OrphanResourceBundlesMapper {
 				return;
 			else if (licenses.contains(filePath))
 				return;
-			else if(filePath.equals(bundle.getName())){
+			else if(filePath.equals(bundle.getId())){
 				log.fatal("Duplicate bundle id resulted from orphan mapping of:" + filePath);
 				throw new DuplicateBundlePathException(filePath);
 			}

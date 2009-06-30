@@ -1,5 +1,5 @@
 /**
- * Copyright 2007 Jordi Hernández Sellés
+ * Copyright 2007-2009 Jordi Hernández Sellés, Ibrahim Chaehoi
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -18,17 +18,24 @@ import java.io.IOException;
 import net.jawr.web.minification.CSSMinifier;
 import net.jawr.web.resource.bundle.postprocess.AbstractChainedResourceBundlePostProcessor;
 import net.jawr.web.resource.bundle.postprocess.BundleProcessingStatus;
+import net.jawr.web.resource.bundle.postprocess.PostProcessFactoryConstant;
 
 /**
- * Preforms minification on CSS files by removing newlines, expendable whitespace and comments. 
+ * Performs minification on CSS files by removing newlines, expendable whitespace and comments. 
  * 
  * @author Jordi Hernández Sellés
+ * @author Ibrahim Chaehoi
  */
 public class CSSMinPostProcessor extends AbstractChainedResourceBundlePostProcessor {
 	
+	/** The CSS minifier */
 	private CSSMinifier minifier;
 	
+	/**
+	 * Constructor
+	 */
 	public CSSMinPostProcessor() {
+		super(PostProcessFactoryConstant.CSS_MINIFIER);
 		this.minifier = new CSSMinifier();
 	}
 	

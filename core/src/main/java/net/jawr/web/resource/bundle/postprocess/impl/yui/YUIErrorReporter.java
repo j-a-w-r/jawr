@@ -1,5 +1,5 @@
 /**
- * Copyright 2008 Jordi Hernández Sellés
+ * Copyright 2008-2009 Jordi Hernández Sellés, Ibrahim Chaehoi
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -28,16 +28,27 @@ import org.mozilla.javascript.EvaluatorException;
  * parsing a javascript file. 
  * 
  * @author Jordi Hernández Sellés
+ * @author Ibrahim Chaehoi
  */
 public class YUIErrorReporter implements ErrorReporter {
 	
+	/** The logger */
 	private static final Logger log = Logger.getLogger(YUIErrorReporter.class);
+	
+	/** The bundle processing status */
 	private BundleProcessingStatus status;
+	
+	/** The bundle content */
 	private StringBuffer bundleData;
+	
+	/** The error line */
 	private int errorLine;
+	
+	/** The YUI error message */
 	private String yuiErrorMessage;
 
 	/**
+	 * Constructor
 	 * @param status Current bundling status. 
 	 * @param bundleData Contents of the bundle, used when an error occurs to display the conlifcting line. 
 	 */
@@ -77,7 +88,7 @@ public class YUIErrorReporter implements ErrorReporter {
 	 * @return an EvaluatorException that will be thrown.
 	 */
 	public EvaluatorException runtimeError(String message, String sourceName, int line, String lineSource, int lineOffset) {
-		StringBuffer errorMsg = new StringBuffer("YUI failed to minify the bundle with id: '" + status.getCurrentBundle().getName() + "'.\n");
+		StringBuffer errorMsg = new StringBuffer("YUI failed to minify the bundle with id: '" + status.getCurrentBundle().getId() + "'.\n");
 		errorMsg.append("YUI error message(s):[").append(this.yuiErrorMessage).append("]\n");
 		errorMsg.append("The error happened at this point in your javascript: \n");
 		errorMsg.append("_______________________________________________\n...\n");

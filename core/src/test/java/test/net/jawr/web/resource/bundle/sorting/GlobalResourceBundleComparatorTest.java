@@ -29,13 +29,13 @@ public class GlobalResourceBundleComparatorTest extends TestCase {
 		unsorted.add(createMockBundle("three",3));
 		Collections.sort(unsorted, new GlobalResourceBundleComparator());
 		
-		String name = ((JoinableResourceBundle) unsorted.get(0)).getName();
+		String name = ((JoinableResourceBundle) unsorted.get(0)).getId();
 		assertTrue("Sorted list at position 0 does not match expected",name.equals("one"));
-		name = ((JoinableResourceBundle) unsorted.get(1)).getName();
+		name = ((JoinableResourceBundle) unsorted.get(1)).getId();
 		assertTrue("Sorted list at position 1 does not match expected",name.equals("two"));
-		name = ((JoinableResourceBundle) unsorted.get(2)).getName();
+		name = ((JoinableResourceBundle) unsorted.get(2)).getId();
 		assertTrue("Sorted list at position 2 does not match expected",name.equals("three"));
-		name = ((JoinableResourceBundle) unsorted.get(3)).getName();
+		name = ((JoinableResourceBundle) unsorted.get(3)).getId();
 		assertTrue("Sorted list at position 3 does not match expected",name.equals("four"));
 		
 	}
@@ -60,7 +60,7 @@ public class GlobalResourceBundleComparatorTest extends TestCase {
 				return null;
 			}
 
-			public String getName() {
+			public String getId() {
 				return name;
 			}
 
@@ -94,6 +94,27 @@ public class GlobalResourceBundleComparatorTest extends TestCase {
 
 			public String getAlternateProductionURL() {
 				return null;
+			}
+
+			public String getBundleDataHashCode(String variantKey) {
+				return null;
+			}
+
+			public String getName() {
+				return null;
+			}
+
+			public boolean isComposite() {
+				return false;
+			}
+
+			public void setBundleDataHashCode(String variantKey,
+					String bundleDataHashCode) {
+				
+			}
+
+			public void setMappings(List mappings) {
+				
 			}};
 	}
 

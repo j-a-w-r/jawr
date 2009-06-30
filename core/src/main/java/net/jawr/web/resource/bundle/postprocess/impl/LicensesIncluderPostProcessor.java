@@ -1,5 +1,5 @@
 /**
- * Copyright 2007 Jordi Hernández Sellés
+ * Copyright 2007-2009 Jordi Hernández Sellés, Ibrahim Chaehoi
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -28,6 +28,7 @@ import net.jawr.web.exception.ResourceNotFoundException;
 import net.jawr.web.resource.bundle.JoinableResourceBundle;
 import net.jawr.web.resource.bundle.postprocess.AbstractChainedResourceBundlePostProcessor;
 import net.jawr.web.resource.bundle.postprocess.BundleProcessingStatus;
+import net.jawr.web.resource.bundle.postprocess.PostProcessFactoryConstant;
 
 import org.apache.log4j.Logger;
 
@@ -37,15 +38,22 @@ import org.apache.log4j.Logger;
  * by open source licenses. 
  * 
  * @author Jordi Hernández Sellés
+ * @author Ibrahim Chaehoi
  *
  */
 public class LicensesIncluderPostProcessor extends
 		AbstractChainedResourceBundlePostProcessor {
 
+	/** The logger */
 	private static final Logger log = Logger.getLogger(LicensesIncluderPostProcessor.class);
 
-
-
+	/**
+	 * Constructor 
+	 */
+	public LicensesIncluderPostProcessor() {
+		super(PostProcessFactoryConstant.LICENSE_INCLUDER);
+	}
+	
 	/* (non-Javadoc)
 	 * @see net.jawr.web.resource.bundle.postprocess.impl.AbstractChainedResourceBundlePostProcessor#doPostProcessBundle(net.jawr.web.resource.bundle.JoinableResourceBundle, java.lang.StringBuffer)
 	 */

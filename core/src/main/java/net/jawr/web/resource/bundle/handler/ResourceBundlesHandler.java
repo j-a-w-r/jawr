@@ -15,6 +15,7 @@ package net.jawr.web.resource.bundle.handler;
 
 import java.io.OutputStream;
 import java.io.Writer;
+import java.util.List;
 
 import net.jawr.web.config.JawrConfig;
 import net.jawr.web.exception.ResourceNotFoundException;
@@ -24,16 +25,13 @@ import net.jawr.web.resource.bundle.iterator.ResourceBundlePathsIterator;
 
 /**
  * Main interface to work with resource bundles. It helps in resolving groups of resources
- * wich are served as a single one, and provides methods to generate urls that point to either
+ * which are served as a single one, and provides methods to generate urls that point to either
  * the full bundle or its individual resources. 
  * 
  * @author Jordi Hernández Sellés
  *
  */
 public interface ResourceBundlesHandler {
-	
-	public static final String JS_CONTEXT_ATTRIBUTE  = "net.jawr.web.resource.bundle.JS_CONTEXT_ATTRIBUTE";
-	public static final String CSS_CONTEXT_ATTRIBUTE = "net.jawr.web.resource.bundle.CSS_CONTEXT_ATTRIBUTE";
 	
 	/**
 	 * Determines which bundle corresponds to a path. The path may be
@@ -65,12 +63,18 @@ public interface ResourceBundlesHandler {
 	public void writeBundleTo(String bundlePath, Writer writer) throws ResourceNotFoundException;
 	
 	/**
-	 * Writes the bytes of a bundle to the specified OutputStream. The outputstream is returned without closing or flushing. 
-	 * @param bundlePath
-	 * @param out
+	 * Writes the bytes of a bundle to the specified OutputStream.
+	 * This method is used to copy the gzip data in the output stream. 
+	 * @param bundlePath the bundle path
+	 * @param out the output stream
 	 */
 	public void streamBundleTo(String bundlePath, OutputStream out) throws ResourceNotFoundException;
 	
+	/**
+	 * Returns the context bundles
+	 * @return the context bundles
+	 */
+	public List getContextBundles();
 	
 	/**
 	 * Generates all file bundles so that they will be ready to attend requests. 
@@ -84,6 +88,10 @@ public interface ResourceBundlesHandler {
 	public JawrConfig getConfig();
 	
 	
+	/**
+	 * Returns the client side handler generator
+	 * @return the client side handler generator
+	 */
 	public ClientSideHandlerGenerator getClientSideHandler();
 	
 	

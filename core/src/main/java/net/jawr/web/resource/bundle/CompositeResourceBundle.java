@@ -1,5 +1,5 @@
 /**
- * Copyright 2007 Jordi Hernández Sellés
+ * Copyright 2007-2009 Jordi Hernández Sellés, Ibrahim Chaehoi
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -26,27 +26,31 @@ import net.jawr.web.resource.ResourceHandler;
  * 
  * 
  * @author Jordi Hernández Sellés
+ * @author Ibrahim Chaehoi
  */
 public class CompositeResourceBundle extends JoinableResourceBundleImpl {
 	
 	private List childBundles;
 
 	/**
-	 * @param name
-	 * @param childBundles
-	 * @param inclusionPattern
-	 * @param resourceHandler
-	 * @param fileExtension
-	 * @param config
-	 */
-	public CompositeResourceBundle(	String name,
+	 * Constructor
+	 * 
+	 * @param id the ID of this bundle
+     * @param name Unique name for this bundle.
+     * @param childBundles the childBundles
+	 * @param inclusionPattern  Strategy for including this bundle.
+     * @param resourceHandler Used to access the files and folders.
+     * @param fileExtension File extensions for this bundle.
+     * @param config the jawr configuration
+     */
+     public CompositeResourceBundle(String id, String name,
 									List childBundles,
 									InclusionPattern inclusionPattern,
 									ResourceHandler resourceHandler,
 									String fileExtension, 
 									JawrConfig config) {
 		
-		super(name, fileExtension, inclusionPattern, resourceHandler);
+		super(id, name, fileExtension, inclusionPattern, resourceHandler);
 		this.childBundles = childBundles;
 		
 		boolean debugModeOn = config.isDebugModeOn();
@@ -73,9 +77,15 @@ public class CompositeResourceBundle extends JoinableResourceBundleImpl {
 		}
 	}
 	
-	
-	/**
-	 * Throws UnsupportedOperationException. Composites will use the chilren's variants instead. 
+     /* (non-Javadoc)
+  	 * @see net.jawr.web.resource.bundle.JoinableResourceBundle#isComposite()
+  	 */
+  	public boolean isComposite() {
+  		return true;
+  	}
+  	
+ 	/**
+ 	 * Throws UnsupportedOperationException. Composites will use the children's variants instead. 
 	 */
 	public void setLocaleVariantKeys(List localeVariantKeys) {
 		throw new UnsupportedOperationException("Composite bundles do not support locale variants directly. "

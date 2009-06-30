@@ -15,6 +15,7 @@ package net.jawr.web.resource.bundle.generator.classpath;
 
 import java.io.Reader;
 
+import net.jawr.web.JawrConstant;
 import net.jawr.web.resource.bundle.generator.AbstractJavascriptGenerator;
 import net.jawr.web.resource.bundle.generator.GeneratorContext;
 import net.jawr.web.resource.bundle.generator.GeneratorRegistry;

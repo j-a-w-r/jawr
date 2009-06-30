@@ -1,5 +1,5 @@
 /**
- * Copyright 2007 Jordi Hernández Sellés, Ibrahim Chaehoi
+ * Copyright 2007-2009 Jordi Hernández Sellés, Ibrahim Chaehoi
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -39,29 +39,45 @@ import net.jawr.web.resource.bundle.generator.GeneratorRegistry;
  */
 public class ServletContextResourceHandler extends AbstractResourceHandler implements ResourceHandler {
 	
-	private ServletContext context;
+	/** The servlet temp directory property name */
 	private static final String SERVLET_CONTEXT_TEMPDIR = "javax.servlet.context.tempdir";
 	
+	/** The servlet context */
+	private ServletContext context;
+	
 	/**
-	 * @param resourceDir
-	 * @param context
+	 * Constructor
+	 * @param context the servlet context
+	 * @param charset the charset
+	 * @param generatorRegistry the generator registry
+	 * @param resourceType the resource type
 	 */
-	public ServletContextResourceHandler(ServletContext context, Charset charset,GeneratorRegistry generatorRegistry) {
-		super((File) context.getAttribute(SERVLET_CONTEXT_TEMPDIR),charset,generatorRegistry);		
+	public ServletContextResourceHandler(ServletContext context, Charset charset,GeneratorRegistry generatorRegistry, String resourceType) {
+		super((File) context.getAttribute(SERVLET_CONTEXT_TEMPDIR),charset,generatorRegistry, resourceType);		
 		this.context  = context;
 		this.charset = charset;
 	}
 
-	/* (non-Javadoc)
-	 * @see net.jawr.web.resource.ResourceHandler#getResourceInputStream(java.lang.String)
+	/**
+	 * Constructor
+	 * @param context the servlet context
+	 * @param workingDirectory the working directory
+	 * @param charset the charset
+	 * @param generatorRegistry the generator registry
+	 * @param resourceType the resource type
 	 */
-	public InputStream getResourceAsStream(String resourceName) throws ResourceNotFoundException {
+	public ServletContextResourceHandler(ServletContext context, String workingDirectory, Charset charset,GeneratorRegistry generatorRegistry, String resourceType) {
+		super(workingDirectory,charset,generatorRegistry, resourceType, false);		
+		this.context  = context;
+		this.charset = charset;
+	}
+	
+	/* (non-Javadoc)
+	 * @see net.jawr.web.resource.AbstractResourceHandler#doGetResourceAsStream(java.lang.String)
+	 */
+	protected InputStream doGetResourceAsStream(String resourceName) {
 		
-		InputStream is = context.getResourceAsStream(resourceName);		
-		if(null == is)
-			throw new ResourceNotFoundException(resourceName);
-		
-		return is;
+		return context.getResourceAsStream(resourceName);	
 	}
 	
 	/* (non-Javadoc)

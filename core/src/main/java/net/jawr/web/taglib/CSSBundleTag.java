@@ -13,6 +13,7 @@
  */
 package net.jawr.web.taglib;
 
+import net.jawr.web.JawrConstant;
 import net.jawr.web.resource.bundle.handler.ResourceBundlesHandler;
 import net.jawr.web.resource.bundle.renderer.BundleRenderer;
 import net.jawr.web.resource.bundle.renderer.CSSHTMLBundleLinkRenderer;
@@ -30,10 +31,10 @@ public class CSSBundleTag  extends AbstractResourceBundleTag {
 	 * @see net.jawr.web.taglib.AbstractResourceBundleTag#createRenderer()
 	 */
 	protected BundleRenderer createRenderer() {
-		if(null == pageContext.getServletContext().getAttribute(ResourceBundlesHandler.CSS_CONTEXT_ATTRIBUTE))
+		if(null == pageContext.getServletContext().getAttribute(JawrConstant.CSS_CONTEXT_ATTRIBUTE))
 			throw new IllegalStateException("ResourceBundlesHandler not present in servlet context. Initialization of Jawr either failed or never occurred.");
 
-		ResourceBundlesHandler rsHandler = (ResourceBundlesHandler) pageContext.getServletContext().getAttribute(ResourceBundlesHandler.CSS_CONTEXT_ATTRIBUTE);
+		ResourceBundlesHandler rsHandler = (ResourceBundlesHandler) pageContext.getServletContext().getAttribute(JawrConstant.CSS_CONTEXT_ATTRIBUTE);
 		return  new CSSHTMLBundleLinkRenderer(rsHandler, this.useRandomParam, this.media);
 	}
 

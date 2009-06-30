@@ -15,6 +15,7 @@ package net.jawr.web.taglib.jsf;
 
 import javax.faces.context.FacesContext;
 
+import net.jawr.web.JawrConstant;
 import net.jawr.web.resource.bundle.handler.ResourceBundlesHandler;
 import net.jawr.web.resource.bundle.renderer.BundleRenderer;
 import net.jawr.web.resource.bundle.renderer.CSSHTMLBundleLinkRenderer;
@@ -30,7 +31,7 @@ public class CSSBundleTag extends AbstractResourceBundleTag {
 	 * @see net.jawr.web.taglib.jsf.AbstractResourceBundleTag#createRenderer(javax.faces.context.FacesContext)
 	 */
 	protected BundleRenderer createRenderer(FacesContext context) {
-		Object handler = context.getExternalContext().getApplicationMap().get(ResourceBundlesHandler.CSS_CONTEXT_ATTRIBUTE);
+		Object handler = context.getExternalContext().getApplicationMap().get(JawrConstant.CSS_CONTEXT_ATTRIBUTE);
 		if(null == handler)
 			throw new IllegalStateException("ResourceBundlesHandler not present in servlet context. Initialization of Jawr either failed or never occurred.");
 

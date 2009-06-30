@@ -21,6 +21,7 @@ import java.io.Writer;
 import java.nio.ByteBuffer;
 import java.nio.channels.Channels;
 import java.nio.channels.WritableByteChannel;
+import java.util.List;
 import java.util.Map;
 
 import net.jawr.web.collections.ConcurrentCollectionsFactory;
@@ -55,6 +56,13 @@ public class CachedResourceBundlesHandler implements ResourceBundlesHandler {
 		this.rsHandler = rsHandler;
 		this.textCache = ConcurrentCollectionsFactory.buildConcurrentHashMap();
 		this.gzipCache = ConcurrentCollectionsFactory.buildConcurrentHashMap();
+	}
+	
+	/* (non-Javadoc)
+	 * @see net.jawr.web.resource.bundle.handler.ResourceBundlesHandler#getContextBundles()
+	 */
+	public List getContextBundles() {
+		return rsHandler.getContextBundles();
 	}
 
 	/* (non-Javadoc)

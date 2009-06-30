@@ -1,5 +1,5 @@
 /**
- * Copyright 2007 Jordi Hernández Sellés
+ * Copyright 2007-2009 Jordi Hernández Sellés, Ibrahim Chaehoi
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -26,6 +26,7 @@ import net.jawr.web.resource.ResourceHandler;
 import net.jawr.web.resource.bundle.factory.util.PathNormalizer;
 import net.jawr.web.resource.bundle.postprocess.ResourceBundlePostProcessor;
 import net.jawr.web.resource.bundle.sorting.SortFileParser;
+import net.jawr.web.util.StringUtils;
 
 import org.apache.log4j.Logger;
 
@@ -33,42 +34,70 @@ import org.apache.log4j.Logger;
  * Basic implementation of JoinableResourceBundle. 
  * 
  * @author Jordi Hernández Sellés
+ * @author Ibrahim Chaehoi
  *
  */
 public class JoinableResourceBundleImpl implements JoinableResourceBundle {
 	
 	private static final Logger log = Logger.getLogger(JoinableResourceBundle.class.getName());
 	
-	private InclusionPattern inclusionPattern;
-	private List pathMappings;
+	/** The name of the bundle used in the configuration properties */
 	private String name;
-	private ResourceHandler resourceHandler;
+	
+	/** The ID for this bundle. The URL, which will identify the bundle. */
+	private String id;
+	
+	/** The inclusion pattern */
+	private InclusionPattern inclusionPattern;
+	
+	/** The list of path mappings. It could contains directory mapping like 'myPath/**' */
+	private List pathMappings;
+	
+	/** The final item path list containing all the resource linked to this bundl */
 	protected List itemPathList;
+	
+	/** The resource handle */
+	private ResourceHandler resourceHandler;
+	
+	/** The licence path list */
 	protected Set licensesPathList;
+	
+	/** The file extension */
 	private String fileExtension;
+	
+	/** The URL prefix */
 	private String urlPrefix;
+	
+	/** The IE conditional expression */
 	private String explorerConditionalExpression;
 	private String alternateProductionURL;
 	
+	/** The alternate URL for the bundle */
+	private String alternateProductionURL;
+	
+	/** The prefix mapping for locale vairant version */
 	private Map prefixMap;
 	
+	/** The list of locale variant keys */
 	protected List localeVariantKeys;
 	
-	
+	/** The file post processor */
 	private ResourceBundlePostProcessor unitaryPostProcessor;
+	
+	/** The bundle post processor */
 	private ResourceBundlePostProcessor bundlePostProcessor;
 	
-
 	/**
 	 * Protected access constructor, which omits the mappings parameter. 
 	 * 
-	 * @param name String Unique name for this bundle.
+	 * @param id the ID for this bundle.
+     * @param name String Unique name for this bundle.
      * @param fileExtension String File extensions for this bundle.
      * @param inclusionPattern InclusionPattern Strategy for including this bundle.
      * @param resourceHandler ResourceHandler Used to access the files and folders.
      * @param urlPrefix The prefix to include in URLs whenever this bundle is included in a link. 
 	 */
-	protected JoinableResourceBundleImpl(	String name, 
+	public JoinableResourceBundleImpl(String id,	String name, 
 			String fileExtension,
 			InclusionPattern inclusionPattern,
 			ResourceHandler resourceHandler) {
@@ -76,7 +105,8 @@ public class JoinableResourceBundleImpl implements JoinableResourceBundle {
 
 		this.inclusionPattern = inclusionPattern;
 		
-		this.name = PathNormalizer.asPath(name);
+		this.id = PathNormalizer.asPath(id);
+		this.name = name;
 		this.resourceHandler = resourceHandler;
 		this.itemPathList = ConcurrentCollectionsFactory.buildCopyOnWriteArrayList();
 		this.licensesPathList = new HashSet();
@@ -87,32 +117,31 @@ public class JoinableResourceBundleImpl implements JoinableResourceBundle {
 	
 	
     /**
-     * 
-     * @param name String Unique name for this bundle.
-     * @param fileExtension String File extensions for this bundle.
-     * @param inclusionPattern InclusionPattern Strategy for including this bundle.
+     * Constructor
+     * @param id the ID of this bundle
+     * @param name Unique name for this bundle.
+     * @param fileExtension File extensions for this bundle.
+     * @param inclusionPattern  Strategy for including this bundle.
      * @param pathMappings Set Strings representing the folders or files to include, possibly with wildcards.
-     * @param resourceHandler ResourceHandler Used to access the files and folders.
+     * @param resourceHandler Used to access the files and folders.
      * @param urlPrefix The prefix to include in URLs whenever this bundle is included in a link. 
      */
-     public JoinableResourceBundleImpl(	String name, 
+     public JoinableResourceBundleImpl(String id, String name, 
         									String fileExtension,
         									InclusionPattern inclusionPattern,
         									List pathMappings, 
 											ResourceHandler resourceHandler) {
-		this(name, fileExtension, inclusionPattern, resourceHandler);
+		this(id, name, fileExtension, inclusionPattern, resourceHandler);
       
 		if(log.isDebugEnabled())
-			log.debug("Adding mapped files for bundle " + getName());
+			log.debug("Adding mapped files for bundle " + getId());
 		this.pathMappings = pathMappings;
 		
 		initPathList();
 		if(log.isDebugEnabled())
-			log.debug("Added " + this.itemPathList .size() + " files and " + licensesPathList.size() + " licenses for the bundle " + getName());
+			log.debug("Added " + this.itemPathList .size() + " files and " + licensesPathList.size() + " licenses for the bundle " + getId());
 		
 	}
-	
-
 
 	/**
 	 * Detects all files that belong to this bundle and adds them to the 
@@ -120,7 +149,7 @@ public class JoinableResourceBundleImpl implements JoinableResourceBundle {
 	 */
 	private void initPathList()	{
 		if(log.isDebugEnabled())
-			log.debug("Creating bundle path List for " + getName());
+			log.debug("Creating bundle path List for " + getId());
 		
 		for(Iterator it = pathMappings.iterator();it.hasNext();)
 		{
@@ -150,7 +179,7 @@ public class JoinableResourceBundleImpl implements JoinableResourceBundle {
 							+ "]. Please check configuration. ");
 		}
 		if(log.isDebugEnabled())
-			log.debug("Finished creating bundle path List for " + getName());
+			log.debug("Finished creating bundle path List for " + getId());
 	}
 
 	/**
@@ -165,7 +194,7 @@ public class JoinableResourceBundleImpl implements JoinableResourceBundle {
 		
 			
 		if(log.isDebugEnabled()) {
-			log.debug("Adding " + resources.size() + " resources from path [" + dirName + "] to bundle " + getName());
+			log.debug("Adding " + resources.size() + " resources from path [" + dirName + "] to bundle " + getId());
 		}
 
 		
@@ -226,118 +255,26 @@ public class JoinableResourceBundleImpl implements JoinableResourceBundle {
 	}
 
 	/* (non-Javadoc)
-	 * @see net.jawr.web.resource.bundle.JoinableResourceBundle#belongsTobundle(java.lang.String)
+	 * @see net.jawr.web.resource.bundle.JoinableResourceBundle#getId()
 	 */
-	public boolean belongsToBundle(String itemPath) {		
-		return itemPathList.contains(itemPath);
-	}
-
-	/* (non-Javadoc)
-	 * @see net.jawr.web.resource.bundle.JoinableResourceBundle#getInclusionPattern()
-	 */
-	public InclusionPattern getInclusionPattern() {
-		return this.inclusionPattern;
-	}
-
-	/* (non-Javadoc)
-	 * @see net.jawr.web.resource.bundle.JoinableResourceBundle#getItemPathList()
-	 */
-	public List getItemPathList() {
-		return itemPathList;
-	}
-	
-	/* (non-Javadoc)
-	 * @see net.jawr.web.resource.bundle.JoinableResourceBundle#getItemPathList(java.lang.String)
-	 */
-	public List getItemPathList(String variantKey) {
-		if(null == variantKey)
-			return itemPathList;
-		
-		List rets = new ArrayList();
-		for(Iterator it = itemPathList.iterator();it.hasNext();){
-			String path = (String) it.next();			
-			if(resourceHandler.isResourceGenerated(path)){
-				rets.add(path + '@' + variantKey);
-			}
-			else rets.add(path);
-		}
-		return rets; 
+	public String getId() {
+		return this.id;
 	}
 
 	/* (non-Javadoc)
 	 * @see net.jawr.web.resource.bundle.JoinableResourceBundle#getName()
 	 */
 	public String getName() {
-		return this.name;
+		return name;
 	}
-
-	/* (non-Javadoc)
-	 * @see net.jawr.web.resource.bundle.JoinableResourceBundle#getLicensesPathList()
-	 */
-	public Set getLicensesPathList() {
-		return this.licensesPathList;
-	}
-
-    /* (non-Javadoc)
-	* @see net.jawr.web.resource.bundle.JoinableResourceBundle#getURLPrefix()
-	*/
-    public String getURLPrefix(String variantKey) {
-    	if(null == this.urlPrefix)
-    		throw new IllegalStateException("The bundleDataHashCode must be set before accessing the url prefix.");
-    	
-    	// Resolves the locale key like resourcebundle does
-    	if(null != variantKey && null != this.localeVariantKeys) {
-    		String key = getAvailableLocaleVariant(variantKey);
-    		if(null != key)
-    			return prefixMap.get(variantKey) + "." + key + "/";
-    	}
-    	return this.urlPrefix + "/";
-    }
-
-	/* (non-Javadoc)
-	 * @see net.jawr.web.resource.bundle.JoinableResourceBundle#setBundleDataHashCode(int)
-	 */
-	public void setBundleDataHashCode(String variantKey, int bundleDataHashCode) {		
-		String prefix;
-		// Since this numbre is used as part of urls, the -sign is converted to 'N'
-		if(bundleDataHashCode < 0){
-			prefix = "N" + bundleDataHashCode*-1;
-		}
-		else prefix = ""+bundleDataHashCode;
-		
-		if(null == variantKey){
-			this.urlPrefix = prefix;
-		}
-		else {
-			prefixMap.put(variantKey, prefix);
-		}
-	}   
 	
-    /**
-     * Resolves a registered path from a locale key, using the same algorithm used to 
-     * locate ResourceBundles. 
-     *  
-     * @param variantKey
-     * @return
-     */
-    private String getAvailableLocaleVariant(String variantKey) {
-    	String key = null;
-    	if(this.localeVariantKeys.contains(variantKey)){
-    		key = variantKey;
-    	}
-    	else {
-    		String subVar = variantKey;
-    		while(subVar.indexOf('_') != -1) {
-    			subVar = subVar.substring(0,subVar.lastIndexOf('_'));
-    			if(this.localeVariantKeys.contains(subVar)){
-        			key = subVar;
-        		}
-    		}
-    	}
-    	return key;
-    }
-    
-
+	/* (non-Javadoc)
+	 * @see net.jawr.web.resource.bundle.JoinableResourceBundle#isComposite()
+	 */
+	public boolean isComposite() {
+		return false;
+	}
+	
 	/* (non-Javadoc)
 	 * @see net.jawr.web.resource.bundle.JoinableResourceBundle#getUnitaryPostProcessor()
 	 */
@@ -345,17 +282,14 @@ public class JoinableResourceBundleImpl implements JoinableResourceBundle {
 		return unitaryPostProcessor;
 	}
 
-
-
 	/**
-	 * @param unitaryPostProcessor
+	 * Sets the unitary post processor
+	 * @param unitaryPostProcessor the unitary post processor
 	 */
 	public void setUnitaryPostProcessor(
 			ResourceBundlePostProcessor unitaryPostProcessor) {
 		this.unitaryPostProcessor = unitaryPostProcessor;
 	}
-
-
 
 	/* (non-Javadoc)
 	 * @see net.jawr.web.resource.bundle.JoinableResourceBundle#getBundlePostProcessor()
@@ -364,16 +298,14 @@ public class JoinableResourceBundleImpl implements JoinableResourceBundle {
 		return bundlePostProcessor;
 	}
 
-
-
+	/**
+	 * Sets the bundle post processor
+	 * @param bundlePostProcessor the post processor to set
+	 */
 	public void setBundlePostProcessor(
 			ResourceBundlePostProcessor bundlePostProcessor) {
 		this.bundlePostProcessor = bundlePostProcessor;
 	}
-
-
-	
-
 
 	/* (non-Javadoc)
 	 * @see net.jawr.web.resource.bundle.JoinableResourceBundle#getExplorerConditionalExpression()
@@ -406,6 +338,167 @@ public class JoinableResourceBundleImpl implements JoinableResourceBundle {
 	public List getLocaleVariantKeys(){
 		return this.localeVariantKeys;
 	}
+
+	/* (non-Javadoc)
+	 * @see net.jawr.web.resource.bundle.JoinableResourceBundle#getAlternateProductionURL()
+	 */
+	public String getAlternateProductionURL() {
+		return this.alternateProductionURL;
+	}
+
+
+	/**
+	 * Sets the alternate production URL
+	 * @param alternateProductionURL the alternateProductionURL to set
+	 */
+	public void setAlternateProductionURL(String alternateProductionURL) {
+		this.alternateProductionURL = alternateProductionURL;
+	}
+
+	/* (non-Javadoc)
+	 * @see net.jawr.web.resource.bundle.JoinableResourceBundle#belongsTobundle(java.lang.String)
+	 */
+	public boolean belongsToBundle(String itemPath) {		
+		return itemPathList.contains(itemPath);
+	}
+
+	/* (non-Javadoc)
+	 * @see net.jawr.web.resource.bundle.JoinableResourceBundle#getInclusionPattern()
+	 */
+	public InclusionPattern getInclusionPattern() {
+		return this.inclusionPattern;
+	}
+
+	/* (non-Javadoc)
+	 * @see net.jawr.web.resource.bundle.JoinableResourceBundle#setMappings(java.util.List)
+	 */
+	public void setMappings(List pathMappings) {
+		
+		this.pathMappings = pathMappings;
+		initPathList();
+	}
+	
+	/* (non-Javadoc)
+	 * @see net.jawr.web.resource.bundle.JoinableResourceBundle#getItemPathList()
+	 */
+	public List getItemPathList() {
+		return itemPathList;
+	}
+	
+	/* (non-Javadoc)
+	 * @see net.jawr.web.resource.bundle.JoinableResourceBundle#getItemPathList(java.lang.String)
+	 */
+	public List getItemPathList(String variantKey) {
+		if(StringUtils.isEmpty(variantKey))
+			return itemPathList;
+		
+		List rets = new ArrayList();
+		for(Iterator it = itemPathList.iterator();it.hasNext();){
+			String path = (String) it.next();			
+			if(resourceHandler.isResourceGenerated(path)){
+				rets.add(path + '@' + variantKey);
+			}
+			else rets.add(path);
+		}
+		return rets; 
+	}
+
+	/* (non-Javadoc)
+	 * @see net.jawr.web.resource.bundle.JoinableResourceBundle#getLicensesPathList()
+	 */
+	public Set getLicensesPathList() {
+		return this.licensesPathList;
+	}
+	
+	/**
+	 * Sets the licence path list
+	 * @param licencePathList the list to set
+	 */
+	public void setLicensesPathList(Set licencePathList) {
+		this.licensesPathList = licencePathList;
+	}
+
+    /* (non-Javadoc)
+	* @see net.jawr.web.resource.bundle.JoinableResourceBundle#getURLPrefix()
+	*/
+    public String getURLPrefix(String variantKey) {
+    	if(null == this.urlPrefix)
+    		throw new IllegalStateException("The bundleDataHashCode must be set before accessing the url prefix.");
+    	
+    	// Resolves the locale key like resourcebundle does
+    	if(StringUtils.isNotEmpty(variantKey) && null != this.localeVariantKeys) {
+    		String key = getAvailableLocaleVariant(variantKey);
+    		if(null != key)
+    			return prefixMap.get(variantKey) + "." + key + "/";
+    	}
+    	return this.urlPrefix + "/";
+    }
+
+    /* (non-Javadoc)
+	* @see net.jawr.web.resource.bundle.JoinableResourceBundle#getBundleDataHashCode()
+	*/
+    public String getBundleDataHashCode(String variantKey) {
+    	if(StringUtils.isEmpty(variantKey)){
+			return this.urlPrefix;
+		}
+		else {
+			return (String) prefixMap.get(variantKey);
+		}
+    }
+    
+	/* (non-Javadoc)
+	 * @see net.jawr.web.resource.bundle.JoinableResourceBundle#setBundleDataHashCode(java.lang.String, int)
+	 */
+	public void setBundleDataHashCode(String variantKey, int bundleDataHashCode) {		
+		String prefix;
+		// Since this number is used as part of urls, the -sign is converted to 'N'
+		if(bundleDataHashCode < 0){
+			prefix = "N" + bundleDataHashCode*-1;
+		}
+		else prefix = Integer.toString(bundleDataHashCode);
+		
+		setBundleDataHashCode(variantKey, prefix);
+	}
+	
+	/* (non-Javadoc)
+	 * @see net.jawr.web.resource.bundle.JoinableResourceBundle#setBundleDataHashCode(java.lang.String, java.lang.String)
+	 */
+	public void setBundleDataHashCode(String variantKey, String bundleDataHashCode) {		
+		
+		String prefix = bundleDataHashCode;
+		
+		if(null == variantKey){
+			this.urlPrefix = prefix;
+		}
+		else {
+			prefixMap.put(variantKey, prefix);
+		}
+	} 
+	
+    /**
+     * Resolves a registered path from a locale key, using the same algorithm used to 
+     * locate ResourceBundles. 
+     *  
+     * @param variantKey
+     * @return
+     */
+    private String getAvailableLocaleVariant(String variantKey) {
+    	String key = null;
+    	if(this.localeVariantKeys.contains(variantKey)){
+    		key = variantKey;
+    	}
+    	else {
+    		String subVar = variantKey;
+    		while(subVar.indexOf('_') != -1) {
+    			subVar = subVar.substring(0,subVar.lastIndexOf('_'));
+    			if(this.localeVariantKeys.contains(subVar)){
+        			key = subVar;
+        		}
+    		}
+    	}
+    	return key;
+    }
+ 	
 
 	
 

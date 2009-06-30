@@ -1,5 +1,5 @@
 /**
- * Copyright 2007 Jordi Hernández Sellés
+ * Copyright 2007-2009 Jordi Hernández Sellés, Ibrahim Chaehoi
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -30,15 +30,19 @@ import org.apache.log4j.Logger;
  * below it. 
  * 
  * @author Jordi Hernández Sellés
- *
+ * @author Ibrahim Chaehoi
  *
  */
 public class ResourceBundleDirMapper extends AbstractResourceMapper{
+	
+	/** The logger */
 	private static final Logger log = Logger.getLogger(ResourceBundleDirMapper.class);
+	
+	/** The Set of path to exclude */
 	private Set excludedPaths;
 	
-	
 	/**
+	 * Constructor
 	 * @param baseDir Root dir from which to define the paths. 
 	 * @param rsHandler Resource handler to resolve the file structure
 	 * @param currentBundles Bundles created so far
@@ -52,8 +56,8 @@ public class ResourceBundleDirMapper extends AbstractResourceMapper{
 	
 	/**
 	 * Determine which paths are to be excluded based on a set of path mappings from the configuration. 
-	 * @param paths
-	 * @return
+	 * @param paths the Set of path to exclude
+	 * @return the Set of path to exclude
 	 */
 	private Set initExcludedPathList(Set paths) {
 		Set toExclude = new HashSet();
@@ -71,7 +75,7 @@ public class ResourceBundleDirMapper extends AbstractResourceMapper{
 	
 	/**
 	 * Generates the resource bunles mapping expressions. 
-	 * @return Map A map with the resourcebundle key and the mapping for it as a value. 
+	 * @return Map A map with the resource bundle key and the mapping for it as a value. 
 	 */
 	protected void addBundlesToMapping() throws DuplicateBundlePathException {
 		Set paths = rsHandler.getResourceNames(baseDir);
@@ -86,8 +90,6 @@ public class ResourceBundleDirMapper extends AbstractResourceMapper{
 							+ "] with value [" + path  + "/**] to a generated path list");
 			}
 		}
-		
 	}
-	
 	
 }

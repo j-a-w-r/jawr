@@ -28,12 +28,17 @@ import net.jawr.web.resource.bundle.factory.util.PathNormalizer;
  */
 public class PathsIteratorImpl extends AbstractPathsIterator implements ResourceBundlePathsIterator {
 
+	/** The bundle iterator */
 	private Iterator bundlesIterator;
+	
+	/** The current bundle */
 	private JoinableResourceBundle currentBundle;
 	
 	/**
-	 * @param bundles
-	 * @param commentCallbackHandler
+	 * Constructor
+	 * @param bundles the bundle
+	 * @param commentCallbackHandler the comment callback handler
+	 * @param variantKey the variant key
 	 */
 	public PathsIteratorImpl(List bundles,ConditionalCommentCallbackHandler commentCallbackHandler, String variantKey) {
 		super(commentCallbackHandler,variantKey);
@@ -57,7 +62,7 @@ public class PathsIteratorImpl extends AbstractPathsIterator implements Resource
 		if(null != currentBundle.getExplorerConditionalExpression())
 			commentCallbackHandler.openConditionalComment(currentBundle.getExplorerConditionalExpression());
 		
-		String name = currentBundle.getName();
+		String name = currentBundle.getId();
 		
 		
 		return PathNormalizer.joinPaths(currentBundle.getURLPrefix(variantKey),name);

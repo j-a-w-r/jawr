@@ -122,7 +122,11 @@ public class MessageBundleScriptCreator {
 					bundle = ResourceBundle.getBundle(names[x],locale);
 				} catch(MissingResourceException ex) {
 					// Fixes problems with some servers, e.g. WLS 10
-					bundle = ResourceBundle.getBundle(names[x],locale,getClass().getClassLoader());
+					try {
+						bundle = ResourceBundle.getBundle(names[x],locale,getClass().getClassLoader());
+					} catch (Exception e) {
+						bundle = ResourceBundle.getBundle(names[x],locale,Thread.currentThread().getContextClassLoader());
+					}
 				}
 			}
 			else {
@@ -130,7 +134,11 @@ public class MessageBundleScriptCreator {
 					bundle = ResourceBundle.getBundle(names[x]);
 				} catch(MissingResourceException ex) {
 					// Fixes problems with some servers, e.g. WLS 10
-					bundle = ResourceBundle.getBundle(names[x],Locale.getDefault(),getClass().getClassLoader());
+					try {
+						bundle = ResourceBundle.getBundle(names[x],Locale.getDefault(),getClass().getClassLoader());
+					} catch (Exception e) {
+						bundle = ResourceBundle.getBundle(names[x],Locale.getDefault(),Thread.currentThread().getContextClassLoader());
+					}
 				}
 			}
 			

@@ -91,15 +91,33 @@ The Jawr servlet
 +------------------------------------------+
 
 
-	In JAWR, you can serve CSS files from classpath locations (i.e. from jar files). These files probably refer to images also located at your 
-	classpath as well (i.e. at the same jar file). 
-	If you set the property <jawr.css.image.classpath.use.servlet> to true, these images will also be retrieved from the classpath.
-	When using this feature, you need an extra instance of the JAWR servlet to serve these images, which must be configured by setting the 
-	<<type>> parameter to <<img>>. To make it work properly, the image servlet should start before the CSS servlet.
-	Below you will find an example of how the configuration should be done:
+
+	* <<imageServletMapping>>: The value of this attribute defines the mapping for the image servlet, which will handle the images associated to CSS defined 
+	in the classpath, if you are using the option <jawr.css.image.classpath.use.servlet=true> in the Jawr config.
 	
+	Note: If you set the property <jawr.css.image.classpath.use.servlet> to true, you should defined the <<imageServletMapping>> parameter 
+	in the CSS and the image servlets like this: 
+
+
 +------------------------------------------+
 	...
+	<servlet>
+		<servlet-name>JawrCSSServlet</servlet-name>
+		<servlet-class>net.jawr.web.servlet.JawrServlet</servlet-class>
+		<init-param>
+			<param-name>configLocation</param-name>
+			<param-value>/jawr.properties</param-value>
+		</init-param>
+		<init-param>
+			<param-name>type</param-name>
+			<param-value>css</param-value>
+		</init-param>
+		<init-param>
+			<param-name>imageServletMapping</param-name>
+			<param-value>/jwrImg/</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
 	<servlet>
 		<servlet-name>JawrImgServlet</servlet-name>
 		<servlet-class>net.jawr.web.servlet.JawrServlet</servlet-class>
@@ -112,23 +130,10 @@ The Jawr servlet
 			<param-value>img</param-value>
 		</init-param>
 		<init-param>
-			<param-name>mapping</param-name>
+			<param-name>imageServletMapping</param-name>
 			<param-value>/jwrImg/</param-value>
 		</init-param>
 		<load-on-startup>1</load-on-startup>
-	</servlet>
-	<servlet>
-		<servlet-name>JawrCSSServlet</servlet-name>
-		<servlet-class>net.jawr.web.servlet.JawrServlet</servlet-class>
-		<init-param>
-			<param-name>configLocation</param-name>
-			<param-value>/jawr.properties</param-value>
-		</init-param>
-		<init-param>
-			<param-name>type</param-name>
-			<param-value>css</param-value>
-		</init-param>
-		<load-on-startup>2</load-on-startup>
 	</servlet>
 	...
 	
@@ -144,23 +149,6 @@ The Jawr servlet
 +------------------------------------------+
 	
 	[]
-	
-
-* Reloading the Jawr configuration in runtime
-
-	During development it is useful to be able to have Jawr reload its configuration and rebuild the bundles without restarting the server. 
-	Currently you have two complementary ways to do so: 
-	
-	* Set the <<jawr.config.reload.interval>> parameter in the config file. Every n seconds Jawr will look for changes in the config properties 
-	file and if changes are found, the configuration will be refreshed. 
-	
-	* Define a parameter name using the  <<jawr.config.reload.refreshKey>> config parameter. Once set, make any request to the Jawr servlet 
-	which includes a parameter named 'refreshKey' with this value. Note that you don't add the parameter to a page URL, but to a Jawr matching 
-	URL (*.js or likewise). So if the parameter is named 'foo', you could request something like 
-	<http://localhost:8080/myapp/jawr/someBundle.js?refreshKey=foo>, and the config would be refreshed. 
-	
-	[] 
-
 	
 * Example web.xml configuration
 	

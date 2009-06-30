@@ -47,6 +47,7 @@ public class CSSURLRewriterPostProcessorTest extends TestCase {
 	public void testBasicURLRewriting() {
 		// basic test
 		StringBuffer data = new StringBuffer("background-image:url(../../../../../images/someImage.gif);");
+		//StringBuffer data = new StringBuffer("background-image:url(../../../../images/someImage.gif);");
 		// the image is at /images
 		String filePath = "/css/folder/subfolder/subfolder/someCSS.css";
 		// Expected: goes 1 back for servlet mapping, 1 back for prefix, 1 back for the id having a subdir path. 
@@ -238,16 +239,16 @@ public class CSSURLRewriterPostProcessorTest extends TestCase {
 		
 	}
 	
-	public void testURLFromClasspathCssRewriting() {
+	public void testImgURLFromClasspathCssRewriting() {
 
 		// Set the properties
 		Properties props = new Properties();
 		props.setProperty(JawrConfig.JAWR_CSS_IMG_USE_CLASSPATH_SERVLET, "true");
 		config = new JawrConfig(props);
-		config.setServletMapping("/css");
-		config.setCharsetName("UTF-8");
 		ServletContext servletContext = new MockServletContext();
 		config.setContext(servletContext);
+		config.setServletMapping("/css");
+		config.setCharsetName("UTF-8");
 		
 		// Set up the Image servlet Jawr config
 		props = new Properties();
@@ -264,6 +265,46 @@ public class CSSURLRewriterPostProcessorTest extends TestCase {
 		
 		// Css path
 		String filePath = "jar:style/default/assets/someCSS.css";
+		
+		// Expected: goes 3 back to the context path, then add the CSS image servlet mapping,
+		// then go to the image path
+		// the image is at classPath:/style/images/someImage.gif
+		String expectedURL = "background-image:url(../../../cssImg/cpCb2587531189/style/images/logo.png);";
+		status.setLastPathAdded(filePath);
+
+		String result = processor.postProcessBundle(status, data).toString();
+		assertEquals("URL was not rewritten properly", expectedURL, result);
+
+	}
+	
+	
+	
+	public void testURLImgClasspathCssRewriting() {
+
+		// Set the properties
+		Properties props = new Properties();
+		props.setProperty(JawrConfig.JAWR_CSS_IMG_USE_CLASSPATH_SERVLET, "true");
+		config = new JawrConfig(props);
+		ServletContext servletContext = new MockServletContext();
+		config.setContext(servletContext);
+		config.setServletMapping("/css");
+		config.setCharsetName("UTF-8");
+		
+		// Set up the Image servlet Jawr config
+		props = new Properties();
+		JawrConfig imgServletJawrConfig = new JawrConfig(props);
+		imgServletJawrConfig.setServletMapping("/cssImg/");
+		ImageResourcesHandler imgRsHandler = new ImageResourcesHandler(imgServletJawrConfig);
+		servletContext.setAttribute(JawrConstant.IMG_CONTEXT_ATTRIBUTE, imgRsHandler);
+		
+		status = new BundleProcessingStatus(bundle, null, config);
+
+		// Css data
+		StringBuffer data = new StringBuffer(
+				"background-image:url(jar:style/images/logo.png);");
+		
+		// Css path
+		String filePath = "style/default/assets/someCSS.css";
 		
 		// Expected: goes 3 back to the context path, then add the CSS image servlet mapping,
 		// then go to the image path
@@ -314,6 +355,7 @@ public class CSSURLRewriterPostProcessorTest extends TestCase {
 
 	}
 	
+	
 	public void testMultiLine() {
 		StringBuffer data = new StringBuffer("\nsomeRule {");
 		data.append("\n");
@@ -327,7 +369,8 @@ public class CSSURLRewriterPostProcessorTest extends TestCase {
 		data.append("\n");
 		data.append("{");
 		data.append("\n");
-		data.append("\tbackground-image:url( ../../../../../images/someImage.gif );");
+		//data.append("\tbackground-image:url( ../../../../../images/someImage.gif );");
+		data.append("\tbackground-image:url( ../images/someImage.gif );");
 		data.append("\n");
 		data.append("}");
 		data.append("\n");
@@ -382,7 +425,7 @@ public class CSSURLRewriterPostProcessorTest extends TestCase {
 			public Set getLicensesPathList() {
 				return null;
 			}
-			public String getName() {
+			public String getId() {
 				return id;
 			}
 			public String getURLPrefix(String variantKey) {
@@ -408,6 +451,22 @@ public class CSSURLRewriterPostProcessorTest extends TestCase {
 			}
 			public String getAlternateProductionURL() {
 				return null;
+			}
+			public String getBundleDataHashCode(String variantKey) {
+				return null;
+			}
+			public String getName() {
+				return null;
+			}
+			public boolean isComposite() {
+				return false;
+			}
+			public void setBundleDataHashCode(String variantKey,
+					String bundleDataHashCode) {
+				
+			}
+			public void setMappings(List mappings) {
+				
 			}};
 		
 	}

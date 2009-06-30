@@ -1,5 +1,5 @@
 /**
- * Copyright 2007 Jordi Hernández Sellés
+ * Copyright 2007-2009 Jordi Hernández Sellés
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -13,16 +13,42 @@
  */
 package net.jawr.web.resource.bundle.postprocess;
 
+import java.io.IOException;
+
 /**
- * Empty implementation of a bundle processor, which actually does nothing to a bundle. 
+ * Empty implementation of a bundle processor, which actually does nothing to a bundle.
  * 
  * @author Jordi Hernández Sellés
+ * @author Ibrahim Chaehoi
  */
-public class EmptyResourceBundlePostProcessor implements ResourceBundlePostProcessor{
+public class EmptyResourceBundlePostProcessor extends
+		AbstractChainedResourceBundlePostProcessor {
 
-	public StringBuffer postProcessBundle(BundleProcessingStatus status,
-			StringBuffer bundleString) {
-		return bundleString;
+	/**
+	 * Constructor
+	 */
+	public EmptyResourceBundlePostProcessor() {
+		super(PostProcessFactoryConstant.NO_POSTPROCESSING_KEY);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * net.jawr.web.resource.bundle.postprocess.AbstractChainedResourceBundlePostProcessor#doPostProcessBundle(net.jawr.web.resource.bundle.postprocess
+	 * .BundleProcessingStatus, java.lang.StringBuffer)
+	 */
+	protected StringBuffer doPostProcessBundle(BundleProcessingStatus status,
+			StringBuffer bundleData) throws IOException {
+		return bundleData;
+	}
+	
+	/**
+	 * Set the next post processor in the chain. 
+	 * @param nextProcessor the next post processor to set
+	 */
+	public void addNextProcessor(AbstractChainedResourceBundlePostProcessor nextProcessor) {
+		throw new UnsupportedOperationException("The empty resource bundle processor can't have a next post processord");
 	}
 
 }

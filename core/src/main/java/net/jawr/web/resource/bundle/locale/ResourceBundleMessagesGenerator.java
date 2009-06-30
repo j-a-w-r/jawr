@@ -15,6 +15,7 @@ package net.jawr.web.resource.bundle.locale;
 
 import java.io.Reader;
 
+import net.jawr.web.JawrConstant;
 import net.jawr.web.resource.bundle.factory.util.ClassLoaderResourceUtils;
 import net.jawr.web.resource.bundle.generator.AbstractJavascriptGenerator;
 import net.jawr.web.resource.bundle.generator.GeneratorContext;
@@ -32,9 +33,13 @@ import org.apache.log4j.Logger;
  *
  */
 public class ResourceBundleMessagesGenerator extends AbstractJavascriptGenerator implements ResourceGenerator {
-	public static final String GRAILS_WAR_DEPLOYED = "jawr.grails.war.deployed";
-	private static final String GRAILS_MESSAGE_CREATOR = "net.jawr.web.resource.bundle.locale.message.GrailsMessageBundleScriptCreator";
+	
+	/** The logger */
 	private static final Logger log = Logger.getLogger(ResourceBundleMessagesGenerator.class);
+	
+	public static final String GRAILS_WAR_DEPLOYED = "jawr.grails.war.deployed";
+	
+	private static final String GRAILS_MESSAGE_CREATOR = "net.jawr.web.resource.bundle.locale.message.GrailsMessageBundleScriptCreator";
 	
 	/* (non-Javadoc)
 	 * @see net.jawr.web.resource.bundle.generator.ResourceGenerator#createResource(java.lang.String, java.nio.charset.Charset)
@@ -62,5 +67,20 @@ public class ResourceBundleMessagesGenerator extends AbstractJavascriptGenerator
 	 */
 	public String getMappingPrefix() {
 		return GeneratorRegistry.MESSAGE_BUNDLE_PREFIX;
+	}
+	
+	/* (non-Javadoc)
+	 * @see net.jawr.web.resource.bundle.generator.ResourceGenerator#getDebugModeBuildTimeGenerationPath(java.lang.String)
+	 */
+	public String getDebugModeBuildTimeGenerationPath(String path) {
+		
+		path = path.replaceFirst(GeneratorRegistry.PREFIX_SEPARATOR, JawrConstant.URL_SEPARATOR);
+		if(path.endsWith("@")){
+			path = path.replaceAll("@", "");
+		}else{
+			path = path.replaceAll("@", "_");
+			path = path.replaceAll("\\|", "_");
+		}
+		return path+"."+JawrConstant.JS_TYPE;
 	}
 }

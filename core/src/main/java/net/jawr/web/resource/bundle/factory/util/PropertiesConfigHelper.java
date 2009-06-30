@@ -1,5 +1,5 @@
 /**
- * Copyright 2007-2009 Jordi Hernández Sellés, Ibrahim CHAEHOI
+ * Copyright 2007-2009 Jordi Hernández Sellés, Ibrahim Chaehoi
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -25,20 +25,27 @@ import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import net.jawr.web.resource.bundle.factory.PropertiesBundleConstant;
+
 /**
  * Helper class to make properties access less verbose.
  * 
  * @author Jordi Hernández Sellés
- * @author Ibrahim CHAEHOI
+ * @author Ibrahim Chaehoi
  * 
  */
 public class PropertiesConfigHelper {
-	private static final String PROPS_PREFIX = "jawr.";
-	private static final String BUNDLE_FACTORY_CUSTOM_PROPERTY = "bundle.";
-
+	
+	/** The properties */
 	private Properties props;
+	
+	/** The prefix of the properties */
 	private String prefix;
+	
+	/** The bundle name pattern */
 	private Pattern bundleNamePattern;
+	
+	/** The post processor class name pattern */
 	private Pattern postProcessorClassPattern = Pattern.compile("(jawr\\.custom\\.postprocessors\\.)([-_a-zA-Z0-9]+).class");
 
 	/**
@@ -54,32 +61,76 @@ public class PropertiesConfigHelper {
 	public PropertiesConfigHelper(Properties props, String resourceType) {
 		super();
 		this.props = props;
-		this.prefix = PROPS_PREFIX + resourceType + ".";
-		String bundle = prefix + BUNDLE_FACTORY_CUSTOM_PROPERTY;
+		this.prefix = PropertiesBundleConstant.PROPS_PREFIX + resourceType + ".";
+		String bundle = prefix + PropertiesBundleConstant.BUNDLE_FACTORY_CUSTOM_PROPERTY;
 		String pattern = "(" + bundle.replaceAll("\\.", "\\\\.")
 				+ ")([-_a-zA-Z0-9]+)\\.id";
 		this.bundleNamePattern = Pattern.compile(pattern);
 	}
 
+	/**
+	 * Returns the value of the common property, or the default value if no value is defined
+	 * instead.
+	 * @param key the key of the property
+	 * @param defaultValue the default value
+	 * @return the value of the common property
+	 */
 	public String getCommonProperty(String key, String defaultValue) {
-		return props.getProperty(PROPS_PREFIX + key, defaultValue);
+		return props.getProperty(PropertiesBundleConstant.PROPS_PREFIX + key, defaultValue);
 	}
 
+	/**
+	 * Returns the value of the common property
+	 * @param key the key of the property
+	 * @return the value of the common property
+	 */
 	public String getCommonProperty(String key) {
-		return props.getProperty(PROPS_PREFIX + key);
+		return props.getProperty(PropertiesBundleConstant.PROPS_PREFIX + key);
 	}
 
+	/**
+	 * Returns the value of the custom bundle property, or the default value if no value is defined
+	 * @param bundleName the bundle name
+	 * @param key the key of the property
+	 * @param defaultValue the default value
+	 * @return the value of the custom bundle property, or the default value if no value is defined
+	 */
 	public String getCustomBundleProperty(String bundleName, String key,
 			String defaultValue) {
-		return props.getProperty(prefix + BUNDLE_FACTORY_CUSTOM_PROPERTY
+		return props.getProperty(prefix + PropertiesBundleConstant.BUNDLE_FACTORY_CUSTOM_PROPERTY
 				+ bundleName + key, defaultValue);
 	}
 
+	/**
+	 * Returns the value of the custom bundle property, or the default value if no value is defined
+	 * @param bundleName the bundle name
+	 * @param key the key of the property
+	 * @return the value of the custom bundle property
+	 */
 	public String getCustomBundleProperty(String bundleName, String key) {
-		return props.getProperty(prefix + BUNDLE_FACTORY_CUSTOM_PROPERTY
+		return props.getProperty(prefix + PropertiesBundleConstant.BUNDLE_FACTORY_CUSTOM_PROPERTY
 				+ bundleName + key);
 	}
 
+	/**
+	 * Returns as a set, the comma separated values of a property 
+	 * @param key the key of the property
+	 * @return a set of the comma separated values of a property 
+	 */
+	public Set getCustomBundlePropertyAsSet(String bundleName, String key) {
+		Set propertiesSet = new HashSet();
+		StringTokenizer tk = new StringTokenizer(getCustomBundleProperty(bundleName, key, ""),
+				",");
+		while (tk.hasMoreTokens())
+			propertiesSet.add(tk.nextToken().trim());
+		return propertiesSet;
+	}
+	
+	/**
+	 * Returns as a set, the comma separated values of a property 
+	 * @param key the key of the property
+	 * @return a set of the comma separated values of a property 
+	 */
 	public Set getPropertyAsSet(String key) {
 		Set propertiesSet = new HashSet();
 		StringTokenizer tk = new StringTokenizer(props.getProperty(key, ""),
@@ -89,13 +140,19 @@ public class PropertiesConfigHelper {
 		return propertiesSet;
 	}
 
+	/**
+	 * Returns the value of a property, or the default value if no value is defined
+	 * @param key the key of the property
+	 * @param defaultValue the default value
+	 * @return the value of a property, or the default value if no value is defined
+	 */
 	public String getProperty(String key, String defaultValue) {
 		return props.getProperty(prefix + key, defaultValue);
 	}
 
 	/**
-	 * Returns the set of the name for the bundle 
-	 * @return
+	 * Returns the set of names for the bundles 
+	 * @return the set of names for the bundles 
 	 */
 	public Set getPropertyBundleNameSet() {
 		
@@ -137,8 +194,8 @@ public class PropertiesConfigHelper {
 	 * Appends the prefix (jawr.) to the specified key and reads it from the
 	 * properties object.
 	 * 
-	 * @param key
-	 * @return
+	 * @param key the suffix of the key property 
+	 * @return the value of the property jawr.+key
 	 */
 	public String getProperty(String key) {
 		return props.getProperty(prefix + key);

@@ -1,5 +1,5 @@
 /**
- * Copyright 2007 Jordi Hernández Sellés
+ * Copyright 2007-2009 Jordi Hernández Sellés, Ibrahim Chaehoi
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -29,6 +29,7 @@ import net.jawr.web.servlet.RendererRequestUtils;
  * to its src attribute.  
  * 
  * @author Jordi Hernández Sellés
+ * @author Ibrahim Chaehoi
  *
  */
 public abstract class AbstractResourceBundleTag extends UIOutput {
@@ -69,9 +70,9 @@ public abstract class AbstractResourceBundleTag extends UIOutput {
                                      localeKey,
                                      RendererRequestUtils.getAddedBundlesLog(request),
                                      isGzippable,
+                                     RendererRequestUtils.isSslRequest(request),
                                      writer);
 
-		
 		super.encodeBegin(context);
 	}
 	

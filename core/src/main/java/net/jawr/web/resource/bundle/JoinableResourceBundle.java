@@ -1,5 +1,5 @@
 /**
- * Copyright 2007 Jordi Hernández Sellés
+ * Copyright 2007-2009 Jordi Hernández Sellés, Ibrahim Chaehoi
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -23,72 +23,112 @@ import net.jawr.web.resource.bundle.postprocess.ResourceBundlePostProcessor;
  * a single name.  
  * 
  * @author Jordi Hernández Sellés
+ * @author Ibrahim Chaehoi
  */
 public interface JoinableResourceBundle {
 	
+	/** The licencing file name */
 	public static final String LICENSES_FILENAME = ".license";
+	
+	/** The sorting file name */
 	public static final String SORT_FILE_NAME = ".sorting";
 		
 	/**
-	 * Returns the name for this bundle. It will normally end with .js or .css, 
-	 * since it will be used to refer to the bundle in URLs. 
-	 * @return
+	 * Returns the bundle name 
+	 * @return the bundle name
 	 */
 	public String getName();
 	
 	/**
+	 * Returns the ID for this bundle. The URL, which will identify the bundle.
+	 * It will normally end with .js or .css, 
+	 * since it will be used to refer to the bundle in URLs. 
+	 * @return the ID for this bundle
+	 */
+	public String getId();
+	
+	/**
+	 * Returns true if the bundle if composite
+	 * @return true if the bundle if composite
+	 */
+	public boolean isComposite();
+	
+	/**
 	 * Get the InclusionPattern to determine when/if this bundle should be
 	 * included with current configuration. 
-	 * @return
+	 * @return the InclusionPattern
 	 */
 	public InclusionPattern getInclusionPattern();
 	
 	/**
+	 * Sets the mappings, which should be used for the bundle
+	 * @param mappings the mapping of the resources of the bundle
+	 */
+	public void setMappings(List mappings);
+	
+	/**
 	 * Returns an ordered list with all the items pertaining to this bundle. 
-	 * @return
+	 * @return an ordered list with all the items pertaining to this bundle. 
 	 */
 	public List getItemPathList();
 	
 	/**
 	 * Returns a set with the license files to include with this bundle. 
-	 * @return
+	 * @return a set with the license files to include with this bundle. 
 	 */
 	public Set getLicensesPathList();
 	
 	/**
 	 * Determines if an item path belongs to the bundle. 
-	 * @param itemPath
-	 * @return
+	 * @param itemPath the item path
+	 * @return true if an item path belongs to the bundle. 
 	 */
 	public boolean belongsToBundle(String itemPath);
         
     /**
      * Get the URL prefix for this Bundle. It is used to force redownloading
      * when needed. 
-     * @return 
+     * @return the URL prefix for this Bundle.
      */
     public String getURLPrefix(String variantKey);
     
     /**
      * Get the postprocessor to use in resources before adding them to the bundle
-     * @return
+     * @return the postprocessor to use in resources before adding them to the bundle
      */
     public ResourceBundlePostProcessor getUnitaryPostProcessor();
     
     
     /**
      * Get the postprocesor to use once all files are joined. 
-     * @return
+     * @return the postprocesor to use once all files are joined. 
      */
     public ResourceBundlePostProcessor getBundlePostProcessor();
+    
+    /**
+     * Returns the bundle data hashcode
+     * @param variantKey the variant key
+     * @return the bundle data hashcode
+     */
+    public String getBundleDataHashCode(String variantKey);
     
     /**
      * Set the hashcode of the string representing the bundled files. 
      * Used to generate an automatic version url prefix. 
      * 
-     * @param hashCode
+     * @param the variant key
+     * @param hashCode the hash code
      */
     public void setBundleDataHashCode(String variantKey, int bundleDataHashCode);
+	
+    /**
+     * Set the hashcode of the string representing the bundled files. 
+     * Used to generate an automatic version url prefix. 
+     * 
+     * @param the variant key
+     * @param hashCode the string representation of the hash code where the minus is replace by a "N" character.
+     */
+    public void setBundleDataHashCode(String variantKey, String bundleDataHashCode);
 	
     
     /**
@@ -102,17 +142,26 @@ public interface JoinableResourceBundle {
        
     /**
      * Returns a list with the specified locale variants of this bundle. 
-     * @return
+     * @return a list with the specified locale variants of this bundle. 
      */
     public List getLocaleVariantKeys();
     
     /**
      * Returns an ordered list with all the items pertaining to this bundle, with the variations 
      * corresponding to the specified variant key. 
-     * @param variantKey
-     * @return
+     * @param variantKey the variant key
+     * @return an ordered list with all the items pertaining to this bundle
      */
     public List getItemPathList(String variantKey);
+    
+    
+    /**
+     * If set, it will force the tag libraries to render a static URL in production mode. 
+     * @return
+     */
+    public String getAlternateProductionURL();
+
+	
     
     
     /**

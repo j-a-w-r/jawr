@@ -96,11 +96,11 @@ public class ResourceBundlesHandlerImplTest  extends  ResourceHandlerBasedTest {
 	}
 
 	public void testResolveCollectionForPath() {
-		assertEquals("Get script by id failed","/script.js", defaultHandler.resolveBundleForPath("/script.js").getName());
-		assertEquals("Get script by script name failed","/script.js", defaultHandler.resolveBundleForPath("/js/script1.js").getName());
+		assertEquals("Get script by id failed","/script.js", defaultHandler.resolveBundleForPath("/script.js").getId());
+		assertEquals("Get script by script name failed","/script.js", defaultHandler.resolveBundleForPath("/js/script1.js").getId());
 
-		assertEquals("Get script by id failed","/library.js", simpleHandler.resolveBundleForPath("/library.js").getName());
-		assertEquals("Get script by script name failed","/global.js", simpleHandler.resolveBundleForPath("/js/global/global.js").getName());
+		assertEquals("Get script by id failed","/library.js", simpleHandler.resolveBundleForPath("/library.js").getId());
+		assertEquals("Get script by script name failed","/global.js", simpleHandler.resolveBundleForPath("/js/global/global.js").getId());
 	}
 
 }

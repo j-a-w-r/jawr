@@ -46,8 +46,8 @@ public class FileSystemResourceHandler extends AbstractResourceHandler implement
 	 * @param tempDirRoot Directory to store temporary files
 	 * @param charset Charset to use for reading/writing the files. 
 	 */
-	public FileSystemResourceHandler(String baseDir, File tempDirRoot,Charset charset,GeneratorRegistry generatorRegistry) {
-		super(tempDirRoot, charset,generatorRegistry);
+	public FileSystemResourceHandler(String baseDir, File tempDirRoot,Charset charset,GeneratorRegistry generatorRegistry, String resourceType) {
+		super(tempDirRoot, charset,generatorRegistry, resourceType);
 		this.baseDir = baseDir.replace('/', File.separatorChar);
         this.baseDir = this.baseDir.replaceAll("%20", " ");
 	}
@@ -55,14 +55,14 @@ public class FileSystemResourceHandler extends AbstractResourceHandler implement
 	/* (non-Javadoc)
 	 * @see net.jawr.web.resource.ResourceHandler#getResourceInputStream(java.lang.String)
 	 */
-	public InputStream getResourceAsStream(String resourceName) throws ResourceNotFoundException {
+	public InputStream doGetResourceAsStream(String resourceName) {
 		
 		InputStream is = null;
 		try {
 			File resource = new File(baseDir, resourceName);
 			is = new FileInputStream( resource );
 		} catch (FileNotFoundException e) {
-			throw new ResourceNotFoundException(baseDir +  resourceName);
+			// Nothing to do
 		}
 		
 		return is; 

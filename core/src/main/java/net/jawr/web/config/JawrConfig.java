@@ -18,6 +18,7 @@ import java.util.Properties;
 
 import javax.servlet.ServletContext;
 
+import net.jawr.web.context.ThreadLocalJawrContext;
 import net.jawr.web.resource.bundle.factory.util.ClassLoaderResourceUtils;
 import net.jawr.web.resource.bundle.factory.util.PathNormalizer;
 import net.jawr.web.resource.bundle.generator.GeneratorRegistry;
@@ -35,6 +36,82 @@ import net.jawr.web.resource.bundle.renderer.CSSHTMLBundleLinkRenderer;
 public class JawrConfig {
 
 	/**
+	 * The property name for the css link flavor
+	 */
+	public static final String JAWR_CSSLINKS_FLAVOR = "jawr.csslinks.flavor";
+
+	/**
+	 * The property name for the locale resolver
+	 */
+	public static final String JAWR_LOCALE_RESOLVER = "jawr.locale.resolver";
+
+	/**
+	 * The property name for the dwr mapping
+	 */
+	public static final String JAWR_DWR_MAPPING = "jawr.dwr.mapping";
+
+	/**
+	 * The property name for the url context path used to override
+	 */
+	public static final String JAWR_URL_CONTEXTPATH_OVERRIDE = "jawr.url.contextpath.override";
+
+	/**
+	 * The property name for the url context path used to override SSL path
+	 */
+	public static final String JAWR_URL_CONTEXTPATH_SSL_OVERRIDE = "jawr.url.contextpath.ssl.override";
+
+	/**
+	 * The property name for the flag indicating if we should use or not the url context path override even in debug mode
+	 */
+	public static final String JAWR_USE_URL_CONTEXTPATH_OVERRIDE_IN_DEBUG_MODE = "jawr.url.contextpath.override.used.in.debug.mode";
+
+	/**
+	 * The property name for the Gzip IE6 flag
+	 */
+	public static final String JAWR_GZIP_IE6_ON = "jawr.gzip.ie6.on";
+
+	/**
+	 * The property name for the charset name
+	 */
+	public static final String JAWR_CHARSET_NAME = "jawr.charset.name";
+
+	/**
+	 * The property name for the Gzip flag
+	 */
+	public static final String JAWR_GZIP_ON = "jawr.gzip.on";
+
+	/**
+	 * The property name for the debug override key
+	 */
+	public static final String JAWR_DEBUG_OVERRIDE_KEY = "jawr.debug.overrideKey";
+
+	/**
+	 * The property name for the reload refresh key
+	 */
+	private static final String JAWR_CONFIG_RELOAD_REFRESH_KEY = "jawr.config.reload.refreshKey";
+
+	/**
+	 * The property name for the Debug flag
+	 */
+	public static final String JAWR_DEBUG_ON = "jawr.debug.on";
+
+	/**
+	 * The property name for the jawr working directory. By default it's jawrTemp in the application server working directory
+	 * associated to the application.
+	 */
+	public static final String JAWR_WORKING_DIRECTORY = "jawr.working.directory";
+
+	/**
+	 * The property name for the flag indicating if we should process the bundle at startup
+	 */
+	public static final String JAWR_USE_BUNDLE_MAPPING = "jawr.use.bundle.mapping";
+
+	/**
+	 * The property name for the bundle mapping prefix
+	 */
+	public static final String JAWR_BUNDLE_MAPPING_PREFIX = "jawr.bundle.mapping.prefix";
+
+	/**
 	 * The property name for the debug mode system flag
 	 */
 	private static final String DEBUG_MODE_SYSTEM_FLAG = "net.jawr.debug.on";
@@ -47,7 +124,12 @@ public class JawrConfig {
 	/**
 	 * The property name for the image hash algorithm.
 	 */
-	private static final String JAWR_IMAGE_HASH_ALGORITHM = "jawr.image.hash.algorithm";
+	public static final String JAWR_IMAGE_HASH_ALGORITHM = "jawr.image.hash.algorithm";
+
+	/**
+	 * The property name for the image hash algorithm.
+	 */
+	public static final String JAWR_IMAGE_BUNDLE = "jawr.image.bundle";
 
 	/**
 	 * The generator registry
@@ -105,6 +187,16 @@ public class JawrConfig {
 	private boolean gzipResourcesForIESixOn = true;
 
 	/**
+	 * Flag which defines if we should process the bundle at server startup. defaults to false.
+	 */
+	private boolean useBundleMapping = false;
+
+	/** 
+	 * The jqzr zorking directory path
+	 */
+	private String jawrWorkingDirectory;
+	
+	/**
 	 * Servlet mapping corresponding to this config. Defaults to an empty string
 	 */
 	private String servletMapping = "";
@@ -116,23 +208,27 @@ public class JawrConfig {
 	private String contextPathOverride;
 
 	/**
-	 * Determines if the contextPathOverride is a full domain path (http://.... or https://...)
+	 * Override value to use instead of the context path of the application in generated urls for SSL page. 
+	 * If null, contextPath is used. If blank, urls are generated to be relative.
 	 */
-	private boolean isDomainOverriden;
+	private String contextPathSslOverride;
 
 	/**
-	 * Override value to use instead of the relative path of the application when css urls paths are re-written. urls are generated to be relative if
-	 * this is not set. (//cssbackgroundimageserverlocation)
-	 * 
-	 * Note that absolute urls will not be re-written in the css files.
+	 * The flag indicating that we should use the overriden context path even in debug mode.
+	 * The default value is false.
 	 */
-	private String cssImagePathOverride;
+	private boolean useContextPathOverrideInDebugMode = false;
 
 	/**
 	 * Determines if the servlet, which provide CSS image for CSS define in the classpath should be used or not
 	 */
 	private boolean useClasspathCssImageServlet;
 
+	/**
+	 * Defines the image bundle.
+	 */
+	private String imageBundleDefinition;
+	
 	/**
 	 * Defines the image hash algorithm.
 	 * By default the value is CRC32. 
@@ -157,46 +253,60 @@ public class JawrConfig {
 	 */
 	public JawrConfig(Properties props) {
 		this.configProperties = props;
-		if (null != props.getProperty("jawr.debug.on")) {
-			setDebugModeOn(Boolean.valueOf(props.getProperty("jawr.debug.on")).booleanValue());
+		if (null != props.getProperty(JAWR_DEBUG_ON)) {
+			setDebugModeOn(Boolean.valueOf(props.getProperty(JAWR_DEBUG_ON)).booleanValue());
 		}
 		// If system flag is available, override debug mode from properties
 		if (null != System.getProperty(DEBUG_MODE_SYSTEM_FLAG)) {
 			setDebugModeOn(Boolean.valueOf(System.getProperty(DEBUG_MODE_SYSTEM_FLAG)).booleanValue());
 		}
-		if (null != props.getProperty("jawr.debug.overrideKey")) {
-			setDebugOverrideKey(props.getProperty("jawr.debug.overrideKey"));
+		if (null != props.getProperty(JAWR_DEBUG_OVERRIDE_KEY)) {
+			setDebugOverrideKey(props.getProperty(JAWR_DEBUG_OVERRIDE_KEY));
 		}
-		if (null != props.getProperty("jawr.config.reload.refreshKey")) {
-			setRefreshKey(props.getProperty("jawr.config.reload.refreshKey"));
+		
+		if (null != props.getProperty(JAWR_USE_BUNDLE_MAPPING)) {
+			setUseBundleMapping(Boolean.valueOf(props.getProperty(JAWR_USE_BUNDLE_MAPPING)).booleanValue());
 		}
-		if (null != props.getProperty("jawr.gzip.on")) {
-			setGzipResourcesModeOn(Boolean.valueOf(props.getProperty("jawr.gzip.on")).booleanValue());
+		
+		if (null != props.getProperty(JAWR_WORKING_DIRECTORY)) {
+			setJawrWorkingDirectory(props.getProperty(JAWR_WORKING_DIRECTORY));
 		}
-		if (null != props.getProperty("jawr.charset.name")) {
-			setCharsetName(props.getProperty("jawr.charset.name"));
+		
+		if (null != props.getProperty(JAWR_GZIP_ON)) {
+			setGzipResourcesModeOn(Boolean.valueOf(props.getProperty(JAWR_GZIP_ON)).booleanValue());
 		}
-		if (null != props.getProperty("jawr.gzip.ie6.on")) {
-			setGzipResourcesForIESixOn(Boolean.valueOf(props.getProperty("jawr.gzip.ie6.on")).booleanValue());
+		if (null != props.getProperty(JAWR_CHARSET_NAME)) {
+			setCharsetName(props.getProperty(JAWR_CHARSET_NAME));
 		}
-		if (null != props.getProperty("jawr.url.contextpath.override")) {
-			setContextPathOverride(props.getProperty("jawr.url.contextpath.override"));
+		if (null != props.getProperty(JAWR_GZIP_IE6_ON)) {
+			setGzipResourcesForIESixOn(Boolean.valueOf(props.getProperty(JAWR_GZIP_IE6_ON)).booleanValue());
 		}
-		if (null != props.getProperty("jawr.dwr.mapping")) {
-			setDwrMapping(props.getProperty("jawr.dwr.mapping"));
+		if (null != props.getProperty(JAWR_URL_CONTEXTPATH_OVERRIDE)) {
+			setContextPathOverride(props.getProperty(JAWR_URL_CONTEXTPATH_OVERRIDE));
+		}
+		if (null != props.getProperty(JAWR_URL_CONTEXTPATH_SSL_OVERRIDE)) {
+			setContextPathSslOverride(props.getProperty(JAWR_URL_CONTEXTPATH_SSL_OVERRIDE));
+		}
+		
+		if (null != props.getProperty(JAWR_USE_URL_CONTEXTPATH_OVERRIDE_IN_DEBUG_MODE)) {
+			setUseContextPathOverrideInDebugMode(Boolean.valueOf(props.getProperty(JAWR_USE_URL_CONTEXTPATH_OVERRIDE_IN_DEBUG_MODE)).booleanValue());
+		}
+		
+		if (null != props.getProperty(JAWR_CONFIG_RELOAD_REFRESH_KEY)) {
+			setRefreshKey(props.getProperty(JAWR_CONFIG_RELOAD_REFRESH_KEY));
+		}
+		
+		if (null != props.getProperty(JAWR_DWR_MAPPING)) {
+			setDwrMapping(props.getProperty(JAWR_DWR_MAPPING));
 		}
 
-		if (null != props.getProperty("jawr.locale.resolver")) {
-			localeResolver = (LocaleResolver) ClassLoaderResourceUtils.buildObjectInstance(props.getProperty("jawr.locale.resolver"));
+		if (null != props.getProperty(JAWR_LOCALE_RESOLVER)) {
+			localeResolver = (LocaleResolver) ClassLoaderResourceUtils.buildObjectInstance(props.getProperty(JAWR_LOCALE_RESOLVER));
 		} else
 			localeResolver = new DefaultLocaleResolver();
 
-		if (null != props.getProperty("jawr.csslinks.flavor")) {
-			setCssLinkFlavor(props.getProperty("jawr.csslinks.flavor").trim());
-		}
-
-		if (null != props.getProperty("jawr.css.imagepath.override")) {
-			setCssImagePathOverride(props.getProperty("jawr.css.imagepath.override").trim());
+		if (null != props.getProperty(JAWR_CSSLINKS_FLAVOR)) {
+			setCssLinkFlavor(props.getProperty(JAWR_CSSLINKS_FLAVOR).trim());
 		}
 
 		if (null != props.getProperty(JAWR_CSS_IMG_USE_CLASSPATH_SERVLET)) {
@@ -205,6 +315,10 @@ public class JawrConfig {
 
 		if (null != props.getProperty(JAWR_IMAGE_HASH_ALGORITHM)) {
 			setImageHashAlgorithm(props.getProperty(JAWR_IMAGE_HASH_ALGORITHM).trim());
+		}
+		
+		if (null != props.getProperty(JAWR_IMAGE_BUNDLE)) {
+			setImageBundleDefinition(props.getProperty(JAWR_IMAGE_BUNDLE).trim());
 		}
 		
 	}
@@ -228,22 +342,13 @@ public class JawrConfig {
 	}
 
 	/**
-	 * Get the isDomainOverriden flag.
-	 * 
-	 * @return the isDomainOverriden attribute, which determines if the contextPathOverride is a full domain path (http://.... or https://...)
-	 */
-	public boolean isDomainOverriden() {
-		return isDomainOverriden;
-	}
-
-	/**
 	 * Get debug mode status.
 	 * This flag may be overridden using the debugOverrideKey
 	 * 
 	 * @return the debug mode flag.
 	 */
 	public boolean isDebugModeOn() {
-		if(!debugModeOn && ThreadLocalDebugOverride.getDebugOverride().booleanValue()){
+		if(!debugModeOn && ThreadLocalJawrContext.isDebugOverriden()){
 			return true;
 		}
 		return debugModeOn;
@@ -258,6 +363,54 @@ public class JawrConfig {
 		this.debugModeOn = debugMode;
 	}
 
+	/**
+	 * Returns the refresh key
+	 * @return the refresh key
+	 */
+	public String getRefreshKey() {
+		return refreshKey;
+	}
+
+	/**
+	 * Sets the refresh key
+	 * @param refreshKey the refresh key
+	 */
+	public void setRefreshKey(String refreshKey) {
+		this.refreshKey = refreshKey;
+	}
+	
+	/**
+	 * Returns the jawr working directory
+	 * @return the jawr working directory
+	 */
+	public String getJawrWorkingDirectory() {
+		return jawrWorkingDirectory;
+	}
+
+	/**
+	 * Sets the flag indicating if we should process the bundle at startup
+	 * @param dirPath the directory path to set
+	 */
+	public void setJawrWorkingDirectory(String dirPath) {
+		this.jawrWorkingDirectory = dirPath;
+	}
+
+	/**
+	 * Returns the flag indicating if we should use the bundle mapping properties file.
+	 * @return the flag indicating if we should use the bundle mapping properties file.
+	 */
+	public boolean getUseBundleMapping() {
+		return useBundleMapping;
+	}
+
+	/**
+	 * Sets the flag indicating if we should use the bundle mapping properties file.
+	 * @param bundleMappingPath the flag to set
+	 */
+	public void setUseBundleMapping(boolean useBundleMapping) {
+		this.useBundleMapping = useBundleMapping;
+	}
+	
 	/**
 	 * Get the charset to interpret and generate resource.
 	 * 
@@ -353,33 +506,34 @@ public class JawrConfig {
 	 */
 	public void setContextPathOverride(String contextPathOverride) {
 		this.contextPathOverride = contextPathOverride;
-		if (null != contextPathOverride
-				&& (contextPathOverride.startsWith("http://") || contextPathOverride.startsWith("https://") || contextPathOverride.startsWith("//")))
-			this.isDomainOverriden = true;
 	}
 
 	/**
-	 * Get the path which will be used to override CSS image.
-	 * 
-	 * @return The string that will be prepended to css url paths after the ../'s have been removed.
-	 * 
-	 *         So: background:transparent url(../../img/bkrnd/header_1_sprite.gif) no-repeat 0 0; Becomes: background:transparent
-	 *         url(getCssImagePathOverride()+img/bkrnd/header_1_sprite.gif) no-repeat 0 0;
+	 * @return the contextPathSslOverride
 	 */
-	public String getCssImagePathOverride() {
-		return cssImagePathOverride;
+	public String getContextPathSslOverride() {
+		return contextPathSslOverride;
 	}
 
 	/**
-	 * Set the path which will be used to override CSS image.
-	 * 
-	 * @param The string that will be prepended to css url paths after the ../'s have been removed.
-	 * 
-	 *            So: background:transparent url(../../img/bkrnd/header_1_sprite.gif) no-repeat 0 0; Becomes: background:transparent
-	 *            url(getCssImagePathOverride()+img/bkrnd/header_1_sprite.gif) no-repeat 0 0;
+	 * @param contextPathSslOverride the contextPathSslOverride to set
 	 */
-	public void setCssImagePathOverride(String cssImagePathOverride) {
-		this.cssImagePathOverride = cssImagePathOverride;
+	public void setContextPathSslOverride(String contextPathSslOverride) {
+		this.contextPathSslOverride = contextPathSslOverride;
+	}
+
+	/**
+	 * @return the useContextPathOverrideInDebugMode
+	 */
+	public boolean isUseContextPathOverrideInDebugMode() {
+		return useContextPathOverrideInDebugMode;
+	}
+
+	/**
+	 * @param useContextPathOverrideInDebugMode the useContextPathOverrideInDebugMode to set
+	 */
+	public void setUseContextPathOverrideInDebugMode(boolean useContextPathOverrideInDebugMode) {
+		this.useContextPathOverrideInDebugMode = useContextPathOverrideInDebugMode;
 	}
 
 	/**
@@ -424,6 +578,22 @@ public class JawrConfig {
 	 */
 	public void setImageHashAlgorithm(String imageHashAlgorithm) {
 		this.imageHashAlgorithm = imageHashAlgorithm;
+	}
+
+	/**
+	 * Returns the image bundle definition.
+	 * @return the imageBundle Definition.
+	 */
+	public String getImageBundleDefinition() {
+		return imageBundleDefinition;
+	}
+
+	/**
+	 * Sets the image bundle definition.
+	 * @param imageBundleDefinition the imageBundleDefinition to set
+	 */
+	public void setImageBundleDefinition(String imageBundleDefinition) {
+		this.imageBundleDefinition = imageBundleDefinition;
 	}
 
 	/**
@@ -517,6 +687,8 @@ public class JawrConfig {
 	}
 
 	/**
+	 * Sets the css link flavor
+	 * 
 	 * @param cssLinkFlavor the cssLinkFlavor to set
 	 */
 	public void setCssLinkFlavor(String cssLinkFlavor) {
@@ -539,14 +711,6 @@ public class JawrConfig {
 		sb.append("[JawrConfig:'").append("charset name:'").append(this.charsetName).append("'\n").append("debugModeOn:'").append(isDebugModeOn())
 				.append("'\n").append("servletMapping:'").append(getServletMapping()).append("' ]");
 		return sb.toString();
-	}
-
-	public String getRefreshKey() {
-		return refreshKey;
-	}
-
-	public void setRefreshKey(String refreshKey) {
-		this.refreshKey = refreshKey;
 	}
 
 }

@@ -44,8 +44,8 @@ public class JoinableResourceBundleImplTest extends  ResourceHandlerBasedTest  {
 			System.out.println("Error in test constructor");
 			e.printStackTrace();
 		}
-		fullCollection = new JoinableResourceBundleImpl("full.js",".js",pattern,fullMapping,rsHandler);
-		partialCollection = new JoinableResourceBundleImpl("partial.js",".js",pattern,partialMapping,rsHandler);
+		fullCollection = new JoinableResourceBundleImpl("full.js","full",".js",pattern,fullMapping,rsHandler);
+		partialCollection = new JoinableResourceBundleImpl("partial.js","partial",".js",pattern,partialMapping,rsHandler);
 	}
  
 	/**

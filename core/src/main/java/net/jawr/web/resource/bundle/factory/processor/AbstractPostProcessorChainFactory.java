@@ -21,6 +21,7 @@ import java.util.StringTokenizer;
 import net.jawr.web.resource.bundle.factory.util.ClassLoaderResourceUtils;
 import net.jawr.web.resource.bundle.postprocess.AbstractChainedResourceBundlePostProcessor;
 import net.jawr.web.resource.bundle.postprocess.EmptyResourceBundlePostProcessor;
+import net.jawr.web.resource.bundle.postprocess.PostProcessFactoryConstant;
 import net.jawr.web.resource.bundle.postprocess.ResourceBundlePostProcessor;
 import net.jawr.web.resource.bundle.postprocess.impl.CustomPostProcessorChainWrapper;
 import net.jawr.web.resource.bundle.postprocess.impl.LicensesIncluderPostProcessor;
@@ -33,11 +34,12 @@ import net.jawr.web.resource.bundle.postprocess.impl.LicensesIncluderPostProcess
  */
 public abstract class AbstractPostProcessorChainFactory implements	PostProcessorChainFactory {
 
-	protected static final String LICENSE_INCLUDER = "license";
-	protected static final String NO_POSTPROCESSING_KEY = "none";
-	
+	/** The map of custom postprocessor */
 	private Map customPostProcessors;
 	
+	/**
+	 * Constructor 
+	 */
 	public AbstractPostProcessorChainFactory() {
 		this.customPostProcessors = new HashMap();
 	}
@@ -48,7 +50,7 @@ public abstract class AbstractPostProcessorChainFactory implements	PostProcessor
 	public ResourceBundlePostProcessor buildPostProcessorChain(String processorKeys) {
 		if(null == processorKeys)
 			return null;
-		else if(NO_POSTPROCESSING_KEY.equals(processorKeys))
+		else if(PostProcessFactoryConstant.NO_POSTPROCESSING_KEY.equals(processorKeys))
 			return new EmptyResourceBundlePostProcessor();
 		
 		StringTokenizer tk = new StringTokenizer(processorKeys,",");
@@ -63,9 +65,9 @@ public abstract class AbstractPostProcessorChainFactory implements	PostProcessor
 	/**
 	 * Creates an AbstractChainedResourceBundlePostProcessor. If the supplied chain is null, the new chain is returned. Otherwise it
 	 * is added to the existing chain.  
-	 * @param chain
-	 * @param key
-	 * @return
+	 * @param chain the chained post processor
+	 * @param key the id of the post processor
+	 * @return the chained post processor, with the new post processor.
 	 */
 	private AbstractChainedResourceBundlePostProcessor addOrCreateChain(AbstractChainedResourceBundlePostProcessor chain, String key) {
 		
@@ -90,15 +92,15 @@ public abstract class AbstractPostProcessorChainFactory implements	PostProcessor
 	/**
 	 * Builds an AbstractChainedResourceBundlePostProcessor based on the supplied key. If the key doesn't match
 	 * any PostProcessor (as defined in the documentation), an IllegalArgumentException is thrown. 
-	 * @param key
-	 * @return
+	 * @param key the key name of the post processor
+	 * @return the chained post processor
 	 */
 	protected abstract AbstractChainedResourceBundlePostProcessor buildProcessorByKey(String key);
 	
 
 	/**
 	 * Builds an instance of LicensesIncluderPostProcessor. 
-	 * @return LicensesIncluderPostProcessor
+	 * @return an instance of LicensesIncluderPostProcessor. 
 	 */
 	protected LicensesIncluderPostProcessor buildLicensesProcessor() {
 		return new LicensesIncluderPostProcessor();
@@ -110,11 +112,11 @@ public abstract class AbstractPostProcessorChainFactory implements	PostProcessor
 	 */
 	public void setCustomPostprocessors(Map keysClassNames) {
 		for(Iterator it = keysClassNames.keySet().iterator(); it.hasNext();){
-			Object key = it.next();			
+			String key = (String) it.next();			
 			ResourceBundlePostProcessor customProcessor = 
 				(ResourceBundlePostProcessor) ClassLoaderResourceUtils.buildObjectInstance((String) keysClassNames.get(key));
 			
-			customPostProcessors.put(key, new CustomPostProcessorChainWrapper(customProcessor));
+			customPostProcessors.put(key, new CustomPostProcessorChainWrapper(key, customProcessor));
 			
 		}		
 	}

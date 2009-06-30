@@ -44,6 +44,27 @@ public class JawrServlet extends HttpServlet {
 	/** The request handler */
 	protected JawrRequestHandler requestHandler;
 
+	/** This property is exclusively used for the build time bundling, 
+	 * to bypass the configuration of the Jawr config file */
+	protected boolean forceProductionMode = false;
+	
+	
+	/**
+	 * Returns if the production mode is forced
+	 * @return true if the production mode is forced
+	 */
+	public boolean isForceProductionMode() {
+		return forceProductionMode;
+	}
+
+	/**
+	 * Sets the flag indicating if the production mode is forced
+	 * @param forceProductionMode the flag to set
+	 */
+	public void setForceProductionMode(boolean forceProductionMode) {
+		this.forceProductionMode = forceProductionMode;
+	}
+
 	/* (non-Javadoc)
 	 * @see javax.servlet.GenericServlet#init()
 	 */
@@ -56,12 +77,12 @@ public class JawrServlet extends HttpServlet {
 				requestHandler = new JawrRequestHandler(getServletContext(),getServletConfig());
 			}
 		}catch (ServletException e) {
-			log.fatal("Jawr servlet with name" +  getServletConfig().getServletName() +" failed to initialize properly. ");
+			log.fatal("Jawr servlet with name " +  getServletConfig().getServletName() +" failed to initialize properly. ");
 			log.fatal("Cause:");
 			log.fatal(e.getMessage(),e);
 			throw e;
 		}catch (RuntimeException e) {
-			log.fatal("Jawr servlet with name" +  getServletConfig().getServletName() +" failed to initialize properly. ");
+			log.fatal("Jawr servlet with name " +  getServletConfig().getServletName() +" failed to initialize properly. ");
 			log.fatal("Cause: ");
 			log.fatal(e.getMessage(),e);
 			throw new ServletException(e);

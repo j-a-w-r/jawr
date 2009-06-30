@@ -1,5 +1,5 @@
 /**
- * Copyright 2007 Jordi Hernández Sellés
+ * Copyright 2007-2009 Jordi Hernández Sellés, Ibrahim Chaehoi
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -27,23 +27,24 @@ import net.jawr.web.minification.JSMin.JSMinException;
 import net.jawr.web.resource.bundle.IOUtils;
 import net.jawr.web.resource.bundle.postprocess.AbstractChainedResourceBundlePostProcessor;
 import net.jawr.web.resource.bundle.postprocess.BundleProcessingStatus;
+import net.jawr.web.resource.bundle.postprocess.PostProcessFactoryConstant;
 
 /**
  * This postprocessor will minify a javascript bundle using Douglas Crockford's JSMin,
  * in its java implementation (see www.crockford.com and www.inconspicuous.org). 
  * 
  * @author Jordi Hernández Sellés
+ * @author Ibrahim Chaehoi
  */
 public class JSMinPostProcessor extends
 		AbstractChainedResourceBundlePostProcessor {
 	
-
 	/**
 	 * Constructor for a compressor.  
 	 * @param charset
 	 */
 	public JSMinPostProcessor() {
-		super();
+		super(PostProcessFactoryConstant.JSMIN);
 	}
 
 	/* (non-Javadoc)
@@ -71,8 +72,9 @@ public class JSMinPostProcessor extends
 	 * Utility method for components that need to use JSMin in a different context other than 
 	 * bundle postprocessing. 
 	 * 
-	 * @param sb
-	 * @return
+	 * @param sb the content to minify
+	 * @param charset the charset
+	 * @return the minified content
 	 */
 	public StringBuffer minifyStringBuffer(StringBuffer sb, Charset charset) throws IOException, JSMinException {
 		byte[] bundleBytes = sb.toString().getBytes(charset.name());
@@ -87,10 +89,11 @@ public class JSMinPostProcessor extends
 	}
 
 	/**
-	 * @param charset
-	 * @param minified
-	 * @return
-	 * @throws IOException
+	 * Convert a byte array to a String buffer taking into account the charset 
+	 * @param charset the charset
+	 * @param minified the byte array
+	 * @return the string buffer
+	 * @throws IOException if an IO exception occurs
 	 */
 	private StringBuffer byteArrayToString(Charset charset, byte[] minified)
 			throws IOException {
@@ -105,11 +108,12 @@ public class JSMinPostProcessor extends
 
 	/**
 	 * Upon an exception thrown during minification, this method will throw an error with detailed information. 
-	 * @param status
-	 * @param e
+	 * @param status the bundle processing status
+	 * @param bundleBytes the byte array of the bundle content
+	 * @param e the JSMinException
 	 */
 	private void formatAndThrowJSLintError(BundleProcessingStatus status, byte[] bundleBytes, JSMinException e) {
-		StringBuffer errorMsg = new StringBuffer("JSMin failed to minify the bundle with id: '" + status.getCurrentBundle().getName() + "'.\n");
+		StringBuffer errorMsg = new StringBuffer("JSMin failed to minify the bundle with id: '" + status.getCurrentBundle().getId() + "'.\n");
 		errorMsg.append("The exception thrown is of type:" + e.getClass().getName() + "'.\n");
 		int currentByte = e.getByteIndex();
 		int startPoint;

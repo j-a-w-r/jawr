@@ -1,5 +1,5 @@
 /**
- * Copyright 2008 Ibrahim CHAEHOI
+ * Copyright 2008 Ibrahim Chaehoi
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -24,7 +24,7 @@ import org.apache.taglibs.standard.lang.support.ExpressionEvaluatorManager;
 /**
  * This class defines the EL version of Javascript Bundle tag
  * 
- * @author Ibrahim CHAEHOI
+ * @author Ibrahim Chaehoi
  */
 public class ELJavascriptBundleTag extends JavascriptBundleTag {
 

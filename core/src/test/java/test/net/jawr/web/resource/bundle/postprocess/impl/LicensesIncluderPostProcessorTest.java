@@ -45,7 +45,7 @@ public class LicensesIncluderPostProcessorTest  extends  ResourceHandlerBasedTes
 		jeesConfig.setCharsetName("UTF-8");
 		
 		List c = Collections.singletonList("js/**");
-		resourcebundle = new JoinableResourceBundleImpl("script.js",
+		resourcebundle = new JoinableResourceBundleImpl("script.js","script",
 										".js",
 										new InclusionPattern(true,0),
 										c,

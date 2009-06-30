@@ -29,6 +29,7 @@ import net.jawr.web.resource.bundle.generator.classpath.ClasspathJSGenerator;
 import net.jawr.web.resource.bundle.generator.dwr.DWRGeneratorFactory;
 import net.jawr.web.resource.bundle.generator.validator.CommonsValidatorGenerator;
 import net.jawr.web.resource.bundle.locale.ResourceBundleMessagesGenerator;
+import net.jawr.web.servlet.JawrRequestHandler;
 
 /**
  * Registry for resource generators, which create scripts or CSS data dynamically, 
@@ -50,9 +51,6 @@ public class GeneratorRegistry {
 	/** The classpath resource bundle prefix */
 	public static final String CLASSPATH_RESOURCE_BUNDLE_PREFIX = "jar";
 	
-	/** The old classpath CSS bundle prefix (usage of this prefix is deprecated since Jawr 2.8) */
-	public static final String OLD_CLASSPATH_CSS_BUNDLE_PREFIX = "jar_css";
-	
 	/** The DWR bundle prefix */
 	public static final String DWR_BUNDLE_PREFIX = "dwr";
 	
@@ -62,11 +60,11 @@ public class GeneratorRegistry {
 	/** The generator prefix separator */
 	public static final String PREFIX_SEPARATOR = ":";
 	
-	/** The generator registry */
-	private static final Map registry = ConcurrentCollectionsFactory.buildConcurrentHashMap();
-	
 	/** The generator prefix registry */
 	private static final List prefixRegistry = ConcurrentCollectionsFactory.buildCopyOnWriteArrayList();
+	
+	/** The generator registry */
+	private final Map registry = ConcurrentCollectionsFactory.buildConcurrentHashMap();
 	
 	/** The resource type */
 	private String resourceType;
@@ -78,7 +76,6 @@ public class GeneratorRegistry {
 	{
 		prefixRegistry.add(MESSAGE_BUNDLE_PREFIX + PREFIX_SEPARATOR);
 		prefixRegistry.add(CLASSPATH_RESOURCE_BUNDLE_PREFIX + PREFIX_SEPARATOR);
-		prefixRegistry.add(OLD_CLASSPATH_CSS_BUNDLE_PREFIX+PREFIX_SEPARATOR);
 		prefixRegistry.add(DWR_BUNDLE_PREFIX + PREFIX_SEPARATOR);
 		prefixRegistry.add(COMMONS_VALIDATOR_PREFIX + PREFIX_SEPARATOR);
 	}
@@ -93,10 +90,9 @@ public class GeneratorRegistry {
 	
 	/**
 	 * Constructor
-	 * @param resource type, the type of resource handled by the generator registry
 	 */
 	public GeneratorRegistry(String resourceType){
-		this.resourceType = resourceType;
+		this.resourceType = resourceType;;
 	}
 	
 	/**
@@ -124,9 +120,7 @@ public class GeneratorRegistry {
 				registry.put(generatorKey, new ClassPathCSSGenerator());
 			}
 		}
-		else if((OLD_CLASSPATH_CSS_BUNDLE_PREFIX + PREFIX_SEPARATOR).equals(generatorKey)){
-			registry.put(generatorKey, new ClassPathCSSGenerator());
-		}else if((DWR_BUNDLE_PREFIX + PREFIX_SEPARATOR).equals(generatorKey)){
+		else if((DWR_BUNDLE_PREFIX + PREFIX_SEPARATOR).equals(generatorKey)){
 			registry.put(generatorKey, DWRGeneratorFactory.createDWRGenerator());
 		}
 		else if((COMMONS_VALIDATOR_PREFIX + PREFIX_SEPARATOR).equals(generatorKey)){
@@ -221,6 +215,23 @@ public class GeneratorRegistry {
 	}
 	
 	/**
+	 * Returns the path to use in the "build time process" to generate the resource path for debug mode. 
+	 * @param path the resource path
+	 * @return the path to use in the "build time process" to generate the resource path for debug mode. 
+	 */
+	public String getDebugModeBuildTimeGenerationPath(String path){
+		
+		int idx = path.indexOf("?");
+		String debugModeGeneratorPath = path.substring(0, idx);
+		debugModeGeneratorPath = debugModeGeneratorPath.replaceAll("\\.", "/");
+		
+		int jawrGenerationParamIdx = path.indexOf(JawrRequestHandler.GENERATION_PARAM);
+		String parameter = path.substring(jawrGenerationParamIdx+JawrRequestHandler.GENERATION_PARAM.length()+1); // Add 1 for the '=' character 
+		String key = matchPath(parameter);
+		return debugModeGeneratorPath+"/"+((ResourceGenerator)registry.get(key)).getDebugModeBuildTimeGenerationPath(parameter);
+	}
+	
+	/**
 	 * Get the key from the mappings that corresponds to the specified path. 
 	 * @param path the resource path
 	 * @return the registry key corresponding to the path
@@ -239,4 +250,13 @@ public class GeneratorRegistry {
 		return rets;
 	}
 
+	/**
+	 * Returns true if the path match a message resource generator
+	 * @param path the path
+	 * @return true if the path match a message resource generator
+	 */
+	public boolean isMessageResourceGenerator(String path){
+		
+		return path.startsWith(MESSAGE_BUNDLE_PREFIX+PREFIX_SEPARATOR);	
+	}
 }

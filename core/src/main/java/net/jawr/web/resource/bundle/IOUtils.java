@@ -17,6 +17,11 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.Reader;
 import java.io.Writer;
+import java.nio.ByteBuffer;
+import java.nio.channels.Channel;
+import java.nio.channels.FileChannel;
+import java.nio.channels.ReadableByteChannel;
+import java.nio.channels.WritableByteChannel;
 
 public class IOUtils {
 
@@ -44,7 +49,8 @@ public class IOUtils {
 	 * @param reader the reader to read from
 	 * @param writer the writer to write to
 	 */
-	public static void copy(InputStream input, OutputStream output) throws IOException {
+	public static void copy(InputStream input, OutputStream output)
+			throws IOException {
 		byte[] buf = new byte[BUFFER_SIZE];
 		int num = 0;
 
@@ -59,7 +65,8 @@ public class IOUtils {
 	 * @param input the input stream to read from
 	 * @param writer the writer to write to
 	 */
-	public static void copy(InputStream input, Writer writer) throws IOException {
+	public static void copy(InputStream input, Writer writer)
+			throws IOException {
 		copy(new InputStreamReader(input), writer);
 	}
 
@@ -69,7 +76,8 @@ public class IOUtils {
 	 * @param input the input stream to read from
 	 * @param output the output stream to write to
 	 */
-	public static void copy(InputStream input, OutputStream output, boolean closeStreams) throws IOException {
+	public static void copy(InputStream input, OutputStream output,
+			boolean closeStreams) throws IOException {
 		try {
 			copy(input, output);
 		} finally {
@@ -81,11 +89,52 @@ public class IOUtils {
 	}
 
 	/**
+	 * Copy the readable byte channel to the writable byte channel
+	 * 
+	 * @param inChannel the readable byte channel
+	 * @param outChannel the writable byte channel
+	 * @throws IOException if an IOException occurs.
+	 */
+	public static void copy(ReadableByteChannel inChannel,
+			WritableByteChannel outChannel) throws IOException {
+
+		if (inChannel instanceof FileChannel) {
+			((FileChannel) inChannel).transferTo(0, ((FileChannel) inChannel)
+					.size(), outChannel);
+		} else {
+
+			final ByteBuffer buffer = ByteBuffer.allocateDirect(16 * 1024);
+			try {
+
+				while (inChannel.read(buffer) != -1) {
+					// prepare the buffer to be drained
+					buffer.flip();
+					// write to the channel, may block
+					outChannel.write(buffer);
+					// If partial transfer, shift remainder down
+					// If buffer is empty, same as doing clear()
+					buffer.compact();
+				}
+				// EOF will leave buffer in fill state
+				buffer.flip();
+				// make sure the buffer is fully drained.
+				while (buffer.hasRemaining()) {
+					outChannel.write(buffer);
+				}
+			} finally {
+				IOUtils.close(inChannel);
+				IOUtils.close(outChannel);
+			}
+		}
+	}
+
+	/**
 	 * Close the input stream
+	 * 
 	 * @param stream the input stream to close
 	 */
 	public static void close(InputStream stream) {
-		
+
 		if (stream != null) {
 
 			try {
@@ -98,10 +147,11 @@ public class IOUtils {
 
 	/**
 	 * Close the output stream
+	 * 
 	 * @param stream the output stream to close
 	 */
 	public static void close(OutputStream stream) {
-		
+
 		if (stream != null) {
 
 			try {
@@ -111,4 +161,51 @@ public class IOUtils {
 			}
 		}
 	}
+
+	/**
+	 * Close the channel
+	 * 
+	 * @param channel the channel to close
+	 */
+	public static void close(Channel channel) {
+		if (channel != null) {
+
+			try {
+				channel.close();
+			} catch (IOException e) {
+				// Nothing to do
+			}
+		}
+	}
+
+	/**
+	 * Close the reader
+	 * @param reader the reader to close
+	 */
+	public static void close(Reader reader) {
+		if (reader != null) {
+
+			try {
+				reader.close();
+			} catch (IOException e) {
+				// Nothing to do
+			}
+		}
+	}
+	
+	/**
+	 * Close the writer
+	 * @param writer the writer to close
+	 */
+	public static void close(Writer writer) {
+		if (writer != null) {
+
+			try {
+				writer.close();
+			} catch (IOException e) {
+				// Nothing to do
+			}
+		}
+	}
+
 }

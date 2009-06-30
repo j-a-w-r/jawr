@@ -37,6 +37,7 @@ public interface BundleRenderer {
      * @param contextPath String The context path to prepend to the URL. 
      * @param includedBundles Set A set of names previously added. None of them will be written out as links to avoid duplication. 
      * @param useGzip boolean If true, the gzip prefix is added to the URLs so the link will point to the gzipped version. 
+     * @param sslRequest boolean If true, the request is in through an SSL connection (https://..) . 
      * @param out Writer Writer to output the tags, typically a JSPWriter. 
      */
     public void renderBundleLinks(  String requestedPath,
@@ -44,6 +45,7 @@ public interface BundleRenderer {
                                     String variantKey,
                                     final Set includedBundles, 
                                     boolean useGzip, 
+                                    boolean sslRequest,
                                     Writer out ) throws IOException;
     
     /**

@@ -1,5 +1,5 @@
 /**
- * Copyright 2007 Jordi Hernández Sellés
+ * Copyright 2007-2009 Jordi Hernández Sellés, Ibrahim Chaehoi
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -14,6 +14,7 @@
 package net.jawr.web.resource.bundle.factory.processor;
 
 import net.jawr.web.resource.bundle.postprocess.AbstractChainedResourceBundlePostProcessor;
+import net.jawr.web.resource.bundle.postprocess.PostProcessFactoryConstant;
 import net.jawr.web.resource.bundle.postprocess.ResourceBundlePostProcessor;
 import net.jawr.web.resource.bundle.postprocess.impl.JSMinPostProcessor;
 import net.jawr.web.resource.bundle.postprocess.impl.yui.YUIJSCompressor;
@@ -22,15 +23,11 @@ import net.jawr.web.resource.bundle.postprocess.impl.yui.YUIJSCompressor;
  * PostProcessorChainFactory for javascript resources. 
  * 
  * @author Jordi Hernández Sellés
+ * @author Ibrahim Chaehoi
  *
  */
 public class JSPostProcessorChainFactory extends AbstractPostProcessorChainFactory implements PostProcessorChainFactory {
 	
-	private static final String JSMIN = "JSMin";
-	private static final String YUI_COMPRESSOR = "YUI";
-	private static final String YUI_COMPRESSOR_OBFUSCATOR = "YUIobf";
-
-		
 	/* (non-Javadoc)
 	 * @see net.jawr.web.resource.bundle.factory.processor.PostProcessorChainFactory#buildDefaultProcessor()
 	 */
@@ -51,13 +48,13 @@ public class JSPostProcessorChainFactory extends AbstractPostProcessorChainFacto
 	 * @see net.jawr.web.resource.bundle.factory.processor.PostProcessorChainFactory#getPostProcessor(java.lang.String)
 	 */
 	protected AbstractChainedResourceBundlePostProcessor buildProcessorByKey(String procesorKey){
-		if(JSMIN.equals(procesorKey))
+		if(PostProcessFactoryConstant.JSMIN.equals(procesorKey))
 			return buildJSMinPostProcessor();
-		else if (LICENSE_INCLUDER.equals(procesorKey))
+		else if (PostProcessFactoryConstant.LICENSE_INCLUDER.equals(procesorKey))
 			return buildLicensesProcessor();
-		else if (YUI_COMPRESSOR.equals(procesorKey))
+		else if (PostProcessFactoryConstant.YUI_COMPRESSOR.equals(procesorKey))
 			return new YUIJSCompressor(false);
-		else if (YUI_COMPRESSOR_OBFUSCATOR.equals(procesorKey))
+		else if (PostProcessFactoryConstant.YUI_COMPRESSOR_OBFUSCATOR.equals(procesorKey))
 			return new YUIJSCompressor(true);
 		else throw new IllegalArgumentException("The supplied key [" + procesorKey + "] is not bound to any ResourceBundlePostProcessor. Please check the documentation for valid keys. ");
 	}

@@ -1,5 +1,5 @@
 /**
- * Copyright 2008 Jordi Hernández Sellés
+ * Copyright 2008-2009 Jordi Hernández Sellés, Ibrahim Chaehoi
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -20,6 +20,7 @@ import java.io.StringWriter;
 
 import net.jawr.web.resource.bundle.postprocess.AbstractChainedResourceBundlePostProcessor;
 import net.jawr.web.resource.bundle.postprocess.BundleProcessingStatus;
+import net.jawr.web.resource.bundle.postprocess.PostProcessFactoryConstant;
 
 import com.yahoo.platform.yui.compressor.CssCompressor;
 
@@ -28,10 +29,18 @@ import com.yahoo.platform.yui.compressor.CssCompressor;
  * See http://developer.yahoo.com/yui/compressor/ for more information. 
  * 
  * @author Jordi Hernández Sellés
+ * @author Ibrahim Chaehoi
  */
 public class YUICSSCompressor extends
 		AbstractChainedResourceBundlePostProcessor {
 
+	/**
+	 * Constructor 
+	 */
+	public YUICSSCompressor() {
+		super(PostProcessFactoryConstant.YUI_COMPRESSOR);
+	}
+	
 	/* (non-Javadoc)
 	 * @see net.jawr.web.resource.bundle.postprocess.AbstractChainedResourceBundlePostProcessor#doPostProcessBundle(net.jawr.web.resource.bundle.postprocess.BundleProcessingStatus, java.lang.StringBuffer)
 	 */

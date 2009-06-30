@@ -1,5 +1,5 @@
 /**
- * Copyright 2008 Ibrahim CHAEHOI
+ * Copyright 2008 Ibrahim Chaehoi
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -23,7 +23,7 @@ import java.util.ArrayList;
 /**
  * This class defines the bean information for the ELCSSBundleTag class.
  * 
- * @author Ibrahim CHAEHOI
+ * @author Ibrahim Chaehoi
  */
 public class ELJavascriptBundleTagBeanInfo extends SimpleBeanInfo {
 

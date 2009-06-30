@@ -17,7 +17,7 @@ import java.util.Iterator;
 import java.util.Properties;
 import java.util.Set;
 
-import net.jawr.web.resource.bundle.factory.PropertiesBasedBundlesHandlerFactory;
+import net.jawr.web.resource.bundle.factory.PropertiesBundleConstant;
 
 import org.apache.log4j.Logger;
 
@@ -30,9 +30,15 @@ import org.apache.log4j.Logger;
  * @author Jordi Hernández Sellés
  */
 public class ConfigPropertiesAugmenter {
-	private final Properties configProperties; 
-	private Set privateConfigProperties;
+	
+	/** The logger */
 	private static final Logger log = Logger.getLogger(ConfigPropertiesAugmenter.class);
+
+	/** The configuration properties*/
+	private final Properties configProperties;
+	
+	/** The set of private configuration properties */
+	private Set privateConfigProperties;
 
 	/**
 	 * Creates an instance of the augmenter which uses configProperties as the base configuration to 
@@ -50,7 +56,8 @@ public class ConfigPropertiesAugmenter {
 	}
 
 	/**
-	 * @param configProperties
+	 * Constructor
+	 * @param configProperties the configuration properties
 	 */
 	public ConfigPropertiesAugmenter(final Properties configProperties) {
 		super();
@@ -61,7 +68,7 @@ public class ConfigPropertiesAugmenter {
 	/**
 	 * Augments the base configuration with the properties specified as parameter. 
 	 * 
-	 * @param configToAdd
+	 * @param configToAdd the configuration properties to add
 	 */
 	public void augmentConfiguration(Properties configToAdd) {
 		for(Iterator it = configToAdd.keySet().iterator();it.hasNext();) {
@@ -90,17 +97,17 @@ public class ConfigPropertiesAugmenter {
 	 * Determine wether a property is augmentable (so instead of overriding, values are appended to 
 	 * the current values). 
 	 * 
-	 * @param configKey
-	 * @return
+	 * @param configKey the configuration key
+	 * @return true if the property is augmentable or not.
 	 */
 	protected boolean isAugmentable(String configKey) {
 		boolean rets = false;
-		rets = (configKey.endsWith(PropertiesBasedBundlesHandlerFactory.BUNDLE_FACTORY_CUSTOM_NAMES) || // Bundles
-				configKey.endsWith(PropertiesBasedBundlesHandlerFactory.BUNDLE_FACTORY_CUSTOM_MAPPINGS) || 		// mappings
-				configKey.endsWith(PropertiesBasedBundlesHandlerFactory.BUNDLE_FACTORY_CUSTOM_COMPOSITE_NAMES) || 	// children of composites
-				configKey.equals(PropertiesBasedBundlesHandlerFactory.CUSTOM_POSTPROCESSORS + 
-								PropertiesBasedBundlesHandlerFactory.CUSTOM_POSTPROCESSORS_NAMES) || 		// Postprocessors definition
-				configKey.equals(PropertiesBasedBundlesHandlerFactory.CUSTOM_GENERATORS));					// Generators definition
+		rets = (configKey.endsWith(PropertiesBundleConstant.BUNDLE_FACTORY_CUSTOM_NAMES) || // Bundles
+				configKey.endsWith(PropertiesBundleConstant.BUNDLE_FACTORY_CUSTOM_MAPPINGS) || 		// mappings
+				configKey.endsWith(PropertiesBundleConstant.BUNDLE_FACTORY_CUSTOM_COMPOSITE_NAMES) || 	// children of composites
+				configKey.equals(PropertiesBundleConstant.CUSTOM_POSTPROCESSORS + 
+						PropertiesBundleConstant.CUSTOM_POSTPROCESSORS_NAMES) || 		// Postprocessors definition
+				configKey.equals(PropertiesBundleConstant.CUSTOM_GENERATORS));					// Generators definition
 		
 		rets = rets && configProperties.containsKey(configKey);
 		return rets;

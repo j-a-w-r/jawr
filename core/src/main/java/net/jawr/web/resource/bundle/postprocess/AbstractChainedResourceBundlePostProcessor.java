@@ -28,9 +28,35 @@ import org.apache.log4j.Logger;
 public abstract class AbstractChainedResourceBundlePostProcessor implements
 		ChainedResourceBundlePostProcessor {
 	
+	/** The logger */
 	private static final Logger log = Logger.getLogger(ResourceBundlePostProcessor.class);
 	
+	/** The next post processor */
 	private AbstractChainedResourceBundlePostProcessor nextProcessor;
+	
+	/** The ID of the chained bundle post processor */
+	private String id;
+	
+	/**
+	 * Constructor
+	 * @param id the id of the post processor
+	 */
+	public AbstractChainedResourceBundlePostProcessor(String id) {
+		this.id = id;
+	}
+	
+	/**
+	 * Returns the ID of the ChainedResourceBundlePostProcessor
+	 * @return the ID of the ChainedResourceBundlePostProcessor
+	 */
+	public String getId(){
+		StringBuffer strId = new StringBuffer();
+		strId.append(id);
+		if(nextProcessor != null){
+			strId.append(","+nextProcessor.getId());
+		}
+		return strId.toString();
+	}
 	
 	/* (non-Javadoc)
 	 * @see net.jawr.web.resource.bundle.postprocess.ResourceBundlePostProcessor#postProcessBundle(java.lang.StringBuffer)
@@ -39,7 +65,7 @@ public abstract class AbstractChainedResourceBundlePostProcessor implements
 		StringBuffer processedBundle = null;
 		try {
 			if(log.isDebugEnabled())
-				log.debug("postprocessing bundle:" + status.getCurrentBundle().getName());
+				log.debug("postprocessing bundle:" + status.getCurrentBundle().getId());
 			processedBundle = doPostProcessBundle(status,bundleData);
 		} catch (IOException e) {
 			throw new RuntimeException("Unexpected IOException during execution of a postprocessor.",e);
@@ -52,7 +78,7 @@ public abstract class AbstractChainedResourceBundlePostProcessor implements
 	
 	/**
 	 * Set the next post processor in the chain. 
-	 * @param nextProcessor
+	 * @param nextProcessor the post processor to set
 	 */
 	public void addNextProcessor(AbstractChainedResourceBundlePostProcessor nextProcessor) {
 		if(this.nextProcessor == null){
@@ -64,9 +90,9 @@ public abstract class AbstractChainedResourceBundlePostProcessor implements
 	
 	/**
 	 * Postprocess a bundle of resources in the context of this chain of processors. 
-	 * @param bundleData
-	 * @return
-	 * @throws IOException
+	 * @param bundleData the bundle data
+	 * @return the processed content
+	 * @throws IOException if an IOException occurs
 	 */
 	protected abstract StringBuffer doPostProcessBundle(BundleProcessingStatus status, StringBuffer bundleData) throws IOException;
 }

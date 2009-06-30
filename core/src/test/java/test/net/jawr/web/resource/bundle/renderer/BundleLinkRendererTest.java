@@ -20,7 +20,6 @@ import java.util.regex.Pattern;
 import net.jawr.web.config.JawrConfig;
 import net.jawr.web.exception.DuplicateBundlePathException;
 import net.jawr.web.resource.FileSystemResourceHandler;
-import net.jawr.web.resource.bundle.generator.GeneratorRegistry;
 import net.jawr.web.resource.bundle.handler.ResourceBundlesHandler;
 import net.jawr.web.resource.bundle.renderer.BundleRenderer;
 import net.jawr.web.resource.bundle.renderer.CSSHTMLBundleLinkRenderer;
@@ -58,7 +57,6 @@ public class BundleLinkRendererTest  extends ResourceHandlerBasedTest{
 	    jeesConfig = new JawrConfig(new Properties());
 	    jeesConfig.setCharsetName("UTF-8");
 	    jeesConfig.setServletMapping("/srvMapping");
-	    jeesConfig.setGeneratorRegistry(new GeneratorRegistry());
 	    ResourceBundlesHandler jsHandler = null;
 	    ResourceBundlesHandler cssHandler = null;
 	    try {
@@ -73,13 +71,13 @@ public class BundleLinkRendererTest  extends ResourceHandlerBasedTest{
 	    jsRenderer = new JavascriptHTMLBundleLinkRenderer(jsHandler,true);
 	}
 	
-	private String renderToString(BundleRenderer renderer, String path, String ctxPath,Set included, boolean gZip){
+	private String renderToString(BundleRenderer renderer, String path, String ctxPath,Set included, boolean gZip, boolean isSslRequest){
 		ByteArrayOutputStream baOs = new ByteArrayOutputStream();
 	    WritableByteChannel wrChannel = Channels.newChannel(baOs);
 	    Writer writer = Channels.newWriter(wrChannel, jeesConfig.getResourceCharset().name());
 	    String ret = null;
 	    try {
-			renderer.renderBundleLinks(path,ctxPath,null,included,gZip,writer);
+			renderer.renderBundleLinks(path,ctxPath,null,included,gZip, isSslRequest, writer);
 		    writer.close();
 		    ret = baOs.toString(jeesConfig.getResourceCharset().name());
 		} catch (IOException e) {
@@ -93,7 +91,7 @@ public class BundleLinkRendererTest  extends ResourceHandlerBasedTest{
 		jeesConfig.setDebugModeOn(false);
 		// Test regular link creation
 	    Set includedBundles = new HashSet();
-	    String result = renderToString(cssRenderer,"/css/lib/lib.css", CSS_CTX_PATH, includedBundles, false);
+	    String result = renderToString(cssRenderer,"/css/lib/lib.css", CSS_CTX_PATH, includedBundles, false, false);
 		
 		assertNotSame("No css tag written ", "", result.trim());
 			
@@ -120,11 +118,11 @@ public class BundleLinkRendererTest  extends ResourceHandlerBasedTest{
 		assertTrue("Unexpected tag added at position 2:" + next, next.endsWith(debOffTag2));
 		
 		// Reusing the set, we test that no repeats are allowed. 
-		result = renderToString(cssRenderer,"/css/lib/lib.css", JS_CTX_PATH, includedBundles, false);
+		result = renderToString(cssRenderer,"/css/lib/lib.css", JS_CTX_PATH, includedBundles, false, false);
 		assertEquals("Tags were repeated","", result.trim());
 		
 		includedBundles = new HashSet();
-		result = renderToString(cssPrintRenderer,"/css/lib/lib.css", CSS_CTX_PATH, includedBundles, false);
+		result = renderToString(cssPrintRenderer,"/css/lib/lib.css", CSS_CTX_PATH, includedBundles, false, false);
 
 		assertNotSame("No css tag written ", "", result.trim());
 			
@@ -159,7 +157,7 @@ public class BundleLinkRendererTest  extends ResourceHandlerBasedTest{
 		jeesConfig.setDebugModeOn(false);
 		// Test regular link creation
 	    Set includedBundles = new HashSet();
-	    String result = renderToString(jsRenderer,"/js/one/one2.js", JS_CTX_PATH, includedBundles, false);
+	    String result = renderToString(jsRenderer,"/js/one/one2.js", JS_CTX_PATH, includedBundles, false, false);
 		
 		assertNotSame("No script tag written ", "", result.trim());
 			
@@ -177,7 +175,7 @@ public class BundleLinkRendererTest  extends ResourceHandlerBasedTest{
 		assertTrue("Unexpected tag added at position 3", assertStartEndSimmilarity(oneTag,"pfx",tk.nextToken()) );
 		
 		// Reusing the set, we test that no repeats are allowed. 
-		result = renderToString(jsRenderer,"/js/one/one2.js", JS_CTX_PATH, includedBundles, false);
+		result = renderToString(jsRenderer,"/js/one/one2.js", JS_CTX_PATH, includedBundles, false, false);
 		assertEquals("Tags were repeated","", result.trim());
 		
 
@@ -187,7 +185,7 @@ public class BundleLinkRendererTest  extends ResourceHandlerBasedTest{
 		String debOffZTag = JS_PRE_TAG + "/ctxPathJs/srvMapping" + BundleRenderer.GZIP_PATH_PREFIX + "pfx/debugOff.js" + JS_POST_TAG;
 		String debOffoneTag = JS_PRE_TAG + "/ctxPathJs/srvMapping" + BundleRenderer.GZIP_PATH_PREFIX + "pfx/js/one.js" + JS_POST_TAG;
 		includedBundles = new HashSet();
-		result = renderToString(jsRenderer,"/js/one/one2.js", JS_CTX_PATH, includedBundles, true);
+		result = renderToString(jsRenderer,"/js/one/one2.js", JS_CTX_PATH, includedBundles, true, false);
 		assertNotSame("No gzip script tags written ", "", result.trim());
 		tk = new StringTokenizer(result,"\n");
 		assertEquals("Invalid number of gzip script tags written. ",4, tk.countTokens());
@@ -197,7 +195,7 @@ public class BundleLinkRendererTest  extends ResourceHandlerBasedTest{
 		assertTrue("Unexpected tag added at position 3",assertStartEndSimmilarity(debOffoneTag,"pfx",tk.nextToken()) );
 		
 		// Reusing the set, we test that no repeats are allowed. 
-		result = renderToString(jsRenderer,"/js/one/one2.js", JS_CTX_PATH, includedBundles, true);
+		result = renderToString(jsRenderer,"/js/one/one2.js", JS_CTX_PATH, includedBundles, true, false);
 		assertEquals("Gzip tags were repeated","", result.trim());
 	}
 	
@@ -211,9 +209,9 @@ public class BundleLinkRendererTest  extends ResourceHandlerBasedTest{
 		jeesConfig.setDebugModeOn(true);
 		// Test regular link creation
 	    Set includedBundles = new HashSet();
-	    String result = renderToString(jsRenderer,"/js/one/one2.js", JS_CTX_PATH, includedBundles, false);
+	    String result = renderToString(jsRenderer,"/js/one/one2.js", JS_CTX_PATH, includedBundles, false, false);
 	    // Reusing the set, we test that no repeats are allowed. 
-	    String repeated = renderToString(jsRenderer,"/js/one/one2.js", JS_CTX_PATH, includedBundles, false);
+	    String repeated = renderToString(jsRenderer,"/js/one/one2.js", JS_CTX_PATH, includedBundles, false, false);
 	    
 	    assertNotSame("No script tag written ", "", result.trim());
 
@@ -260,8 +258,219 @@ public class BundleLinkRendererTest  extends ResourceHandlerBasedTest{
 		assertTrue("comment expected",comment.matcher(tk.nextToken()).matches());
 		assertFalse("Repeated already included tag ", Pattern.matches(regX, repeated));
 		
-		
 	}
 
+	public void testWriteJSBundleLinksWithHttpCdn()
+	{
+		jeesConfig.setDebugModeOn(false);
+		String contextPathOverride = "http://mydomain.com/aPath";
+		String contextPathSslOverride = "http://mydomain.com/aPath";
+		jeesConfig.setContextPathOverride(contextPathOverride+"/");
+		jeesConfig.setContextPathSslOverride(contextPathSslOverride+"/");
+		
+		boolean isSslRequest = false;
+		
+		// Test regular link creation
+	    Set includedBundles = new HashSet();
+	    String result = renderToString(jsRenderer,"/js/one/one2.js", JS_CTX_PATH, includedBundles, false, isSslRequest);
+		
+		assertNotSame("No script tag written ", "", result.trim());
+			
+		String libTag = JS_PRE_TAG + contextPathOverride+"/srvMapping/libPfx/library.js" + JS_POST_TAG;
+		String globalTag = JS_PRE_TAG + contextPathOverride+"/srvMapping/globalPfx/global.js" + JS_POST_TAG;
+		String debOffTag = JS_PRE_TAG + contextPathOverride+"/srvMapping/pfx/debugOff.js" + JS_POST_TAG;
+		String oneTag = JS_PRE_TAG + contextPathOverride+"/srvMapping/pfx/js/one.js" + JS_POST_TAG;
+		StringTokenizer tk = new StringTokenizer(result,"\n");
+		
+		
+		assertEquals("Invalid number of tags written. ",4, tk.countTokens());
+		assertTrue("Unexpected tag added at position 0", assertStartEndSimmilarity(libTag,"libPfx",tk.nextToken()));
+		assertTrue("Unexpected tag added at position 1", assertStartEndSimmilarity(globalTag,"globalPfx",tk.nextToken()));
+		assertTrue("Unexpected tag added at position 2",assertStartEndSimmilarity(debOffTag,"pfx",tk.nextToken()) );
+		assertTrue("Unexpected tag added at position 3", assertStartEndSimmilarity(oneTag,"pfx",tk.nextToken()) );
+		
+		// Reusing the set, we test that no repeats are allowed. 
+		result = renderToString(jsRenderer,"/js/one/one2.js", JS_CTX_PATH, includedBundles, false, isSslRequest);
+		assertEquals("Tags were repeated","", result.trim());
+		
+
+		// Test gzipped link creation
+		String libZTag = JS_PRE_TAG+ contextPathOverride+"/srvMapping" + BundleRenderer.GZIP_PATH_PREFIX + "libPfx/library.js" + JS_POST_TAG;
+		String globalZTag = JS_PRE_TAG + contextPathOverride+"/srvMapping" + BundleRenderer.GZIP_PATH_PREFIX + "globalPfx/global.js" + JS_POST_TAG;
+		String debOffZTag = JS_PRE_TAG + contextPathOverride+"/srvMapping" + BundleRenderer.GZIP_PATH_PREFIX + "pfx/debugOff.js" + JS_POST_TAG;
+		String debOffoneTag = JS_PRE_TAG + contextPathOverride+"/srvMapping" + BundleRenderer.GZIP_PATH_PREFIX + "pfx/js/one.js" + JS_POST_TAG;
+		includedBundles = new HashSet();
+		result = renderToString(jsRenderer,"/js/one/one2.js", JS_CTX_PATH, includedBundles, true, isSslRequest);
+		assertNotSame("No gzip script tags written ", "", result.trim());
+		tk = new StringTokenizer(result,"\n");
+		assertEquals("Invalid number of gzip script tags written. ",4, tk.countTokens());
+		assertTrue("Unexpected tag added at position 0", assertStartEndSimmilarity(libZTag,"libPfx",tk.nextToken()));
+		assertTrue("Unexpected tag added at position 1",assertStartEndSimmilarity(globalZTag,"globalPfx",tk.nextToken()));
+		assertTrue("Unexpected tag added at position 2",assertStartEndSimmilarity(debOffZTag,"pfx",tk.nextToken()) );
+		assertTrue("Unexpected tag added at position 3",assertStartEndSimmilarity(debOffoneTag,"pfx",tk.nextToken()) );
+		
+		// Reusing the set, we test that no repeats are allowed. 
+		result = renderToString(jsRenderer,"/js/one/one2.js", JS_CTX_PATH, includedBundles, true, isSslRequest);
+		assertEquals("Gzip tags were repeated","", result.trim());
+	}
 	
+	public void testWriteJSBundleLinksWithHttpsCdn()
+	{
+		jeesConfig.setDebugModeOn(false);
+		String contextPathOverride = "http://mydomain.com/aPath";
+		String contextPathSslOverride = "https://mydomain.com/aPath";
+		jeesConfig.setContextPathOverride(contextPathOverride+"/");
+		jeesConfig.setContextPathSslOverride(contextPathSslOverride+"/");
+		
+		boolean isSslRequest = true;
+		
+		// Test regular link creation
+	    Set includedBundles = new HashSet();
+	    String result = renderToString(jsRenderer,"/js/one/one2.js", JS_CTX_PATH, includedBundles, false, isSslRequest);
+		
+		assertNotSame("No script tag written ", "", result.trim());
+			
+		String libTag = JS_PRE_TAG + contextPathSslOverride+"/srvMapping/libPfx/library.js" + JS_POST_TAG;
+		String globalTag = JS_PRE_TAG + contextPathSslOverride+"/srvMapping/globalPfx/global.js" + JS_POST_TAG;
+		String debOffTag = JS_PRE_TAG + contextPathSslOverride+"/srvMapping/pfx/debugOff.js" + JS_POST_TAG;
+		String oneTag = JS_PRE_TAG + contextPathSslOverride+"/srvMapping/pfx/js/one.js" + JS_POST_TAG;
+		StringTokenizer tk = new StringTokenizer(result,"\n");
+		
+		
+		assertEquals("Invalid number of tags written. ",4, tk.countTokens());
+		assertTrue("Unexpected tag added at position 0", assertStartEndSimmilarity(libTag,"libPfx",tk.nextToken()));
+		assertTrue("Unexpected tag added at position 1", assertStartEndSimmilarity(globalTag,"globalPfx",tk.nextToken()));
+		assertTrue("Unexpected tag added at position 2",assertStartEndSimmilarity(debOffTag,"pfx",tk.nextToken()) );
+		assertTrue("Unexpected tag added at position 3", assertStartEndSimmilarity(oneTag,"pfx",tk.nextToken()) );
+		
+		// Reusing the set, we test that no repeats are allowed. 
+		result = renderToString(jsRenderer,"/js/one/one2.js", JS_CTX_PATH, includedBundles, false, isSslRequest);
+		assertEquals("Tags were repeated","", result.trim());
+		
+
+		// Test gzipped link creation
+		String libZTag = JS_PRE_TAG+ contextPathSslOverride+"/srvMapping" + BundleRenderer.GZIP_PATH_PREFIX + "libPfx/library.js" + JS_POST_TAG;
+		String globalZTag = JS_PRE_TAG + contextPathSslOverride+"/srvMapping" + BundleRenderer.GZIP_PATH_PREFIX + "globalPfx/global.js" + JS_POST_TAG;
+		String debOffZTag = JS_PRE_TAG + contextPathSslOverride+"/srvMapping" + BundleRenderer.GZIP_PATH_PREFIX + "pfx/debugOff.js" + JS_POST_TAG;
+		String debOffoneTag = JS_PRE_TAG + contextPathSslOverride+"/srvMapping" + BundleRenderer.GZIP_PATH_PREFIX + "pfx/js/one.js" + JS_POST_TAG;
+		includedBundles = new HashSet();
+		result = renderToString(jsRenderer,"/js/one/one2.js", JS_CTX_PATH, includedBundles, true, isSslRequest);
+		assertNotSame("No gzip script tags written ", "", result.trim());
+		tk = new StringTokenizer(result,"\n");
+		assertEquals("Invalid number of gzip script tags written. ",4, tk.countTokens());
+		assertTrue("Unexpected tag added at position 0", assertStartEndSimmilarity(libZTag,"libPfx",tk.nextToken()));
+		assertTrue("Unexpected tag added at position 1",assertStartEndSimmilarity(globalZTag,"globalPfx",tk.nextToken()));
+		assertTrue("Unexpected tag added at position 2",assertStartEndSimmilarity(debOffZTag,"pfx",tk.nextToken()) );
+		assertTrue("Unexpected tag added at position 3",assertStartEndSimmilarity(debOffoneTag,"pfx",tk.nextToken()) );
+		
+		// Reusing the set, we test that no repeats are allowed. 
+		result = renderToString(jsRenderer,"/js/one/one2.js", JS_CTX_PATH, includedBundles, true, isSslRequest);
+		assertEquals("Gzip tags were repeated","", result.trim());
+	}
+	
+	public void testWriteJSBundleLinksWithHttpsRelativePath()
+	{
+		jeesConfig.setDebugModeOn(false);
+		String contextPathOverride = "http://mydomain.com/aPath";
+		String contextPathSslOverride = "";
+		jeesConfig.setContextPathOverride(contextPathOverride+"/");
+		jeesConfig.setContextPathSslOverride(contextPathSslOverride);
+		
+		boolean isSslRequest = true;
+		
+		// Test regular link creation
+	    Set includedBundles = new HashSet();
+	    String result = renderToString(jsRenderer,"/js/one/one2.js", JS_CTX_PATH, includedBundles, false, isSslRequest);
+		
+		assertNotSame("No script tag written ", "", result.trim());
+			
+		String libTag = JS_PRE_TAG + "srvMapping/libPfx/library.js" + JS_POST_TAG;
+		String globalTag = JS_PRE_TAG + "srvMapping/globalPfx/global.js" + JS_POST_TAG;
+		String debOffTag = JS_PRE_TAG + "srvMapping/pfx/debugOff.js" + JS_POST_TAG;
+		String oneTag = JS_PRE_TAG + "srvMapping/pfx/js/one.js" + JS_POST_TAG;
+		StringTokenizer tk = new StringTokenizer(result,"\n");
+		
+		
+		assertEquals("Invalid number of tags written. ",4, tk.countTokens());
+		assertTrue("Unexpected tag added at position 0", assertStartEndSimmilarity(libTag,"libPfx",tk.nextToken()));
+		assertTrue("Unexpected tag added at position 1", assertStartEndSimmilarity(globalTag,"globalPfx",tk.nextToken()));
+		assertTrue("Unexpected tag added at position 2",assertStartEndSimmilarity(debOffTag,"pfx",tk.nextToken()) );
+		assertTrue("Unexpected tag added at position 3", assertStartEndSimmilarity(oneTag,"pfx",tk.nextToken()) );
+		
+		// Reusing the set, we test that no repeats are allowed. 
+		result = renderToString(jsRenderer,"/js/one/one2.js", JS_CTX_PATH, includedBundles, false, isSslRequest);
+		assertEquals("Tags were repeated","", result.trim());
+		
+
+		// Test gzipped link creation
+		String libZTag = JS_PRE_TAG+ "srvMapping" + BundleRenderer.GZIP_PATH_PREFIX + "libPfx/library.js" + JS_POST_TAG;
+		String globalZTag = JS_PRE_TAG + "srvMapping" + BundleRenderer.GZIP_PATH_PREFIX + "globalPfx/global.js" + JS_POST_TAG;
+		String debOffZTag = JS_PRE_TAG + "srvMapping" + BundleRenderer.GZIP_PATH_PREFIX + "pfx/debugOff.js" + JS_POST_TAG;
+		String debOffoneTag = JS_PRE_TAG + "srvMapping" + BundleRenderer.GZIP_PATH_PREFIX + "pfx/js/one.js" + JS_POST_TAG;
+		includedBundles = new HashSet();
+		result = renderToString(jsRenderer,"/js/one/one2.js", JS_CTX_PATH, includedBundles, true, isSslRequest);
+		assertNotSame("No gzip script tags written ", "", result.trim());
+		tk = new StringTokenizer(result,"\n");
+		assertEquals("Invalid number of gzip script tags written. ",4, tk.countTokens());
+		assertTrue("Unexpected tag added at position 0", assertStartEndSimmilarity(libZTag,"libPfx",tk.nextToken()));
+		assertTrue("Unexpected tag added at position 1",assertStartEndSimmilarity(globalZTag,"globalPfx",tk.nextToken()));
+		assertTrue("Unexpected tag added at position 2",assertStartEndSimmilarity(debOffZTag,"pfx",tk.nextToken()) );
+		assertTrue("Unexpected tag added at position 3",assertStartEndSimmilarity(debOffoneTag,"pfx",tk.nextToken()) );
+		
+		// Reusing the set, we test that no repeats are allowed. 
+		result = renderToString(jsRenderer,"/js/one/one2.js", JS_CTX_PATH, includedBundles, true, isSslRequest);
+		assertEquals("Gzip tags were repeated","", result.trim());
+	}
+	
+	public void testWriteJSBundleLinksWithRelativePath()
+	{
+		jeesConfig.setDebugModeOn(false);
+		jeesConfig.setContextPathOverride("");
+		jeesConfig.setContextPathSslOverride("https://mydomain.com/aPath/");
+		
+		boolean isSslRequest = false;
+		
+		// Test regular link creation
+	    Set includedBundles = new HashSet();
+	    String result = renderToString(jsRenderer,"/js/one/one2.js", JS_CTX_PATH, includedBundles, false, isSslRequest);
+		
+		assertNotSame("No script tag written ", "", result.trim());
+			
+		String libTag = JS_PRE_TAG + "srvMapping/libPfx/library.js" + JS_POST_TAG;
+		String globalTag = JS_PRE_TAG + "srvMapping/globalPfx/global.js" + JS_POST_TAG;
+		String debOffTag = JS_PRE_TAG + "srvMapping/pfx/debugOff.js" + JS_POST_TAG;
+		String oneTag = JS_PRE_TAG + "srvMapping/pfx/js/one.js" + JS_POST_TAG;
+		StringTokenizer tk = new StringTokenizer(result,"\n");
+		
+		
+		assertEquals("Invalid number of tags written. ",4, tk.countTokens());
+		assertTrue("Unexpected tag added at position 0", assertStartEndSimmilarity(libTag,"libPfx",tk.nextToken()));
+		assertTrue("Unexpected tag added at position 1", assertStartEndSimmilarity(globalTag,"globalPfx",tk.nextToken()));
+		assertTrue("Unexpected tag added at position 2",assertStartEndSimmilarity(debOffTag,"pfx",tk.nextToken()) );
+		assertTrue("Unexpected tag added at position 3", assertStartEndSimmilarity(oneTag,"pfx",tk.nextToken()) );
+		
+		// Reusing the set, we test that no repeats are allowed. 
+		result = renderToString(jsRenderer,"/js/one/one2.js", JS_CTX_PATH, includedBundles, false, isSslRequest);
+		assertEquals("Tags were repeated","", result.trim());
+		
+
+		// Test gzipped link creation
+		String libZTag = JS_PRE_TAG+ "srvMapping" + BundleRenderer.GZIP_PATH_PREFIX + "libPfx/library.js" + JS_POST_TAG;
+		String globalZTag = JS_PRE_TAG + "srvMapping" + BundleRenderer.GZIP_PATH_PREFIX + "globalPfx/global.js" + JS_POST_TAG;
+		String debOffZTag = JS_PRE_TAG + "srvMapping" + BundleRenderer.GZIP_PATH_PREFIX + "pfx/debugOff.js" + JS_POST_TAG;
+		String debOffoneTag = JS_PRE_TAG + "srvMapping" + BundleRenderer.GZIP_PATH_PREFIX + "pfx/js/one.js" + JS_POST_TAG;
+		includedBundles = new HashSet();
+		result = renderToString(jsRenderer,"/js/one/one2.js", JS_CTX_PATH, includedBundles, true, isSslRequest);
+		assertNotSame("No gzip script tags written ", "", result.trim());
+		tk = new StringTokenizer(result,"\n");
+		assertEquals("Invalid number of gzip script tags written. ",4, tk.countTokens());
+		assertTrue("Unexpected tag added at position 0", assertStartEndSimmilarity(libZTag,"libPfx",tk.nextToken()));
+		assertTrue("Unexpected tag added at position 1",assertStartEndSimmilarity(globalZTag,"globalPfx",tk.nextToken()));
+		assertTrue("Unexpected tag added at position 2",assertStartEndSimmilarity(debOffZTag,"pfx",tk.nextToken()) );
+		assertTrue("Unexpected tag added at position 3",assertStartEndSimmilarity(debOffoneTag,"pfx",tk.nextToken()) );
+		
+		// Reusing the set, we test that no repeats are allowed. 
+		result = renderToString(jsRenderer,"/js/one/one2.js", JS_CTX_PATH, includedBundles, true, isSslRequest);
+		assertEquals("Gzip tags were repeated","", result.trim());
+	}
 }

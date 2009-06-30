@@ -1,5 +1,5 @@
 /**
- * Copyright 2008 Jordi Hernández Sellés
+ * Copyright 2008-2009 Jordi Hernández Sellés, Ibrahim Chaehoi
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -13,21 +13,32 @@
  */
 package net.jawr.web.resource.bundle.generator;
 
+import net.jawr.web.JawrConstant;
 
 /**
- * Abstract implementation of ResourceGenerator with a default return value for the 
- * getMappingPrefix method. 
+ * Abstract implementation of ResourceGenerator with a default return value for the getMappingPrefix method.
  * 
  * @author Jordi Hernández Sellés
+ * @author Ibrahim Chaehoi
  */
 public abstract class AbstractCSSGenerator implements ResourceGenerator {
 
-	
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see net.jawr.web.resource.bundle.generator.ResourceGenerator#getMappingPrefix()
 	 */
 	public String getDebugModeRequestPath() {
 		return ResourceGenerator.CSS_DEBUGPATH;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see net.jawr.web.resource.bundle.generator.ResourceGenerator#getDebugModeBuildTimeGenerationPath(java.lang.String)
+	 */
+	public String getDebugModeBuildTimeGenerationPath(String path) {
+
+		return path.replaceFirst(GeneratorRegistry.PREFIX_SEPARATOR, JawrConstant.URL_SEPARATOR);
+	}
 }

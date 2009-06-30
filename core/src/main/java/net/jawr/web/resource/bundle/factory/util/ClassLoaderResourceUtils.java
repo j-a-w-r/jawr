@@ -1,5 +1,5 @@
 /**
- * Copyright 2008  Jordi Hernández Sellés
+ * Copyright 2008  Jordi Hernández Sellés, Ibrahim Chaehoi
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -20,16 +20,25 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 
+import javax.management.MBeanServer;
+import javax.management.ObjectName;
+
+import net.jawr.web.config.jmx.JmxUtils;
+import net.jawr.web.context.ThreadLocalJawrContext;
 import net.jawr.web.exception.ResourceNotFoundException;
+
+import org.apache.log4j.Logger;
 
 /**
  * Utilities to access resources from the classpath
  * 
- * @author Jordi Hernández Sellés
+ * @author Jordi Hernández Sellés, Ibrahim Chaehoi
  *
  */
 public class ClassLoaderResourceUtils {
 
+	private static Logger log = Logger.getLogger(ClassLoaderResourceUtils.class);
+	
 	/**
 	 * Attempots to load a resource from the classpath, either usinf the caller's class loader or the current thread's 
 	 * context classloader. 
@@ -58,17 +67,40 @@ public class ClassLoaderResourceUtils {
 			is = Thread.currentThread().getContextClassLoader().getResourceAsStream(resourcePath);
 		}
 		
+		if(null == is){
+			
+			// Try to use the classloader of the current Jawr Config Manager MBean
+			// This will be used when a refresh is done in the configuration using the JMX MBean
+			MBeanServer mbs = JmxUtils.getMBeanServer();
+			if(mbs != null){
+				
+				ObjectName name = ThreadLocalJawrContext.getJawrConfigMgrObjectName();
+				if(name != null){
+					try {
+						
+						ClassLoader cl = mbs.getClassLoaderFor(name);
+						is = cl.getResourceAsStream(resourcePath);
+					} catch (Exception e) {
+						log.error("Unable to instanciate the Jawr MBean '"+name.getCanonicalName()+"'", e);
+					}
+				}
+			}
+		}
+		
 		// Try to retrieve by URL
 		if(null == is) {
 			try {
 				URL url = Thread.currentThread().getContextClassLoader().getResource(resourcePath);
+				
 				
 				// Last chance, hack in the classloader
 				if(null == url) {
 					ClassLoader threadClassLoader = Thread.currentThread().getContextClassLoader();
 					try {
 						 Thread.currentThread().setContextClassLoader(source.getClass().getClassLoader());
-						 url = Thread.currentThread().getContextClassLoader().getResource(resourcePath);
+						 if(Thread.currentThread().getContextClassLoader() != null){
+							 url = Thread.currentThread().getContextClassLoader().getResource(resourcePath);
+						 }
 					}
 					finally {
 						 Thread.currentThread().setContextClassLoader(threadClassLoader);
@@ -91,7 +123,7 @@ public class ClassLoaderResourceUtils {
 			throw new FileNotFoundException( resourcePath + " could not be found. ");
 		return is;
 	}
-	
+
 	/**
 	 * Attempts to find the URL of a resource from the classpath, either usinf the caller's class loader or the current thread's 
 	 * context classloader. 
@@ -129,7 +161,9 @@ public class ClassLoaderResourceUtils {
 					ClassLoader threadClassLoader = Thread.currentThread().getContextClassLoader();
 					try {
 						 Thread.currentThread().setContextClassLoader(source.getClass().getClassLoader());
-						 url = Thread.currentThread().getContextClassLoader().getResource(resourcePath);
+						 if(Thread.currentThread().getContextClassLoader() != null){
+							 url = Thread.currentThread().getContextClassLoader().getResource(resourcePath);
+						 }
 					}
 					finally {
 						 Thread.currentThread().setContextClassLoader(threadClassLoader);
