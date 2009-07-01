@@ -162,11 +162,4 @@ public interface JoinableResourceBundle {
     public String getAlternateProductionURL();
 
 	
-    
-    
-    /**
-     * If set, it will force the tag libraries to render a static URL in production mode. 
-     * @return
-     */
-    public String getAlternateProductionURL();
 }

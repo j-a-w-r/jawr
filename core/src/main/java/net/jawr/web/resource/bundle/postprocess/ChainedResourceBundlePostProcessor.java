@@ -23,6 +23,12 @@ package net.jawr.web.resource.bundle.postprocess;
 public interface ChainedResourceBundlePostProcessor extends ResourceBundlePostProcessor {
 
 	/**
+	 * Returns the ID of the chained post processor
+	 * @return the ID of the chained post processor
+	 */
+	public String getId();
+	
+	/**
 	 * Add the next post processor in the end of the chain. 
 	 * @param nextProcessor the next post processor
 	 */

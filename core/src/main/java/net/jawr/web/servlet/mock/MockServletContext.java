@@ -180,7 +180,13 @@ public class MockServletContext implements ServletContext {
 	 * @see javax.servlet.ServletContext#getResource(java.lang.String)
 	 */
 	public URL getResource(String path) throws MalformedURLException {
-		return new File(baseDir + path).toURI().toURL();
+		
+		URL url = null;
+		File file = new File(baseDir + path); 
+		if(file.exists()){
+			url =file.toURI().toURL();
+		}
+		return url;
 	}
 
 	/*

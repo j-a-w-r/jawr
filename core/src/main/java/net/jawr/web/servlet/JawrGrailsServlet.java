@@ -21,8 +21,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import net.jawr.web.JawrConstant;
-
 import org.apache.log4j.Logger;
 
 /**
@@ -38,7 +36,6 @@ public class JawrGrailsServlet extends JawrServlet {
 	private static final long serialVersionUID = -7749799838520309579L;
 	public static final String JAWR_GRAILS_JS_CONFIG  = "net.jawr.grails.js.config";
 	public static final String JAWR_GRAILS_CSS_CONFIG = "net.jawr.grails.css.config";
-	public static final String JAWR_GRAILS_IMG_CONFIG = "net.jawr.grails.img.config";
 	public static final String JAWR_GRAILS_CONFIG_HASH = "net.jawr.grails.config.hash";
 	public static final String PROPERTIES_KEY = "configProperties";
 	private Integer configHash;
@@ -50,22 +47,17 @@ public class JawrGrailsServlet extends JawrServlet {
 		Map config = null;
 		String type = getServletConfig().getInitParameter("type");
 		
+		
 		configHash = (Integer)getServletContext().getAttribute(JAWR_GRAILS_CONFIG_HASH);
 		
-		if(JawrConstant.CSS_TYPE.equals(type))
+		if("css".equals(type))
 			config = (Map) getServletContext().getAttribute(JAWR_GRAILS_CSS_CONFIG);
-		else if(JawrConstant.IMG_TYPE.equals(type))
-			config = (Map) getServletContext().getAttribute(JAWR_GRAILS_IMG_CONFIG);
-		else
+		else 
 			config = (Map) getServletContext().getAttribute(JAWR_GRAILS_JS_CONFIG);
 		
 		Properties jawrProps = (Properties)config.get(PROPERTIES_KEY);
 		try {
-			if(JawrConstant.IMG_TYPE.equals(type)){
-				this.requestHandler = new JawrImageRequestHandler(getServletContext() , config, jawrProps );
-			}else{
-				this.requestHandler = new JawrRequestHandler(getServletContext() , config, jawrProps );
-			}
+			this.requestHandler = new JawrRequestHandler(getServletContext() , config, jawrProps );
 		}catch (ServletException e) {
 			log.fatal("Jawr servlet with name" +  getServletConfig().getServletName() +" failed to initialize properly. ");
 			log.fatal("Cause:");

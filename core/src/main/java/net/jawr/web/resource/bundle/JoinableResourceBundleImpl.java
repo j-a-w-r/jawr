@@ -70,7 +70,6 @@ public class JoinableResourceBundleImpl implements JoinableResourceBundle {
 	
 	/** The IE conditional expression */
 	private String explorerConditionalExpression;
-	private String alternateProductionURL;
 	
 	/** The alternate URL for the bundle */
 	private String alternateProductionURL;
@@ -499,21 +498,4 @@ public class JoinableResourceBundleImpl implements JoinableResourceBundle {
     	return key;
     }
  	
-
-	
-
-	/* (non-Javadoc)
-	 * @see net.jawr.web.resource.bundle.JoinableResourceBundle#getAlternateProductionURL()
-	 */
-	public String getAlternateProductionURL() {
-		return this.alternateProductionURL;
-	}
-
-
-	/**
-	 * @param alternateProductionURL the alternateProductionURL to set
-	 */
-	public void setAlternateProductionURL(String alternateProductionURL) {
-		this.alternateProductionURL = alternateProductionURL;
-	}
 }
