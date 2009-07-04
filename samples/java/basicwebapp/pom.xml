@@ -12,7 +12,7 @@
     <dependency>
       <groupId>net.jawr</groupId>
       <artifactId>jawr</artifactId>
-      <version>2.5.1</version>
+      <version>3.0</version>
     </dependency>
     <dependency>
       <groupId>javax.servlet</groupId>
@@ -31,11 +31,11 @@
       <artifactId>log4j</artifactId>
       <version>1.2.9</version>
     </dependency>    
-		<dependency>
-		    <groupId>com.yahoo.platform.yui</groupId>
-		    <artifactId>yuicompressor</artifactId>
-		    <version>2.2.5</version>
-		</dependency>
+	<dependency>
+	    <groupId>com.yahoo.platform.yui</groupId>
+	    <artifactId>yuicompressor</artifactId>
+	    <version>2.2.5</version>
+	</dependency>
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
@@ -50,7 +50,73 @@
         <artifactId>maven-jetty-plugin</artifactId>
         <version>6.0.1</version>
       </plugin>
+      <plugin>
+			<artifactId>maven-eclipse-plugin</artifactId>
+			<version>2.4</version>
+			<configuration>
+				<downloadSources>true</downloadSources>
+				<wtpversion>1.5</wtpversion>
+			</configuration>
+	 </plugin>
+	  <plugin>
+         <groupId>org.apache.maven.plugins</groupId>
+         <artifactId>maven-antrun-plugin</artifactId>
+         <executions>
+           <execution>
+             <id>bundle</id>
+             <phase>prepare-package</phase>
+             <configuration>
+               <tasks>
+				<property name="webapp.dir" value="${project.build.directory}/${project.build.finalName}/" />
+				<path id="jawr.build.class.path" >
+					<pathelement path="${webapp.dir}/WEB-INF/classes"/>
+					<fileset dir="${webapp.dir}/WEB-INF/lib">
+						<include name="**/*.jar" />
+					</fileset>
+					<path refid="maven.compile.classpath" />
+					<!-- pathelement path="${webapp.container.dir}/shared/classes}"/>
+					<fileset dir="${webapp.container.dir}/shared" >
+						<include name="**/*.jar" />
+					</fileset>
+					<pathelement path="${webapp.container.dir}/common/classes}"/>
+					<fileset dir="${webapp.container.dir}/common" >
+						<include name="**/*.jar" />
+					</fileset -->
+				</path>
+				<property name="jawr_bundle_compile_classpath" refid="jawr.build.class.path"/>
+                <echo message="Jawr bundle classpath: ${jawr_bundle_compile_classpath}"/>
+                
+                <taskdef name="jawrBundle" classname="net.jawr.ant.BundleTask" > <!-- classpathref="maven.compile.classpath" -->
+				  <classpath refid="jawr.build.class.path" />
+				</taskdef>
+                <jawrBundle rootPath="${project.build.directory}/${project.build.finalName}" 
+                	tempDirPath="${project.build.directory}/jawr/temp" 
+			 		destDirPath="${project.build.directory}/jawr/bundle" />
+
+               </tasks>
+             </configuration>
+             <goals>
+               <goal>run</goal>
+             </goals>
+           </execution>
+         </executions>
+          <dependencies>
+           <dependency>
+             <groupId>net.jawr</groupId>
+             <artifactId>ant-jawr</artifactId>
+             <version>1.0</version>
+           </dependency>
+           <dependency>
+		      <groupId>log4j</groupId>
+		      <artifactId>log4j</artifactId>
+		      <version>1.2.9</version>
+		    </dependency> 
+         </dependencies>
+       </plugin>
+	  
+      
     </plugins>
+    
     <finalName>basicwebapp</finalName>
   </build>
 </project>
