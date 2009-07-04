@@ -47,7 +47,7 @@ public class ClientSideHandlerScriptRequestHandler {
 	 * 
 	 * @author Jordi Hernández Sellés
 	 */
-	private class Handler {
+	private static class Handler {
 		String hash;
 		StringBuffer data;
 		Handler(StringBuffer data, String hash){
@@ -148,7 +148,5 @@ public class ClientSideHandlerScriptRequestHandler {
         else {
         	return scriptEtag.equals(eTag) && modifiedHeader <= startTime;
         }
-        
-        
-	}
+    }
 }

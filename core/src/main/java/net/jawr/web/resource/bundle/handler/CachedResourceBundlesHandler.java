@@ -1,5 +1,5 @@
 /**
- * Copyright 2007 Jordi Hernández Sellés
+ * Copyright 2007-2009 Jordi Hernández Sellés, Ibrahim Chaehoi
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -38,14 +38,19 @@ import net.jawr.web.resource.bundle.iterator.ResourceBundlePathsIterator;
  * to the wrapped implementation. 
  * 
  * @author Jordi Hernández Sellés
+ * @author Ibrahim Chaehoi
  *
  */
 public class CachedResourceBundlesHandler implements ResourceBundlesHandler {
 	
+	/** The resource bundle handler */
 	private ResourceBundlesHandler rsHandler;
+	
+	/** The cache map for text resource */
 	private Map textCache;
+	
+	/** The cache map for zip resource */
 	private Map gzipCache;
-
 	
 	/**
 	 * Build a cached wrapper around the supplied ResourceBundlesHandler. 
@@ -160,6 +165,22 @@ public class CachedResourceBundlesHandler implements ResourceBundlesHandler {
 	 */
 	public ClientSideHandlerGenerator getClientSideHandler() {
 		return rsHandler.getClientSideHandler();
+	}
+
+	/* (non-Javadoc)
+	 * @see net.jawr.web.resource.bundle.handler.ResourceBundlesHandler#getGlobalResourceBundlePaths(net.jawr.web.resource.bundle.iterator.ConditionalCommentCallbackHandler, java.lang.String)
+	 */
+	public ResourceBundlePathsIterator getGlobalResourceBundlePaths(
+			ConditionalCommentCallbackHandler commentCallbackHandler,
+			String variantKey) {
+		return rsHandler.getGlobalResourceBundlePaths(commentCallbackHandler, variantKey);
+	}
+
+	/* (non-Javadoc)
+	 * @see net.jawr.web.resource.bundle.handler.ResourceBundlesHandler#isGlobalResourceBundle(java.lang.String)
+	 */
+	public boolean isGlobalResourceBundle(String resourceBundleId) {
+		return rsHandler.isGlobalResourceBundle(resourceBundleId);
 	}
 
 }

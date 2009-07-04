@@ -464,7 +464,7 @@ public class BundleProcessor {
 			for (Iterator iterator = localVariantKeys.iterator(); iterator.hasNext();) {
 				String localVariantKey = (String) iterator.next();
 				
-				List linksToBundle = createLinkToBundle(bundleHandler, bundle.getId(), localVariantKey);
+				List linksToBundle = createLinkToBundle(bundleHandler, bundle.getId(), resourceType, localVariantKey);
 				for (Iterator iteratorLinks = linksToBundle.iterator(); iteratorLinks.hasNext();) {
 					RenderedLink renderedLink = (RenderedLink) iteratorLinks.next();
 					String path = (String) renderedLink.getLink();
@@ -600,15 +600,14 @@ public class BundleProcessor {
 			ServletException {
 		Map bundleImgMap = imgRsHandler.getImageMap();
 
-		Iterator bundleIterator = bundleImgMap.keySet().iterator();
+		Iterator bundleIterator = bundleImgMap.values().iterator();
 		MockServletResponse response = new MockServletResponse();
 		MockServletRequest request = new MockServletRequest();
 
 		// For the list of bundle defines, create the file associated
 		while (bundleIterator.hasNext()) {
-			String imgPath = (String) bundleIterator.next();
-			String path = (String) bundleImgMap.get(imgPath);
-
+			String path = (String) bundleIterator.next();
+			
 			String imageFinalPath = getImageFinalPath(path, imgRsHandler.getJawrConfig());
 			File destFile = new File(destDirPath, imageFinalPath);
 			
@@ -635,8 +634,11 @@ public class BundleProcessor {
 		request.setRequestPath(mapping, path);
 				
 		// Create the parent directory of the destination file
-		if (!destFile.exists()) {
-			destFile.getParentFile().mkdirs();
+		if (!destFile.getParentFile().exists()) {
+			boolean dirsCreated = destFile.getParentFile().mkdirs();
+			if(!dirsCreated){
+				throw new IOException("The directory '"+destFile.getParentFile().getCanonicalPath()+"' can't be created.");
+			}
 		}
 
 		// Set the response mock to write in the destination file
@@ -662,11 +664,11 @@ public class BundleProcessor {
 	 * @return the link to the bundle
 	 * @throws IOException if an IO exception occurs
 	 */
-	private List createLinkToBundle(ResourceBundlesHandler handler, String path, String variantKey) throws IOException {
+	private List createLinkToBundle(ResourceBundlesHandler handler, String path, String resourceType, String variantKey) throws IOException {
 
 		List linksToBundle = new ArrayList();
 		
-		BuildTimeBundleRenderer bundleRenderer = new BuildTimeBundleRenderer(handler);
+		BuildTimeBundleRenderer bundleRenderer = new BuildTimeBundleRenderer(handler, resourceType);
 		StringWriter sw = new StringWriter();
 		
 		// The gzip compression will be made by the CDN server
@@ -680,11 +682,11 @@ public class BundleProcessor {
 		handler.getConfig().setDebugModeOn(false);
 		handler.getConfig().setGzipResourcesModeOn(useGzip);
 		
-		bundleRenderer.renderBundleLinks(path, "", variantKey, new HashSet(), useGzip, isSslRequest, sw);
+		bundleRenderer.renderBundleLinks(path, "", variantKey, new HashSet(), false, useGzip, isSslRequest, sw);
 		
 		// Then take in account the debug mode
 		handler.getConfig().setDebugModeOn(true);
-		bundleRenderer.renderBundleLinks(path, "", variantKey, new HashSet(), useGzip, isSslRequest, sw);
+		bundleRenderer.renderBundleLinks(path, "", variantKey, new HashSet(), false, useGzip, isSslRequest, sw);
 		
 		List renderedLinks = bundleRenderer.getRenderedLinks();
 		// Remove context override path if it's defined.
@@ -709,7 +711,7 @@ public class BundleProcessor {
 	 * @author Ibrahim Chaehoi
 	 *
 	 */
-	private class JawrBundleProcessorCustomClassLoader extends URLClassLoader {
+	private static class JawrBundleProcessorCustomClassLoader extends URLClassLoader {
 		
 		/**
 		 * @param urls
@@ -736,7 +738,7 @@ public class BundleProcessor {
 	 * 
 	 * @author Ibrahim Chaehoi
 	 */
-	private class ServletDefinition implements Comparable {
+	private static class ServletDefinition implements Comparable {
 
 		/** The servlet instance */
 		private HttpServlet servlet;

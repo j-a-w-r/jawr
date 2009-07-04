@@ -172,9 +172,7 @@ public class JoinableResourceBundlePropertySerializer {
 
 		String bundlePostProcessor = "";
 		if (processor != null) {
-			if (processor != null) {
-				bundlePostProcessor = processor.getId();
-			}
+			bundlePostProcessor = processor.getId();
 		}
 
 		return bundlePostProcessor;

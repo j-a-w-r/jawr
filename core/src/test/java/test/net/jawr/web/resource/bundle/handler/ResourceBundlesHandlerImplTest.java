@@ -59,18 +59,19 @@ public class ResourceBundlesHandlerImplTest  extends  ResourceHandlerBasedTest {
 	}
 	public void testGetNormalCollectionPaths() {
 		
+		ResourceBundlePathsIterator globalSimplePaths = simpleHandler.getGlobalResourceBundlePaths(null,null);
+		assertTrue("Path ordering does not match expected. ", globalSimplePaths.next().toString().endsWith("/library.js"));
+		assertTrue("Path ordering does not match expected. ", globalSimplePaths.next().toString().endsWith("/global.js"));
+		assertTrue("Path ordering does not match expected. ", globalSimplePaths.next().toString().endsWith("/debugOff.js"));
+		
 		ResourceBundlePathsIterator simplePaths = simpleHandler.getBundlePaths("/js/one.js",null,null);
 		//assertEquals("Invalid number of paths returned",new Integer(4), new Integer(simplePaths.size()));
-		assertTrue("Path ordering does not match expected. ", simplePaths.next().toString().endsWith("/library.js"));
-		assertTrue("Path ordering does not match expected. ", simplePaths.next().toString().endsWith("/global.js"));
-		assertTrue("Path ordering does not match expected. ", simplePaths.next().toString().endsWith("/debugOff.js"));
 		assertTrue("Path ordering does not match expected. ", simplePaths.next().toString().endsWith("js/one.js"));
 		
 	}
 	public void testGetDebugCollectionPaths() {
 		
-		
-		ResourceBundlePathsIterator simplePaths = defaultDebugCollection.getBundlePaths("/library.js",null,null);
+		ResourceBundlePathsIterator simplePaths = defaultDebugCollection.getGlobalResourceBundlePaths(null,null);
 		assertEquals("Path ordering does not match expected. ","/js/lib/prototype/protoype.js", simplePaths.next());
 		assertEquals("Path ordering does not match expected. ","/js/lib/lib2.js", simplePaths.next());
 		assertEquals("Path ordering does not match expected. ","/js/lib/scriptaculous/scriptaculous.js", simplePaths.next());

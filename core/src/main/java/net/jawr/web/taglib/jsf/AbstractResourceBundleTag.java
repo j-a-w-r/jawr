@@ -34,7 +34,10 @@ import net.jawr.web.servlet.RendererRequestUtils;
  */
 public abstract class AbstractResourceBundleTag extends UIOutput {
 
+	/** The bundle renderer */
 	protected BundleRenderer renderer;
+	
+	/** The flag indicating if we use the random parameter or not */
 	protected boolean useRandomParam = true;    
 	
 	/* (non-Javadoc)
@@ -69,10 +72,10 @@ public abstract class AbstractResourceBundleTag extends UIOutput {
                                      request.getContextPath(),
                                      localeKey,
                                      RendererRequestUtils.getAddedBundlesLog(request),
+                                     RendererRequestUtils.isGlobalBundleAdded(request, renderer.getResourceType()),
                                      isGzippable,
-                                     RendererRequestUtils.isSslRequest(request),
-                                     writer);
-
+                                     RendererRequestUtils.isSslRequest(request), writer);
+        RendererRequestUtils.setGlobalBundleAdded(request, renderer.getResourceType(), true);
 		super.encodeBegin(context);
 	}
 	

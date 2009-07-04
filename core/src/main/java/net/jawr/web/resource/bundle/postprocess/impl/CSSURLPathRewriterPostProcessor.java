@@ -293,7 +293,10 @@ public class CSSURLPathRewriterPostProcessor extends
 		
 		// Set the result in a cache, so we will not search for it the next time
 		status.setImageMapping(url, newUrl);
-		imgRsHandler.addMapping(url, newUrl);
+		
+		if(imgRsHandler != null){
+			imgRsHandler.addMapping(url, newUrl);
+		}
 		
 		return newUrl;
 	}

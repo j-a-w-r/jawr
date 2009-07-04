@@ -31,6 +31,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
 import java.util.StringTokenizer;
+import java.util.Map.Entry;
 import java.util.zip.GZIPOutputStream;
 
 import net.jawr.web.JawrConstant;
@@ -503,11 +504,12 @@ public abstract class AbstractResourceHandler implements ResourceHandler {
 		// Store Css classpath debug files
 		Map cssClasspathDebugContentMap = bundleResourcesContent
 				.getCssClasspathDebugContentMap();
-		Iterator keyIterator = cssClasspathDebugContentMap.keySet().iterator();
-		while (keyIterator.hasNext()) {
-			String filePath = (String) keyIterator.next();
-			storeBundle(filePath, (String) cssClasspathDebugContentMap
-					.get(filePath), false, cssClasspathDirPath);
+		Iterator entryIterator = cssClasspathDebugContentMap.entrySet().iterator();
+		while (entryIterator.hasNext()) {
+			Entry entry =  (Entry) entryIterator.next();
+			String filePath = (String) entry.getKey();
+			storeBundle(filePath, (String) entry
+					.getValue(), false, cssClasspathDirPath);
 		}
 	}
 

@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import java.util.Map.Entry;
 
 import net.jawr.web.config.JawrConfig;
 import net.jawr.web.exception.DuplicateBundlePathException;
@@ -230,10 +231,10 @@ public class BundlesHandlerFactory {
 					baseDir, resourceHandler, resourceBundles, fileExtension,
 					excludedDirMapperDirs);
 			Map mappings = dirFactory.getBundleMapping();
-			for (Iterator it = mappings.keySet().iterator(); it.hasNext();) {
-				String key = (String) it.next();
-				resourceBundles.add(buildDirMappedResourceBundle(key,
-						(String) mappings.get(key)));
+			for (Iterator it = mappings.entrySet().iterator(); it.hasNext();) {
+				Entry entry = (Entry) it.next();
+				resourceBundles.add(buildDirMappedResourceBundle((String) entry.getKey(),
+						(String) entry.getValue()));
 			}
 		}
 

@@ -63,7 +63,8 @@ public final class CheckSumUtils {
 		try {
 			
 			if(fromClasspath){
-				classpathResourceUrl = url;
+				
+				classpathResourceUrl = url.substring(JawrConstant.CLASSPATH_RESOURCE_PREFIX.length());
 				is = ClassLoaderResourceUtils.getResourceAsStream(classpathResourceUrl, CheckSumUtils.class);
 			}else{
 				url = PathNormalizer.asPath(url);

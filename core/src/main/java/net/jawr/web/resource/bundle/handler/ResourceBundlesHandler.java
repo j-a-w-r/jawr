@@ -1,5 +1,5 @@
 /**
- * Copyright 2007 Jordi Hernández Sellés
+ * Copyright 2007-2009 Jordi Hernández Sellés, Ibrahim Chaehoi
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -29,6 +29,7 @@ import net.jawr.web.resource.bundle.iterator.ResourceBundlePathsIterator;
  * the full bundle or its individual resources. 
  * 
  * @author Jordi Hernández Sellés
+ * @author Ibrahim Chaehoi
  *
  */
 public interface ResourceBundlesHandler {
@@ -41,6 +42,21 @@ public interface ResourceBundlesHandler {
 	 * @return String The bundle ID that can be used to retrieve it.  
 	 */
 	public JoinableResourceBundle resolveBundleForPath(String path);
+	
+	/**
+	 * Returns true if the bundle Id is the Id a global resource bundle
+	 * @param resourceBundleId the resource bundle ID 
+	 * @return the global resource bundle path iterator
+	 */
+	public boolean isGlobalResourceBundle(String resourceBundleId);
+	
+	/**
+	 * Returns the global resource bundle path iterator
+	 * @param commentCallbackHandler the comment callback handler
+	 * @param variantKey the variant key
+	 * @return the global resource bundle path iterator
+	 */
+	public ResourceBundlePathsIterator getGlobalResourceBundlePaths(ConditionalCommentCallbackHandler commentCallbackHandler, String variantKey);
 	
 	/**
 	 * Returns an ordered list of the paths to use when accesing a resource bundle. 

@@ -164,7 +164,7 @@ public class FullMappingPropertiesBasedBundlesHandlerFactoryTestCase extends
 		}
 	}
 	
-	private class TestChainedResourceBundlePostProcessor extends AbstractChainedResourceBundlePostProcessor{
+	private static class TestChainedResourceBundlePostProcessor extends AbstractChainedResourceBundlePostProcessor{
 		
 		public TestChainedResourceBundlePostProcessor(String id) {
 			super(id);
@@ -177,7 +177,7 @@ public class FullMappingPropertiesBasedBundlesHandlerFactoryTestCase extends
 		}
 	}
 	
-	private class TestResourceHandler implements ResourceHandler{
+	private static class TestResourceHandler implements ResourceHandler{
 
 		public Set getResourceNames(String path) {
 			

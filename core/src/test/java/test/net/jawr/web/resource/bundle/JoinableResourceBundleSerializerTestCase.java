@@ -127,7 +127,7 @@ public class JoinableResourceBundleSerializerTestCase extends TestCase {
 		
 	}
 
-	private class TestResourceHandler implements ResourceHandler{
+	private static class TestResourceHandler implements ResourceHandler{
 
 		public Set getResourceNames(String path) {
 			

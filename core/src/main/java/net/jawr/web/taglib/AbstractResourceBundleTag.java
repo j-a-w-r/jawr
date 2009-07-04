@@ -66,10 +66,13 @@ public abstract class AbstractResourceBundleTag extends TagSupport {
                                             request.getContextPath(),
                                             localeKey,
                                             RendererRequestUtils.getAddedBundlesLog(request),
+                                            RendererRequestUtils.isGlobalBundleAdded(request, renderer.getResourceType()),
                                             isGzippable,
-                                            RendererRequestUtils.isSslRequest(request),
-                                            pageContext.getOut());
-            } catch (IOException ex) {
+                                            RendererRequestUtils.isSslRequest(request), pageContext.getOut());
+                
+                RendererRequestUtils.setGlobalBundleAdded(request, renderer.getResourceType(), true);
+                
+           } catch (IOException ex) {
                 throw new JspException("Unexpected IOException when writing script tags for path " + src,ex);
             }
 

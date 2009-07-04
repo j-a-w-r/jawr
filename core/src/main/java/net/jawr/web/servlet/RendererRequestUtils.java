@@ -45,7 +45,10 @@ public class RendererRequestUtils {
 	
 	/** The added collection log */
 	private static final String ADDED_COLLECTIONS_LOG = "net.jawr.web.taglib.ADDED_COLLECTIONS_LOG";
-
+	
+	/** The added collection log */
+	private static final String GLOBAL_BUNDLE_ADDED_PREFIX = "net.jawr.web.taglib.GLOBAL_BUNDLE_ADDED";
+	
 	/**
 	 * Retrieve or create the set to store all added bundles, which is used to avoid adding a bundle more than once during a single request.
 	 * 
@@ -62,7 +65,36 @@ public class RendererRequestUtils {
 		}
 		return set;
 	}
+	
+	/**
+	 * Check if the global bundles has been already added.
+	 * 
+	 * @param request the request
+	 * @return true if the global bundles has been already added.
+	 */
+	public static boolean isGlobalBundleAdded(ServletRequest request, String resourceType) {
+		boolean added = false;
+		String globalBundleAddedAttributeName = GLOBAL_BUNDLE_ADDED_PREFIX+resourceType;
+		if (null != request.getAttribute(globalBundleAddedAttributeName))
+			added = ((Boolean) request.getAttribute(globalBundleAddedAttributeName)).booleanValue();
+		else {
+			request.setAttribute(globalBundleAddedAttributeName, Boolean.FALSE);
+		}
+		return added;
+	}
 
+	/**
+	 * Sets the flag indicating if the global bundles has been added.
+	 * 
+	 * @param request the request
+	 * @param resourceType the resource type
+	 * @param added the flag to set
+	 */
+	public static void setGlobalBundleAdded(ServletRequest request, String resourceType, boolean added) {
+		String globalBundleAddedAttributeName = GLOBAL_BUNDLE_ADDED_PREFIX+resourceType;
+		request.setAttribute(globalBundleAddedAttributeName, new Boolean(added));
+	}
+	
 	/**
 	 * Determines wether gzip is suitable for the current request given the current config.
 	 * 

@@ -36,6 +36,7 @@ public interface BundleRenderer {
      * @param requestedPath String Path that identifies a resource bundle id or one of its members. 
      * @param contextPath String The context path to prepend to the URL. 
      * @param includedBundles Set A set of names previously added. None of them will be written out as links to avoid duplication. 
+     * @param globalBundleAlreadyAdded TODO
      * @param useGzip boolean If true, the gzip prefix is added to the URLs so the link will point to the gzipped version. 
      * @param sslRequest boolean If true, the request is in through an SSL connection (https://..) . 
      * @param out Writer Writer to output the tags, typically a JSPWriter. 
@@ -44,12 +45,20 @@ public interface BundleRenderer {
                                     String contextPath,
                                     String variantKey,
                                     final Set includedBundles, 
-                                    boolean useGzip, 
-                                    boolean sslRequest,
-                                    Writer out ) throws IOException;
+                                    boolean globalBundleAlreadyAdded, 
+                                    boolean useGzip,
+                                    boolean sslRequest, Writer out ) throws IOException;
     
     /**
      * @return ResourceBundlesHandler The resources handler used by this renderer.
      */
     public ResourceBundlesHandler getBundler();
+    
+    /**
+     * Returns the resource type 
+     * 
+     * @return the resource type
+     */
+    public String getResourceType();
+    
 }

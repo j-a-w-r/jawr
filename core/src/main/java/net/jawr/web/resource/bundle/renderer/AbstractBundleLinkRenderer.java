@@ -43,6 +43,7 @@ public abstract class AbstractBundleLinkRenderer implements BundleRenderer {
 	/** The flag indicating if we must use the random parameter */
 	private boolean useRandomParam = true;
 
+	
 	/**
 	 * Creates a new instance of AbstractBundleLinkRenderer
 	 * 
@@ -67,8 +68,8 @@ public abstract class AbstractBundleLinkRenderer implements BundleRenderer {
 	 * @see net.jawr.web.resource.bundle.renderer.BundleRenderer#renderBundleLinks(java.lang.String, java.lang.String, java.lang.String,
 	 * java.util.Set, boolean, boolean, java.io.Writer)
 	 */
-	public void renderBundleLinks(String requestedPath, String contextPath, String variantKey, final Set includedBundles, boolean useGzip,
-			boolean isSslRequest, Writer out) throws IOException {
+	public void renderBundleLinks(String requestedPath, String contextPath, String variantKey, final Set includedBundles, boolean globalBundleAlreadyAdded,
+			boolean useGzip, boolean isSslRequest, Writer out) throws IOException {
 
 		boolean debugOn = bundler.getConfig().isDebugModeOn();
 		JoinableResourceBundle bundle = bundler.resolveBundleForPath(requestedPath);
@@ -76,6 +77,25 @@ public abstract class AbstractBundleLinkRenderer implements BundleRenderer {
 		if (null == bundle)
 			return;
 
+		// If the global bundles had been added before, it will not be included again.
+		if(!globalBundleAlreadyAdded){
+			
+			if (debugOn) {
+				addComment("Start adding global members.", out);
+			}
+			
+			ResourceBundlePathsIterator resourceBundleIterator = bundler.getGlobalResourceBundlePaths(new ConditionalCommentRenderer(out), variantKey);
+
+			renderBundleLinks(resourceBundleIterator,
+					contextPath, includedBundles, useGzip,
+					isSslRequest, debugOn, out);
+
+			if (debugOn) {
+				addComment("Finished adding global members.", out);
+			}
+
+		}
+		
 		// If there is a fixed URL for production mode it is rendered and method returns.  
     	if(!debugOn && null != bundle.getAlternateProductionURL()){
     		out.write(renderLink(bundle.getAlternateProductionURL()));
@@ -97,38 +117,57 @@ public abstract class AbstractBundleLinkRenderer implements BundleRenderer {
 		// Retrieve the name or names of bundle(s) that belong to/with the requested path.
 		ResourceBundlePathsIterator it = bundler.getBundlePaths(bundle.getId(), new ConditionalCommentRenderer(out), variantKey);
 
-		// Add resources to the page as links.
-		while (it.hasNext()) {
-			String resourceName = it.nextPath();
-
-			// If the resource had been added before, it will not be included again.
-			if (includedBundles.add(resourceName)) {
-				// In debug mode, all the resources are included separately and use a random parameter to avoid caching.
-				// If useRandomParam is set to false, the links are created without the random parameter.
-				if (debugOn && useRandomParam && !bundler.getConfig().getGeneratorRegistry().isPathGenerated(resourceName)) {
-					int random = new Random().nextInt();
-					if (random < 0)
-						random *= -1;
-					out.write(createBundleLink(resourceName + "?d=" + random, contextPath, isSslRequest));
-				} else if (!debugOn && useGzip)
-					out.write(createGzipBundleLink(resourceName, contextPath, isSslRequest));
-				else
-					out.write(createBundleLink(resourceName, contextPath, isSslRequest));
-			} else if (debugOn) {
-				addComment("Skipping resource '" + resourceName + "' since it is already included in the page.", out);
-			}
-		}
+		renderBundleLinks(it, contextPath, includedBundles, useGzip,
+				isSslRequest, debugOn, out);
 		if (debugOn) {
 			addComment("Finished adding members resolved by " + requestedPath, out);
 		}
 	}
 
 	/**
+	 * Renders the bundle links for the resource iterator passed in parameter
+	 * @param it the iterator on the bundles 
+	 * @param contextPath the context path
+	 * @param includedBundles the included bundles
+	 * @param useGzip the flag indicating if we use gzip or not
+	 * @param isSslRequest the flag indicating if it's an SSL request or not
+	 * @param debugOn the flag indicating if we are in debug mode or not
+	 * @param out the output writer
+	 * @throws IOException if an IO exception occurs
+	 */
+	private void renderBundleLinks(ResourceBundlePathsIterator it,
+			String contextPath, final Set includedBundles, boolean useGzip,
+			boolean isSslRequest, boolean debugOn, Writer out)
+			throws IOException {
+		// Add resources to the page as links.
+		while (it.hasNext()) {
+			String resourceName = it.nextPath();
+
+			
+			// In debug mode, all the resources are included separately and use a random parameter to avoid caching.
+			// If useRandomParam is set to false, the links are created without the random parameter.
+			if (debugOn && useRandomParam && !bundler.getConfig().getGeneratorRegistry().isPathGenerated(resourceName)) {
+				int random = new Random().nextInt();
+				if (random < 0)
+					random *= -1;
+				out.write(createBundleLink(resourceName + "?d=" + random, contextPath, isSslRequest));
+			} else if (!debugOn && useGzip)
+				out.write(createGzipBundleLink(resourceName, contextPath, isSslRequest));
+			else
+				out.write(createBundleLink(resourceName, contextPath, isSslRequest));
+				
+			if (!includedBundles.add(resourceName) && debugOn) {
+				addComment("The resource '" + resourceName + "' is already included in the page.", out);
+			}
+		}
+	}
+
+	/**
 	 * Adds an HTML comment to the output stream.
 	 * 
-	 * @param commentText
+	 * @param commentText the comment
 	 * @param out Writer
-	 * @throws IOException
+	 * @throws IOException if an IO exception occurs
 	 */
 	protected final void addComment(String commentText, Writer out) throws IOException {
 		StringBuffer sb = new StringBuffer("<script type=\"text/javascript\">/* ");
@@ -139,9 +178,9 @@ public abstract class AbstractBundleLinkRenderer implements BundleRenderer {
 	/**
 	 * Creates a link to a bundle in the page, prepending the gzip prefix to its identifier.
 	 * 
-	 * @param resourceName
-	 * @param contextPath
-	 * @return String
+	 * @param resourceName the resource name
+	 * @param contextPath the context path
+	 * @return the link to the gzip bundle in the page
 	 */
 	protected String createGzipBundleLink(String resourceName, String contextPath, boolean isSslRequest) {
 		// remove '/' from start of name
@@ -152,9 +191,9 @@ public abstract class AbstractBundleLinkRenderer implements BundleRenderer {
 	/**
 	 * Creates a link to a bundle in the page.
 	 * 
-	 * @param bundleId
-	 * @param contextPath
-	 * @return
+	 * @param bundleId the bundle ID
+	 * @param contextPath the context path
+	 * @return the link to a bundle in the page
 	 */
 	protected String createBundleLink(String bundleId, String contextPath, boolean isSslRequest) {
 
@@ -212,7 +251,5 @@ public abstract class AbstractBundleLinkRenderer implements BundleRenderer {
 	 * @return a link to a bundle in the page
 	 */
 	protected abstract String renderLink(String fullPath);
-
-	
 
 }

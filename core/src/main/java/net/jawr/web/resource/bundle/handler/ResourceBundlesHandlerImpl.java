@@ -42,7 +42,6 @@ import net.jawr.web.resource.bundle.JoinableResourceBundle;
 import net.jawr.web.resource.bundle.JoinableResourceBundleContent;
 import net.jawr.web.resource.bundle.JoinableResourceBundleImpl;
 import net.jawr.web.resource.bundle.JoinableResourceBundlePropertySerializer;
-import net.jawr.web.resource.bundle.factory.util.PathNormalizer;
 import net.jawr.web.resource.bundle.generator.ResourceGenerator;
 import net.jawr.web.resource.bundle.iterator.ConditionalCommentCallbackHandler;
 import net.jawr.web.resource.bundle.iterator.DebugModePathsIteratorImpl;
@@ -174,45 +173,62 @@ public class ResourceBundlesHandlerImpl implements ResourceBundlesHandler {
 		contextBundles.addAll(tmpContext);
 	}
 
+	/* (non-Javadoc)
+	 * @see net.jawr.web.resource.bundle.handler.ResourceBundlesHandler#isGlobalResourceBundle(java.lang.String)
+	 */
+	public boolean isGlobalResourceBundle(String resourceBundleId){
+		
+		boolean isGlobalResourceBundle = false;
+		for (Iterator it = globalBundles.iterator(); it.hasNext();) {
+			JoinableResourceBundle bundle = (JoinableResourceBundle) it.next();
+			if (bundle.getId().equals(resourceBundleId)){
+				isGlobalResourceBundle = true;	
+			}
+		}
+		
+		return isGlobalResourceBundle;
+	}
+	
+	/* (non-Javadoc)
+	 * @see net.jawr.web.resource.bundle.handler.ResourceBundlesHandler#getGlobalResourceBundlePaths(net.jawr.web.resource.bundle.iterator.ConditionalCommentCallbackHandler, java.lang.String)
+	 */
+	public ResourceBundlePathsIterator getGlobalResourceBundlePaths(ConditionalCommentCallbackHandler commentCallbackHandler, String variantKey){
+		
+		return getBundleIterator(globalBundles, commentCallbackHandler, variantKey);
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
 	 * @see net.jawr.web.resource.bundle.ResourceCollector#getBundlePaths(java.lang.String)
 	 */
 	public ResourceBundlePathsIterator getBundlePaths(String bundleId, ConditionalCommentCallbackHandler commentCallbackHandler, String variantKey) {
-		List paths = new ArrayList();
-		List bundles = new ArrayList();
-		boolean returnAfterGlobals = false;
-		// add all the global bundles
-		for (Iterator it = globalBundles.iterator(); it.hasNext();) {
-			JoinableResourceBundle bundle = (JoinableResourceBundle) it.next();
-			bundles.add(bundle);
-			// Add separate files or joined bundle file according to debug mode.
-			if (getConfig().isDebugModeOn())
-				paths.addAll(bundle.getItemPathList());
-			else
-				paths.add(PathNormalizer.joinPaths(bundle.getURLPrefix(variantKey), bundle.getId()));
 
-			// If the bundle requested was this, return
-			if (bundle.getId().equals(bundleId))
-				returnAfterGlobals = true;
-		}
+		List bundles = new ArrayList();
+		
 		// if the path did not correspond to a global bundle, find the requested one.
-		if (!returnAfterGlobals) {
+		if(!isGlobalResourceBundle(bundleId)){
 			for (Iterator it = contextBundles.iterator(); it.hasNext();) {
 				JoinableResourceBundle bundle = (JoinableResourceBundle) it.next();
 				if (bundle.getId().equals(bundleId)) {
 					bundles.add(bundle);
-					// Add separate files or joined bundle file according to debug mode.
-					if (getConfig().isDebugModeOn())
-						paths.addAll(bundle.getItemPathList());
-					else
-						paths.add(PathNormalizer.joinPaths(bundle.getURLPrefix(variantKey), bundle.getId()));
-
 					break;
 				}
 			}
 		}
+		
+		return getBundleIterator(bundles, commentCallbackHandler, variantKey);
+	}
+
+	/**
+	 * Returns the bundle iterator
+	 * @param commentCallbackHandler the comment callback handler
+	 * @param variantKey the variant key
+	 * @return the bundle iterator
+	 */
+	private ResourceBundlePathsIterator getBundleIterator(List bundles, 
+			ConditionalCommentCallbackHandler commentCallbackHandler,
+			String variantKey) {
 		ResourceBundlePathsIterator bundlesIterator;
 		if (getConfig().isDebugModeOn()) {
 			bundlesIterator = new DebugModePathsIteratorImpl(bundles, commentCallbackHandler, variantKey);
@@ -220,7 +236,7 @@ public class ResourceBundlesHandlerImpl implements ResourceBundlesHandler {
 			bundlesIterator = new PathsIteratorImpl(bundles, commentCallbackHandler, variantKey);
 		return bundlesIterator;
 	}
-
+	
 	/**
 	 * Removes the URL prefix defined in the configuration from a path. If the prefix contains a variant information, it adds it to the name.
 	 * 

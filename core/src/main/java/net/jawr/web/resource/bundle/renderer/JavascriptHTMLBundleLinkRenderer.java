@@ -1,5 +1,5 @@
 /**
- * Copyright 2007 Jordi Hernández Sellés
+ * Copyright 2007-2009 Jordi Hernández Sellés, Ibrahim Chaehoi
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -13,16 +13,21 @@
  */
 package net.jawr.web.resource.bundle.renderer;
 
+import net.jawr.web.JawrConstant;
 import net.jawr.web.resource.bundle.handler.ResourceBundlesHandler;
 
 /**
  * Renderer that creates javascript link tags. 
  * 
  * @author Jordi Hernández Sellés
+ * @author Ibrahim Chaehoi
  */
 public class JavascriptHTMLBundleLinkRenderer extends AbstractBundleLinkRenderer implements BundleRenderer{
     
+	/** The start tag */
     private static final String PRE_TAG = "<script type=\"text/javascript\" src=\"";
+    
+    /** The end tag */
     private static final String POST_TAG = "\" ></script>\n";
     
     /** Creates a new instance of JavascriptHTMLBundleLinkRenderer */
@@ -30,6 +35,13 @@ public class JavascriptHTMLBundleLinkRenderer extends AbstractBundleLinkRenderer
         super(bundler, useRandomParam);
     }
 
+    /* (non-Javadoc)
+	 * @see net.jawr.web.resource.bundle.renderer.BundleRenderer#getResourceType()
+	 */
+	public String getResourceType() {
+		return JawrConstant.JS_TYPE;
+	}
+	
     /* (non-Javadoc)
      * @see net.jawr.web.resource.bundle.renderer.AbstractBundleLinkRenderer#createBundleLink(java.lang.String, java.lang.String)
      */

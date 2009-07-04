@@ -34,16 +34,20 @@ import net.jawr.web.resource.bundle.renderer.AbstractBundleLinkRenderer;
  */
 public class BuildTimeBundleRenderer extends AbstractBundleLinkRenderer {
 
+	/** The resource type */
+	private String resourceType;
+	
 	/** The list of links rendered by the BasicBundleRenderer */
 	private List renderedLinks = new ArrayList();
 	
 	/**
 	 * Constructor
 	 * @param bundler the resource bundles handler
+	 * @param resourceType the resource type
 	 * @param useRandomParam the flag indicating if we should use the random parameter
      */
-	public BuildTimeBundleRenderer(ResourceBundlesHandler bundler) {
-		this(bundler, false);
+	public BuildTimeBundleRenderer(ResourceBundlesHandler bundler, String resourceType) {
+		this(bundler, resourceType, false);
 	}
 	
 	/**
@@ -51,10 +55,18 @@ public class BuildTimeBundleRenderer extends AbstractBundleLinkRenderer {
 	 * @param bundler the resource bundles handler
 	 * @param useRandomParam the flag indicating if we should use teh random parameter
      */
-	public BuildTimeBundleRenderer(ResourceBundlesHandler bundler, boolean useRandomParam) {
+	public BuildTimeBundleRenderer(ResourceBundlesHandler bundler, String resourceType, boolean useRandomParam) {
 		super(bundler, useRandomParam);
+		this.resourceType = resourceType;
 	}
 
+	/* (non-Javadoc)
+	 * @see net.jawr.web.resource.bundle.renderer.BundleRenderer#getResourceType()
+	 */
+	public String getResourceType() {
+		return resourceType;
+	}
+	
 	/**
 	 * Returns the list of rendered links
 	 * @return the list of rendered links
@@ -90,4 +102,6 @@ public class BuildTimeBundleRenderer extends AbstractBundleLinkRenderer {
 
     	return renderLink(fullPath);
     }
+
+	
 }

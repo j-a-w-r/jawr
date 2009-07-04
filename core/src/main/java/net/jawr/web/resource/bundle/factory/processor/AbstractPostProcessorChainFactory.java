@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.StringTokenizer;
+import java.util.Map.Entry;
 
 import net.jawr.web.resource.bundle.factory.util.ClassLoaderResourceUtils;
 import net.jawr.web.resource.bundle.postprocess.AbstractChainedResourceBundlePostProcessor;
@@ -111,11 +112,13 @@ public abstract class AbstractPostProcessorChainFactory implements	PostProcessor
 	 * @see net.jawr.web.resource.bundle.factory.processor.PostProcessorChainFactory#setCustomPostprocessors(java.util.Map)
 	 */
 	public void setCustomPostprocessors(Map keysClassNames) {
-		for(Iterator it = keysClassNames.keySet().iterator(); it.hasNext();){
-			String key = (String) it.next();			
-			ResourceBundlePostProcessor customProcessor = 
-				(ResourceBundlePostProcessor) ClassLoaderResourceUtils.buildObjectInstance((String) keysClassNames.get(key));
+		for(Iterator it = keysClassNames.entrySet().iterator(); it.hasNext();){
 			
+			Entry entry = (Entry) it.next();
+			ResourceBundlePostProcessor customProcessor = 
+				(ResourceBundlePostProcessor) ClassLoaderResourceUtils.buildObjectInstance((String) entry.getValue());
+			
+			String key = (String) entry.getKey();			
 			customPostProcessors.put(key, new CustomPostProcessorChainWrapper(key, customProcessor));
 			
 		}		
