@@ -154,30 +154,27 @@ public class ClassLoaderResourceUtils {
 		
 		// Try to retrieve by URL
 		if(null == url) {
-				url = Thread.currentThread().getContextClassLoader().getResource(resourcePath);
+			url = Thread.currentThread().getContextClassLoader().getResource(resourcePath);
+			
+			// Last chance, hack in the classloader
+			if(null == url) {
+				ClassLoader threadClassLoader = Thread.currentThread().getContextClassLoader();
+				try {
+					 Thread.currentThread().setContextClassLoader(source.getClass().getClassLoader());
+					 if(Thread.currentThread().getContextClassLoader() != null){
+						 url = Thread.currentThread().getContextClassLoader().getResource(resourcePath);
+					 }
+				}
+				finally {
+					 Thread.currentThread().setContextClassLoader(threadClassLoader);
+				}
 				
-				// Last chance, hack in the classloader
-				if(null == url) {
-					ClassLoader threadClassLoader = Thread.currentThread().getContextClassLoader();
-					try {
-						 Thread.currentThread().setContextClassLoader(source.getClass().getClassLoader());
-						 if(Thread.currentThread().getContextClassLoader() != null){
-							 url = Thread.currentThread().getContextClassLoader().getResource(resourcePath);
-						 }
-					}
-					finally {
-						 Thread.currentThread().setContextClassLoader(threadClassLoader);
-					}
-					
-				}
-				if(null == url){
-					throw new ResourceNotFoundException( resourcePath + " could not be found. ");
-				}
+			}
+			if(null == url){
+				throw new ResourceNotFoundException( resourcePath + " could not be found. ");
+			}
 		}
 		
-		// Everything failed... exception is trown. 
-		if(null == url)
-			throw new ResourceNotFoundException( resourcePath + " could not be found. ");
 		return url;
 	}
 	
