@@ -228,7 +228,14 @@ public class GeneratorRegistry {
 		int jawrGenerationParamIdx = path.indexOf(JawrRequestHandler.GENERATION_PARAM);
 		String parameter = path.substring(jawrGenerationParamIdx+JawrRequestHandler.GENERATION_PARAM.length()+1); // Add 1 for the '=' character 
 		String key = matchPath(parameter);
-		return debugModeGeneratorPath+"/"+((ResourceGenerator)registry.get(key)).getDebugModeBuildTimeGenerationPath(parameter);
+		ResourceGenerator resourceGenerator = (ResourceGenerator)registry.get(key);
+		String suffixPath = null;
+		if(resourceGenerator instanceof SpecificCDNDebugPathResourceGenerator){
+			suffixPath = ((SpecificCDNDebugPathResourceGenerator)resourceGenerator).getDebugModeBuildTimeGenerationPath(parameter);
+		}else{
+			suffixPath = parameter.replaceFirst(GeneratorRegistry.PREFIX_SEPARATOR, JawrConstant.URL_SEPARATOR);
+		}
+		return debugModeGeneratorPath+"/"+suffixPath;
 	}
 	
 	/**

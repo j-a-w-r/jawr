@@ -63,12 +63,5 @@ public interface ResourceGenerator {
 	 */
 	public String getDebugModeRequestPath();
 
-
-	/**
-	 * Returns the path to use when generating a resource for the "build time processor". 
-	 * The path should just take in account the parameter used. 
-	 *   
-	 * @return the path to use when generating a resource for the "build time processor". 
-	 */
-	public String getDebugModeBuildTimeGenerationPath(String parameter);
+	
 }

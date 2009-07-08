@@ -22,7 +22,7 @@ import net.jawr.web.JawrConstant;
  * @author Jordi Hernández Sellés
  * @author Ibrahim Chaehoi
  */
-public abstract class AbstractJavascriptGenerator implements ResourceGenerator{
+public abstract class AbstractJavascriptGenerator implements SpecificCDNDebugPathResourceGenerator{
 
 	/* (non-Javadoc)
 	 * @see net.jawr.web.resource.bundle.generator.ResourceGenerator#getMappingPrefix()

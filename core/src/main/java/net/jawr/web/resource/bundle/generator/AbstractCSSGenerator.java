@@ -21,7 +21,7 @@ import net.jawr.web.JawrConstant;
  * @author Jordi Hernández Sellés
  * @author Ibrahim Chaehoi
  */
-public abstract class AbstractCSSGenerator implements ResourceGenerator {
+public abstract class AbstractCSSGenerator implements SpecificCDNDebugPathResourceGenerator {
 
 	/*
 	 * (non-Javadoc)
