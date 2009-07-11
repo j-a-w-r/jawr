@@ -13,10 +13,13 @@
  */
 package net.jawr.web.config.jmx;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import net.jawr.web.util.PropertyUtils;
 
 /**
  * This interface defines the MBean which manage the Jawr configuration for a we application, so it will affect all JawrConfigManagerMBean associated
@@ -24,10 +27,15 @@ import java.util.Set;
  * 
  * @author Ibrahim Chaehoi
  */
-public class JawrApplicationConfigManager implements JawrApplicationConfigManagerMBean {
+public class JawrApplicationConfigManager implements
+		JawrApplicationConfigManagerMBean {
 
+	
 	/** The message of the property, when the values are not equals for the different configuration manager */
 	private static String NOT_IDENTICAL_VALUES = "Value for this property are not identical";
+
+	/** The message when an error occured during the retrieve of the property value */
+	private static String ERROR_VALUE = "An error occured while retrieving the value for this property";
 
 	/** The configuration manager for the Javascript handler */
 	private JawrConfigManagerMBean jsMBean;
@@ -104,30 +112,7 @@ public class JawrApplicationConfigManager implements JawrApplicationConfigManage
 	 */
 	public String getCharsetName() {
 
-		List mBeans = getInitializedConfigurationManagers();
-		if (mBeans.size() == 3) {
-
-			if (areEquals(jsMBean.getCharsetName(), cssMBean.getCharsetName(), imgMBean.getCharsetName())) {
-
-				return jsMBean.getCharsetName();
-			} else {
-				return NOT_IDENTICAL_VALUES;
-			}
-		}
-
-		if (mBeans.size() == 2) {
-			JawrConfigManagerMBean mBean1 = (JawrConfigManagerMBean) mBeans.get(0);
-			JawrConfigManagerMBean mBean2 = (JawrConfigManagerMBean) mBeans.get(1);
-
-			if (areEquals(mBean1.getCharsetName(), mBean2.getCharsetName())) {
-				return mBean1.getCharsetName();
-			} else {
-				return NOT_IDENTICAL_VALUES;
-			}
-		}
-
-		JawrConfigManagerMBean mBean1 = (JawrConfigManagerMBean) mBeans.get(0);
-		return mBean1.getCharsetName();
+		return getStringValue("charsetName");
 	}
 
 	/*
@@ -137,30 +122,7 @@ public class JawrApplicationConfigManager implements JawrApplicationConfigManage
 	 */
 	public String getDebugOverrideKey() {
 
-		List mBeans = getInitializedConfigurationManagers();
-		if (mBeans.size() == 3) {
-
-			if (areEquals(jsMBean.getDebugOverrideKey(), cssMBean.getDebugOverrideKey(), imgMBean.getDebugOverrideKey())) {
-
-				return jsMBean.getDebugOverrideKey();
-			} else {
-				return NOT_IDENTICAL_VALUES;
-			}
-		}
-
-		if (mBeans.size() == 2) {
-			JawrConfigManagerMBean mBean1 = (JawrConfigManagerMBean) mBeans.get(0);
-			JawrConfigManagerMBean mBean2 = (JawrConfigManagerMBean) mBeans.get(1);
-
-			if (areEquals(mBean1.getDebugOverrideKey(),mBean2.getDebugOverrideKey())) {
-				return mBean1.getDebugOverrideKey();
-			} else {
-				return NOT_IDENTICAL_VALUES;
-			}
-		}
-
-		JawrConfigManagerMBean mBean1 = (JawrConfigManagerMBean) mBeans.get(0);
-		return mBean1.getDebugOverrideKey();
+		return getStringValue("debugOverrideKey");
 	}
 
 	/*
@@ -170,30 +132,7 @@ public class JawrApplicationConfigManager implements JawrApplicationConfigManage
 	 */
 	public String getDebugModeOn() {
 
-		List mBeans = getInitializedConfigurationManagers();
-		if (mBeans.size() == 3) {
-
-			if (jsMBean.isDebugModeOn() == cssMBean.isDebugModeOn() && cssMBean.isDebugModeOn() == imgMBean.isDebugModeOn()) {
-
-				return Boolean.toString(jsMBean.isDebugModeOn());
-			} else {
-				return NOT_IDENTICAL_VALUES;
-			}
-		}
-
-		if (mBeans.size() == 2) {
-			JawrConfigManagerMBean mBean1 = (JawrConfigManagerMBean) mBeans.get(0);
-			JawrConfigManagerMBean mBean2 = (JawrConfigManagerMBean) mBeans.get(1);
-
-			if (mBean1.isDebugModeOn() == mBean2.isDebugModeOn()) {
-				return Boolean.toString(mBean1.isDebugModeOn());
-			} else {
-				return NOT_IDENTICAL_VALUES;
-			}
-		}
-
-		JawrConfigManagerMBean mBean1 = (JawrConfigManagerMBean) mBeans.get(0);
-		return Boolean.toString(mBean1.isDebugModeOn());
+		return getStringValue("debugModeOn");
 	}
 
 	/*
@@ -203,31 +142,7 @@ public class JawrApplicationConfigManager implements JawrApplicationConfigManage
 	 */
 	public String getGzipResourcesForIESixOn() {
 
-		List mBeans = getInitializedConfigurationManagers();
-		if (mBeans.size() == 3) {
-
-			if (jsMBean.isGzipResourcesForIESixOn() == cssMBean.isGzipResourcesForIESixOn()
-					&& cssMBean.isGzipResourcesForIESixOn() == imgMBean.isGzipResourcesForIESixOn()) {
-
-				return Boolean.toString(jsMBean.isGzipResourcesForIESixOn());
-			} else {
-				return NOT_IDENTICAL_VALUES;
-			}
-		}
-
-		if (mBeans.size() == 2) {
-			JawrConfigManagerMBean mBean1 = (JawrConfigManagerMBean) mBeans.get(0);
-			JawrConfigManagerMBean mBean2 = (JawrConfigManagerMBean) mBeans.get(1);
-
-			if (mBean1.isGzipResourcesForIESixOn() == mBean2.isGzipResourcesForIESixOn()) {
-				return Boolean.toString(mBean1.isGzipResourcesForIESixOn());
-			} else {
-				return NOT_IDENTICAL_VALUES;
-			}
-		}
-
-		JawrConfigManagerMBean mBean1 = (JawrConfigManagerMBean) mBeans.get(0);
-		return Boolean.toString(mBean1.isGzipResourcesForIESixOn());
+		return getStringValue("gzipResourcesForIESixOn");
 	}
 
 	/*
@@ -237,123 +152,36 @@ public class JawrApplicationConfigManager implements JawrApplicationConfigManage
 	 */
 	public String getGzipResourcesModeOn() {
 
-		List mBeans = getInitializedConfigurationManagers();
-		if (mBeans.size() == 3) {
-
-			if (jsMBean.isGzipResourcesModeOn() == cssMBean.isGzipResourcesModeOn()
-					&& cssMBean.isGzipResourcesModeOn() == imgMBean.isGzipResourcesModeOn()) {
-
-				return Boolean.toString(jsMBean.isGzipResourcesModeOn());
-			} else {
-				return NOT_IDENTICAL_VALUES;
-			}
-		}
-
-		if (mBeans.size() == 2) {
-			JawrConfigManagerMBean mBean1 = (JawrConfigManagerMBean) mBeans.get(0);
-			JawrConfigManagerMBean mBean2 = (JawrConfigManagerMBean) mBeans.get(1);
-
-			if (mBean1.isGzipResourcesForIESixOn() == mBean2.isGzipResourcesModeOn()) {
-				return Boolean.toString(mBean1.isGzipResourcesModeOn());
-			} else {
-				return NOT_IDENTICAL_VALUES;
-			}
-		}
-
-		JawrConfigManagerMBean mBean1 = (JawrConfigManagerMBean) mBeans.get(0);
-		return Boolean.toString(mBean1.isGzipResourcesModeOn());
+		return getStringValue("gzipResourcesModeOn");
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see net.jawr.web.config.jmx.JawrApplicationConfigManagerMBean#getContextPathOverride()
 	 */
 	public String getContextPathOverride() {
-		List mBeans = getInitializedConfigurationManagers();
-		if (mBeans.size() == 3) {
-
-			if (areEquals(jsMBean.getContextPathOverride(), cssMBean.getContextPathOverride(), imgMBean.getContextPathOverride())) {
-
-				return jsMBean.getContextPathOverride();
-			} else {
-				return NOT_IDENTICAL_VALUES;
-			}
-		}
-
-		if (mBeans.size() == 2) {
-			JawrConfigManagerMBean mBean1 = (JawrConfigManagerMBean) mBeans.get(0);
-			JawrConfigManagerMBean mBean2 = (JawrConfigManagerMBean) mBeans.get(1);
-
-			if (areEquals(mBean1.getContextPathOverride(),mBean2.getContextPathOverride())) {
-				return mBean1.getContextPathOverride();
-			} else {
-				return NOT_IDENTICAL_VALUES;
-			}
-		}
-
-		JawrConfigManagerMBean mBean1 = (JawrConfigManagerMBean) mBeans.get(0);
-		return mBean1.getContextPathOverride();
+		return getStringValue("contextPathOverride");
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see net.jawr.web.config.jmx.JawrApplicationConfigManagerMBean#getContextPathSslOverride()
 	 */
 	public String getContextPathSslOverride() {
-		
-		List mBeans = getInitializedConfigurationManagers();
-		if (mBeans.size() == 3) {
 
-			if (areEquals(jsMBean.getContextPathSslOverride(), cssMBean.getContextPathSslOverride(), imgMBean.getContextPathSslOverride())) {
-
-				return jsMBean.getContextPathSslOverride();
-			} else {
-				return NOT_IDENTICAL_VALUES;
-			}
-		}
-
-		if (mBeans.size() == 2) {
-			JawrConfigManagerMBean mBean1 = (JawrConfigManagerMBean) mBeans.get(0);
-			JawrConfigManagerMBean mBean2 = (JawrConfigManagerMBean) mBeans.get(1);
-
-			if (areEquals(mBean1.getContextPathSslOverride(),mBean2.getContextPathSslOverride())) {
-				return mBean1.getContextPathSslOverride();
-			} else {
-				return NOT_IDENTICAL_VALUES;
-			}
-		}
-
-		JawrConfigManagerMBean mBean1 = (JawrConfigManagerMBean) mBeans.get(0);
-		return mBean1.getContextPathSslOverride();
+		return getStringValue("contextPathSslOverride");
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see net.jawr.web.config.jmx.JawrApplicationConfigManagerMBean#getUseContextPathOverrideInDebugMode()
 	 */
 	public String getUseContextPathOverrideInDebugMode() {
-		List mBeans = getInitializedConfigurationManagers();
-		if (mBeans.size() == 3) {
-
-			if (jsMBean.getUseContextPathOverrideInDebugMode() == cssMBean.getUseContextPathOverrideInDebugMode()
-					&& cssMBean.getUseContextPathOverrideInDebugMode() == imgMBean.getUseContextPathOverrideInDebugMode()) {
-
-				return Boolean.toString(jsMBean.getUseContextPathOverrideInDebugMode());
-			} else {
-				return NOT_IDENTICAL_VALUES;
-			}
-		}
-
-		if (mBeans.size() == 2) {
-			JawrConfigManagerMBean mBean1 = (JawrConfigManagerMBean) mBeans.get(0);
-			JawrConfigManagerMBean mBean2 = (JawrConfigManagerMBean) mBeans.get(1);
-
-			if (mBean1.getUseContextPathOverrideInDebugMode() == mBean2.getUseContextPathOverrideInDebugMode()) {
-				return Boolean.toString(mBean1.getUseContextPathOverrideInDebugMode());
-			} else {
-				return NOT_IDENTICAL_VALUES;
-			}
-		}
-
-		JawrConfigManagerMBean mBean1 = (JawrConfigManagerMBean) mBeans.get(0);
-		return Boolean.toString(mBean1.getUseContextPathOverrideInDebugMode());
+	
+		return getStringValue("useContextPathOverrideInDebugMode");
 	}
 
 	/*
@@ -362,32 +190,18 @@ public class JawrApplicationConfigManager implements JawrApplicationConfigManage
 	 * @see net.jawr.web.config.jmx.JawrApplicationConfigManagerMBean#setCharsetName(java.lang.String)
 	 */
 	public void setCharsetName(String charsetName) {
-		if (jsMBean != null) {
-			jsMBean.setCharsetName(charsetName);
-		}
-		if (cssMBean != null) {
-			cssMBean.setCharsetName(charsetName);
-		}
-		if (imgMBean != null) {
-			imgMBean.setCharsetName(charsetName);
-		}
-	}
 	
+		setStringValue("charsetName", charsetName);
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
 	 * @see net.jawr.web.config.jmx.JawrApplicationConfigManagerMBean#setDebugModeOn(boolean)
 	 */
 	public void setDebugModeOn(String debugMode) {
-		if (jsMBean != null) {
-			jsMBean.setDebugModeOn(Boolean.valueOf(debugMode).booleanValue());
-		}
-		if (cssMBean != null) {
-			cssMBean.setDebugModeOn(Boolean.valueOf(debugMode).booleanValue());
-		}
-		if (imgMBean != null) {
-			imgMBean.setDebugModeOn(Boolean.valueOf(debugMode).booleanValue());
-		}
+	
+		setBooleanValue("debugModeOn", debugMode);
 	}
 
 	/*
@@ -396,15 +210,8 @@ public class JawrApplicationConfigManager implements JawrApplicationConfigManage
 	 * @see net.jawr.web.config.jmx.JawrApplicationConfigManagerMBean#setDebugOverrideKey(java.lang.String)
 	 */
 	public void setDebugOverrideKey(String debugOverrideKey) {
-		if (jsMBean != null) {
-			jsMBean.setDebugOverrideKey(debugOverrideKey);
-		}
-		if (cssMBean != null) {
-			cssMBean.setDebugOverrideKey(debugOverrideKey);
-		}
-		if (imgMBean != null) {
-			imgMBean.setDebugOverrideKey(debugOverrideKey);
-		}
+	
+		setStringValue("debugOverrideKey", debugOverrideKey);
 	}
 
 	/*
@@ -413,15 +220,8 @@ public class JawrApplicationConfigManager implements JawrApplicationConfigManage
 	 * @see net.jawr.web.config.jmx.JawrApplicationConfigManagerMBean#setGzipResourcesForIESixOn(boolean)
 	 */
 	public void setGzipResourcesForIESixOn(String gzipResourcesForIESixOn) {
-		if (jsMBean != null) {
-			jsMBean.setGzipResourcesForIESixOn(Boolean.valueOf(gzipResourcesForIESixOn).booleanValue());
-		}
-		if (cssMBean != null) {
-			cssMBean.setGzipResourcesForIESixOn(Boolean.valueOf(gzipResourcesForIESixOn).booleanValue());
-		}
-		if (imgMBean != null) {
-			imgMBean.setGzipResourcesForIESixOn(Boolean.valueOf(gzipResourcesForIESixOn).booleanValue());
-		}
+	
+		setBooleanValue("gzipResourcesForIESixOn", gzipResourcesForIESixOn);
 	}
 
 	/*
@@ -430,64 +230,41 @@ public class JawrApplicationConfigManager implements JawrApplicationConfigManage
 	 * @see net.jawr.web.config.jmx.JawrApplicationConfigManagerMBean#setGzipResourcesModeOn(boolean)
 	 */
 	public void setGzipResourcesModeOn(String gzipResourcesModeOn) {
-		if (jsMBean != null) {
-			jsMBean.setGzipResourcesModeOn(Boolean.valueOf(gzipResourcesModeOn).booleanValue());
-		}
-		if (cssMBean != null) {
-			cssMBean.setGzipResourcesModeOn(Boolean.valueOf(gzipResourcesModeOn).booleanValue());
-		}
-		if (imgMBean != null) {
-			imgMBean.setGzipResourcesModeOn(Boolean.valueOf(gzipResourcesModeOn).booleanValue());
-		}
-	}
 	
-	/* (non-Javadoc)
+		setBooleanValue("gzipResourcesModeOn", gzipResourcesModeOn);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see net.jawr.web.config.jmx.JawrApplicationConfigManagerMBean#setContextPathOverride(java.lang.String)
 	 */
 	public void setContextPathOverride(String contextPathOverride) {
-		
-		if (jsMBean != null) {
-			jsMBean.setDebugOverrideKey(contextPathOverride);
-		}
-		if (cssMBean != null) {
-			cssMBean.setDebugOverrideKey(contextPathOverride);
-		}
-		if (imgMBean != null) {
-			imgMBean.setDebugOverrideKey(contextPathOverride);
-		}
+
+		setStringValue("contextPathOverride", contextPathOverride);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see net.jawr.web.config.jmx.JawrApplicationConfigManagerMBean#setContextPathSslOverride(java.lang.String)
 	 */
-	public void setContextPathSslOverride(String contextPathOverride) {
-		
-		if (jsMBean != null) {
-			jsMBean.setDebugOverrideKey(contextPathOverride);
-		}
-		if (cssMBean != null) {
-			cssMBean.setDebugOverrideKey(contextPathOverride);
-		}
-		if (imgMBean != null) {
-			imgMBean.setDebugOverrideKey(contextPathOverride);
-		}
+	public void setContextPathSslOverride(String contextPathSslOverride) {
+
+		setStringValue("contextPathSslOverride", contextPathSslOverride);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see net.jawr.web.config.jmx.JawrApplicationConfigManagerMBean#setUseContextPathOverrideInDebugMode(java.lang.String)
 	 */
-	public void setUseContextPathOverrideInDebugMode(String useContextPathOverrideInDebugMode) {
-		if (jsMBean != null) {
-			jsMBean.setGzipResourcesModeOn(Boolean.valueOf(useContextPathOverrideInDebugMode).booleanValue());
-		}
-		if (cssMBean != null) {
-			cssMBean.setGzipResourcesModeOn(Boolean.valueOf(useContextPathOverrideInDebugMode).booleanValue());
-		}
-		if (imgMBean != null) {
-			imgMBean.setGzipResourcesModeOn(Boolean.valueOf(useContextPathOverrideInDebugMode).booleanValue());
-		}
+	public void setUseContextPathOverrideInDebugMode(
+			String useContextPathOverrideInDebugMode) {
+		
+		setBooleanValue("useContextPathOverrideInDebugMode", useContextPathOverrideInDebugMode);
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -543,6 +320,105 @@ public class JawrApplicationConfigManager implements JawrApplicationConfigManage
 	}
 
 	/**
+	 * Returns the string value of the configuration managers
+	 * 
+	 * @param property the property to retrieve
+	 * @return the string value of the configuration managers
+	 */
+	public String getStringValue(String property) {
+
+		List mBeans = getInitializedConfigurationManagers();
+		try {
+
+			if (mBeans.size() == 3) {
+
+				if (areEquals(PropertyUtils.getProperty(jsMBean, property),
+						PropertyUtils.getProperty(cssMBean, property), PropertyUtils.getProperty(imgMBean, property))) {
+
+					return PropertyUtils.getProperty(jsMBean, property);
+				} else {
+					return NOT_IDENTICAL_VALUES;
+				}
+			}
+
+			if (mBeans.size() == 2) {
+				JawrConfigManagerMBean mBean1 = (JawrConfigManagerMBean) mBeans
+						.get(0);
+				JawrConfigManagerMBean mBean2 = (JawrConfigManagerMBean) mBeans
+						.get(1);
+
+				if (areEquals(PropertyUtils.getProperty(mBean1, property),
+						PropertyUtils.getProperty(mBean2, property))) {
+					return PropertyUtils.getProperty(mBean1, property);
+				} else {
+					return NOT_IDENTICAL_VALUES;
+				}
+			}
+
+			JawrConfigManagerMBean mBean1 = (JawrConfigManagerMBean) mBeans
+					.get(0);
+
+			return PropertyUtils.getProperty(mBean1, property);
+
+		} catch (Exception e) {
+			return ERROR_VALUE;
+		}
+
+	}
+
+	/**
+	 * Update the property with the string value in each config manager.
+	 * 
+	 * @param property the property to update
+	 * @param value the value to set
+	 */
+	public void setStringValue(String property, String value) {
+		try {
+			if (jsMBean != null) {
+				PropertyUtils.setProperty(jsMBean, property, value);
+			}
+			if (cssMBean != null) {
+				PropertyUtils.setProperty(cssMBean, property, value);
+			}
+			if (imgMBean != null) {
+				PropertyUtils.setProperty(imgMBean, property, value);
+			}
+		} catch (IllegalAccessException e) {
+			throw new RuntimeException("Exception while setting the string value", e);
+		} catch (InvocationTargetException e) {
+			throw new RuntimeException("Exception while setting the string value", e);
+		} catch (NoSuchMethodException e) {
+			throw new RuntimeException("Exception while setting the string value", e);
+		}
+	}
+
+	/**
+	 * Update the property with the string value in each config manager.
+	 * 
+	 * @param property the property to update
+	 * @param value the value to set
+	 */
+	public void setBooleanValue(String property, String value) {
+		try {
+			if (jsMBean != null) {
+				PropertyUtils.setProperty(jsMBean, property, Boolean.valueOf(value));
+			}
+			if (cssMBean != null) {
+				PropertyUtils.setProperty(cssMBean, property, Boolean.valueOf(value));
+			}
+			if (imgMBean != null) {
+				PropertyUtils.setProperty(imgMBean, property, Boolean.valueOf(value));
+			}
+		} catch (IllegalAccessException e) {
+			throw new RuntimeException("Exception while setting the boolean value", e);
+		} catch (InvocationTargetException e) {
+			throw new RuntimeException("Exception while setting the boolean value", e);
+		} catch (NoSuchMethodException e) {
+			throw new RuntimeException("Exception while setting the boolean value", e);
+		}
+	}
+	
+	/**
 	 * Returns true if the 2 string are equals.
 	 * 
 	 * @param str1 the first string
@@ -551,7 +427,8 @@ public class JawrApplicationConfigManager implements JawrApplicationConfigManage
 	 */
 	public boolean areEquals(String str1, String str2) {
 
-		return (str1 == null && str2 == null || str1 != null && str2 != null && str1.equals(str2));
+		return (str1 == null && str2 == null || str1 != null && str2 != null
+				&& str1.equals(str2));
 	}
 
 	/**
@@ -564,7 +441,8 @@ public class JawrApplicationConfigManager implements JawrApplicationConfigManage
 	 */
 	public boolean areEquals(String str1, String str2, String str3) {
 
-		return (str1 == null && str2 == null && str3 == null || str1 != null && str2 != null && str3 != null && str1.equals(str2)
+		return (str1 == null && str2 == null && str3 == null || str1 != null
+				&& str2 != null && str3 != null && str1.equals(str2)
 				&& str2.equals(str3));
 	}
 }
