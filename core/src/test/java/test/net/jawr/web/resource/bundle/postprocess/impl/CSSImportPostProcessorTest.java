@@ -23,7 +23,7 @@ import net.jawr.web.resource.bundle.JoinableResourceBundleContent;
 import net.jawr.web.resource.bundle.postprocess.BundleProcessingStatus;
 import net.jawr.web.resource.bundle.postprocess.ResourceBundlePostProcessor;
 import net.jawr.web.resource.bundle.postprocess.impl.CSSImportPostProcessor;
-import net.jawr.web.servlet.mock.MockServletContext;
+import test.net.jawr.web.servlet.mock.MockServletContext;
 
 /**
  * @author Ibrahim Chaehoi

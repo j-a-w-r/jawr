@@ -20,6 +20,7 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.TagSupport;
 
 import net.jawr.web.resource.bundle.renderer.BundleRenderer;
+import net.jawr.web.resource.bundle.renderer.BundleRendererContext;
 import net.jawr.web.servlet.RendererRequestUtils;
 
 /**
@@ -53,24 +54,15 @@ public abstract class AbstractResourceBundleTag extends TagSupport {
            // Renderer istance which takes care of generating the response
 		   this.renderer = createRenderer();
            
-           HttpServletRequest request = (HttpServletRequest)pageContext.getRequest();
+		   HttpServletRequest request = (HttpServletRequest)pageContext.getRequest();
            
-           // set the debug override
-           String localeKey = this.renderer.getBundler().getConfig().getLocaleResolver().resolveLocaleCode(request);
-           boolean isGzippable = RendererRequestUtils.isRequestGzippable(request,renderer.getBundler().getConfig());
-           
-           RendererRequestUtils.setRequestDebuggable(request,renderer.getBundler().getConfig());
-           
-           try {
-                renderer.renderBundleLinks( src,
-                                            request.getContextPath(),
-                                            localeKey,
-                                            RendererRequestUtils.getAddedBundlesLog(request),
-                                            RendererRequestUtils.isGlobalBundleAdded(request, renderer.getResourceType()),
-                                            isGzippable,
-                                            RendererRequestUtils.isSslRequest(request), pageContext.getOut());
-                
-                RendererRequestUtils.setGlobalBundleAdded(request, renderer.getResourceType(), true);
+		   // set the debug override
+	       RendererRequestUtils.setRequestDebuggable(request,renderer.getBundler().getConfig());
+		   
+		   try {
+			   BundleRendererContext ctx = RendererRequestUtils.getBundleRendererContext(request, renderer);
+			   renderer.renderBundleLinks( src,
+                                            ctx, pageContext.getOut());
                 
            } catch (IOException ex) {
                 throw new JspException("Unexpected IOException when writing script tags for path " + src,ex);

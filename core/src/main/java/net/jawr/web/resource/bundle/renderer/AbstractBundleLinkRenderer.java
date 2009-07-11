@@ -62,15 +62,12 @@ public abstract class AbstractBundleLinkRenderer implements BundleRenderer {
 		return bundler;
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see net.jawr.web.resource.bundle.renderer.BundleRenderer#renderBundleLinks(java.lang.String, java.lang.String, java.lang.String,
-	 * java.util.Set, boolean, boolean, java.io.Writer)
+	/* (non-Javadoc)
+	 * @see net.jawr.web.resource.bundle.renderer.BundleRenderer#renderBundleLinks(java.lang.String, net.jawr.web.resource.bundle.renderer.BundleRendererContext, javax.servlet.jsp.Writer)
 	 */
-	public void renderBundleLinks(String requestedPath, String contextPath, String variantKey, final Set includedBundles, boolean globalBundleAlreadyAdded,
-			boolean useGzip, boolean isSslRequest, Writer out) throws IOException {
-
+	public void renderBundleLinks(String requestedPath, BundleRendererContext ctx,
+			Writer out) throws IOException {
+		
 		boolean debugOn = bundler.getConfig().isDebugModeOn();
 		JoinableResourceBundle bundle = bundler.resolveBundleForPath(requestedPath);
 
@@ -78,18 +75,17 @@ public abstract class AbstractBundleLinkRenderer implements BundleRenderer {
 			return;
 
 		// If the global bundles had been added before, it will not be included again.
-		if(!globalBundleAlreadyAdded){
+		if(!ctx.isGlobalBundleAdded()){
 			
 			if (debugOn) {
 				addComment("Start adding global members.", out);
 			}
 			
-			ResourceBundlePathsIterator resourceBundleIterator = bundler.getGlobalResourceBundlePaths(new ConditionalCommentRenderer(out), variantKey);
+			ResourceBundlePathsIterator resourceBundleIterator = bundler.getGlobalResourceBundlePaths(new ConditionalCommentRenderer(out), ctx.getVariantKey());
 
 			renderBundleLinks(resourceBundleIterator,
-					contextPath, includedBundles, useGzip,
-					isSslRequest, debugOn, out);
-
+					ctx, debugOn, out);
+			ctx.setGlobalBundleAdded(true);
 			if (debugOn) {
 				addComment("Finished adding global members.", out);
 			}
@@ -107,22 +103,24 @@ public abstract class AbstractBundleLinkRenderer implements BundleRenderer {
 		}
 
 		// If DWR is being used, add a path var to the page
-		if (null != bundler.getConfig().getDwrMapping() && includedBundles.add(ID_SCRIPT_DWR_PATH)) {
+		if (null != bundler.getConfig().getDwrMapping() && ctx.getIncludedBundles().add(ID_SCRIPT_DWR_PATH)) {
 
+			String contextPath = ctx.getContextPath();
 			StringBuffer sb = DWRParamWriter.buildRequestSpecificParams(contextPath, PathNormalizer.joinPaths(contextPath, bundler.getConfig()
 					.getDwrMapping()));
 			out.write(sb.toString());
 		}
 
 		// Retrieve the name or names of bundle(s) that belong to/with the requested path.
-		ResourceBundlePathsIterator it = bundler.getBundlePaths(bundle.getId(), new ConditionalCommentRenderer(out), variantKey);
+		ResourceBundlePathsIterator it = bundler.getBundlePaths(bundle.getId(), new ConditionalCommentRenderer(out), ctx.getVariantKey());
 
-		renderBundleLinks(it, contextPath, includedBundles, useGzip,
-				isSslRequest, debugOn, out);
+		renderBundleLinks(it, ctx, debugOn, out);
 		if (debugOn) {
 			addComment("Finished adding members resolved by " + requestedPath, out);
 		}
 	}
+
+	
 
 	/**
 	 * Renders the bundle links for the resource iterator passed in parameter
@@ -136,9 +134,13 @@ public abstract class AbstractBundleLinkRenderer implements BundleRenderer {
 	 * @throws IOException if an IO exception occurs
 	 */
 	private void renderBundleLinks(ResourceBundlePathsIterator it,
-			String contextPath, final Set includedBundles, boolean useGzip,
-			boolean isSslRequest, boolean debugOn, Writer out)
-			throws IOException {
+			BundleRendererContext ctx, boolean debugOn, Writer out) throws IOException {
+	
+		String contextPath = ctx.getContextPath();
+		boolean useGzip = ctx.isUseGzip();
+		boolean isSslRequest = ctx.isSslRequest();
+		Set includedBundles = ctx.getIncludedBundles();
+		
 		// Add resources to the page as links.
 		while (it.hasNext()) {
 			String resourceName = it.nextPath();

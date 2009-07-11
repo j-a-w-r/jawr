@@ -21,6 +21,7 @@ import javax.faces.context.ResponseWriter;
 import javax.servlet.http.HttpServletRequest;
 
 import net.jawr.web.resource.bundle.renderer.BundleRenderer;
+import net.jawr.web.resource.bundle.renderer.BundleRendererContext;
 import net.jawr.web.servlet.RendererRequestUtils;
 
 /**
@@ -63,19 +64,11 @@ public abstract class AbstractResourceBundleTag extends UIOutput {
         ResponseWriter writer = context.getResponseWriter();
         HttpServletRequest request = ((HttpServletRequest)context.getExternalContext().getRequest());
         RendererRequestUtils.setRequestDebuggable(request,renderer.getBundler().getConfig());
-        String localeKey = this.renderer.getBundler().getConfig().getLocaleResolver().resolveLocaleCode(request);
-       
-        // Determine if gzip is feasible for the current client. 
-        boolean isGzippable = RendererRequestUtils.isRequestGzippable(request,renderer.getBundler().getConfig());
-
+        
+        BundleRendererContext ctx = RendererRequestUtils.getBundleRendererContext(request, renderer);
         renderer.renderBundleLinks( src,
-                                     request.getContextPath(),
-                                     localeKey,
-                                     RendererRequestUtils.getAddedBundlesLog(request),
-                                     RendererRequestUtils.isGlobalBundleAdded(request, renderer.getResourceType()),
-                                     isGzippable,
-                                     RendererRequestUtils.isSslRequest(request), writer);
-        RendererRequestUtils.setGlobalBundleAdded(request, renderer.getResourceType(), true);
+                ctx, writer);
+
 		super.encodeBegin(context);
 	}
 	
