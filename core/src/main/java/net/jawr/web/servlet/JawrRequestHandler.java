@@ -24,8 +24,8 @@ import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.management.MBeanServer;
-import javax.management.ObjectName;
+//import javax.management.MBeanServer;
+//import javax.management.ObjectName;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -34,8 +34,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import net.jawr.web.JawrConstant;
 import net.jawr.web.config.JawrConfig;
-import net.jawr.web.config.jmx.JawrApplicationConfigManager;
-import net.jawr.web.config.jmx.JawrConfigManager;
 import net.jawr.web.config.jmx.JmxUtils;
 import net.jawr.web.context.ThreadLocalJawrContext;
 import net.jawr.web.exception.DuplicateBundlePathException;
@@ -82,7 +80,7 @@ public class JawrRequestHandler implements ConfigChangeListener {
 
 	protected static final String CONFIG_RELOAD_INTERVAL = "jawr.config.reload.interval";
 	public static final String GENERATION_PARAM = "generationConfigParam";
-
+	
 	public static final String CLIENTSIDE_HANDLER_REQ_PATH = "/jawr_loader.js";
 
 	/** The CSS classpath image pattern */
@@ -185,8 +183,10 @@ public class JawrRequestHandler implements ConfigChangeListener {
 		}
 
 		// initialize the jmx Bean
-		initJMXBean();
-
+		if(isJmxEnabled()){
+				JmxUtils.initJMXBean(this, servletContext, resourceType, jawrConfig.getConfigProperties());
+		}
+		
 		if (log.isInfoEnabled()) {
 			long totaltime = System.currentTimeMillis() - initialTime;
 			log.info("Init method succesful. jawr started in " + (totaltime / 1000) + " seconds....");
@@ -195,52 +195,68 @@ public class JawrRequestHandler implements ConfigChangeListener {
 	}
 
 	/**
-	 * Initialize the JMX Bean 
+	 * Returns true if JMX is enabled for the applcation
+	 * @return true if JMX is enabled for the applcation
 	 */
-	protected void initJMXBean() {
-		
-		try {
-
-			MBeanServer mbs = JmxUtils.getMBeanServer();
-			if(mbs != null){
-				
-				ObjectName jawrConfigMgrObjName = JmxUtils.getMBeanObjectName(servletContext, resourceType);
-				JawrApplicationConfigManager appConfigMgr = (JawrApplicationConfigManager) servletContext.getAttribute(JawrConstant.JAWR_APPLICATION_CONFIG_MANAGER);
-				if(appConfigMgr == null){
-					appConfigMgr = new JawrApplicationConfigManager();
-					servletContext.setAttribute(JawrConstant.JAWR_APPLICATION_CONFIG_MANAGER, appConfigMgr);
-				}
-				
-				// register the jawrApplicationConfigManager if it's not already done
-				ObjectName appJawrMgrObjectName = JmxUtils.getAppJawrConfigMBeanObjectName(servletContext);
-				if(!mbs.isRegistered(appJawrMgrObjectName)){
-					mbs.registerMBean(appConfigMgr, appJawrMgrObjectName);
-				}
-				
-				// Create the MBean for the current Request Handler
-				JawrConfigManager mbean = new JawrConfigManager(this, jawrConfig.getConfigProperties());
-				if(mbs.isRegistered(jawrConfigMgrObjName)){
-					log.warn("The MBean '"+jawrConfigMgrObjName.getCanonicalName()+"' already exists. It will be unregisterd and registered with the new JawrConfigManagerMBean.");
-					mbs.unregisterMBean(jawrConfigMgrObjName);
-				}
-				
-				// Initialize the jawrApplicationConfigManager
-				if(resourceType.equals(JawrConstant.JS_TYPE)){
-					appConfigMgr.setJsMBean(mbean);
-				}else if(resourceType.equals(JawrConstant.CSS_TYPE)){
-					appConfigMgr.setCssMBean(mbean);
-				}else{
-					appConfigMgr.setImgMBean(mbean);
-				}
-				
-				mbs.registerMBean(mbean, jawrConfigMgrObjName);
-			}
-			
-		} catch (Exception e) {
-			log.error("Unable to instanciate the Jawr MBean for resource type '"+resourceType+"'", e);
-		}
-
+	private boolean isJmxEnabled() {
+		return System.getProperty(JawrConstant.JMX_ENABLE_FLAG_SYSTEL_PROPERTY) != null;
 	}
+
+//	/**
+//	 * Initialize the JMX Bean 
+//	 */
+//	protected void initJMXBean() {
+//		
+//		// Skip the initialisation if no JMX jar is find.
+//		try {
+//			getClass().getClassLoader().loadClass("javax.management.MBeanServer");
+//		} catch (ClassNotFoundException e1) {
+//			log.info("JMX API is not define in the classpath.");
+//			return;
+//		}
+//		
+//		try {
+//
+//			MBeanServer mbs = JmxUtils.getMBeanServer();
+//			if(mbs != null){
+//				
+//				ObjectName jawrConfigMgrObjName = JmxUtils.getMBeanObjectName(servletContext, resourceType);
+//				JawrApplicationConfigManager appConfigMgr = (JawrApplicationConfigManager) servletContext.getAttribute(JawrConstant.JAWR_APPLICATION_CONFIG_MANAGER);
+//				if(appConfigMgr == null){
+//					appConfigMgr = new JawrApplicationConfigManager();
+//					servletContext.setAttribute(JawrConstant.JAWR_APPLICATION_CONFIG_MANAGER, appConfigMgr);
+//				}
+//				
+//				// register the jawrApplicationConfigManager if it's not already done
+//				ObjectName appJawrMgrObjectName = JmxUtils.getAppJawrConfigMBeanObjectName(servletContext);
+//				if(!mbs.isRegistered(appJawrMgrObjectName)){
+//					mbs.registerMBean(appConfigMgr, appJawrMgrObjectName);
+//				}
+//				
+//				// Create the MBean for the current Request Handler
+//				JawrConfigManager mbean = new JawrConfigManager(this, jawrConfig.getConfigProperties());
+//				if(mbs.isRegistered(jawrConfigMgrObjName)){
+//					log.warn("The MBean '"+jawrConfigMgrObjName.getCanonicalName()+"' already exists. It will be unregisterd and registered with the new JawrConfigManagerMBean.");
+//					mbs.unregisterMBean(jawrConfigMgrObjName);
+//				}
+//				
+//				// Initialize the jawrApplicationConfigManager
+//				if(resourceType.equals(JawrConstant.JS_TYPE)){
+//					appConfigMgr.setJsMBean(mbean);
+//				}else if(resourceType.equals(JawrConstant.CSS_TYPE)){
+//					appConfigMgr.setCssMBean(mbean);
+//				}else{
+//					appConfigMgr.setImgMBean(mbean);
+//				}
+//				
+//				mbs.registerMBean(mbean, jawrConfigMgrObjName);
+//			}
+//			
+//		} catch (Exception e) {
+//			log.error("Unable to instanciate the Jawr MBean for resource type '"+resourceType+"'", e);
+//		}
+//
+//	}
 
 	
 
@@ -389,7 +405,10 @@ public class JawrRequestHandler implements ConfigChangeListener {
 		
 		try{
 			// Initialize the Thread local for the Jawr context
-			ThreadLocalJawrContext.setJawrConfigMgrObjectName(JmxUtils.getMBeanObjectName(request.getContextPath(), resourceType));
+			if(isJmxEnabled()){
+				ThreadLocalJawrContext.setJawrConfigMgrObjectName(JmxUtils.getMBeanObjectName(request.getContextPath(), resourceType));
+			}
+			
 			RendererRequestUtils.setRequestDebuggable(request, jawrConfig);
 			
 			String requestedPath = "".equals(jawrConfig.getServletMapping()) ? request.getServletPath() : request.getPathInfo();
@@ -609,7 +628,9 @@ public class JawrRequestHandler implements ConfigChangeListener {
 			log.debug("Reloading Jawr configuration");
 		try {
 			// Initialize the Thread local for the Jawr context
-			ThreadLocalJawrContext.setJawrConfigMgrObjectName(JmxUtils.getMBeanObjectName(servletContext, resourceType));
+			if(isJmxEnabled()){
+				ThreadLocalJawrContext.setJawrConfigMgrObjectName(JmxUtils.getMBeanObjectName(servletContext, resourceType));
+			}
 			
 			initializeJawrConfig(newConfig);
 		} catch (Exception e) {

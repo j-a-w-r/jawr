@@ -13,11 +13,6 @@
  */
 package net.jawr.web.servlet;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.util.HashSet;
-import java.util.Set;
-
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -26,7 +21,8 @@ import net.jawr.web.JawrConstant;
 import net.jawr.web.config.JawrConfig;
 import net.jawr.web.config.jmx.JawrApplicationConfigManager;
 import net.jawr.web.context.ThreadLocalJawrContext;
-import net.jawr.web.resource.bundle.generator.GeneratorRegistry;
+import net.jawr.web.resource.bundle.renderer.BundleRenderer;
+import net.jawr.web.resource.bundle.renderer.BundleRendererContext;
 
 import org.apache.log4j.Logger;
 
@@ -43,56 +39,42 @@ public class RendererRequestUtils {
 	/** The logger */
 	private static final Logger log = Logger.getLogger(RendererRequestUtils.class.getName());
 	
-	/** The added collection log */
-	private static final String ADDED_COLLECTIONS_LOG = "net.jawr.web.taglib.ADDED_COLLECTIONS_LOG";
-	
-	/** The added collection log */
-	private static final String GLOBAL_BUNDLE_ADDED_PREFIX = "net.jawr.web.taglib.GLOBAL_BUNDLE_ADDED";
+	/** The bundle renderer context attribute name */
+	private static final String BUNDLE_RENDERER_CONTEXT_ATTR_PREFIX = "net.jawr.web.resource.renderer.BUNDLE_RENDERER_CONTEXT";
 	
 	/**
-	 * Retrieve or create the set to store all added bundles, which is used to avoid adding a bundle more than once during a single request.
-	 * 
-	 * @param request
-	 * @return
-	 */
-	public static Set getAddedBundlesLog(ServletRequest request) {
-		Set set = null;
-		if (null != request.getAttribute(ADDED_COLLECTIONS_LOG))
-			set = (Set) request.getAttribute(ADDED_COLLECTIONS_LOG);
-		else {
-			set = new HashSet();
-			request.setAttribute(ADDED_COLLECTIONS_LOG, set);
-		}
-		return set;
-	}
-	
-	/**
-	 * Check if the global bundles has been already added.
-	 * 
-	 * @param request the request
-	 * @return true if the global bundles has been already added.
-	 */
-	public static boolean isGlobalBundleAdded(ServletRequest request, String resourceType) {
-		boolean added = false;
-		String globalBundleAddedAttributeName = GLOBAL_BUNDLE_ADDED_PREFIX+resourceType;
-		if (null != request.getAttribute(globalBundleAddedAttributeName))
-			added = ((Boolean) request.getAttribute(globalBundleAddedAttributeName)).booleanValue();
-		else {
-			request.setAttribute(globalBundleAddedAttributeName, Boolean.FALSE);
-		}
-		return added;
-	}
-
-	/**
-	 * Sets the flag indicating if the global bundles has been added.
+	 * Returns the bundle renderer context.
 	 * 
 	 * @param request the request
 	 * @param resourceType the resource type
-	 * @param added the flag to set
+	 * @return the bundle renderer context.
 	 */
-	public static void setGlobalBundleAdded(ServletRequest request, String resourceType, boolean added) {
-		String globalBundleAddedAttributeName = GLOBAL_BUNDLE_ADDED_PREFIX+resourceType;
-		request.setAttribute(globalBundleAddedAttributeName, new Boolean(added));
+	public static BundleRendererContext getBundleRendererContext(HttpServletRequest request, BundleRenderer renderer) {
+		String bundleRendererCtxAttributeName = BUNDLE_RENDERER_CONTEXT_ATTR_PREFIX+renderer.getResourceType();
+		
+		BundleRendererContext ctx = (BundleRendererContext) request.getAttribute(bundleRendererCtxAttributeName);
+		if(ctx == null){
+			String localeKey = renderer.getBundler().getConfig().getLocaleResolver().resolveLocaleCode(request);
+	         boolean isGzippable = isRequestGzippable(request,renderer.getBundler().getConfig());
+	         ctx = new BundleRendererContext(request.getContextPath(), localeKey, isGzippable,
+	                 isSslRequest(request));
+	         request.setAttribute(bundleRendererCtxAttributeName, ctx);
+		}
+		
+		return ctx;
+		
+	}
+
+	/**
+	 * Sets the bundle renderer context.
+	 * 
+	 * @param request the request
+	 * @param resourceType the resource type
+	 * @param ctx the bundle renderer context to set.
+	 */
+	public static void setBundleRendererContext(ServletRequest request, String resourceType, BundleRendererContext ctx) {
+		String globalBundleAddedAttributeName = BUNDLE_RENDERER_CONTEXT_ATTR_PREFIX+resourceType;
+		request.setAttribute(globalBundleAddedAttributeName, ctx);
 	}
 	
 	/**

@@ -15,11 +15,15 @@ package net.jawr.web.config.jmx;
 
 import java.lang.reflect.Method;
 import java.util.List;
+import java.util.Properties;
 
 import javax.management.MBeanServer;
 import javax.management.MBeanServerFactory;
 import javax.management.ObjectName;
 import javax.servlet.ServletContext;
+
+import net.jawr.web.JawrConstant;
+import net.jawr.web.servlet.JawrRequestHandler;
 
 import org.apache.log4j.Logger;
 
@@ -57,7 +61,63 @@ public class JmxUtils {
 	private static final String JAVA_VERSION_SYSTEM_PROPERTY = "java.version";
 
 	/** The property which enables the use of JMX */
-	private static final String JMX_ENABLE_FLAG_SYSTEL_PROPERTY = "com.sun.management.jmxremote";
+	public static final String JMX_ENABLE_FLAG_SYSTEL_PROPERTY = "com.sun.management.jmxremote";
+	
+	/**
+	 * Initialize the JMX Bean 
+	 */
+	public static void initJMXBean(JawrRequestHandler requestHandler, ServletContext servletContext, String resourceType, Properties configProperties) {
+		
+		// Skip the initialisation if no JMX jar is find.
+		try {
+			JmxUtils.class.getClassLoader().loadClass("javax.management.MBeanServer");
+		} catch (ClassNotFoundException e1) {
+			log.info("JMX API is not define in the classpath.");
+			return;
+		}
+		
+		try {
+
+			MBeanServer mbs = JmxUtils.getMBeanServer();
+			if(mbs != null){
+				
+				ObjectName jawrConfigMgrObjName = JmxUtils.getMBeanObjectName(servletContext, resourceType);
+				JawrApplicationConfigManager appConfigMgr = (JawrApplicationConfigManager) servletContext.getAttribute(JawrConstant.JAWR_APPLICATION_CONFIG_MANAGER);
+				if(appConfigMgr == null){
+					appConfigMgr = new JawrApplicationConfigManager();
+					servletContext.setAttribute(JawrConstant.JAWR_APPLICATION_CONFIG_MANAGER, appConfigMgr);
+				}
+				
+				// register the jawrApplicationConfigManager if it's not already done
+				ObjectName appJawrMgrObjectName = JmxUtils.getAppJawrConfigMBeanObjectName(servletContext);
+				if(!mbs.isRegistered(appJawrMgrObjectName)){
+					mbs.registerMBean(appConfigMgr, appJawrMgrObjectName);
+				}
+				
+				// Create the MBean for the current Request Handler
+				JawrConfigManager mbean = new JawrConfigManager(requestHandler, configProperties);
+				if(mbs.isRegistered(jawrConfigMgrObjName)){
+					log.warn("The MBean '"+jawrConfigMgrObjName.getCanonicalName()+"' already exists. It will be unregisterd and registered with the new JawrConfigManagerMBean.");
+					mbs.unregisterMBean(jawrConfigMgrObjName);
+				}
+				
+				// Initialize the jawrApplicationConfigManager
+				if(resourceType.equals(JawrConstant.JS_TYPE)){
+					appConfigMgr.setJsMBean(mbean);
+				}else if(resourceType.equals(JawrConstant.CSS_TYPE)){
+					appConfigMgr.setCssMBean(mbean);
+				}else{
+					appConfigMgr.setImgMBean(mbean);
+				}
+				
+				mbs.registerMBean(mbean, jawrConfigMgrObjName);
+			}
+			
+		} catch (Exception e) {
+			log.error("Unable to instanciate the Jawr MBean for resource type '"+resourceType+"'", e);
+		}
+
+	}
 	
 	/**
 	 * Returns the current MBean server or create a new one if not exist.
@@ -187,4 +247,6 @@ public class JmxUtils {
 		
 		return new ObjectName(objectNameStr);
 	}
+	
+	
 }

@@ -81,6 +81,10 @@ public class JawrConstant {
 	/** The file URI prefix */
 	public static final String FILE_URI_PREFIX = "file://";
 
+	/** The override key parameter name */
 	public static final String OVERRIDE_KEY_PARAMETER_NAME = "overrideKey";
 
+	/** The property which enables the use of JMX */
+	public static final String JMX_ENABLE_FLAG_SYSTEL_PROPERTY = "com.sun.management.jmxremote";
+	
 }

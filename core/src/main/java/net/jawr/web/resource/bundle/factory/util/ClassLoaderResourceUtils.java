@@ -23,6 +23,7 @@ import java.net.URL;
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
 
+import net.jawr.web.JawrConstant;
 import net.jawr.web.config.jmx.JmxUtils;
 import net.jawr.web.context.ThreadLocalJawrContext;
 import net.jawr.web.exception.ResourceNotFoundException;
@@ -69,19 +70,23 @@ public class ClassLoaderResourceUtils {
 		
 		if(null == is){
 			
-			// Try to use the classloader of the current Jawr Config Manager MBean
-			// This will be used when a refresh is done in the configuration using the JMX MBean
-			MBeanServer mbs = JmxUtils.getMBeanServer();
-			if(mbs != null){
-				
-				ObjectName name = ThreadLocalJawrContext.getJawrConfigMgrObjectName();
-				if(name != null){
-					try {
-						
-						ClassLoader cl = mbs.getClassLoaderFor(name);
-						is = cl.getResourceAsStream(resourcePath);
-					} catch (Exception e) {
-						log.error("Unable to instanciate the Jawr MBean '"+name.getCanonicalName()+"'", e);
+			// Check if we are using JMX
+			if(System.getProperty(JawrConstant.JMX_ENABLE_FLAG_SYSTEL_PROPERTY) != null){
+			
+				// Try to use the classloader of the current Jawr Config Manager MBean
+				// This will be used when a refresh is done in the configuration using the JMX MBean
+				MBeanServer mbs = JmxUtils.getMBeanServer();
+				if(mbs != null){
+					
+					ObjectName name = ThreadLocalJawrContext.getJawrConfigMgrObjectName();
+					if(name != null){
+						try {
+							
+							ClassLoader cl = mbs.getClassLoaderFor(name);
+							is = cl.getResourceAsStream(resourcePath);
+						} catch (Exception e) {
+							log.error("Unable to instanciate the Jawr MBean '"+name.getCanonicalName()+"'", e);
+						}
 					}
 				}
 			}
