@@ -11,7 +11,7 @@
  * either express or implied. See the License for the specific language governing permissions
  * and limitations under the License.
  */
-package net.jawr.web.servlet.mock;
+package test.net.jawr.web.servlet.mock;
 
 import java.io.File;
 import java.io.FileInputStream;
