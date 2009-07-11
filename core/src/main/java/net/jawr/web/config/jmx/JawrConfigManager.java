@@ -130,6 +130,20 @@ public class JawrConfigManager implements JawrConfigManagerMBean {
 		return Boolean.valueOf(configProperties.getProperty(JawrConfig.JAWR_CSS_IMG_USE_CLASSPATH_SERVLET)).booleanValue();
 	}
 
+	/* (non-Javadoc)
+	 * @see net.jawr.web.config.jmx.JawrConfigManagerMBean#getJawrWorkingDirectory()
+	 */
+	public String getJawrWorkingDirectory() {
+		return configProperties.getProperty(JawrConfig.JAWR_WORKING_DIRECTORY);
+	}
+
+	/* (non-Javadoc)
+	 * @see net.jawr.web.config.jmx.JawrConfigManagerMBean#isUseBundleMapping()
+	 */
+	public boolean isUseBundleMapping() {
+		return Boolean.valueOf(configProperties.getProperty(JawrConfig.JAWR_USE_BUNDLE_MAPPING)).booleanValue();
+	}
+
 	/**
 	 * @param charsetName
 	 * @see net.jawr.web.config.JawrConfig#setCharsetName(java.lang.String)
@@ -246,6 +260,20 @@ public class JawrConfigManager implements JawrConfigManagerMBean {
 		configProperties.setProperty(JawrConfig.JAWR_CSS_IMG_USE_CLASSPATH_SERVLET, Boolean.toString(useClasspathCssImgServlet));
 	}
 
+	/* (non-Javadoc)
+	 * @see net.jawr.web.config.jmx.JawrConfigManagerMBean#setJawrWorkingDirectory(java.lang.String)
+	 */
+	public void setJawrWorkingDirectory(String jawrWorkingDirectory) {
+		configProperties.setProperty(JawrConfig.JAWR_WORKING_DIRECTORY, jawrWorkingDirectory);
+	}
+
+	/* (non-Javadoc)
+	 * @see net.jawr.web.config.jmx.JawrConfigManagerMBean#setUseBundleMapping(boolean)
+	 */
+	public void setUseBundleMapping(boolean usBundleMapping) {
+		configProperties.setProperty(JawrConfig.JAWR_USE_BUNDLE_MAPPING, Boolean.toString(usBundleMapping));
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -255,5 +283,7 @@ public class JawrConfigManager implements JawrConfigManagerMBean {
 
 		requestHandler.configChanged(configProperties);
 	}
+
+	
 
 }

@@ -119,6 +119,31 @@ public interface JawrApplicationConfigManagerMBean {
 	 */
 	public String getUseContextPathOverrideInDebugMode();
 
+
+	/**
+	 * Returns the flag which defines if we should process the bundle at server startup. defaults to false.
+	 * @return the flag which defines if we should process the bundle at server startup.
+	 */
+	public String getUseBundleMapping();
+
+	/**
+	 * Sets the flag which defines if we should process the bundle at server startup. 
+	 * @param usBundleMapping the flag to set
+	 */
+	public void setUseBundleMapping(String usBundleMapping);
+
+	/** 
+	 * Returns the jawr working directory path
+	 * @return the jawr working directory path
+	 */
+	public String getJawrWorkingDirectory();
+	
+	/** 
+	 * Sets the jawr working directory path
+	 * @param jawrWorkingDirectory the path to set
+	 */
+	public void setJawrWorkingDirectory(String jawrWorkingDirectory);
+	
 	/**
 	 * Refresh the configuration. 
 	 */

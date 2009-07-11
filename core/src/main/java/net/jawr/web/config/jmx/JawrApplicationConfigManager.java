@@ -31,6 +31,26 @@ public class JawrApplicationConfigManager implements
 		JawrApplicationConfigManagerMBean {
 
 	
+	private static final String CHARSET_NAME = "charsetName";
+
+	private static final String DEBUG_MODE_ON = "debugModeOn";
+
+	private static final String DEBUG_OVERRIDE_KEY = "debugOverrideKey";
+
+	private static final String GZIP_RESOURCES_FOR_IE_SIX_ON = "gzipResourcesForIESixOn";
+
+	private static final String GZIP_RESOURCES_MODE_ON = "gzipResourcesModeOn";
+
+	private static final String CONTEXT_PATH_OVERRIDE = "contextPathOverride";
+
+	private static final String CONTEXT_PATH_SSL_OVERRIDE = "contextPathSslOverride";
+
+	private static final String USE_CONTEXT_PATH_OVERRIDE_IN_DEBUG_MODE = "useContextPathOverrideInDebugMode";
+
+	private static final String JAWR_WORKING_DIRECTORY = "jawrWorkingDirectory";
+
+	private static final String USE_BUNDLE_MAPPING = "useBundleMapping";
+
 	/** The message of the property, when the values are not equals for the different configuration manager */
 	private static String NOT_IDENTICAL_VALUES = "Value for this property are not identical";
 
@@ -112,7 +132,7 @@ public class JawrApplicationConfigManager implements
 	 */
 	public String getCharsetName() {
 
-		return getStringValue("charsetName");
+		return getStringValue(CHARSET_NAME);
 	}
 
 	/*
@@ -122,7 +142,7 @@ public class JawrApplicationConfigManager implements
 	 */
 	public String getDebugOverrideKey() {
 
-		return getStringValue("debugOverrideKey");
+		return getStringValue(DEBUG_OVERRIDE_KEY);
 	}
 
 	/*
@@ -132,7 +152,7 @@ public class JawrApplicationConfigManager implements
 	 */
 	public String getDebugModeOn() {
 
-		return getStringValue("debugModeOn");
+		return getStringValue(DEBUG_MODE_ON);
 	}
 
 	/*
@@ -142,7 +162,7 @@ public class JawrApplicationConfigManager implements
 	 */
 	public String getGzipResourcesForIESixOn() {
 
-		return getStringValue("gzipResourcesForIESixOn");
+		return getStringValue(GZIP_RESOURCES_FOR_IE_SIX_ON);
 	}
 
 	/*
@@ -152,7 +172,7 @@ public class JawrApplicationConfigManager implements
 	 */
 	public String getGzipResourcesModeOn() {
 
-		return getStringValue("gzipResourcesModeOn");
+		return getStringValue(GZIP_RESOURCES_MODE_ON);
 	}
 
 	/*
@@ -161,7 +181,7 @@ public class JawrApplicationConfigManager implements
 	 * @see net.jawr.web.config.jmx.JawrApplicationConfigManagerMBean#getContextPathOverride()
 	 */
 	public String getContextPathOverride() {
-		return getStringValue("contextPathOverride");
+		return getStringValue(CONTEXT_PATH_OVERRIDE);
 	}
 
 	/*
@@ -171,7 +191,7 @@ public class JawrApplicationConfigManager implements
 	 */
 	public String getContextPathSslOverride() {
 
-		return getStringValue("contextPathSslOverride");
+		return getStringValue(CONTEXT_PATH_SSL_OVERRIDE);
 	}
 
 	/*
@@ -181,7 +201,21 @@ public class JawrApplicationConfigManager implements
 	 */
 	public String getUseContextPathOverrideInDebugMode() {
 	
-		return getStringValue("useContextPathOverrideInDebugMode");
+		return getStringValue(USE_CONTEXT_PATH_OVERRIDE_IN_DEBUG_MODE);
+	}
+
+	/* (non-Javadoc)
+	 * @see net.jawr.web.config.jmx.JawrApplicationConfigManagerMBean#getJawrWorkingDirectory()
+	 */
+	public String getJawrWorkingDirectory() {
+		return getStringValue(JAWR_WORKING_DIRECTORY);
+	}
+
+	/* (non-Javadoc)
+	 * @see net.jawr.web.config.jmx.JawrApplicationConfigManagerMBean#getUseBundleMapping()
+	 */
+	public String getUseBundleMapping() {
+		return getStringValue(USE_BUNDLE_MAPPING);
 	}
 
 	/*
@@ -191,7 +225,7 @@ public class JawrApplicationConfigManager implements
 	 */
 	public void setCharsetName(String charsetName) {
 	
-		setStringValue("charsetName", charsetName);
+		setStringValue(CHARSET_NAME, charsetName);
 	}
 
 	/*
@@ -201,7 +235,7 @@ public class JawrApplicationConfigManager implements
 	 */
 	public void setDebugModeOn(String debugMode) {
 	
-		setBooleanValue("debugModeOn", debugMode);
+		setBooleanValue(DEBUG_MODE_ON, debugMode);
 	}
 
 	/*
@@ -211,7 +245,7 @@ public class JawrApplicationConfigManager implements
 	 */
 	public void setDebugOverrideKey(String debugOverrideKey) {
 	
-		setStringValue("debugOverrideKey", debugOverrideKey);
+		setStringValue(DEBUG_OVERRIDE_KEY, debugOverrideKey);
 	}
 
 	/*
@@ -221,7 +255,7 @@ public class JawrApplicationConfigManager implements
 	 */
 	public void setGzipResourcesForIESixOn(String gzipResourcesForIESixOn) {
 	
-		setBooleanValue("gzipResourcesForIESixOn", gzipResourcesForIESixOn);
+		setBooleanValue(GZIP_RESOURCES_FOR_IE_SIX_ON, gzipResourcesForIESixOn);
 	}
 
 	/*
@@ -231,7 +265,7 @@ public class JawrApplicationConfigManager implements
 	 */
 	public void setGzipResourcesModeOn(String gzipResourcesModeOn) {
 	
-		setBooleanValue("gzipResourcesModeOn", gzipResourcesModeOn);
+		setBooleanValue(GZIP_RESOURCES_MODE_ON, gzipResourcesModeOn);
 	}
 
 	/*
@@ -241,7 +275,7 @@ public class JawrApplicationConfigManager implements
 	 */
 	public void setContextPathOverride(String contextPathOverride) {
 
-		setStringValue("contextPathOverride", contextPathOverride);
+		setStringValue(CONTEXT_PATH_OVERRIDE, contextPathOverride);
 	}
 
 	/*
@@ -251,7 +285,7 @@ public class JawrApplicationConfigManager implements
 	 */
 	public void setContextPathSslOverride(String contextPathSslOverride) {
 
-		setStringValue("contextPathSslOverride", contextPathSslOverride);
+		setStringValue(CONTEXT_PATH_SSL_OVERRIDE, contextPathSslOverride);
 	}
 
 	/*
@@ -262,9 +296,25 @@ public class JawrApplicationConfigManager implements
 	public void setUseContextPathOverrideInDebugMode(
 			String useContextPathOverrideInDebugMode) {
 		
-		setBooleanValue("useContextPathOverrideInDebugMode", useContextPathOverrideInDebugMode);
+		setBooleanValue(USE_CONTEXT_PATH_OVERRIDE_IN_DEBUG_MODE, useContextPathOverrideInDebugMode);
 	}
 
+	/* (non-Javadoc)
+	 * @see net.jawr.web.config.jmx.JawrApplicationConfigManagerMBean#setJawrWorkingDirectory(java.lang.String)
+	 */
+	public void setJawrWorkingDirectory(String jawrWorkingDirectory) {
+		
+		setStringValue(JAWR_WORKING_DIRECTORY, jawrWorkingDirectory);
+	}
+
+	/* (non-Javadoc)
+	 * @see net.jawr.web.config.jmx.JawrApplicationConfigManagerMBean#setUseBundleMapping(java.lang.String)
+	 */
+	public void setUseBundleMapping(String useBundleMapping) {
+		
+		setBooleanValue(USE_BUNDLE_MAPPING, useBundleMapping);
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -445,4 +495,6 @@ public class JawrApplicationConfigManager implements
 				&& str2 != null && str3 != null && str1.equals(str2)
 				&& str2.equals(str3));
 	}
+
+	
 }

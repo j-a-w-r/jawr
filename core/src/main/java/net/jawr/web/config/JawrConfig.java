@@ -192,7 +192,7 @@ public class JawrConfig {
 	private boolean useBundleMapping = false;
 
 	/** 
-	 * The jqzr zorking directory path
+	 * The jawr working directory path
 	 */
 	private String jawrWorkingDirectory;
 	
