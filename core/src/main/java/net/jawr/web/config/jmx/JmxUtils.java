@@ -199,7 +199,7 @@ public class JmxUtils {
 		
 		if(contextPath == null){
 			log.warn("No context path defined for this web application. You will face issues, if you are deploying mutiple web app, without defining the context.\n" +
-					"If you are using a server with Servlet API less than 2.5, please use the context parameter 'contextPath' in your web.xml to define your context path in the Jawr servlet.");
+					"If you are using a server with Servlet API less than 2.5, please use the context parameter 'contextPath' in your web.xml to define the context path of the application.");
 			
 			contextPath = DEFAULT_CONTEXT_PATH;
 		}
@@ -218,7 +218,7 @@ public class JmxUtils {
 		
 		if(contextPath == null){
 			log.warn("No context path defined for this web application. You will face issues, if you are deploying mutiple web app, without defining the context.\n" +
-				"If you are using a server with Servlet API less than 2.5, please use the context parameter 'contextPath' in your web.xml to define your context path in the Jawr servlet.");
+				"If you are using a server with Servlet API less than 2.5, please use the context parameter 'contextPath' in your web.xml to define your context path of the application.");
 	
 			contextPath = DEFAULT_CONTEXT_PATH_NAME;
 		}

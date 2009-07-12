@@ -189,12 +189,9 @@ BundleRenderer myCSSRenderer = new CSSHTMLBundleLinkRenderer(rsHandler, true, "s
 	left to do is to gather the required parameters and make the call. Let's review the API: 
 
 +------------------------------------------+	
-public void renderBundleLinks(  String requestedPath,
-                                String contextPath,
-                                String variantKey,
-                                final Set includedBundles, 
-                                boolean useGzip, 
-                                Writer out ) throws IOException;  
+public void renderBundleLinks(  String requestedPath, 
+                                BundleRendererContext bundleRendererCtx,
+                                Writer out ) throws IOException;
 +------------------------------------------+
 	
 	The parameters represent the following data: 
@@ -202,28 +199,35 @@ public void renderBundleLinks(  String requestedPath,
 		* <<requestedPath>> corresponds to the taglib's <<src>> attribute, so it may be a bundle id or the path to 
 		a bundle member. 
 		
-		* <<contextPath>> is obviously the request context path, as retrieved from request.getContextPath(). 
+		* <<bundleRendererCtx>> the context of the renderer. To obtain a BundleRendererContext, you could use the following utility method :
+
++------------------------------------------+		
+BundleRendererContext ctx = RendererRequestUtils.getBundleRendererContext(request, renderer);
++------------------------------------------+
 		
-		* <<variantKey>> is used for the i18n scripts. To retrieve this you need to	perform a somewhat long 
-		call using the ResourceBundlesHandler instance you retrieved from the servlet context: 
-		
+		This object contains :
+			
+			* <<contextPath>> is obviously the request context path, as retrieved from request.getContextPath(). 
+			
+			* <<variantKey>> is used for the i18n scripts. To retrieve this you need to	perform a somewhat long 
+			call using the ResourceBundlesHandler instance you retrieved from the servlet context: 
+			
 +------------------------------------------+	
 String variantKey = rsHandler.getConfig().getLocaleResolver().resolveLocaleCode(request);
 +------------------------------------------+	
-
-	 	
-		* <<includedBundles>> is a Set which holds a log of written tags during the request so that no tag is 
-		written out twice. You don't actually need to handle its creation or to hold a reference. Instead rely 
-		on a utility method that handles everything:  
-		
+		 	
+			* <<includedBundles>> is a Set which holds a log of written tags during the request so that no tag is 
+			written out twice. You don't actually need to handle its creation or to hold a reference. Instead rely 
+			on a utility method that handles everything:  
+			
 +------------------------------------------+	
 Set includedBundles = RendererRequestUtils.getAddedBundlesLog(request);
 +------------------------------------------+	
-		
-		* <<useGzip>> determines wether to use the gzip compressed version of the scripts, based on Jawr 
-		configuration and on the request headers. Again, a utility method will take care of everything. 
-		You will need to reuse the ResourceBundlesHandler instance once more for this one: 
-		 
+			
+			* <<useGzip>> determines wether to use the gzip compressed version of the scripts, based on Jawr 
+			configuration and on the request headers. Again, a utility method will take care of everything. 
+			You will need to reuse the ResourceBundlesHandler instance once more for this one: 
+			 
 +------------------------------------------+	
 boolean useGzip = RendererRequestUtils.isRequestGzippable(request,rsHandler.getConfig());
 +------------------------------------------+	

@@ -107,11 +107,6 @@ public class JawrConfig {
 	public static final String JAWR_USE_BUNDLE_MAPPING = "jawr.use.bundle.mapping";
 
 	/**
-	 * The property name for the bundle mapping prefix
-	 */
-	public static final String JAWR_BUNDLE_MAPPING_PREFIX = "jawr.bundle.mapping.prefix";
-
-	/**
 	 * The property name for the debug mode system flag
 	 */
 	private static final String DEBUG_MODE_SYSTEM_FLAG = "net.jawr.debug.on";
