@@ -16,4 +16,17 @@
             <component-type>jawr.CSSBundle</component-type>
        </component>
    </tag>
+   <tag>
+      <tag-name>img</tag-name>
+      <component>
+            <component-type>jawr.ImgHtml</component-type>
+       </component>
+   </tag>
+   <tag>
+      <tag-name>image</tag-name>
+      <component>
+            <component-type>jawr.ImageInput</component-type>
+       </component>
+   </tag>
+   
 </facelet-taglib>

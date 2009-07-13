@@ -35,6 +35,14 @@ Facelets tag library
 	    <component-type>jawr.CSSBundle</component-type>
 	    <component-class>net.jawr.web.taglib.jsf.CSSBundleTag</component-class>
 	</component>
+	<component>
+        <component-type>jawr.ImageInput</component-type>
+        <component-class>net.jawr.web.taglib.jsf.ImageInputTag</component-class>
+    </component>
+    <component>
+        <component-type>jawr.ImgHtml</component-type>
+        <component-class>net.jawr.web.taglib.jsf.ImgHtmlTag</component-class>
+    </component>
 	
 +------------------------------------------+
 
@@ -59,6 +67,11 @@ Facelets tag library
 </head>
 ...
 
+<jawr:img src="/img/icons/logo.png">
+...
+
+<jawr:image src="/img/icons/add.png" name="add" >
+...
 
 </html>
 	
