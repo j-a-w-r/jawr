@@ -30,10 +30,10 @@
 	      		 	Look at the <a href="./docs/jawr_ant_task.html">Jawr Ant task docs</a> and the <a href="./docs/jawr_maven_plugin.html">Jawr maven plugin docs</a> for extra info.    
 	      		 </li>
 	      		 <li>
-	      		 	With the new bundle preprocessing feature, we have decided to provide a better support to CDN usage in Jawr.
-	      		 	With the new property <strong>jawr.url.contextpath.ssl.override</strong>, it is possible to define what the CDN URL to use for HTTPS requests is.
+	      		 	We have also decided to provide a better support to CDN usage in Jawr. <br/>
+	      		 	With the new property <strong>jawr.url.contextpath.ssl.override</strong>, it is possible to define what the CDN URL to use for HTTPS requests is. <br/>
 	      		 	We have also added the possibility to retrieve the debug resource files from the CDN. To enable this feature, you will have to set to true, the property 
-	      		 	<strong>jawr.url.contextpath.override.used.in.debug.mode</strong>.
+	      		 	<strong>jawr.url.contextpath.override.used.in.debug.mode</strong>. <br/>
 	      		 	Look for these properties in the <a href="./docs/descriptor_syntax.html">descriptor syntax docs</a> for extra info.    
 	      		 </li>
 	      		 <li>
@@ -43,7 +43,7 @@
 	      		 </li>
 	      		 <li>
 	      		 	For a better support of CDN, using the bundle preprocessing feature, Jawr provides resources which can be integrate more easily in CDN.
-	      		 	It even provides a rewrite file for Apache server.
+	      		 	It even provides a rewrite configuration file for Apache server.
 	      		 	Look at the <em>CDN support</em> section at the <a href="./docs/bundle_preprocessing.html">bundle preprocessing docs</a> for extra info.    
 	      		 </li>
 	      		 <li>
@@ -60,9 +60,13 @@
 	      		 <li>
 	      		 	<strong>Issue #72 fixed:</strong> Avoid skipping repeated members of bundles in debug mode which is fixed now.
 	      		 	Before when the same resources was referenced twice in debug mode, the second one was skipped.        
+	      		 </li>
+	      		 <li>
+	      		 	<strong>Issue #73 fixed:</strong> java.lang.IndexOutOfBoundsException in CSSMinifier is fixed now.
+	      		 	The issue occured when the CSS file contains a '$' character in a non commented section. 
 	      		 </li>  
 	      	</ul>
-	    </li>     
+	    </li>  
     <li> <strong>5/31/2009</strong>: Version 2.8 released:<br/>
     	<strong>New features/ fixed issues: </strong>
     	 <ul>    	 	

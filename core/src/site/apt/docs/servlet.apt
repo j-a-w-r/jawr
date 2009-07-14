@@ -6,10 +6,10 @@
 
 The Jawr servlet
 	
-	For each type of supported resource (CSS, CSS image, Javascript), you need an instance of net.jawr.web.servlet.JawrServlet running. 
+	For each type of supported resource (CSS, image, Javascript), you need an instance of net.jawr.web.servlet.JawrServlet running. 
 	Of course, you may choose to use Jawr for only one of these types of resources. \ 
 	
-	All bundles are created and postprocessed when this servlet starts up and stored at the application server's temporary directory. 
+	By default, all bundles are created and postprocessed when this servlet starts up and stored at the application server's temporary directory. 
 	This way there is no processing overhead on requests, but you must remember to use the load-on-startup tag to force the Jawr 
 	servlet to initialize with your application server. \ 
 	
