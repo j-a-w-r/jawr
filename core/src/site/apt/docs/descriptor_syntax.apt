@@ -6,7 +6,7 @@
 
 Descriptor file syntax
 
-	The Jawr descriptor file consists of a simple properties file. All property names begin with <jawr.>, followed by either <js.> or <css.> to denote 
+	The Jawr descriptor file consists of a simple properties file. All property names begin with <jawr.>, followed by either <js.>, <css.> or <img.> to denote 
 	which servlet will use them.	A few common properties will not have the filetype prefix since they apply globally. 
 	
 * Basic global properties
@@ -27,7 +27,7 @@ Descriptor file syntax
 *---------------+---------+--------------+----------------+
 | jawr.use.bundle.mapping | Boolean | Define if we must use the generated bundle mapping or not. | false |
 *---------------+---------+--------------+----------------+
-| jawr.working.directory | String | Path to the jawr working directory. | <<javax.servlet.context.tempdir>>/jawrTmp
+| jawr.working.directory | String | Path to the jawr working directory. | <javax.servlet.context.tempdir>/jawrTmp
 *---------------+---------+--------------+----------------+
 | jawr.config.reload.interval | int | The interval in seconds in which Jawr checks wether the configuration has changed. If this value is set, when you change the properties file Jawr will detect it and redeploy itself so you don't need to restart the server to test your changes.  | none| 
 *---------------+---------+--------------+----------------+
@@ -43,6 +43,8 @@ Descriptor file syntax
 | | | Using '<</>>' will cause Jawr to skip the context path altogether ('/001/bundles/mybundle.js').  |     | 
 | | | Using an empty value will cause Jawr to generate page relative urls ('001/bundles/mybundle.js').  |     | 
 *---------------*---------*--------------+----------------+
+| jawr.url.contextpath.override.used.in.debug.mode | Boolean | The flag indicating if we should retrieve the debug resources from the overridden context path or not. | false |
+*---------------*---------*--------------+----------------+
 | factory.use.orphans.mapper | Boolean | Enable/disable auto scanning of non explicitly mapped files to auto-compress and to generate a one-file bundle out of each.  | true| 
 *---------------*---------*--------------+----------------+
 | jawr.css.image.classpath.use.servlet | Boolean | The flag indicating if the CSS images should be retrieved from the classpath, for the CSS defined in the classpath. | none| 
@@ -54,7 +56,7 @@ Descriptor file syntax
 
 
 	
-* Basic servlet-specific properties
+* Basic JS/CSS servlet-specific properties
 
 	These properties are used to configure basic aspects of an instance of the Jawr Servlet. There is a variant to each one, depending on wether the servlet will be used for javascript or CSS resources. 
 	
@@ -87,7 +89,7 @@ Descriptor file syntax
 *---------------+---------+--------------+----------------+
 
 	
-* Bundle definition properties
+* JS/CSS bundle definition properties
 	
 	This table is meant as a quick reference. To learn more about bundles definition, check the {{{./custom_bundles.html}bundle definitions tutorial page}}. 
 
@@ -121,7 +123,7 @@ Descriptor file syntax
 
 * Image Bundle definition properties
 	
-Jawr is also able to manage images. A dedicated servlet is used to handle them.
+	Jawr is also able to manage image resources. A dedicated servlet is used to handle them.
 
 *---------------+---------+--------------+----------------+
 | jawr.image.bundle | String | The comma separated list of images, which will be handle by Jawr.   | None    | 
@@ -129,7 +131,7 @@ Jawr is also able to manage images. A dedicated servlet is used to handle them.
 | jawr.image.hash.algorithm | String | The hash algorithm to use for the images. Two values are possible : CRC32 and MD5  | CRC32 | 
 *---------------*---------*--------------+----------------+
 
-* Custom bundle postprocessor definition properties
+* JS/CSS custom bundle postprocessor definition properties
 
 
 
@@ -139,7 +141,7 @@ Jawr is also able to manage images. A dedicated servlet is used to handle them.
 | jawr.custom.postprocessors.[name].class | String  | Qualified classname of the postprocessor to later be referenced with the id [name].  | None    | 
 *---------------+---------+--------------+----------------+
 
-* Custom generators definition properties
+* JS/CSS custom generators definition properties
 
 
 *---------------+---------+--------------+----------------+

@@ -7,7 +7,41 @@
     <body>
 	
     <section name="Announcementes and change log">
-    <ul>    
+    <ul>
+    <li> <strong>07/XX/2009</strong>: Version 3.0 released:<br/>
+    	<strong>New features/ fixed issues: </strong>
+    	 <ul>    	 	
+      		 <li>
+      		 	Jawr is now able to handle image bundle. This means that all images defines in the bundle will be cached in the browser as the other Javascript and CSS resources managed by Jawr.
+      		 	Look for <em>jawr.image.bundle</em> at the <a href="./docs/descriptor_syntax.html">descriptor syntax docs</a> and at the <a href="./docs/servlet.html">servlet docs</a> for extra info.    
+      		 </li>
+      		 <li>
+      		 	Jawr supports now JMX, which means that you will be able to modify at runtime the behaviour of Jawr using a JMX console.
+      		 	For example, you will be able to pass from production mode to debug mode the entire application or only in one session at runtime.
+      		 	Look at the <a href="./docs/jmx_support.html">JMX support doc</a> for extra info.
+      		 </li>
+      		 <li>
+      			Jawr now support a bundle preprocessing feature, also know as "build time bundle processing".
+      			This feature allow the user to skip the bundling process at server startup, and use instead the data of preprocessed bundles. 
+      			Look at the <a href="./docs/bundle_preprocessing.html">bundle preprocessing documentation</a> for extra info.    
+      		 </li>
+      		 <li>
+      		 	To use the new bundle preprocessing feature, we have created a maven plugin and an Ant task for the bundle preprocessing.  
+      		 	Look at the <a href="./docs/jawr_ant_task.html">Jawr Ant task docs</a> and the <a href="./docs/jawr_maven_plugin.html">Jawr maven plugin docs</a> for extra info.    
+      		 </li>
+      		 <li>
+      		 	<strong>Issue #69 fixed:</strong> CSS from jar file fails when using jawr.debug.overrideKey in production which is now fixed.      
+      		 </li>      
+      		 <li>
+      		 	<strong>Issue #66 fixed:</strong> Add support for @import keyword in CSS which 
+      		 	is now fixed. Now by default, the CSS bundle post processor will resolve import and will rewrite the url path.
+      		 </li>        
+      		 <li>
+      		 	<strong>Issue #72 fixed:</strong> Avoid skipping repeated members of bundles in debug mode which is fixed now.
+      		 	Before when the same resources was referenced twice in debug mode, the second one was skipped.        
+      		 </li>         
+      	</ul>
+    </li>  
     <li> <strong>5/31/2009</strong>: Version 2.8 released:<br/>
     	<strong>New features/ fixed issues: </strong>
     	 <ul>    	 	
