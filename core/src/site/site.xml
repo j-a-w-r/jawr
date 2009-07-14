@@ -28,6 +28,9 @@
       <item name="Debug and production modes" href="/docs/modes.html"/>
       <item name="i18n message generator" href="/docs/messages_gen.html"/>
       <item name="JMX Support" href="/docs/jmx_support_gen.html"/>
+      <item name="Bundle preprocessing" href="/docs/bundle_preprocessing_gen.html"/>
+      <item name="Jawr Maven plugin" href="/docs/jawr_maven_plugin_gen.html"/>
+      <item name="Jawr Ant task" href="/docs/jawr_ant_task_gen.html"/>
     </menu>
     
     <menu name="Integration">

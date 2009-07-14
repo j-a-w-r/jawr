@@ -1,0 +1,19 @@
+																		------
+                                    Jawr maven plugin
+                                    ------
+                                    ------
+                                    ------
+
+Jawr maven plugin
+
+	The goal of the Jawr maven plugin is to simplify the use of the bundle preprocessing in the maven build life cycle.
+	If you have not read the documentation of the bundle preprocessing, please take a look at it before continuing.
+	
+
+* Prerequities
+	
+	The Jawr maven plugin requires at least maven 2.0.1 
+	
+* Usage
+
+	TODO : finish this
