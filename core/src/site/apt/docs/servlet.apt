@@ -43,7 +43,7 @@ The Jawr servlet
 	* <<type>>: Refers to the type of resource the servlet will manage. It can receive three possible values: <js> , <css> or <img>. You can omit this parameter 
 	for the javascript servlet, since <js> is the default value. \ 
 	
-	* <<configPropertiesSourceClass>>: This optional parameter holds the cualified class name of you custom implementation of ConfigPropertiesSource, 
+	* <<configPropertiesSourceClass>>: This optional parameter holds the qualified class name of you custom implementation of ConfigPropertiesSource, 
 	in case you want to customize the way configuration is loaded when Jawr starts up. More on this below. 
 	
 	* <<mapping>>: In normal situations, you will have the Jawr servlet attend all requests for a certain type of resource, using a servlet-mapping 

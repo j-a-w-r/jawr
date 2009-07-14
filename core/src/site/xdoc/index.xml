@@ -208,7 +208,7 @@
 	      		 	Look at the <em>jawr.css.imagepath.override</em> section at the <a href="./docs/bundle_preprocessing.html">bundle preprocessing docs</a> for extra info.    
 	      		 </li>
 	      		 <li>
-	      		 	For a better support of CDN, using the bundle preprocessing feature, Jawr provides resources which can be integrate more easily in CDN.
+	      		 	For a better support of CDN, Jawr provides resources which can be integrate more easily in CDN. These files are generated using the bundle preprocessing feature. 
 	      		 	It even provides a rewrite configuration file for Apache server.
 	      		 	Look at the <em>CDN support</em> section at the <a href="./docs/bundle_preprocessing.html">bundle preprocessing docs</a> for extra info.    
 	      		 </li>
