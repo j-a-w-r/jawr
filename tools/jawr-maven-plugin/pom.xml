@@ -1,0 +1,155 @@
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>net.jawr</groupId>
+	<artifactId>maven-jawr-plugin</artifactId>
+	<packaging>maven-plugin</packaging>
+	<name>JAWR Maven Plugin</name>
+	<version>1.0</version>
+	<url>https://sourceforge.net/projects/maven-jawr-plugin/</url>
+	<description>
+		The Maven JAWR Plugin contains the compression goal and compresses JavaScript/css in a web application.
+    </description>
+	<prerequisites>
+		<maven>2.0.1</maven>
+	</prerequisites>
+	<licenses>
+		<license>
+			<name>The Apache Software License, Version 2.0</name>
+			<url>license.txt</url>
+		</license>
+	</licenses>
+	<scm>
+		<connection>scm:svn:https://jawr.dev.java.net/svn/tools/jawr-maven-plugin/</connection>
+	    <developerConnection>scm:svn:https://jawr.dev.java.net/svn/tools/jawr-maven-plugin/</developerConnection>
+	    <url>https://jawr.dev.java.net/source/browse/tools/jawr-maven-plugin/</url>
+	</scm>
+	<!-- Developers and Contributors -->
+	<developers>
+		<developer>
+			<id>andyhot</id>
+			<name>Andreas Andreou</name>
+			<organization>Amplafi</organization>
+			<organizationUrl>http://www.amplafi.com</organizationUrl>
+		</developer>
+		<developer>
+			<id>icefox</id>
+			<name>Ibrahim Chaehoi</name>
+			<organization>java.dev.net</organization>
+			<url>http://java.dev.net</url>
+		</developer>
+	</developers>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-scm-plugin</artifactId>
+				<version>1.0-beta-2</version>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.4</source>
+					<target>1.4</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-deploy-plugin</artifactId>
+				<version>2.4</version>
+			</plugin>
+		</plugins>
+	</build>
+	<reporting>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jxr-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<configuration>
+					<aggregate>true</aggregate>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>taglist-maven-plugin</artifactId>
+				<configuration>
+					<tags>
+						<tag>TODO</tag>
+						<tag>@todo</tag>
+						<tag>FIXME</tag>
+						<tag>XXX</tag>
+						<tag>Auto-generated</tag>
+					</tags>
+				</configuration>
+			</plugin>
+		</plugins>
+	</reporting>
+	<dependencies>
+		<dependency>
+			<groupId>net.jawr</groupId>
+			<artifactId>jawr-bundle-processor</artifactId>
+			<version>1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+			<version>2.3</version>
+		</dependency>
+
+		<!-- junit  -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.3</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>commons-logging</groupId>
+			<artifactId>commons-logging</artifactId>
+			<version>1.0.4</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>1.2.7</version>
+		</dependency>
+		<!-- The MOJO Api -->
+		<dependency>
+			<groupId>org.apache.maven</groupId>
+			<artifactId>maven-plugin-api</artifactId>
+			<version>2.0.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.maven</groupId>
+			<artifactId>maven-artifact</artifactId>
+			<version>2.0.1</version>
+		</dependency>
+		<!-- Plexus Utils -->
+		<dependency>
+			<groupId>org.codehaus.plexus</groupId>
+			<artifactId>plexus-utils</artifactId>
+			<version>1.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.maven.shared</groupId>
+			<artifactId>maven-plugin-testing-harness</artifactId>
+			<version>1.0-beta-1</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+	<distributionManagement>
+		<repository>
+			<id>java.net-m2-repository</id>
+			<url>java-net:/maven2-repository/trunk/www/repository/</url>
+		</repository>
+	</distributionManagement>
+
+</project>
