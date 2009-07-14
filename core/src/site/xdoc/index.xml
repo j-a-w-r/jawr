@@ -193,7 +193,8 @@
 	      		 </li>
 	      		 <li>
 	      		 	We have also created a <strong>maven plugin</strong> and an <strong>Ant task</strong> to integrate the new bundle preprocessing feature in the project build phase.  
-	      		 	Look at the <a href="./docs/jawr_ant_task.html">Jawr Ant task docs</a> and the <a href="./docs/jawr_maven_plugin.html">Jawr maven plugin docs</a> for extra info.    
+	      		 	Look at the <a href="./docs/jawr_ant_task.html">Jawr Ant task docs</a> and the <a href="./docs/jawr_maven_plugin.html">Jawr maven plugin docs</a> for extra info.<br/>
+	      		 	Thanks to Andreas Andreou for the original idea of the maven plugin.    
 	      		 </li>
 	      		 <li>
 	      		 	We have also decided to provide a better support to CDN usage in Jawr. <br/>
