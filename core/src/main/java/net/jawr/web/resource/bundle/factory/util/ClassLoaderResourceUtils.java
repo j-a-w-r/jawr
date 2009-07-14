@@ -213,16 +213,36 @@ public class ClassLoaderResourceUtils {
 			// Try the second approach 
 		}
 		if(null == clazz) {
+			Exception classNotFoundEx = null;
 			try {
 				clazz = Class.forName(classname, true, new ClassLoaderResourceUtils().getClass().getClassLoader());
 			} catch (Exception e) {
-				throw new RuntimeException(e.getMessage() 
-											+ " [The custom class " 
-											+ classname 
-											+ " could not be instantiated, check wether it is available on the classpath and" 
-											+ " verify that it has a zero-arg constructor].\n" 
-											+ " The specific error message is: " + e.getClass().getName() + ":" + e.getMessage(),e);
-		  }
+				// Try the third approach
+				classNotFoundEx = e;
+			}
+			if(null == clazz){
+				ClassLoader threadClassLoader = Thread.currentThread().getContextClassLoader();
+				if(null != threadClassLoader){
+					try{
+						clazz = Class.forName(classname, true, threadClassLoader);
+					}catch(Exception e){
+						throw new RuntimeException(e.getMessage() 
+								+ " [The custom class " 
+								+ classname 
+								+ " could not be instantiated, check wether it is available on the classpath and" 
+								+ " verify that it has a zero-arg constructor].\n" 
+								+ " The specific error message is: " + e.getClass().getName() + ":" + e.getMessage(),e);
+					}
+				}else{
+					throw new RuntimeException(classNotFoundEx.getMessage() 
+							+ " [The custom class " 
+							+ classname 
+							+ " could not be instantiated, check wether it is available on the classpath and" 
+							+ " verify that it has a zero-arg constructor].\n" 
+							+ " The specific error message is: " + classNotFoundEx.getClass().getName() + ":" + classNotFoundEx.getMessage(),classNotFoundEx);
+				}
+				
+			}
 		}
 		return clazz;
 	}
