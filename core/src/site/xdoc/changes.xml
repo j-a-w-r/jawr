@@ -27,7 +27,8 @@
 	      		 </li>
 	      		 <li>
 	      		 	We have also created a <strong>maven plugin</strong> and an <strong>Ant task</strong> to integrate the new bundle preprocessing feature in the project build phase.  
-	      		 	Look at the <a href="./docs/jawr_ant_task.html">Jawr Ant task docs</a> and the <a href="./docs/jawr_maven_plugin.html">Jawr maven plugin docs</a> for extra info.    
+	      		 	Look at the <a href="./docs/jawr_ant_task.html">Jawr Ant task docs</a> and the <a href="./docs/jawr_maven_plugin.html">Jawr maven plugin docs</a> for extra info.<br/>
+	      		 	Thanks to Andreas Andreou for the original idea of the maven plugin.    
 	      		 </li>
 	      		 <li>
 	      		 	We have also decided to provide a better support to CDN usage in Jawr. <br/>
@@ -42,7 +43,7 @@
 	      		 	Look at the <em>jawr.css.imagepath.override</em> section at the <a href="./docs/bundle_preprocessing.html">bundle preprocessing docs</a> for extra info.    
 	      		 </li>
 	      		 <li>
-	      		 	For a better support of CDN, using the bundle preprocessing feature, Jawr provides resources which can be integrate more easily in CDN.
+	      		 	For a better support of CDN, Jawr provides resources which can be integrate more easily in CDN. These files are generated using the bundle preprocessing feature. 
 	      		 	It even provides a rewrite configuration file for Apache server.
 	      		 	Look at the <em>CDN support</em> section at the <a href="./docs/bundle_preprocessing.html">bundle preprocessing docs</a> for extra info.    
 	      		 </li>
