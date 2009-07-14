@@ -19,6 +19,9 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import net.jawr.web.resource.bundle.factory.util.RegexUtil;
+import net.jawr.web.util.StringUtils;
+
 /**
  * Minifies CSS files by removing expendable whitespace and comments. 
  * 
@@ -140,7 +143,9 @@ public class CSSMinifier {
 		final Iterator it = strings.iterator();
 		compressed = new MatcherProcessorCallback(){
 			String matchCallback(Matcher matcher) {
-				return (String)it.next();	
+				
+				String replacement = (String)it.next();
+				return RegexUtil.adaptReplacementToMatcher(replacement);	
 			}}.processWithMatcher(restoreMatcher);	
 			
 				
