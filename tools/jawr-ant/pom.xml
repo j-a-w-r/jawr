@@ -3,9 +3,9 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>net.jawr</groupId>
-  <artifactId>ant-jawr</artifactId>
+  <artifactId>jawr-ant</artifactId>
   <packaging>jar</packaging>
-  <name>Java web resources bundling and compression</name>
+  <name>Java web resources bundling and compression Ant task</name>
   <version>1.0</version>
   <description>The ant task which launch Javascript/CSS bundling and compressing tool for java web apps.
   	By using jawr resources are automatically bundled together and optionally minified and gzipped. 
@@ -16,7 +16,7 @@
       <id>icefox</id>
       <name>Ibrahim CHAEHOI</name>
       <roles>
-        <role>Developper</role>
+        <role>Developer</role>
       </roles>
     </developer>
   </developers>
@@ -27,9 +27,9 @@
     </license>
   </licenses>
   <scm>
-    <connection>scm:svn:https://jawr.dev.java.net/svn/jawr/</connection>
-    <developerConnection>scm:svn:https://jawr.dev.java.net/svn/jawr/</developerConnection>
-    <url>https://jawr.dev.java.net/source/browse/jawr/</url>
+    <connection>scm:svn:https://jawr.dev.java.net/svn/tools/jawr-ant/</connection>
+    <developerConnection>scm:svn:https://jawr.dev.java.net/svn/tools/jawr-ant/</developerConnection>
+    <url>https://jawr.dev.java.net/source/browse/tools/jawr-ant/</url>
   </scm>
   <build>
     <extensions>
@@ -71,8 +71,8 @@
   <dependencies>
     <dependency>
       <groupId>net.jawr</groupId>
-      <artifactId>jawr</artifactId>
-      <version>3.0</version>
+      <artifactId>jawr-bundle-processor</artifactId>
+      <version>1.0</version>
     </dependency>
     <dependency>
       <groupId>ant</groupId>
@@ -116,31 +116,6 @@
       <artifactId>standard</artifactId>
       <version>1.1.2</version>
     </dependency>
-    <!-- 
-    	The following dependency is used to for JMX on JDK 1.4.
-    	If you build Jawr with a JDK greater or equals to JDK 1.5, you could comment
-    	the following dependencies. 
-    	
-    	The JMX-RI and JMX-remote have not been deployed on maven, so it will only retrieve the pom information.
-    	You should download the Jar from Sun download center.
-    	then search the download center for JMX, then select the Java Management Extensions Download Information, 
-    	then select the JMX 1.2.1 Reference Implementation,then select the JMX RI 1.2.1 download.
-    	After downloading, you need to rename the jars from jmx*.jar to jmx*-1.2.1.jar.  
-    	Then you can register them with Maven or set it directly in your local repository under /javax/management/jmxri/1.2.1/ .
-    	
-    	And do the same for jmxremote version 1.0.1_04. This Jar is accessible from Sun download center.
-      -->
-	<dependency>
-	    <groupId>javax.management</groupId>
-	    <artifactId>jmxri</artifactId>
-	    <version>1.2.1</version>
-	</dependency>
-    <dependency>
-	    <groupId>javax.management</groupId>
-	    <artifactId>jmxremote</artifactId>
-	    <version>1.0.1_04</version>
-	</dependency>
-	<!-- End Of JMX dependencies  -->
   </dependencies>
   <reporting>
     <plugins>

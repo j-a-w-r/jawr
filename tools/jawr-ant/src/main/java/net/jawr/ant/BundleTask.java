@@ -1,5 +1,15 @@
 /**
+ * Copyright 2009 Ibrahim Chaehoi
  * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License at
+ * 
+ * 	http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied. See the License for the specific language governing permissions
+ * and limitations under the License.
  */
 package net.jawr.ant;
 
@@ -12,57 +22,71 @@ import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
 
-import net.jawr.web.BundleProcessor;
+import net.jawr.web.bundle.processor.BundleProcessor;
 
 import org.apache.tools.ant.Task;
 import org.apache.tools.ant.taskdefs.Delete;
 
 /**
- * @author ibrahim
+ * The ANT task to launch the bundle processing.
+ * 
+ * @author Ibrahim Chaehoi
  *
  */
 public class BundleTask extends Task {
 
 	/**
-	 * The path to the root of the web application.
-	 * <p/>
-	 * That's where the resources are loaded from.
-	 * 
+	 * The path to the root of the web application where the resources are loaded from.
 	 */
 	private String rootPath;
 	
 	/**
-	 * The path to the root of the web application.
-	 * <p/>
-	 * That's where the resources are loaded from and where the new files are generated.
-	 * 
+	 * The path to the temporary directory for Jawr where the temporary resources are generated.
 	 */
 	private String tempDirPath;
 	
 	/**
-	 * The path to the root of the web application.
-	 * <p/>
-	 * That's where the resources are loaded from and where the new files are generated.
-	 * 
+	 * The path to the root of the web application where the the new files are generated.
 	 */
 	private String destDirPath;
 
 	/**
-	 * The path to the root of the web application.
-	 * <p/>
-	 * That's where the resources are loaded from and where the new files are generated.
-	 * 
+	 * The list of comma separated servlet names to initialize.
 	 */
 	private String servletsToInitialize;
 
 	/**
 	 * The flag indicating if we  should generate the CDN files or not
-	 * 
-	 * @parameter default-value="true"
 	 */
-	private boolean generateCDNFiles;
+	private boolean generateCDNFiles = true;
 	
 	/**
+	 * Sets the root directory path
+	 * @param rootPath the path to set
+	 */
+	public void setRootPath(String rootPath) {
+		this.rootPath = rootPath;
+	}
+
+	/**
+	 * Sets the temporary directory path
+	 * @param tempDirPath the path to set
+	 */
+	public void setTempDirPath(String tempDirPath) {
+		this.tempDirPath = tempDirPath;
+	}
+
+	/**
+	 * Sets the destination directory path 
+	 * @param destDirPath the path to set
+	 */
+	public void setDestDirPath(String destDirPath) {
+		this.destDirPath = destDirPath;
+	}
+	
+	/**
+	 * Sets the servlets to initialize
+	 * 
 	 * @param servletsToInitialize the servletsToInitialize to set
 	 */
 	public void setServletsToInitialize(String servletsToInitialize) {
@@ -70,33 +94,13 @@ public class BundleTask extends Task {
 	}
 
 	/**
+	 * Sets the flag indicating if we must generate CDN files or not
 	 * @param generateCDNFiles the generateCDNFiles to set
 	 */
 	public void setGenerateCDNFiles(boolean generateCDNFiles) {
 		this.generateCDNFiles = generateCDNFiles;
 	}
 
-	/**
-	 * @param rootPath the rootPath to set
-	 */
-	public void setRootPath(String rootPath) {
-		this.rootPath = rootPath;
-	}
-
-	/**
-	 * @param tempDirPath the tempDirPath to set
-	 */
-	public void setTempDirPath(String tempDirPath) {
-		this.tempDirPath = tempDirPath;
-	}
-
-	/**
-	 * @param destDirPath the destDirPath to set
-	 */
-	public void setDestDirPath(String destDirPath) {
-		this.destDirPath = destDirPath;
-	}
-	
 	/*
 	 * (non-Javadoc)
 	 * 
