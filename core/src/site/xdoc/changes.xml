@@ -11,9 +11,10 @@
     	<li> <strong>07/XX/2009</strong>: Version 3.0 released:<br/>
 	    	<strong>New features/ fixed issues: </strong>
 	    	 <ul>    	 	
-	      		  <li>
-	      		 	Jawr is now able to handle image bundle. This means that all images defined in the bundle will be cached in the browser as the other Javascript and CSS resources managed by Jawr.
-	      		 	Look for <em>jawr.image.bundle</em> at the <a href="./docs/descriptor_syntax.html">descriptor syntax docs</a> and at the <a href="./docs/servlet.html">servlet docs</a> for extra info.    
+	      		 <li>
+	      		 	Jawr is now able to handle images. This means that all images managed by Jawr will be cached in the browser as the other Javascript and CSS resources.
+	      		 	Look for <em>jawr.image.bundle</em> at the <a href="./docs/descriptor_syntax.html">descriptor syntax docs</a> at the <a href="./docs/servlet.html">servlet docs</a> for extra info.<br/>
+	      		 	Two new tags have been added to the tag library to handle these images. Look for the image tags at the <a href="./docs/taglibs.html">tag library doc</a> for extra info.
 	      		 </li>
 	      		 <li>
 	      		 	Jawr supports now JMX, which means that you will be able to modify at runtime the behaviour of Jawr using a JMX console.

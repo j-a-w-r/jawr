@@ -59,7 +59,7 @@ Jawr JSP tag libraries
 	
 +------------------------------------------+
 
-* The script taglib
+* The script tag
 
 	This tag has only one mandatory attribute, the aforementioned <<src>>. To see how it works, imagine we had a mapping like this in our config file: 
 		
@@ -111,7 +111,7 @@ Jawr JSP tag libraries
 	
 
 
-* The style taglib
+* The style tag
 
 	Aside from the mandatory <<src>> attribute, this tag has an optional <<media>> attribute. Use it if you need to set a specific media type 
 	for a CSS bundle. If this attribute is not set it will be rendered as media="screen". For example:  
@@ -141,7 +141,7 @@ Jawr JSP tag libraries
 	
 	* <<html>>: tags will not be closed, as determined by the HTML spec (>).    
 
-* Image tags
+* The image tags
 
 	Since the version 3.0, Jawr provides also 2 tags for images. One tag will generate an HTML image, and the other will generate an input image.
 	
