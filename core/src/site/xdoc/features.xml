@@ -54,6 +54,14 @@
 			technology), Jawr can be used on every page. 
 			 <a href="./docs/plain_html.html" > Learn more</a>. </li> 
 			 
+			<li> <strong>JMX support</strong>: You could modify the behaviour of Jawr at runtime using a JMX console. For example, you could pass an entire application from production mode to debug mode,
+			or modify only one session.  
+			 <a href="./docs/jmx_support.html" > Learn more</a>. </li> 
+			
+			<li> <strong>Bundle preprocessing</strong>: By default, the bundle processing is done at server startup, but you could preprocess your bundles, and use them directly. This will reduce the startup time of your application
+			because Jawr will skip the bundle processing.
+			 <a href="./docs/bundle_preprocessing.html" > Learn more</a>. </li> 
+			
 			<li> <strong>Spring MVC support</strong>: Instead of configuring the Jawr servlet, you can tightly integrate it with your Spring MVC application by 
 			adding the provided Jawr Controller to your Spring descriptor.  
 			 <a href="./integration/spring.html" > Learn more</a>. </li> 

@@ -175,7 +175,7 @@
 	      <li> <strong>07/XX/2009</strong>: Version 3.0 released:<br/>
 	    	<strong>New features/ fixed issues: </strong>
 	    	 <ul>    	 	
-	      		  <li>
+	      		 <li>
 	      		 	Jawr is now able to handle image bundle. This means that all images defined in the bundle will be cached in the browser as the other Javascript and CSS resources managed by Jawr.
 	      		 	Look for <em>jawr.image.bundle</em> at the <a href="./docs/descriptor_syntax.html">descriptor syntax docs</a> and at the <a href="./docs/servlet.html">servlet docs</a> for extra info.    
 	      		 </li>
@@ -189,7 +189,7 @@
 	      			This feature allows the user to skip the bundling process at server start-up, and use instead the data of preprocessed bundles. 
 	      			Look at the <a href="./docs/bundle_preprocessing.html">bundle preprocessing documentation</a> for extra info.
 	      			<br/>
-	      			This feature is a recent one, it can certainly be improved. So please don't hesitate to give your feedback on the Discussion Forum, on this feature and on Jawr in general.    
+	      			This feature is a new one, it can certainly be improved. So please don't hesitate to give your feedback on the Discussion Forum, on this feature and on Jawr in general.    
 	      		 </li>
 	      		 <li>
 	      		 	We have also created a <strong>maven plugin</strong> and an <strong>Ant task</strong> to integrate the new bundle preprocessing feature in the project build phase.  
@@ -197,26 +197,26 @@
 	      		 	Thanks to Andreas Andreou for the original idea of the maven plugin.    
 	      		 </li>
 	      		 <li>
-	      		 	We have also decided to provide a better support to CDN usage in Jawr. <br/>
-	      		 	With the new property <strong>jawr.url.contextpath.ssl.override</strong>, it is possible to define what the CDN URL to use for HTTPS requests is. <br/>
-	      		 	We have also added the possibility to retrieve the debug resource files from the CDN. To enable this feature, you will have to set to true, the property 
-	      		 	<strong>jawr.url.contextpath.override.used.in.debug.mode</strong>. <br/>
+	      		 	We have also decided to provide a better support to usage of CDN in Jawr. <br/>
+	      		 	The new property <em>jawr.url.contextpath.ssl.override</em> allows you to define what the CDN URL to use for HTTPS requests is. <br/>
+	      		 	In debug mode, it is now possible to reference the debug resource files deployed on the CDN. To enable this feature, you will have to set to true, the property 
+	      		 	<em>jawr.url.contextpath.override.used.in.debug.mode</em>. <br/>
 	      		 	Look for these properties in the <a href="./docs/descriptor_syntax.html">descriptor syntax docs</a> for extra info.    
 	      		 </li>
 	      		 <li>
 	      		 	The property <em>jawr.css.imagepath.override</em> which defined the override path for CSS images has been removed.
-	      		 	Now Jawr generates, for CSS image, URLs which are relative to the CSS bundle even if the resource is deployed on a CDN. 
-	      		 	Look at the <em>jawr.css.imagepath.override</em> section at the <a href="./docs/bundle_preprocessing.html">bundle preprocessing docs</a> for extra info.    
+	      		 	Now for CSS images, Jawr generates URLs which are relative to the CSS bundle even if the resource is deployed on a CDN. 
+	      		 	Look at the <em>jawr.css.imagepath.override</em> section at the <a href="./docs/bundle_preprocessing.html">bundle preprocessing doc</a> for extra info.    
 	      		 </li>
 	      		 <li>
-	      		 	For a better support of CDN, Jawr provides resources which can be integrate more easily in CDN. These files are generated using the bundle preprocessing feature. 
+	      		 	For a better support of CDN, Jawr provides resources which can be integrated more easily in CDN. These files are generated using the bundle preprocessing feature. 
 	      		 	It even provides a rewrite configuration file for Apache server.
-	      		 	Look at the <em>CDN support</em> section at the <a href="./docs/bundle_preprocessing.html">bundle preprocessing docs</a> for extra info.    
+	      		 	Look at the <em>CDN support</em> section at the <a href="./docs/bundle_preprocessing.html">bundle preprocessing doc</a> for extra info.    
 	      		 </li>
 	      		 <li>
 	      		 	Jawr is now able to discover automatically the locales available for message resources.
-	      		 	So the use of the bundle property <em>jawr.js.bundle.[myBundle].locales</em> is no more necessary.
-	      		 	Look for <em>jawr.image.bundle</em> at <a href="./docs/descriptor_syntax.html">descriptor syntax docs</a> for extra info.    
+	      		 	So the use of the bundle property <em>jawr.js.bundle.[name].locales</em> is no more necessary.
+	      		 	Look for <em>jawr.js.bundle.[name].locales</em> at <a href="./docs/descriptor_syntax.html">descriptor syntax doc</a> for extra info.    
 	      		 </li>
 	      		 <li>
 	      		 	<strong>Issue #69 fixed:</strong> CSS from jar file fails when using jawr.debug.overrideKey in production, is now fixed.      
