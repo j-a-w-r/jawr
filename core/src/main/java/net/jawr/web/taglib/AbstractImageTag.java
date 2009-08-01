@@ -13,15 +13,16 @@
  */
 package net.jawr.web.taglib;
 
+import java.io.IOException;
+
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.TagSupport;
 
 import net.jawr.web.JawrConstant;
 import net.jawr.web.resource.ImageResourcesHandler;
+import net.jawr.web.resource.bundle.CheckSumUtils;
 import net.jawr.web.resource.bundle.factory.util.PathNormalizer;
-
-import org.apache.log4j.Logger;
 
 /**
  * This tag defines the base class for HTML tags
@@ -34,9 +35,6 @@ public class AbstractImageTag extends TagSupport {
 	/** The serial version UID */
 	private static final long serialVersionUID = 1085874354131806795L;
 
-	/** The logger */
-	private static Logger logger = Logger.getLogger(ImgHtmlTag.class);
-	
 	/**
      * The property to specify where to align the image.
      */
@@ -554,15 +552,27 @@ public class AbstractImageTag extends TagSupport {
 	 * Prepare the image URL
 	 * @param response the response
 	 * @param results the result
+     * @throws JspException if an exception occurs
 	 */
-	protected void prepareImageUrl(HttpServletResponse response, StringBuffer results) {
+	protected void prepareImageUrl(HttpServletResponse response, StringBuffer results) throws JspException {
+		
 		ImageResourcesHandler imgRsHandler = (ImageResourcesHandler) pageContext.getServletContext().getAttribute(JawrConstant.IMG_CONTEXT_ATTRIBUTE);
-        String newUrl = (String) imgRsHandler.getCacheUrl(getSrc());
+		if(null == imgRsHandler)
+			throw new JspException("You are using a Jawr image tag while the Jawr Image servlet has not been initialized. Initialization of Jawr Image servlet either failed or never occurred.");
 
+		String imgSrc = getSrc();
+		
+		String newUrl = (String) imgRsHandler.getCacheUrl(imgSrc);
+		
         if(newUrl == null){
-        	newUrl = getSrc();
-        	logger.debug("No mapping found for the image : "+getSrc());
-        }
+        	try {
+				newUrl = CheckSumUtils.getCacheBustedUrl(imgSrc, imgRsHandler.getRsHandler(), imgRsHandler.getJawrConfig());
+				imgRsHandler.addMapping(imgSrc, newUrl);
+	    	} catch (IOException e) {
+	    		
+	    		throw new JspException("An IOException occured while processing the image '"+imgSrc+"'.", e);
+			}
+    	}
         
         String imageServletMapping = imgRsHandler.getJawrConfig().getServletMapping();
 		if("".equals(imageServletMapping)){

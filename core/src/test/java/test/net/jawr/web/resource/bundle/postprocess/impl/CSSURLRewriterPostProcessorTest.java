@@ -254,7 +254,7 @@ public class CSSURLRewriterPostProcessorTest extends TestCase {
 		props = new Properties();
 		JawrConfig imgServletJawrConfig = new JawrConfig(props);
 		imgServletJawrConfig.setServletMapping("/cssImg/");
-		ImageResourcesHandler imgRsHandler = new ImageResourcesHandler(imgServletJawrConfig);
+		ImageResourcesHandler imgRsHandler = new ImageResourcesHandler(imgServletJawrConfig, null);
 		servletContext.setAttribute(JawrConstant.IMG_CONTEXT_ATTRIBUTE, imgRsHandler);
 		
 		status = new BundleProcessingStatus(bundle, null, config);
@@ -294,7 +294,7 @@ public class CSSURLRewriterPostProcessorTest extends TestCase {
 		props = new Properties();
 		JawrConfig imgServletJawrConfig = new JawrConfig(props);
 		imgServletJawrConfig.setServletMapping("/cssImg/");
-		ImageResourcesHandler imgRsHandler = new ImageResourcesHandler(imgServletJawrConfig);
+		ImageResourcesHandler imgRsHandler = new ImageResourcesHandler(imgServletJawrConfig, null);
 		servletContext.setAttribute(JawrConstant.IMG_CONTEXT_ATTRIBUTE, imgRsHandler);
 		
 		status = new BundleProcessingStatus(bundle, null, config);
@@ -332,7 +332,7 @@ public class CSSURLRewriterPostProcessorTest extends TestCase {
 		props = new Properties();
 		JawrConfig imgServletJawrConfig = new JawrConfig(props);
 		imgServletJawrConfig.setServletMapping("/cssImg/");
-		ImageResourcesHandler imgRsHandler = new ImageResourcesHandler(imgServletJawrConfig);
+		ImageResourcesHandler imgRsHandler = new ImageResourcesHandler(imgServletJawrConfig, null);
 		servletContext.setAttribute(JawrConstant.IMG_CONTEXT_ATTRIBUTE, imgRsHandler);
 		
 		status = new BundleProcessingStatus(bundle, null, config);
@@ -355,6 +355,36 @@ public class CSSURLRewriterPostProcessorTest extends TestCase {
 
 	}
 	
+	public void testBasicURLWithCachedImageRewriting() {
+		
+		// Set the properties
+		Properties props = new Properties();
+		config = new JawrConfig(props);
+		ServletContext servletContext = new MockServletContext();
+		config.setContext(servletContext);
+		config.setServletMapping("/css");
+		config.setCharsetName("UTF-8");
+		status = new BundleProcessingStatus(bundle, null, config);
+
+		// Set up the Image servlet Jawr config
+		props = new Properties();
+		JawrConfig imgServletJawrConfig = new JawrConfig(props);
+		ImageResourcesHandler imgRsHandler = new ImageResourcesHandler(imgServletJawrConfig, null);
+		servletContext.setAttribute(JawrConstant.IMG_CONTEXT_ATTRIBUTE, imgRsHandler);
+		imgRsHandler.addMapping("/images/someImage.gif", "/cp653321354/images/someImage.gif");
+		// basic test
+		StringBuffer data = new StringBuffer("background-image:url(../../../../images/someImage.gif);");
+		// the image is at /images
+		String filePath = "/css/folder/subfolder/subfolder/someCSS.css";
+		// Expected: goes 1 back for servlet mapping, 1 back for prefix, 1 back for the id having a subdir path. 
+		String expectedURL = "background-image:url(../../../cp653321354/images/someImage.gif);";
+		status.setLastPathAdded(filePath);		
+		
+		
+		String result = processor.postProcessBundle(status, data).toString();		
+		assertEquals("URL was not rewritten properly",expectedURL, result);
+		
+	}
 	
 	public void testMultiLine() {
 		StringBuffer data = new StringBuffer("\nsomeRule {");

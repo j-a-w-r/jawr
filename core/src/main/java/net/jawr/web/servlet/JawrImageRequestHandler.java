@@ -122,7 +122,7 @@ public class JawrImageRequestHandler extends JawrRequestHandler {
 		rsHandler = initResourceHandler();
 		bundleMapping = rsHandler.getJawrBundleMapping();
 		
-		ImageResourcesHandler imgRsHandler = new ImageResourcesHandler(jawrConfig);
+		ImageResourcesHandler imgRsHandler = new ImageResourcesHandler(jawrConfig, rsHandler);
 		initImageMapping(imgRsHandler);
 
 		servletContext.setAttribute(JawrConstant.IMG_CONTEXT_ATTRIBUTE, imgRsHandler);
@@ -156,17 +156,17 @@ public class JawrImageRequestHandler extends JawrRequestHandler {
 			
 		} else {
 			// Create a resource handler to read files from the WAR archive or exploded dir.
-			String imageBundleDefinition = jawrConfig.getImageBundleDefinition();
-			if (imageBundleDefinition != null) {
+			String imageResourcesDefinition = jawrConfig.getImageResourcesDefinition();
+			if (imageResourcesDefinition != null) {
 
-				StringTokenizer tokenizer = new StringTokenizer(imageBundleDefinition, ",");
+				StringTokenizer tokenizer = new StringTokenizer(imageResourcesDefinition, ",");
 				while (tokenizer.hasMoreTokens()) {
 					String pathMapping = tokenizer.nextToken();
 
 					// path in the classpath and ends with an image extension
 					if (pathMapping.startsWith("jar:") && hasImageFileExtension(pathMapping)) {
 
-						addImagePath(imgRsHandler, pathMapping, true);
+						addImagePath(imgRsHandler, pathMapping);
 					}
 					// path ends in /, the folder is included without subfolders
 					else if (pathMapping.endsWith("/")) {
@@ -197,23 +197,12 @@ public class JawrImageRequestHandler extends JawrRequestHandler {
 	 * 
 	 * @param imgRsHandler the image resources handler
 	 * @param imgPath the image path
+	 * @param classPathImg the flag indicating if the image should be retrieved from classpath
 	 */
 	private void addImagePath(ImageResourcesHandler imgRsHandler, String imgPath) {
 
-		addImagePath(imgRsHandler, imgPath, false);
-	}
-
-	/**
-	 * Add an image path to the image map
-	 * 
-	 * @param imgRsHandler the image resources handler
-	 * @param imgPath the image path
-	 * @param classPathImg the flag indicating if the image should be retrieved from classpath
-	 */
-	private void addImagePath(ImageResourcesHandler imgRsHandler, String imgPath, boolean classPathImg) {
-
 		try {
-			String resultPath = CheckSumUtils.getCacheBustedUrl(imgPath, rsHandler, jawrConfig, classPathImg);
+			String resultPath = CheckSumUtils.getCacheBustedUrl(imgPath, rsHandler, jawrConfig);
 			imgRsHandler.addMapping(imgPath, resultPath);
 			bundleMapping.put(imgPath, resultPath);
 		} catch (IOException e) {

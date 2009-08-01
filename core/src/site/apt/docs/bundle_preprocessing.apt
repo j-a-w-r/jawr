@@ -44,6 +44,10 @@ Bundle preprocessing
 	the first time, Jawr will process the bundle normally and it will create the mapping files.
 	Then the next time, when you restart your application, Jawr will use the mappings files and skip the bundling process,
 	this will make the startup time of the web application faster.
+	
+	Note: The full image mapping file located at jawrWrkDir/jawr-img-mapping.properties, will be generated from the image resources defined with the <jawr.image.resources> property
+	and the CSS images used in the CSS bundles. So for an image which is referenced by an image tag, and which is not part of the image mapping, the hashcode will be generated at runtime,
+	and put in cache.
  	 	
 * Jawr working directory
 

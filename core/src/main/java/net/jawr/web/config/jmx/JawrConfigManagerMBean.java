@@ -84,15 +84,15 @@ public interface JawrConfigManagerMBean {
 
 	/**
 	 * @return
-	 * @see net.jawr.web.config.JawrConfig#getImageBundleDefinition()
+	 * @see net.jawr.web.config.JawrConfig#getImageResourcesDefinition()
 	 */
-	public String getImageBundleDefinition();
+	public String getImageResourcesDefinition();
 
 	/**
-	 * @param imageBundleDefinition
-	 * @see net.jawr.web.config.JawrConfig#setImageBundleDefinition(java.lang.String)
+	 * @param imageResourcesDefinition
+	 * @see net.jawr.web.config.JawrConfig#setImageResourcesDefinition(java.lang.String)
 	 */
-	public void setImageBundleDefinition(String imageBundleDefinition);
+	public void setImageResourcesDefinition(String imageResourcesDefinition);
 
 	/**
 	 * @return

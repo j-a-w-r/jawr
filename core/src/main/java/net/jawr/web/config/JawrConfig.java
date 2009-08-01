@@ -122,9 +122,9 @@ public class JawrConfig {
 	public static final String JAWR_IMAGE_HASH_ALGORITHM = "jawr.image.hash.algorithm";
 
 	/**
-	 * The property name for the image hash algorithm.
+	 * The property name for the image resources.
 	 */
-	public static final String JAWR_IMAGE_BUNDLE = "jawr.image.bundle";
+	public static final String JAWR_IMAGE_RESOURCES = "jawr.image.resources";
 
 	/**
 	 * The generator registry
@@ -220,9 +220,9 @@ public class JawrConfig {
 	private boolean useClasspathCssImageServlet;
 
 	/**
-	 * Defines the image bundle.
+	 * Defines the image resources definition.
 	 */
-	private String imageBundleDefinition;
+	private String imageResourcesDefinition;
 	
 	/**
 	 * Defines the image hash algorithm.
@@ -312,8 +312,8 @@ public class JawrConfig {
 			setImageHashAlgorithm(props.getProperty(JAWR_IMAGE_HASH_ALGORITHM).trim());
 		}
 		
-		if (null != props.getProperty(JAWR_IMAGE_BUNDLE)) {
-			setImageBundleDefinition(props.getProperty(JAWR_IMAGE_BUNDLE).trim());
+		if (null != props.getProperty(JAWR_IMAGE_RESOURCES)) {
+			setImageResourcesDefinition(props.getProperty(JAWR_IMAGE_RESOURCES).trim());
 		}
 		
 	}
@@ -576,19 +576,19 @@ public class JawrConfig {
 	}
 
 	/**
-	 * Returns the image bundle definition.
-	 * @return the imageBundle Definition.
+	 * Returns the image resources definition.
+	 * @return the image resources definition.
 	 */
-	public String getImageBundleDefinition() {
-		return imageBundleDefinition;
+	public String getImageResourcesDefinition() {
+		return imageResourcesDefinition;
 	}
 
 	/**
-	 * Sets the image bundle definition.
-	 * @param imageBundleDefinition the imageBundleDefinition to set
+	 * Sets the image resources definition.
+	 * @param imageResourcesDefinition the image resources definition to set
 	 */
-	public void setImageBundleDefinition(String imageBundleDefinition) {
-		this.imageBundleDefinition = imageBundleDefinition;
+	public void setImageResourcesDefinition(String imageResourcesDefinition) {
+		this.imageResourcesDefinition = imageResourcesDefinition;
 	}
 
 	/**

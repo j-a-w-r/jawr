@@ -121,12 +121,12 @@ Descriptor file syntax
 | jawr.[type].bundle.[name].ieonly.condition  | IE expression  | If set, the bundle will be included within a conditional comment for internet explorer. The value must correspond to a conditional comment selector expression (such as 'if lt IE 6').  | None    | 
 *---------------+---------+--------------+----------------+
 
-* Image Bundle definition properties
+* Image Resources definition properties
 	
 	Jawr is also able to manage image resources. A dedicated servlet is used to handle them.
 
 *---------------+---------+--------------+----------------+
-| jawr.image.bundle | String | The comma separated list of images, which will be handle by Jawr.   | None    | 
+| jawr.image.resources | String | The comma separated list of images, whose the hashcode will be calculated at Jawr image servlet startup. If an image is not defined here, the hashcode will be calculated at runtime and put in cache.   | None    | 
 *---------------+---------+--------------+----------------+
 | jawr.image.hash.algorithm | String | The hash algorithm to use for the images. Two values are possible : CRC32 and MD5  | CRC32 | 
 *---------------*---------*--------------+----------------+

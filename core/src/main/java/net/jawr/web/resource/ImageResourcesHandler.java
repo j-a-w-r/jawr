@@ -13,9 +13,9 @@
  */
 package net.jawr.web.resource;
 
-import java.util.HashMap;
 import java.util.Map;
 
+import net.jawr.web.collections.ConcurrentCollectionsFactory;
 import net.jawr.web.config.JawrConfig;
 
 /**
@@ -27,17 +27,21 @@ import net.jawr.web.config.JawrConfig;
 public class ImageResourcesHandler {
 
 	/** The image map */
-	private Map imageMap = new HashMap();
+	private Map imageMap = ConcurrentCollectionsFactory.buildConcurrentHashMap();
 	
 	/** The Jawr config */
 	private JawrConfig jawrConfig;
+	
+	/** The resource handler */
+	private ResourceHandler rsHandler;
 	
 	/**
 	 * Constructor
 	 * @param config
 	 */
-	public ImageResourcesHandler(JawrConfig config){
+	public ImageResourcesHandler(JawrConfig config, ResourceHandler rsHandler){
 		this.jawrConfig = config;
+		this.rsHandler = rsHandler;
 	}
 	
 	/**
@@ -52,6 +56,22 @@ public class ImageResourcesHandler {
 	 */
 	public void setJawrConfig(JawrConfig jawrConfig) {
 		this.jawrConfig = jawrConfig;
+	}
+	
+	/**
+	 * Returns the resource handler
+	 * @return the resource handler
+	 */
+	public ResourceHandler getRsHandler() {
+		return rsHandler;
+	}
+	
+	/**
+	 * Sets the resource handler
+	 * @param rsHandler the resource handler to set
+	 */
+	public void setRsHandler(ResourceHandler rsHandler) {
+		this.rsHandler = rsHandler;
 	}
 	
 	/**

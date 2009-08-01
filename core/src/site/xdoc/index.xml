@@ -172,12 +172,13 @@
       <p>Here are the latest announcements regarding Jawr. You can find older version announcements with all the features that have been 
       added over time at the <a href="./changes.html">change log.</a> </p>
       <ul>
-	      <li> <strong>07/XX/2009</strong>: Version 3.0 released:<br/>
+	      <li> <strong>08/01/2009</strong>: Version 3.0 released:<br/>
 	    	<strong>New features/ fixed issues: </strong>
 	    	 <ul>    	 	
 	      		 <li>
 	      		 	Jawr is now able to handle images. This means that all images managed by Jawr will be cached in the browser as the other Javascript and CSS resources.
-	      		 	Look for <em>jawr.image.bundle</em> at the <a href="./docs/descriptor_syntax.html">descriptor syntax docs</a> at the <a href="./docs/servlet.html">servlet docs</a> for extra info.<br/>
+	      		 	By default all CSS images will be handled by Jawr if the Jawr image servlet is defined. 
+	      		 	Look for the <em>Jawr image handling</em> section in the <a href="./docs/servlet.html">servlet docs</a> and at <em>jawr.image.resources</em> in the <a href="./docs/descriptor_syntax.html">descriptor syntax docs</a> for extra info.<br/>
 	      		 	Two new tags have been added to the tag library to handle these images. Look for the image tags at the <a href="./docs/taglibs.html">tag library doc</a> for extra info.
 	      		 </li>
 	      		 <li>

@@ -91,33 +91,20 @@ The Jawr servlet
 +------------------------------------------+
 
 
+* Jawr image handling
 
-	* <<imageServletMapping>>: The value of this attribute defines the mapping for the image servlet, which will handle the images associated to CSS defined 
-	in the classpath, if you are using the option <jawr.css.image.classpath.use.servlet=true> in the Jawr config.
+	Jawr supports images. To enable this feature, you will have to define the Jawr image servlet in your web.xml file. 
+	When the Jawr image servlet is defined in you application, all CSS images will be handled by this servlet.
+	You don't have to declare these images in the <<jawr.image.resources>> property. 
+	This property is used to calculate the hashcode of the images at the image servlet startup. 
+	If an image is not defined in this property, the hashcode of the image will be calculated at runtime.
+	Look for <jawr.image.resources> at the {{{./descriptor_syntax.html}descriptor syntax doc}} for more information.\
 	
-	Note: If you set the property <jawr.css.image.classpath.use.servlet> to true, you should defined the <<imageServletMapping>> parameter 
-	in the CSS and the image servlets like this: 
-
-
+	In order for Jawr to properly handle the CSS images, the Jawr image servlet must start before the Jawr CSS servlet.
+	This means that you will have to set properly the <<load.on.startup>> property in your web.xml like below :
+	 
 +------------------------------------------+
 	...
-	<servlet>
-		<servlet-name>JawrCSSServlet</servlet-name>
-		<servlet-class>net.jawr.web.servlet.JawrServlet</servlet-class>
-		<init-param>
-			<param-name>configLocation</param-name>
-			<param-value>/jawr.properties</param-value>
-		</init-param>
-		<init-param>
-			<param-name>type</param-name>
-			<param-value>css</param-value>
-		</init-param>
-		<init-param>
-			<param-name>imageServletMapping</param-name>
-			<param-value>/jwrImg/</param-value>
-		</init-param>
-		<load-on-startup>1</load-on-startup>
-	</servlet>
 	<servlet>
 		<servlet-name>JawrImgServlet</servlet-name>
 		<servlet-class>net.jawr.web.servlet.JawrServlet</servlet-class>
@@ -130,28 +117,47 @@ The Jawr servlet
 			<param-value>img</param-value>
 		</init-param>
 		<init-param>
-			<param-name>imageServletMapping</param-name>
+			<param-name>mapping</param-name>
 			<param-value>/jwrImg/</param-value>
+		</init-param>
+		<!-- The Jawr Image servlet must start before the Jawr CSS Servlet -->
+		<load-on-startup>0</load-on-startup>
+	</servlet>
+	<servlet>
+		<servlet-name>JawrCSSServlet</servlet-name>
+		<servlet-class>net.jawr.web.servlet.JawrServlet</servlet-class>
+		<init-param>
+			<param-name>configLocation</param-name>
+			<param-value>/jawr.properties</param-value>
+		</init-param>
+		<init-param>
+			<param-name>type</param-name>
+			<param-value>css</param-value>
 		</init-param>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
+	
 	...
 	
-	<servlet-mapping>
-		<servlet-name>JavascriptServlet</servlet-name>
-		<url-pattern>*.css</url-pattern>
-	</servlet-mapping> 
 	<servlet-mapping>
 		<servlet-name>JawrImgServlet</servlet-name>
 		<url-pattern>/jwrImg/*</url-pattern>
 	</servlet-mapping> 
+	<servlet-mapping>
+		<servlet-name>JavascriptServlet</servlet-name>
+		<url-pattern>*.css</url-pattern>
+	</servlet-mapping> 
+	
 	
 +------------------------------------------+
 	
 	[]
 	
-* Example web.xml configuration
-	
+* Examples web.xml configuration
+
+	* Jawr with JS and CSS handling	
+
+	[]
 +------------------------------------------+
 	<?xml version="1.0" encoding="ISO-8859-1"?> 
 
@@ -173,7 +179,7 @@ The Jawr servlet
 			<param-name>configLocation</param-name>
 			<param-value>/jawr.properties</param-value>
 		</init-param>
-		<load-on-startup>1</load-on-startup>
+		<load-on-startup>0</load-on-startup>
 	</servlet>
 	<servlet>
 		<servlet-name>CssServlet</servlet-name>
@@ -197,9 +203,89 @@ The Jawr servlet
 		<servlet-name>CssServlet</servlet-name>
 		<url-pattern>*.css</url-pattern>
 	</servlet-mapping>	
- 
+ 	<servlet-mapping>
+		<servlet-name>JawrImgServlet</servlet-name>
+		<url-pattern>/jwrImg/*</url-pattern>
+	</servlet-mapping> 
+	
 </web-app>
 +------------------------------------------+
+
+	* Jawr with JS, CSS and image handling	
+
+	[]
+	
++------------------------------------------+
+	<?xml version="1.0" encoding="ISO-8859-1"?> 
+
+	<!DOCTYPE web-app
+	   PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
+	   "http://java.sun.com/dtd/web-app_2_3.dtd">
+	
+	<web-app>
+
+	<display-name>Jawr enabled application</display-name>
+	
+	<description>
+		
+	</description>
+	<servlet>
+		<servlet-name>JavascriptServlet</servlet-name>
+		<servlet-class>net.jawr.web.servlet.JawrServlet</servlet-class>
+		<init-param>
+			<param-name>configLocation</param-name>
+			<param-value>/jawr.properties</param-value>
+		</init-param>
+		<load-on-startup>0</load-on-startup>
+	</servlet>
+	<servlet>
+		<servlet-name>JawrImgServlet</servlet-name>
+		<servlet-class>net.jawr.web.servlet.JawrServlet</servlet-class>
+		<init-param>
+			<param-name>type</param-name>
+			<param-value>img</param-value>
+		</init-param>
+		<init-param>
+			<param-name>configLocation</param-name>
+			<param-value>/jawr.properties</param-value>
+		</init-param>
+		<init-param>
+			<param-name>mapping</param-name>
+			<param-value>/jwrImg/</param-value>
+		</init-param>
+		<!-- The Jawr Image servlet must start before the Jawr CSS Servlet -->
+		<load-on-startup>0</load-on-startup>
+	</servlet>
+	<servlet>
+		<servlet-name>CssServlet</servlet-name>
+		<servlet-class>net.jawr.web.servlet.JawrServlet</servlet-class>
+		<init-param>
+			<param-name>configLocation</param-name>
+			<param-value>/jawr.properties</param-value>
+		</init-param>
+		<init-param>
+			<param-name>type</param-name>
+			<param-value>css</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	
+	<servlet-mapping>
+		<servlet-name>JavascriptServlet</servlet-name>
+		<url-pattern>*.js</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>CssServlet</servlet-name>
+		<url-pattern>*.css</url-pattern>
+	</servlet-mapping>	
+ 	<servlet-mapping>
+		<servlet-name>JawrImgServlet</servlet-name>
+		<url-pattern>/jwrImg/*</url-pattern>
+	</servlet-mapping> 
+	
+</web-app>
++------------------------------------------+
+
 
 * Defining a custom properties source
 

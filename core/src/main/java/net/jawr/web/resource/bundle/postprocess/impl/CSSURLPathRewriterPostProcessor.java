@@ -220,7 +220,7 @@ public class CSSURLPathRewriterPostProcessor extends
 			}
 
 			// generate image cache URL
-			String cacheUrl = addCacheBuster(status, tempUrl, imgRsHandler, true);
+			String cacheUrl = addCacheBuster(status, tempUrl, imgRsHandler);
 			imgUrl = cacheUrl;
 		}else{
 			
@@ -233,9 +233,10 @@ public class CSSURLPathRewriterPostProcessor extends
 			String imgCacheUrl = null;
 			if(imgRsHandler != null){
 				imgCacheUrl = imgRsHandler.getCacheUrl(imgUrl);
-				if(imgCacheUrl != null){
-					imgUrl = imgCacheUrl;
+				if(imgCacheUrl == null){
+					imgCacheUrl = addCacheBuster(status, imgUrl, imgRsHandler);
 				}
+				imgUrl = imgCacheUrl;
 			}
 		}
 		
@@ -272,7 +273,7 @@ public class CSSURLPathRewriterPostProcessor extends
 	 * @return the url of the CSS image with a cache buster
 	 * @throws IOException if an IO exception occurs
 	 */
-	private String addCacheBuster(BundleProcessingStatus status, String url, ImageResourcesHandler imgRsHandler, boolean fromClasspath) throws IOException {
+	private String addCacheBuster(BundleProcessingStatus status, String url, ImageResourcesHandler imgRsHandler) throws IOException {
 		
 		// Try to retrieve the from the bundle processing cache
 		String newUrl = status.getImageMapping(url);
@@ -286,17 +287,18 @@ public class CSSURLPathRewriterPostProcessor extends
 			if(newUrl != null){
 				return newUrl;
 			}
+			// Retrieve the new URL with the cache prefix
+			newUrl = CheckSumUtils.getCacheBustedUrl(url, status.getRsHandler(), status.getJawrConfig());
+			if(imgRsHandler != null){
+				imgRsHandler.addMapping(url, newUrl);
+			}
+		}else{
+			newUrl = url;
 		}
 		
-		// Retrieve the new URL with the cache prefix
-		newUrl = CheckSumUtils.getCacheBustedUrl(url, status.getRsHandler(), status.getJawrConfig(), fromClasspath);
 		
 		// Set the result in a cache, so we will not search for it the next time
 		status.setImageMapping(url, newUrl);
-		
-		if(imgRsHandler != null){
-			imgRsHandler.addMapping(url, newUrl);
-		}
 		
 		return newUrl;
 	}

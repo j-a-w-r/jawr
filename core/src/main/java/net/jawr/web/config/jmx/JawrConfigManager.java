@@ -84,10 +84,10 @@ public class JawrConfigManager implements JawrConfigManagerMBean {
 
 	/**
 	 * @return
-	 * @see net.jawr.web.config.JawrConfig#getImageBundleDefinition()
+	 * @see net.jawr.web.config.JawrConfig#getImageResourcesDefinition()
 	 */
-	public String getImageBundleDefinition() {
-		return configProperties.getProperty(JawrConfig.JAWR_IMAGE_BUNDLE);
+	public String getImageResourcesDefinition() {
+		return configProperties.getProperty(JawrConfig.JAWR_IMAGE_RESOURCES);
 	}
 
 	/**
@@ -237,11 +237,11 @@ public class JawrConfigManager implements JawrConfigManagerMBean {
 	}
 
 	/**
-	 * @param imageBundleDefinition
-	 * @see net.jawr.web.config.JawrConfig#setImageBundleDefinition(java.lang.String)
+	 * @param imageResourcesDefinition
+	 * @see net.jawr.web.config.JawrConfig#setImageResourcesDefinition(java.lang.String)
 	 */
-	public void setImageBundleDefinition(String imageBundleDefinition) {
-		configProperties.setProperty(JawrConfig.JAWR_IMAGE_BUNDLE, imageBundleDefinition);
+	public void setImageResourcesDefinition(String imageResourcesDefinition) {
+		configProperties.setProperty(JawrConfig.JAWR_IMAGE_RESOURCES, imageResourcesDefinition);
 	}
 
 	/**

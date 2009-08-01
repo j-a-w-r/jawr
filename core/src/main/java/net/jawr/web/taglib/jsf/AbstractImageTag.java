@@ -22,6 +22,7 @@ import javax.servlet.jsp.JspException;
 
 import net.jawr.web.JawrConstant;
 import net.jawr.web.resource.ImageResourcesHandler;
+import net.jawr.web.resource.bundle.CheckSumUtils;
 import net.jawr.web.resource.bundle.factory.util.PathNormalizer;
 
 import org.apache.log4j.Logger;
@@ -184,17 +185,30 @@ public abstract class AbstractImageTag extends UIOutput {
 	 * Prepare the image URL
 	 * @param context the faces context
 	 * @param results the result
+     * @throws IOException if an exception occurs
 	 */
-	protected void prepareImageUrl(FacesContext context, StringBuffer results) {
+	protected void prepareImageUrl(FacesContext context, StringBuffer results) throws IOException {
 		
 		ImageResourcesHandler imgRsHandler = (ImageResourcesHandler) context.getExternalContext().getApplicationMap().get(JawrConstant.IMG_CONTEXT_ATTRIBUTE);
-		if(null == imgRsHandler)
-			throw new IllegalStateException("ImageResourceHandler not present in servlet context. Initialization of Jawr either failed or never occurred.");
-
+		if(imgRsHandler == null){
+			throw new IllegalStateException("You are using a Jawr image tag while the Jawr Image servlet has not been initialized. Initialization of Jawr Image servlet either failed or never occurred.");
+		}
+	
 		String imgSrc = (String) getAttribute("src");
+		
 		String newUrl = (String) imgRsHandler.getCacheUrl(imgSrc);
-
+		
         if(newUrl == null){
+        	try {
+				newUrl = CheckSumUtils.getCacheBustedUrl(imgSrc, imgRsHandler.getRsHandler(), imgRsHandler.getJawrConfig());
+				imgRsHandler.addMapping(imgSrc, newUrl);
+	    	} catch (IOException e) {
+	    		
+	    		throw new IOException("An IOException occured while processing the image '"+imgSrc+"'."+ e.getMessage());
+			}
+    	}
+        
+		if(newUrl == null){
         	newUrl = imgSrc;
         	logger.debug("No mapping found for the image : "+imgSrc);
         }

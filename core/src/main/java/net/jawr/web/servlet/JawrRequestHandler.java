@@ -382,7 +382,7 @@ public class JawrRequestHandler implements ConfigChangeListener {
 	protected JawrConfig createJawrConfig(Properties props) {
 		jawrConfig = new JawrConfig(props);
 		
-		// Override properties which are incompatble with the build time bundle processing
+		// Override properties which are incompatible with the build time bundle processing
 		if(ThreadLocalJawrContext.isBundleProcessingAtBuildTime()){
 			jawrConfig.setUseBundleMapping(true);
 			

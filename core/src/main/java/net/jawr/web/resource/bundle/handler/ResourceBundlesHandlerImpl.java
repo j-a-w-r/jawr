@@ -35,6 +35,7 @@ import net.jawr.web.JawrConstant;
 import net.jawr.web.collections.ConcurrentCollectionsFactory;
 import net.jawr.web.config.JawrConfig;
 import net.jawr.web.exception.ResourceNotFoundException;
+import net.jawr.web.resource.ImageResourcesHandler;
 import net.jawr.web.resource.ResourceHandler;
 import net.jawr.web.resource.bundle.CompositeResourceBundle;
 import net.jawr.web.resource.bundle.IOUtils;
@@ -345,11 +346,33 @@ public class ResourceBundlesHandlerImpl implements ResourceBundlesHandler {
 
 		if (config.getUseBundleMapping() && !mappingFileExists) {
 			resourceHandler.storeJawrBundleMapping(bundleMapping);
+			
+				
+			if(resourceHandler.getResourceType().equals(JawrConstant.CSS_TYPE)){
+				// Retrieve the image servlet mapping
+				ImageResourcesHandler imgRsHandler = (ImageResourcesHandler) config.getContext().getAttribute(JawrConstant.IMG_CONTEXT_ATTRIBUTE);
+				if(imgRsHandler != null){
+					// Here we update the image mapping if we are using the build time bundle processor
+					JawrConfig imgJawrConfig = imgRsHandler.getJawrConfig();
+					
+					// If we use the full image bundle mapping and the jawr working directory is not located inside the web application
+					// We store the image bundle maping which now contains the mapping for CSS images
+					String jawrWorkingDirectory = imgJawrConfig.getJawrWorkingDirectory();
+					if(imgJawrConfig.getUseBundleMapping() && (jawrWorkingDirectory == null || !jawrWorkingDirectory.startsWith(JawrConstant.URL_SEPARATOR))){
+						
+						// Store the bundle mapping
+						Properties props = new Properties();
+						props.putAll(imgRsHandler.getImageMap());
+						imgRsHandler.getRsHandler().storeJawrBundleMapping(props);
+						
+					}
+				}
+			}
 		}
 	}
 
 	/**
-	 * Joins the members of a composite bundle in al its variants, storing in a separate file for each variant.
+	 * Joins the members of a composite bundle in all its variants, storing in a separate file for each variant.
 	 * 
 	 * @param composite the composite resource bundle
 	 * @param processBundle the flag indicating if we should process the bundle or not
