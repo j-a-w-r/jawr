@@ -37,30 +37,14 @@
 			<param-name>configLocation</param-name>
 			<param-value>/jawr.properties</param-value>
 		</init-param>
-		<init-param>
+		<!-- init-param>
             <param-name>mapping</param-name>
             <param-value>/cssJawrPath/</param-value>
-        </init-param>
+        </init-param -->
 		<init-param>
 			<param-name>type</param-name>
 			<param-value>css</param-value>
 		</init-param>
-		<!-- init-param>
-			<param-name>imageServletMapping</param-name>
-			<param-value>/jwrImg/</param-value>
-		</init-param -->
-		<!-- init-param>
-			<param-name>imageServletMapping</param-name>
-			<param-value>/cssImg/</param-value>
-		</init-param -->
-		<!-- init-param>
-			<param-name>configPropertiesSourceClass</param-name>
-			<param-value>net.jawr.web.resource.bundle.factory.util.MultipleFileConfigSource</param-value>
-		</init-param-->
-		<!-- init-param>
-			<param-name>mapping</param-name>
-			<param-value>/styles/</param-value>
-		</init-param-->
 		<load-on-startup>2</load-on-startup>
 	</servlet>
 	<servlet>
@@ -70,14 +54,15 @@
 			<param-name>configLocation</param-name>
 			<param-value>/jawr.properties</param-value>
 		</init-param>
-		<init-param>
+		<!-- init-param>
 			<param-name>mapping</param-name>
 			<param-value>/jwrImg/</param-value>
-		</init-param>
+		</init-param -->
 		<init-param>
 			<param-name>type</param-name>
 			<param-value>img</param-value>
 		</init-param>
+		<!-- Start Jawr image servlet before Jawr CSS servlet -->
 		<load-on-startup>1</load-on-startup>
 	</servlet>
 	
@@ -88,19 +73,15 @@
 	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>CssServlet</servlet-name>
-		<url-pattern>/cssJawrPath/*</url-pattern>
+		<url-pattern>*.css</url-pattern>
 	</servlet-mapping>
-	<!-- servlet-mapping>
+	<servlet-mapping>
 		<servlet-name>JawrImgServlet</servlet-name>
 		<url-pattern>*.png</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>JawrImgServlet</servlet-name>
 		<url-pattern>*.gif</url-pattern>
-	</servlet-mapping -->
-	<servlet-mapping>
-		<servlet-name>JawrImgServlet</servlet-name>
-		<url-pattern>/jwrImg/*</url-pattern>
 	</servlet-mapping>
 	
 	<!-- Using mapping-->
@@ -111,7 +92,11 @@
 	<servlet-mapping>
 		<servlet-name>CssServlet</servlet-name>
 		<url-pattern>/styles/*</url-pattern>
-	</servlet-mapping>-->
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>JawrImgServlet</servlet-name>
+		<url-pattern>/jwrImg/*</url-pattern>
+	</servlet-mapping> -->
 	
 	<session-config>
 		<session-timeout>10</session-timeout>

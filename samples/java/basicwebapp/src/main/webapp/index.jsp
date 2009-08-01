@@ -25,7 +25,6 @@
 
 <script type="text/javascript">
 	alert("A little message retrieved from the message bundle : "+messages.ui.msg.hello.world());
-	tooCool();
 </script>
 </body>
 </html>

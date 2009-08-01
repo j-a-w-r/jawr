@@ -58,61 +58,21 @@
 				<wtpversion>1.5</wtpversion>
 			</configuration>
 	 </plugin>
-	  <plugin>
-         <groupId>org.apache.maven.plugins</groupId>
-         <artifactId>maven-antrun-plugin</artifactId>
-         <executions>
-           <execution>
-             <id>bundle</id>
-             <phase>prepare-package</phase>
-             <configuration>
-               <tasks>
-				<property name="webapp.dir" value="${project.build.directory}/${project.build.finalName}/" />
-				<path id="jawr.build.class.path" >
-					<pathelement path="${webapp.dir}/WEB-INF/classes"/>
-					<fileset dir="${webapp.dir}/WEB-INF/lib">
-						<include name="**/*.jar" />
-					</fileset>
-					<path refid="maven.compile.classpath" />
-					<!-- pathelement path="${webapp.container.dir}/shared/classes}"/>
-					<fileset dir="${webapp.container.dir}/shared" >
-						<include name="**/*.jar" />
-					</fileset>
-					<pathelement path="${webapp.container.dir}/common/classes}"/>
-					<fileset dir="${webapp.container.dir}/common" >
-						<include name="**/*.jar" />
-					</fileset -->
-				</path>
-				<property name="jawr_bundle_compile_classpath" refid="jawr.build.class.path"/>
-                <echo message="Jawr bundle classpath: ${jawr_bundle_compile_classpath}"/>
-                
-                <taskdef name="jawrBundle" classname="net.jawr.ant.BundleTask" > <!-- classpathref="maven.compile.classpath" -->
-				  <classpath refid="jawr.build.class.path" />
-				</taskdef>
-                <jawrBundle rootPath="${project.build.directory}/${project.build.finalName}" 
-                	tempDirPath="${project.build.directory}/jawr/temp" 
-			 		destDirPath="${project.build.directory}/jawr/bundle" />
+	 <plugin>
+	        <groupId>net.jawr</groupId>
+	        <artifactId>maven-jawr-plugin</artifactId>
+	        <version>1.0</version>
+	        <executions>
+	          <execution>
+	            <!-- Use this phase so that maven war includes our bundles -->
+	            <phase>prepare-package</phase>
+	          </execution>
+	        </executions>
+	        <configuration>
+	            <generateCDNFiles>true</generateCDNFiles>
+	        </configuration>
+	  </plugin>
 
-               </tasks>
-             </configuration>
-             <goals>
-               <goal>run</goal>
-             </goals>
-           </execution>
-         </executions>
-          <dependencies>
-           <dependency>
-             <groupId>net.jawr</groupId>
-             <artifactId>ant-jawr</artifactId>
-             <version>1.0</version>
-           </dependency>
-           <dependency>
-		      <groupId>log4j</groupId>
-		      <artifactId>log4j</artifactId>
-		      <version>1.2.9</version>
-		    </dependency> 
-         </dependencies>
-       </plugin>
 	  
       
     </plugins>
