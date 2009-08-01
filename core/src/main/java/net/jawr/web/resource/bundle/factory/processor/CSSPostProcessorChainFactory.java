@@ -13,7 +13,6 @@
  */
 package net.jawr.web.resource.bundle.factory.processor;
 
-import net.jawr.web.resource.bundle.postprocess.AbstractChainedResourceBundlePostProcessor;
 import net.jawr.web.resource.bundle.postprocess.ChainedResourceBundlePostProcessor;
 import net.jawr.web.resource.bundle.postprocess.PostProcessFactoryConstant;
 import net.jawr.web.resource.bundle.postprocess.ResourceBundlePostProcessor;
@@ -46,17 +45,15 @@ public class CSSPostProcessorChainFactory extends
 	 */
 	public ResourceBundlePostProcessor buildDefaultUnitProcessorChain() {
 		
-		// The default unit post processor is CSSImport,CSSIrlPathRewriter
-		ChainedResourceBundlePostProcessor processor = new CSSImportPostProcessor();
-		processor.addNextProcessor(new CSSURLPathRewriterPostProcessor());
-		return processor;
+		// The default unit post processor is CSSUrlPathRewriter
+		return new CSSURLPathRewriterPostProcessor();
 	}
 	
 	
 	/* (non-Javadoc)
 	 * @see net.jawr.web.resource.bundle.factory.processor.PostProcessorChainFactory#getPostProcessor(java.lang.String)
 	 */
-	protected AbstractChainedResourceBundlePostProcessor buildProcessorByKey(String processorKey){
+	protected ChainedResourceBundlePostProcessor buildProcessorByKey(String processorKey){
 		
 		if (PostProcessFactoryConstant.LICENSE_INCLUDER.equals(processorKey))
 			return buildLicensesProcessor();

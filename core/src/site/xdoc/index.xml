@@ -223,7 +223,7 @@
 	      		 	<strong>Issue #69 fixed:</strong> CSS from jar file fails when using jawr.debug.overrideKey in production, is now fixed.      
 	      		 </li>      
 	      		 <li>
-	      		 	<strong>Issue #66 fixed:</strong> Add support for @import keyword in CSS is now fixed. Now by default, the CSS bundle post processor will resolve import and will rewrite the URL path for CSS image.
+	      		 	<strong>Issue #66 fixed:</strong> Add support for @import keyword in CSS is now fixed. You can use the new <strong>cssimport</strong> post processor to resolve the CSS import. Please take a look at the section <em>CSS Import resolver</em> at <a href="./docs/postprocessors.html">postprocessors documentation</a> for more info.
 	      		 </li>        
 	      		 <li>
 	      		 	<strong>Issue #72 fixed:</strong> Avoid skipping repeated members of bundles in debug mode which is fixed now.

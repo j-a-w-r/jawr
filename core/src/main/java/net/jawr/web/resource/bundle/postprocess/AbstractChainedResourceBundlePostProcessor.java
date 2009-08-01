@@ -32,7 +32,7 @@ public abstract class AbstractChainedResourceBundlePostProcessor implements
 	private static final Logger log = Logger.getLogger(ResourceBundlePostProcessor.class);
 	
 	/** The next post processor */
-	private AbstractChainedResourceBundlePostProcessor nextProcessor;
+	private ChainedResourceBundlePostProcessor nextProcessor;
 	
 	/** The ID of the chained bundle post processor */
 	private String id;
@@ -80,7 +80,7 @@ public abstract class AbstractChainedResourceBundlePostProcessor implements
 	 * Set the next post processor in the chain. 
 	 * @param nextProcessor the post processor to set
 	 */
-	public void addNextProcessor(AbstractChainedResourceBundlePostProcessor nextProcessor) {
+	public void addNextProcessor(ChainedResourceBundlePostProcessor nextProcessor) {
 		if(this.nextProcessor == null){
 			this.nextProcessor = nextProcessor;
 		}else{

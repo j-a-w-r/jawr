@@ -47,7 +47,7 @@ public class EmptyResourceBundlePostProcessor extends
 	 * Set the next post processor in the chain. 
 	 * @param nextProcessor the next post processor to set
 	 */
-	public void addNextProcessor(AbstractChainedResourceBundlePostProcessor nextProcessor) {
+	public void addNextProcessor(ChainedResourceBundlePostProcessor nextProcessor) {
 		throw new UnsupportedOperationException("The empty resource bundle processor can't have a next post processord");
 	}
 

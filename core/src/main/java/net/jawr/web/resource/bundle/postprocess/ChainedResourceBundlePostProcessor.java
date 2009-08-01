@@ -32,6 +32,6 @@ public interface ChainedResourceBundlePostProcessor extends ResourceBundlePostPr
 	 * Add the next post processor in the end of the chain. 
 	 * @param nextProcessor the next post processor
 	 */
-	public void addNextProcessor(AbstractChainedResourceBundlePostProcessor nextProcessor);
+	public void addNextProcessor(ChainedResourceBundlePostProcessor nextProcessor);
 	
 }

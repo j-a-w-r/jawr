@@ -12,7 +12,7 @@ Jawr Postprocessors
 	have been joined into it. \ 
 	
 	Normally, you won't need to worry about postprocessors, since Jawr will use them automatically: javascript will be minified using JSMin, and the 
-	lincense comments (if any) will be added afterwards. CSS files will also be minified ,license comments will be added, CSS import resources will be included and their image URLs will 
+	lincense comments (if any) will be added afterwards. CSS files will also be minified ,license comments will be added and their image URLs will 
 	be rewritten so they keep working from within a bundle. 
 	But there are countless combinations you can use, plus you may create and use your own postprocessors, so here is how to configure the filter chain 
 	applied to files and bundles. 

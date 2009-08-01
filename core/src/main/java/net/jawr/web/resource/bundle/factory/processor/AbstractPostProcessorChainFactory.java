@@ -20,7 +20,7 @@ import java.util.StringTokenizer;
 import java.util.Map.Entry;
 
 import net.jawr.web.resource.bundle.factory.util.ClassLoaderResourceUtils;
-import net.jawr.web.resource.bundle.postprocess.AbstractChainedResourceBundlePostProcessor;
+import net.jawr.web.resource.bundle.postprocess.ChainedResourceBundlePostProcessor;
 import net.jawr.web.resource.bundle.postprocess.EmptyResourceBundlePostProcessor;
 import net.jawr.web.resource.bundle.postprocess.PostProcessFactoryConstant;
 import net.jawr.web.resource.bundle.postprocess.ResourceBundlePostProcessor;
@@ -56,7 +56,7 @@ public abstract class AbstractPostProcessorChainFactory implements	PostProcessor
 		
 		StringTokenizer tk = new StringTokenizer(processorKeys,",");
 		
-		AbstractChainedResourceBundlePostProcessor chain = null;
+		ChainedResourceBundlePostProcessor chain = null;
 		while(tk.hasMoreTokens())
 			chain = addOrCreateChain(chain,tk.nextToken());
 		
@@ -70,12 +70,12 @@ public abstract class AbstractPostProcessorChainFactory implements	PostProcessor
 	 * @param key the id of the post processor
 	 * @return the chained post processor, with the new post processor.
 	 */
-	private AbstractChainedResourceBundlePostProcessor addOrCreateChain(AbstractChainedResourceBundlePostProcessor chain, String key) {
+	private ChainedResourceBundlePostProcessor addOrCreateChain(ChainedResourceBundlePostProcessor chain, String key) {
 		
-		AbstractChainedResourceBundlePostProcessor toAdd;
+		ChainedResourceBundlePostProcessor toAdd;
 		
 		if(null != customPostProcessors.get(key)) {
-			toAdd = (AbstractChainedResourceBundlePostProcessor)customPostProcessors.get(key);
+			toAdd = (ChainedResourceBundlePostProcessor)customPostProcessors.get(key);
 		}
 		else toAdd = buildProcessorByKey(key);
 		
@@ -96,7 +96,7 @@ public abstract class AbstractPostProcessorChainFactory implements	PostProcessor
 	 * @param key the key name of the post processor
 	 * @return the chained post processor
 	 */
-	protected abstract AbstractChainedResourceBundlePostProcessor buildProcessorByKey(String key);
+	protected abstract ChainedResourceBundlePostProcessor buildProcessorByKey(String key);
 	
 
 	/**
