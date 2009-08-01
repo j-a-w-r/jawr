@@ -31,8 +31,6 @@ import javax.servlet.Servlet;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 
-import net.jawr.web.exception.InvalidPathException;
-
 import org.apache.commons.collections.iterators.IteratorEnumeration;
 import org.apache.log4j.Logger;
 
@@ -214,13 +212,14 @@ public class MockServletContext implements ServletContext {
 	 */
 	public Set getResourcePaths(String path) {
 
+		Set result = new HashSet();
 		path = path.replace('/', File.separatorChar);
 		File resource = new File(baseDir, path);
 
 		// If the path is not valid throw an exception
 		String[] resArray = resource.list();
 		if (null == resArray)
-			throw new InvalidPathException(baseDir + File.separator + path);
+			return result;
 
 		// Make the returned dirs end with '/', to match a servletcontext behavior.
 		for (int i = 0; i < resArray.length; i++) {
@@ -229,10 +228,9 @@ public class MockServletContext implements ServletContext {
 			if (isDirectory(resArray[i]))
 				resArray[i] += '/';
 		}
-		Set ret = new HashSet();
-		ret.addAll(Arrays.asList(resArray));
+		result.addAll(Arrays.asList(resArray));
 
-		return ret;
+		return result;
 	}
 
 	/*

@@ -462,9 +462,7 @@ public class BundleProcessor {
 				localVariantKeys.add("");
 			}
 			
-			// Update the bundle mapping
-			//JoinableResourceBundlePropertySerializer.serializeInProperties(bundle, resourceType, bundleMapping);
-			
+			// Creates the bundle file for each local variant 
 			for (Iterator iterator = localVariantKeys.iterator(); iterator.hasNext();) {
 				String localVariantKey = (String) iterator.next();
 				
