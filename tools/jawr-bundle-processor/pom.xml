@@ -26,9 +26,9 @@
 		</license>
 	</licenses>
 	<scm>
-		<connection>scm:svn:https://jawr.dev.java.net/svn/tools/jawr-bundle-processor/</connection>
-		<developerConnection>scm:svn:https://jawr.dev.java.net/svn/tools/jawr-bundle-processor/</developerConnection>
-		<url>https://jawr.dev.java.net/source/browse/tools/jawr-bundle-processor/</url>
+	    <connection>scm:svn:https://jawr.dev.java.net/svn/jawr/</connection>
+	    <developerConnection>scm:svn:https://jawr.dev.java.net/svn/jawr/</developerConnection>
+	    <url>https://jawr.dev.java.net/source/browse/jawr/</url>
 	</scm>
 	<build>
 		<extensions>
@@ -145,7 +145,7 @@
 	<distributionManagement>
 		<repository>
 			<id>java.net-m2-repository</id>
-			<url>java-net:/maven2-repository/trunk/www/repository/</url>
+			<url>java-net:/maven2-repository/trunk/repository/</url>
 		</repository>
 	</distributionManagement>
 </project>
