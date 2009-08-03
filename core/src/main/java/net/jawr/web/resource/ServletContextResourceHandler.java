@@ -85,7 +85,10 @@ public class ServletContextResourceHandler extends AbstractResourceHandler imple
 	 */
 	public Reader doGetResource(String resourceName)  throws ResourceNotFoundException{
 		
-		InputStream is = getResourceAsStream(resourceName);		
+		InputStream is = getResourceAsStream(resourceName);
+		if(is == null){
+			throw new ResourceNotFoundException(resourceName);
+		}
 		return new InputStreamReader(is, charset);
 	}
 

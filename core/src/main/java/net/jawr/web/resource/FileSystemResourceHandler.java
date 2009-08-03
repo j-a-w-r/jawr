@@ -74,6 +74,10 @@ public class FileSystemResourceHandler extends AbstractResourceHandler implement
 	public Reader doGetResource(String resourceName) throws ResourceNotFoundException {
 		
 		FileInputStream fis = (FileInputStream) getResourceAsStream(resourceName);
+		if(fis == null){
+			throw new ResourceNotFoundException(resourceName);
+		}
+		
         FileChannel inchannel = fis.getChannel();
 	    return Channels.newReader(inchannel,charset.newDecoder (),-1);
 	}

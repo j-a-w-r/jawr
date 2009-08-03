@@ -145,21 +145,22 @@ public abstract class AbstractBundleLinkRenderer implements BundleRenderer {
 		while (it.hasNext()) {
 			String resourceName = it.nextPath();
 
-			
-			// In debug mode, all the resources are included separately and use a random parameter to avoid caching.
-			// If useRandomParam is set to false, the links are created without the random parameter.
-			if (debugOn && useRandomParam && !bundler.getConfig().getGeneratorRegistry().isPathGenerated(resourceName)) {
-				int random = new Random().nextInt();
-				if (random < 0)
-					random *= -1;
-				out.write(createBundleLink(resourceName + "?d=" + random, contextPath, isSslRequest));
-			} else if (!debugOn && useGzip)
-				out.write(createGzipBundleLink(resourceName, contextPath, isSslRequest));
-			else
-				out.write(createBundleLink(resourceName, contextPath, isSslRequest));
-				
-			if (!includedBundles.add(resourceName) && debugOn) {
-				addComment("The resource '" + resourceName + "' is already included in the page.", out);
+			if( resourceName != null){
+				// In debug mode, all the resources are included separately and use a random parameter to avoid caching.
+				// If useRandomParam is set to false, the links are created without the random parameter.
+				if (debugOn && useRandomParam && !bundler.getConfig().getGeneratorRegistry().isPathGenerated(resourceName)) {
+					int random = new Random().nextInt();
+					if (random < 0)
+						random *= -1;
+					out.write(createBundleLink(resourceName + "?d=" + random, contextPath, isSslRequest));
+				} else if (!debugOn && useGzip)
+					out.write(createGzipBundleLink(resourceName, contextPath, isSslRequest));
+				else
+					out.write(createBundleLink(resourceName, contextPath, isSslRequest));
+					
+				if (!includedBundles.add(resourceName) && debugOn) {
+					addComment("The resource '" + resourceName + "' is already included in the page.", out);
+				}
 			}
 		}
 	}

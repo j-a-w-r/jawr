@@ -42,6 +42,8 @@ public class DebugModePathsIteratorImpl extends AbstractPathsIterator implements
 	 * @see net.jawr.web.resource.bundle.iterator.ResourceBundlePathsIterator#nextPath()
 	 */
 	public String nextPath() {
+		
+		String path = null;
 		if(null == pathsIterator || !pathsIterator.hasNext()) {
 			currentBundle = (JoinableResourceBundle) bundlesIterator.next();
 			
@@ -50,7 +52,13 @@ public class DebugModePathsIteratorImpl extends AbstractPathsIterator implements
 
 			pathsIterator = currentBundle.getItemPathList(variantKey).iterator();
 		}
-		return pathsIterator.next().toString();
+		
+		
+		if(pathsIterator != null && pathsIterator.hasNext()){
+			path = pathsIterator.next().toString();
+		}
+		
+		return path;
 	}
 
 
@@ -66,7 +74,9 @@ public class DebugModePathsIteratorImpl extends AbstractPathsIterator implements
 		if(null != pathsIterator) {
 			rets = pathsIterator.hasNext() || bundlesIterator.hasNext();
 		}
-		else rets = bundlesIterator.hasNext();
+		else{
+			rets = bundlesIterator.hasNext();
+		}
 			
 		return rets;
 	}
