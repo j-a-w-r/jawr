@@ -20,9 +20,12 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.TagSupport;
 
 import net.jawr.web.JawrConstant;
+import net.jawr.web.exception.ResourceNotFoundException;
 import net.jawr.web.resource.ImageResourcesHandler;
 import net.jawr.web.resource.bundle.CheckSumUtils;
 import net.jawr.web.resource.bundle.factory.util.PathNormalizer;
+
+import org.apache.log4j.Logger;
 
 /**
  * This tag defines the base class for HTML tags
@@ -35,6 +38,9 @@ public class AbstractImageTag extends TagSupport {
 	/** The serial version UID */
 	private static final long serialVersionUID = 1085874354131806795L;
 
+	/** The logger */
+	private static final Logger logger = Logger.getLogger(AbstractImageTag.class);
+	
 	/**
      * The property to specify where to align the image.
      */
@@ -569,10 +575,16 @@ public class AbstractImageTag extends TagSupport {
 				newUrl = CheckSumUtils.getCacheBustedUrl(imgSrc, imgRsHandler.getRsHandler(), imgRsHandler.getJawrConfig());
 				imgRsHandler.addMapping(imgSrc, newUrl);
 	    	} catch (IOException e) {
-	    		
-	    		throw new JspException("An IOException occured while processing the image '"+imgSrc+"'.", e);
+	    		logger.debug("Unable to find create the checksum for the image '"+imgSrc+"'.", e);
+			} catch (ResourceNotFoundException e) {
+				logger.debug("Unable to find the image '"+imgSrc+"'.", e);
 			}
     	}
+        
+        if(newUrl == null){
+        	newUrl = imgSrc;
+        	logger.debug("No mapping found for the image : "+imgSrc);
+        }
         
         String imageServletMapping = imgRsHandler.getJawrConfig().getServletMapping();
 		if("".equals(imageServletMapping)){

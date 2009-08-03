@@ -19,6 +19,7 @@ import java.util.regex.Pattern;
 
 import net.jawr.web.JawrConstant;
 import net.jawr.web.config.JawrConfig;
+import net.jawr.web.exception.ResourceNotFoundException;
 import net.jawr.web.resource.ImageResourcesHandler;
 import net.jawr.web.resource.bundle.CheckSumUtils;
 import net.jawr.web.resource.bundle.factory.util.PathNormalizer;
@@ -288,10 +289,18 @@ public class CSSURLPathRewriterPostProcessor extends
 				return newUrl;
 			}
 			// Retrieve the new URL with the cache prefix
-			newUrl = CheckSumUtils.getCacheBustedUrl(url, status.getRsHandler(), status.getJawrConfig());
-			if(imgRsHandler != null){
-				imgRsHandler.addMapping(url, newUrl);
+			try {
+				newUrl = CheckSumUtils.getCacheBustedUrl(url, status.getRsHandler(), status.getJawrConfig());
+			} catch (ResourceNotFoundException e) {
+				log.error("Impossible to define the checksum for the resource '"+url+"'. ", e);
+				return url;
+			} catch (IOException e) {
+				log.error("Impossible to define the checksum for the resource '"+url+"'.", e);
+				return url;
 			}
+			
+			imgRsHandler.addMapping(url, newUrl);
+			
 		}else{
 			newUrl = url;
 		}

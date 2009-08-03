@@ -13,6 +13,7 @@
  */
 package net.jawr.web.resource.bundle;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigInteger;
@@ -38,9 +39,6 @@ import org.apache.log4j.Logger;
  */
 public final class CheckSumUtils {
 
-	/** The logger */
-	private static final Logger log = Logger.getLogger(CheckSumUtils.class);
-
 	/** The MD5 algorithm name */
 	private static final String MD5_ALGORITHM = "MD5";
 
@@ -48,14 +46,16 @@ public final class CheckSumUtils {
 	private static final String CRC32_ALGORITHM = "CRC32";
 	
 	/**
-	 * Return the cache busted url associated to the url passed in parameter 
+	 * Return the cache busted url associated to the url passed in parameter,
+	 * if the resource is not found, null will b returned. 
 	 * @param url the url path to the resource file
 	 * @param is the resource input stream 
 	 * @param jawrConfig the jawrConfig
 	 * @return the cache busted url
 	 * @throws IOException if an IO exception occurs.
+	 * @throws ResourceNotFoundException if the resource is not found.
 	 */
-	public static String getCacheBustedUrl(String url, ResourceHandler rsHandler, JawrConfig jawrConfig) throws IOException{
+	public static String getCacheBustedUrl(String url, ResourceHandler rsHandler, JawrConfig jawrConfig) throws IOException, ResourceNotFoundException {
 		
 		String checksum = null;
 		String classpathResourceUrl = null;
@@ -72,11 +72,13 @@ public final class CheckSumUtils {
 				is = rsHandler.getResourceAsStream(url);
 			}
 			
-			checksum = CheckSumUtils.getChecksum(is, jawrConfig.getImageHashAlgorithm());
-		}catch(IOException e){
-			log.error("An exception occurs while defining the mapping for the resource : "+url, e);
-		} catch (ResourceNotFoundException e) {
-			log.error("An exception occurs while defining the mapping for the resource : "+url, e);
+			if(is != null){
+				checksum = CheckSumUtils.getChecksum(is, jawrConfig.getImageHashAlgorithm());
+			}else{
+				throw new ResourceNotFoundException(url);
+			}
+		}catch (FileNotFoundException e) {
+			throw new ResourceNotFoundException(url);
 		}
 		finally {
 			IOUtils.close(is);

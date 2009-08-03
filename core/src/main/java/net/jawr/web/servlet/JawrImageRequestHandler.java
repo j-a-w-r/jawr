@@ -207,6 +207,8 @@ public class JawrImageRequestHandler extends JawrRequestHandler {
 			bundleMapping.put(imgPath, resultPath);
 		} catch (IOException e) {
 			log.error("An exception occurs while defining the mapping for the file : " + imgPath, e);
+		} catch (ResourceNotFoundException e) {
+			log.error("Impossible to define the checksum for the resource '"+imgPath+"'. Unable to retrieve the content of the file.");
 		}
 	}
 

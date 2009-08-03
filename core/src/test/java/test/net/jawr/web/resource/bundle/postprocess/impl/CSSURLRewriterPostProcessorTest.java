@@ -1,5 +1,8 @@
 package test.net.jawr.web.resource.bundle.postprocess.impl;
 
+import java.io.InputStream;
+import java.io.Reader;
+import java.nio.channels.ReadableByteChannel;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
@@ -9,9 +12,12 @@ import javax.servlet.ServletContext;
 import junit.framework.TestCase;
 import net.jawr.web.JawrConstant;
 import net.jawr.web.config.JawrConfig;
+import net.jawr.web.exception.ResourceNotFoundException;
 import net.jawr.web.resource.ImageResourcesHandler;
+import net.jawr.web.resource.ResourceHandler;
 import net.jawr.web.resource.bundle.InclusionPattern;
 import net.jawr.web.resource.bundle.JoinableResourceBundle;
+import net.jawr.web.resource.bundle.JoinableResourceBundleContent;
 import net.jawr.web.resource.bundle.postprocess.BundleProcessingStatus;
 import net.jawr.web.resource.bundle.postprocess.ResourceBundlePostProcessor;
 import net.jawr.web.resource.bundle.postprocess.impl.CSSURLPathRewriterPostProcessor;
@@ -386,6 +392,41 @@ public class CSSURLRewriterPostProcessorTest extends TestCase {
 		
 	}
 	
+	
+	public void testBasicURLWithNonExistingImageRewriting() {
+		
+		// Set the properties
+		Properties props = new Properties();
+		config = new JawrConfig(props);
+		ServletContext servletContext = new MockServletContext();
+		config.setContext(servletContext);
+		config.setServletMapping("/css");
+		config.setCharsetName("UTF-8");
+		FakeResourceHandler rsHandler = new FakeResourceHandler();
+		status = new BundleProcessingStatus(bundle, rsHandler, config);
+
+		// Set up the Image servlet Jawr config
+		props = new Properties();
+		JawrConfig imgServletJawrConfig = new JawrConfig(props);
+		
+		
+		ImageResourcesHandler imgRsHandler = new ImageResourcesHandler(imgServletJawrConfig, rsHandler);
+		servletContext.setAttribute(JawrConstant.IMG_CONTEXT_ATTRIBUTE, imgRsHandler);
+		// basic test
+		StringBuffer data = new StringBuffer("background-image:url(../../../../images/someImage.gif);");
+		// the image is at /images
+		String filePath = "/css/folder/subfolder/subfolder/someCSS.css";
+		// Expected: goes 1 back for servlet mapping, 1 back for prefix, 1 back for the id having a subdir path. 
+		String expectedURL = "background-image:url(../../../images/someImage.gif);";
+		status.setLastPathAdded(filePath);		
+		
+		
+		String result = processor.postProcessBundle(status, data).toString();		
+		assertEquals("URL was not rewritten properly",expectedURL, result);
+		
+	}
+	
+	
 	public void testMultiLine() {
 		StringBuffer data = new StringBuffer("\nsomeRule {");
 		data.append("\n");
@@ -498,6 +539,81 @@ public class CSSURLRewriterPostProcessorTest extends TestCase {
 			public void setMappings(List mappings) {
 				
 			}};
+		
+	}
+	
+	private class FakeResourceHandler implements ResourceHandler {
+
+		public Reader getCssClasspathResource(String resourceName)
+				throws ResourceNotFoundException {
+			return null;
+		}
+
+		public Properties getJawrBundleMapping() {
+			return null;
+		}
+
+		public Reader getResource(String resourceName)
+				throws ResourceNotFoundException {
+			
+			throw new ResourceNotFoundException(resourceName);
+		}
+
+		public Reader getResource(String resourceName, boolean processingBundle)
+				throws ResourceNotFoundException {
+			
+			throw new ResourceNotFoundException(resourceName);
+			
+		}
+
+		public InputStream getResourceAsStream(String resourceName)
+				throws ResourceNotFoundException {
+			throw new ResourceNotFoundException(resourceName);
+		}
+
+		public ReadableByteChannel getResourceBundleChannel(String bundleName)
+				throws ResourceNotFoundException {
+			return null;
+		}
+
+		public Reader getResourceBundleReader(String bundleName)
+				throws ResourceNotFoundException {
+			return null;
+		}
+
+		public Set getResourceNames(String path) {
+			return null;
+		}
+
+		public String getResourceType() {
+			return null;
+		}
+
+		public InputStream getTemporaryResourceAsStream(String resourceName)
+				throws ResourceNotFoundException {
+			return null;
+		}
+
+		public boolean isDirectory(String path) {
+			return false;
+		}
+
+		public boolean isExistingMappingFile() {
+			return false;
+		}
+
+		public boolean isResourceGenerated(String path) {
+			return false;
+		}
+
+		public void storeBundle(String bundleName,
+				JoinableResourceBundleContent bundleResourcesContent) {
+			
+		}
+
+		public void storeJawrBundleMapping(Properties bundleMapping) {
+			
+		}
 		
 	}
 }

@@ -21,6 +21,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspException;
 
 import net.jawr.web.JawrConstant;
+import net.jawr.web.exception.ResourceNotFoundException;
 import net.jawr.web.resource.ImageResourcesHandler;
 import net.jawr.web.resource.bundle.CheckSumUtils;
 import net.jawr.web.resource.bundle.factory.util.PathNormalizer;
@@ -202,9 +203,10 @@ public abstract class AbstractImageTag extends UIOutput {
         	try {
 				newUrl = CheckSumUtils.getCacheBustedUrl(imgSrc, imgRsHandler.getRsHandler(), imgRsHandler.getJawrConfig());
 				imgRsHandler.addMapping(imgSrc, newUrl);
-	    	} catch (IOException e) {
-	    		
-	    		throw new IOException("An IOException occured while processing the image '"+imgSrc+"'."+ e.getMessage());
+        	} catch (IOException e) {
+	    		logger.debug("Unable to find create the checksum for the image '"+imgSrc+"'.", e);
+			} catch (ResourceNotFoundException e) {
+				logger.debug("Unable to find the image '"+imgSrc+"'.", e);
 			}
     	}
         
