@@ -575,15 +575,14 @@ public class AbstractImageTag extends TagSupport {
 				newUrl = CheckSumUtils.getCacheBustedUrl(imgSrc, imgRsHandler.getRsHandler(), imgRsHandler.getJawrConfig());
 				imgRsHandler.addMapping(imgSrc, newUrl);
 	    	} catch (IOException e) {
-	    		logger.debug("Unable to find create the checksum for the image '"+imgSrc+"'.", e);
+	    		logger.info("Unable to create the checksum for the image '"+imgSrc+"' while generating image tag.");
 			} catch (ResourceNotFoundException e) {
-				logger.debug("Unable to find the image '"+imgSrc+"'.", e);
+				logger.info("Unable to find the image '"+imgSrc+"' while generating image tag.");
 			}
     	}
         
         if(newUrl == null){
         	newUrl = imgSrc;
-        	logger.debug("No mapping found for the image : "+imgSrc);
         }
         
         String imageServletMapping = imgRsHandler.getJawrConfig().getServletMapping();

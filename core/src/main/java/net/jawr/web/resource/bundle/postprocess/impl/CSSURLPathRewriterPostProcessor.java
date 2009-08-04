@@ -292,10 +292,10 @@ public class CSSURLPathRewriterPostProcessor extends
 			try {
 				newUrl = CheckSumUtils.getCacheBustedUrl(url, status.getRsHandler(), status.getJawrConfig());
 			} catch (ResourceNotFoundException e) {
-				log.error("Impossible to define the checksum for the resource '"+url+"'. ", e);
+				log.info("Impossible to define the checksum for the resource '"+url+"'. ");
 				return url;
 			} catch (IOException e) {
-				log.error("Impossible to define the checksum for the resource '"+url+"'.", e);
+				log.info("Impossible to define the checksum for the resource '"+url+"'.");
 				return url;
 			}
 			
