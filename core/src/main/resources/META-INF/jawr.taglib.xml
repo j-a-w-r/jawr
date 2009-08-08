@@ -17,6 +17,12 @@
        </component>
    </tag>
    <tag>
+      <tag-name>imagePath</tag-name>
+      <component>
+            <component-type>jawr.ImagePath</component-type>
+       </component>
+   </tag>
+   <tag>
       <tag-name>img</tag-name>
       <component>
             <component-type>jawr.ImgHtml</component-type>

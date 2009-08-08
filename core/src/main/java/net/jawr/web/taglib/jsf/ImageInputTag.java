@@ -24,7 +24,7 @@ import javax.faces.context.ResponseWriter;
  * @author Ibrahim Chaehoi
  *
  */
-public class ImageInputTag extends AbstractImageTag {
+public class ImageInputTag extends AbstractHtmlImageTag {
 
 	/* (non-Javadoc)
 	 * @see net.jawr.web.taglib.jsf.AbstractImageTag#render(javax.faces.context.FacesContext)

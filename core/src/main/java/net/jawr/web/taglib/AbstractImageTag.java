@@ -13,19 +13,8 @@
  */
 package net.jawr.web.taglib;
 
-import java.io.IOException;
-
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.tagext.TagSupport;
-
-import net.jawr.web.JawrConstant;
-import net.jawr.web.exception.ResourceNotFoundException;
-import net.jawr.web.resource.ImageResourcesHandler;
-import net.jawr.web.resource.bundle.CheckSumUtils;
-import net.jawr.web.resource.bundle.factory.util.PathNormalizer;
-
-import org.apache.log4j.Logger;
 
 /**
  * This tag defines the base class for HTML tags
@@ -33,14 +22,11 @@ import org.apache.log4j.Logger;
  * @author Ibrahim Chaehoi
  *
  */
-public class AbstractImageTag extends TagSupport {
+public class AbstractImageTag extends ImagePathTag {
 
 	/** The serial version UID */
 	private static final long serialVersionUID = 1085874354131806795L;
 
-	/** The logger */
-	private static final Logger logger = Logger.getLogger(AbstractImageTag.class);
-	
 	/**
      * The property to specify where to align the image.
      */
@@ -56,11 +42,6 @@ public class AbstractImageTag extends TagSupport {
      */
     protected String name = null;
     
-    /**
-     * The image source URI.
-     */
-    protected String src = null;
-
     // CSS Style Support
 
     /**
@@ -191,20 +172,6 @@ public class AbstractImageTag extends TagSupport {
 	 */
 	public void setName(String name) {
 		this.name = name;
-	}
-
-	/**
-	 * @return the src
-	 */
-	public String getSrc() {
-		return src;
-	}
-
-	/**
-	 * @param src the src to set
-	 */
-	public void setSrc(String src) {
-		this.src = src;
 	}
 
 	/**
@@ -562,39 +529,7 @@ public class AbstractImageTag extends TagSupport {
 	 */
 	protected void prepareImageUrl(HttpServletResponse response, StringBuffer results) throws JspException {
 		
-		ImageResourcesHandler imgRsHandler = (ImageResourcesHandler) pageContext.getServletContext().getAttribute(JawrConstant.IMG_CONTEXT_ATTRIBUTE);
-		if(null == imgRsHandler)
-			throw new JspException("You are using a Jawr image tag while the Jawr Image servlet has not been initialized. Initialization of Jawr Image servlet either failed or never occurred.");
-
-		String imgSrc = getSrc();
-		
-		String newUrl = (String) imgRsHandler.getCacheUrl(imgSrc);
-		
-        if(newUrl == null){
-        	try {
-				newUrl = CheckSumUtils.getCacheBustedUrl(imgSrc, imgRsHandler.getRsHandler(), imgRsHandler.getJawrConfig());
-				imgRsHandler.addMapping(imgSrc, newUrl);
-	    	} catch (IOException e) {
-	    		logger.info("Unable to create the checksum for the image '"+imgSrc+"' while generating image tag.");
-			} catch (ResourceNotFoundException e) {
-				logger.info("Unable to find the image '"+imgSrc+"' while generating image tag.");
-			}
-    	}
-        
-        if(newUrl == null){
-        	newUrl = imgSrc;
-        }
-        
-        String imageServletMapping = imgRsHandler.getJawrConfig().getServletMapping();
-		if("".equals(imageServletMapping)){
-			if(newUrl.startsWith("/")){
-				newUrl = newUrl.substring(1);
-			}
-		}else{
-			newUrl = PathNormalizer.joinDomainToPath(imageServletMapping, newUrl);
-		}
-        
-        prepareAttribute(results, "src", response.encodeURL(newUrl));
+		prepareAttribute(results, "src", getImageUrl(getSrc()));
 	}
 
 	/* (non-Javadoc)

@@ -24,6 +24,9 @@ import net.jawr.web.taglib.ImageInputTag;
  */
 public class ELImageInputTag extends ImageInputTag {
 	
+	/** The serial version UID */
+	private static final long serialVersionUID = -7065803916220144608L;
+
 	/**
      * Instance variable mapped to "align" tag attribute. (Mapping set in
      * associated BeanInfo class.)

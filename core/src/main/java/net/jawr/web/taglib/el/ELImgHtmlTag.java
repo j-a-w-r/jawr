@@ -24,6 +24,9 @@ import net.jawr.web.taglib.ImgHtmlTag;
  */
 public class ELImgHtmlTag extends ImgHtmlTag {
 
+	/** The serial version UID */
+	private static final long serialVersionUID = 6424440497284669731L;
+
 	/**
      * Instance variable mapped to "action" tag attribute. (Mapping set in
      * associated BeanInfo class.)

@@ -121,16 +121,6 @@ public class ImgHtmlTag extends AbstractImageTag {
 	// --------------------------------------------------------- Public Methods
 
 	/**
-	 * Render the beginning of the IMG tag.
-	 * 
-	 * @throws JspException if a JSP exception has occurred
-	 */
-	public int doStartTag() throws JspException {
-
-		return super.doStartTag();
-	}
-
-	/**
 	 * Render the IMG tag.
 	 * 
 	 * @throws JspException if a JSP exception has occurred

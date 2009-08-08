@@ -24,7 +24,7 @@ import javax.faces.context.ResponseWriter;
  * @author Ibrahim Chaehoi
  *
  */
-public class ImgHtmlTag extends AbstractImageTag {
+public class ImgHtmlTag extends AbstractHtmlImageTag {
 
 	/*
 	 * (non-Javadoc)
