@@ -120,7 +120,12 @@ public class JawrImageRequestHandler extends JawrRequestHandler {
 
 		// Initialize the resource handler
 		rsHandler = initResourceHandler();
-		bundleMapping = rsHandler.getJawrBundleMapping();
+		
+		if(jawrConfig.getUseBundleMapping()){
+			bundleMapping = rsHandler.getJawrBundleMapping();
+		}else{
+			bundleMapping = new Properties();
+		}
 		
 		ImageResourcesHandler imgRsHandler = new ImageResourcesHandler(jawrConfig, rsHandler);
 		initImageMapping(imgRsHandler);
