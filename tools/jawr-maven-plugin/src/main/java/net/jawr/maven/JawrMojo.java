@@ -26,7 +26,6 @@ import net.jawr.web.bundle.processor.BundleProcessor;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
-import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.util.FileUtils;
 
 /**
@@ -40,15 +39,6 @@ import org.codehaus.plexus.util.FileUtils;
  * @goal bundle
  */
 public class JawrMojo extends AbstractMojo {
-
-	/**
-	 * The maven project.
-	 * 
-	 * @parameter default-value="${project}"
-	 * @required
-	 * @readonly
-	 */
-	private MavenProject project;
 
 	/**
 	 * The path to the root of the web application where the resources are loaded from.
