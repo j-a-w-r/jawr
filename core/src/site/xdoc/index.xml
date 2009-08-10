@@ -191,7 +191,7 @@
 	      		 <li>
 	      		 	<strong>Issue #88 fixed:</strong> Incorrect logging of "The jawr bundle mapping 'jawr-img-mapping.properties' is not found"
 	      		 </li> 
-	      		 We would like to thank qxo and nordicdevil for reporting issues and providing patches. 
+	      		 We would like to thank sfrancois99, qxo and nordicdevil for reporting issues and providing patches when possible. 
       	  	</ul>
 	    </li>
 	    <li> <strong>08/03/2009</strong>: Version 3.0 released:<br/>
