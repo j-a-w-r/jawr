@@ -61,7 +61,7 @@ public class GeneratorRegistry {
 	public static final String PREFIX_SEPARATOR = ":";
 	
 	/** The generator prefix registry */
-	private static final List prefixRegistry = ConcurrentCollectionsFactory.buildCopyOnWriteArrayList();
+	private final List prefixRegistry = ConcurrentCollectionsFactory.buildCopyOnWriteArrayList();
 	
 	/** The generator registry */
 	private final Map registry = ConcurrentCollectionsFactory.buildConcurrentHashMap();
@@ -72,15 +72,6 @@ public class GeneratorRegistry {
 	/** The Jawr config */
 	private JawrConfig config;
 	
-	static
-	{
-		prefixRegistry.add(MESSAGE_BUNDLE_PREFIX + PREFIX_SEPARATOR);
-		prefixRegistry.add(CLASSPATH_RESOURCE_BUNDLE_PREFIX + PREFIX_SEPARATOR);
-		prefixRegistry.add(DWR_BUNDLE_PREFIX + PREFIX_SEPARATOR);
-		prefixRegistry.add(COMMONS_VALIDATOR_PREFIX + PREFIX_SEPARATOR);
-	}
-	
-
 	/**
 	 * Use only for testing purposes.
 	 */
@@ -92,7 +83,11 @@ public class GeneratorRegistry {
 	 * Constructor
 	 */
 	public GeneratorRegistry(String resourceType){
-		this.resourceType = resourceType;;
+		this.resourceType = resourceType;
+		prefixRegistry.add(MESSAGE_BUNDLE_PREFIX + PREFIX_SEPARATOR);
+		prefixRegistry.add(CLASSPATH_RESOURCE_BUNDLE_PREFIX + PREFIX_SEPARATOR);
+		prefixRegistry.add(DWR_BUNDLE_PREFIX + PREFIX_SEPARATOR);
+		prefixRegistry.add(COMMONS_VALIDATOR_PREFIX + PREFIX_SEPARATOR);
 	}
 	
 	/**
