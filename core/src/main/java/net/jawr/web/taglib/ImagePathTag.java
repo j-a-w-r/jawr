@@ -15,6 +15,7 @@ package net.jawr.web.taglib;
 
 import java.io.IOException;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.TagSupport;
@@ -76,7 +77,10 @@ public class ImagePathTag extends TagSupport {
 		HttpServletResponse response = (HttpServletResponse) pageContext
 				.getResponse();
 		
-		return ImageTagUtils.getImageUrl(imgSrc, imgRsHandler, response);
+		HttpServletRequest request = (HttpServletRequest) pageContext
+				.getRequest();
+		
+		return ImageTagUtils.getImageUrl(imgSrc, imgRsHandler, request, response);
 	}
 
 	/* (non-Javadoc)

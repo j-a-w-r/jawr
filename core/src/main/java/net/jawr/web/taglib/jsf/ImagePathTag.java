@@ -18,6 +18,7 @@ import java.io.IOException;
 import javax.faces.component.UIOutput;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import net.jawr.web.JawrConstant;
@@ -84,7 +85,10 @@ public class ImagePathTag extends UIOutput {
 		HttpServletResponse response = ((HttpServletResponse) context
 				.getExternalContext().getResponse());
 		
-		return ImageTagUtils.getImageUrl(src, imgRsHandler,
+		HttpServletRequest request = (HttpServletRequest) context
+				.getExternalContext().getRequest();
+		
+		return ImageTagUtils.getImageUrl(src, imgRsHandler, request,
 				response);
 	}
 }
