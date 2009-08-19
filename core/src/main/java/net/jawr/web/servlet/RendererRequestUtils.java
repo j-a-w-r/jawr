@@ -141,7 +141,7 @@ public class RendererRequestUtils {
 	 */
 	public static void inheritSessionDebugProperty(HttpServletRequest request) {
 
-		HttpSession session = request.getSession();
+		HttpSession session = request.getSession(false);
 		if (session != null) {
 			String sessionId = session.getId();
 
