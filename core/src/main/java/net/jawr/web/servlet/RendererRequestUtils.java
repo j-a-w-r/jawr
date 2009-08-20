@@ -21,6 +21,7 @@ import net.jawr.web.JawrConstant;
 import net.jawr.web.config.JawrConfig;
 import net.jawr.web.config.jmx.JawrApplicationConfigManager;
 import net.jawr.web.context.ThreadLocalJawrContext;
+import net.jawr.web.resource.bundle.factory.util.PathNormalizer;
 import net.jawr.web.resource.bundle.renderer.BundleRenderer;
 import net.jawr.web.resource.bundle.renderer.BundleRendererContext;
 
@@ -166,5 +167,41 @@ public class RendererRequestUtils {
 		return requestUrl.toLowerCase().startsWith(JawrConstant.HTTPS_URL_PREFIX);
 	}
 
+	public static String getRenderedUrl(String newUrl, JawrConfig jawrConfig,
+			String contextPath, boolean sslRequest) {
+		String contextPathOverride = getContextPathOverride(sslRequest, jawrConfig);
+		// If the contextPathOverride is not null and we are in production mode,
+		// or if we are in debug mode but we should use the contextPathOverride even in debug mode
+		// then use the contextPathOverride
+		if(contextPathOverride != null && 
+				((jawrConfig.isDebugModeOn() && jawrConfig.isUseContextPathOverrideInDebugMode()) ||
+				!jawrConfig.isDebugModeOn())) {
+			
+				String override = contextPathOverride;
+				// Blank override, create url relative to path
+				if ("".equals(override)) {
+					newUrl = newUrl.substring(1);
+				} else
+					newUrl = PathNormalizer.joinPaths(override, newUrl);
+		} else
+			newUrl = PathNormalizer.joinPaths(contextPath, newUrl);
+		return newUrl;
+	}
+
+	/**
+	 * Returns the context path depending on the request mode (SSL or not)
+	 * 
+	 * @param isSslRequest teh flag indicating that the request is an SSL request
+	 * @return the context path depending on the request mode
+	 */
+	private static String getContextPathOverride(boolean isSslRequest, JawrConfig config) {
+		String contextPathOverride = null;
+		if (isSslRequest) {
+			contextPathOverride = config.getContextPathSslOverride();
+		} else {
+			contextPathOverride = config.getContextPathOverride();
+		}
+		return contextPathOverride;
+	}
 	
 }

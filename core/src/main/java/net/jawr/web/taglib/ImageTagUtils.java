@@ -18,10 +18,12 @@ import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.jawr.web.config.JawrConfig;
 import net.jawr.web.exception.ResourceNotFoundException;
 import net.jawr.web.resource.ImageResourcesHandler;
 import net.jawr.web.resource.bundle.CheckSumUtils;
 import net.jawr.web.resource.bundle.factory.util.PathNormalizer;
+import net.jawr.web.servlet.RendererRequestUtils;
 
 import org.apache.log4j.Logger;
 
@@ -62,9 +64,10 @@ public final class ImageTagUtils {
 		
 		String newUrl = (String) imgRsHandler.getCacheUrl(imgSrc);
 		
-        if(newUrl == null){
+        JawrConfig jawrConfig = imgRsHandler.getJawrConfig();
+		if(newUrl == null){
         	try {
-				newUrl = CheckSumUtils.getCacheBustedUrl(imgSrc, imgRsHandler.getRsHandler(), imgRsHandler.getJawrConfig());
+				newUrl = CheckSumUtils.getCacheBustedUrl(imgSrc, imgRsHandler.getRsHandler(), jawrConfig);
 				imgRsHandler.addMapping(imgSrc, newUrl);
         	} catch (IOException e) {
 	    		logger.info("Unable to create the checksum for the image '"+imgSrc+"' while generating image tag.");
@@ -77,7 +80,7 @@ public final class ImageTagUtils {
         	newUrl = imgSrc;
         }
         
-        String imageServletMapping = imgRsHandler.getJawrConfig().getServletMapping();
+        String imageServletMapping = jawrConfig.getServletMapping();
 		if("".equals(imageServletMapping)){
 			if(newUrl.startsWith("/")){
 				newUrl = newUrl.substring(1);
@@ -86,8 +89,13 @@ public final class ImageTagUtils {
 			newUrl = PathNormalizer.joinDomainToPath(imageServletMapping, newUrl);
 		}
 		
-		newUrl = PathNormalizer.joinPaths(contextPath, newUrl);
+		boolean sslRequest = RendererRequestUtils.isSslRequest(request);
+		
+		newUrl = RendererRequestUtils.getRenderedUrl(newUrl, jawrConfig, contextPath, sslRequest);
 		
 		return response.encodeURL(newUrl);
 	}
+
+	
+
 }

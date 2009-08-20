@@ -24,6 +24,7 @@ import net.jawr.web.resource.bundle.factory.util.PathNormalizer;
 import net.jawr.web.resource.bundle.generator.dwr.DWRParamWriter;
 import net.jawr.web.resource.bundle.handler.ResourceBundlesHandler;
 import net.jawr.web.resource.bundle.iterator.ResourceBundlePathsIterator;
+import net.jawr.web.servlet.RendererRequestUtils;
 
 /**
  * Abstract base class for implementations of a link renderer.
@@ -206,45 +207,14 @@ public abstract class AbstractBundleLinkRenderer implements BundleRenderer {
 		}
 		String fullPath = PathNormalizer.joinPaths(bundler.getConfig().getServletMapping(), bundleId);
 
-		String contextPathOverride = getContextPathOverride(isSslRequest);
-		// If the contextPathOverride is not null and we are in production mode,
-		// or if we are in debug mode but we should use the contextPathOverride even in debug mode
-		// then use the contextPathOverride
-		if(contextPathOverride != null && 
-				((bundler.getConfig().isDebugModeOn() && bundler.getConfig().isUseContextPathOverrideInDebugMode()) ||
-				!bundler.getConfig().isDebugModeOn())) {
-			
-				String override = contextPathOverride;
-				// Blank override, create url relative to path
-				if ("".equals(override)) {
-					fullPath = fullPath.substring(1);
-				} else
-					fullPath = PathNormalizer.joinPaths(override, fullPath);
-		} else
-			fullPath = PathNormalizer.joinPaths(contextPath, fullPath);
-
+		fullPath = RendererRequestUtils.getRenderedUrl(fullPath, bundler.getConfig(), contextPath, isSslRequest);
+		
 		// allow debugOverride to pass through on the generated urls
 		if (ThreadLocalJawrContext.isDebugOverriden()) {
 			fullPath = PathNormalizer.addGetParameter(fullPath, "overrideKey", bundler.getConfig().getDebugOverrideKey());
 		}
 
 		return renderLink(fullPath);
-	}
-
-	/**
-	 * Returns the context path depending on the request mode (SSL or not)
-	 * 
-	 * @param isSslRequest teh flag indicating that the request is an SSL request
-	 * @return the context path depending on the request mode
-	 */
-	private String getContextPathOverride(boolean isSslRequest) {
-		String contextPathOverride = null;
-		if (isSslRequest) {
-			contextPathOverride = bundler.getConfig().getContextPathSslOverride();
-		} else {
-			contextPathOverride = bundler.getConfig().getContextPathOverride();
-		}
-		return contextPathOverride;
 	}
 
 	/**
