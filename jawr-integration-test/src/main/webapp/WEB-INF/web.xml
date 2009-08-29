@@ -13,21 +13,6 @@
 		<param-value>jawr-integration-test</param-value>
 	</context-param>
 	
-
-	<!-- Cactus servlet ->
-	<servlet>
-		<servlet-name>ServletRedirector</servlet-name>
-		<servlet-class>org.apache.cactus.server.ServletTestRedirector</servlet-class>
-	</servlet>
-	<servlet>
-	    <servlet-name>JspRedirector</servlet-name>
-	    <jsp-file>/jspRedirector.jsp</jsp-file>
-	</servlet>
-	  
-
-	<!- Cactus servlet -->
-	
-	
 	<servlet>
 		<servlet-name>JavascriptServlet</servlet-name>
 		<servlet-class>net.jawr.web.servlet.JawrServlet</servlet-class>
@@ -35,14 +20,6 @@
 			<param-name>configLocation</param-name>
 			<param-value>/jawr.properties</param-value>
 		</init-param>
-		<!-- init-param>
-			<param-name>mapping</param-name>
-			<param-value>/jawr/</param-value>
-		</init-param-->
-		<!-- init-param>
-			<param-name>configPropertiesSourceClass</param-name>
-			<param-value>net.jawr.web.resource.bundle.factory.util.MultipleFileConfigSource</param-value>
-		</init-param -->
 		<load-on-startup>1</load-on-startup>
 	</servlet>
 	
@@ -53,10 +30,6 @@
 			<param-name>configLocation</param-name>
 			<param-value>/jawr.properties</param-value>
 		</init-param>
-		<!-- init-param>
-            <param-name>mapping</param-name>
-            <param-value>/cssJawrPath/</param-value>
-        </init-param -->
 		<init-param>
 			<param-name>type</param-name>
 			<param-value>css</param-value>
@@ -70,10 +43,6 @@
 			<param-name>configLocation</param-name>
 			<param-value>/jawr.properties</param-value>
 		</init-param>
-		<!-- init-param>
-			<param-name>mapping</param-name>
-			<param-value>/jwrImg/</param-value>
-		</init-param -->
 		<init-param>
 			<param-name>type</param-name>
 			<param-value>img</param-value>
@@ -99,34 +68,6 @@
 		<servlet-name>JawrImgServlet</servlet-name>
 		<url-pattern>*.gif</url-pattern>
 	</servlet-mapping>
-	
-	<!-- Using mapping-->
-	<!-- <servlet-mapping>
-		<servlet-name>JavascriptServlet</servlet-name>
-		<url-pattern>/jawr/*</url-pattern>
-	</servlet-mapping>
-	<servlet-mapping>
-		<servlet-name>CssServlet</servlet-name>
-		<url-pattern>/styles/*</url-pattern>
-	</servlet-mapping>
-	<servlet-mapping>
-		<servlet-name>JawrImgServlet</servlet-name>
-		<url-pattern>/jwrImg/*</url-pattern>
-	</servlet-mapping> -->
-
-	<!-- Cactus servlet mapping ->
-	<servlet-mapping>
-		<servlet-name>ServletRedirector</servlet-name>
-		<url-pattern>/ServletRedirector</url-pattern>
-	</servlet-mapping>
-	
-	<servlet-mapping>
-		<servlet-name>JspRedirector</servlet-name>
-		<url-pattern>/JspRedirector</url-pattern>
-	</servlet-mapping>
-
-	<!- Cactus servlet mapping -->
-	
 	
 	<session-config>
 		<session-timeout>10</session-timeout>
