@@ -14,12 +14,6 @@
       <artifactId>jawr</artifactId>
       <version>3.1.1</version>
     </dependency>
-    <!-- dependency>
-      <groupId>javax.servlet</groupId>
-      <artifactId>servlet-api</artifactId>
-      <version>2.3</version>
-      <scope>provided</scope>
-    </dependency -->
     <dependency>
       <groupId>maven</groupId>
       <artifactId>maven-jetty-plugin</artifactId>
@@ -139,69 +133,7 @@
           </execution>
         </executions>
       </plugin>
-	  <!-- plugin>
-        <artifactId>maven-resources-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>copy-resources</id>
-            <phase>pre-integration-test</phase>
-            <goals>
-              <goal>copy-resources</goal>
-            </goals>
-            <configuration>
-              <outputDirectory>${basedir}/target/integration-test/webapp</outputDirectory>
-              <resources>          
-                <resource>
-                  <directory>src/main/webapp</directory>
-                </resource>
-              </resources>              
-            </configuration>            
-          </execution>
-        </executions>
-      </plugin -->
-
-      <!-- plugin>
-        <groupId>org.mortbay.jetty</groupId>
-        <artifactId>maven-jetty-plugin</artifactId>
-        <version>6.1.10</version>   
-        <configuration>
-          <webAppSourceDirectory>target/integration-test/webappDir</webAppSourceDirectory> 	
-          <scanIntervalSeconds>1</scanIntervalSeconds>
-          <scanTargets>
-          	<scanTarget>${basedir}/target/integration-test/webappDir/WEB-INF/web.xml</scanTarget>
-          	<scanTarget>target/classes/jawr.properties</scanTarget>
-          </scanTargets>
-          <connectors>
-            <connector implementation="org.mortbay.jetty.nio.SelectChannelConnector">
-              <port>8080</port>
-              <maxIdleTime>60000</maxIdleTime>
-            </connector>
-          </connectors>
-        </configuration>
-        <executions>
-          <execution>
-            <id>start-jetty</id>
-            <phase>pre-integration-test</phase>
-            <goals>
-              <goal>run</goal>
-            </goals>
-            <configuration>
-              <scanIntervalSeconds>0</scanIntervalSeconds>
-              <daemon>true</daemon>
-            </configuration>
-          </execution>
-          <execution>
-            <id>stop-jetty</id>
-            <phase>post-integration-test</phase>
-            <goals>
-              <goal>stop</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin -->
-
     </plugins>
-
     
     <finalName>jawr-integration-test</finalName>
   </build>
