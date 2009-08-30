@@ -33,6 +33,9 @@ public class BundleRendererContext {
 	/** The included bundles */
 	private Set includedBundles;
 	
+	/** The included resources in debug mode */
+	private Set includedResources;
+	
 	/** The flag indicating if the global bundles have already been added */
 	private boolean globalBundleAdded;
 	
@@ -55,6 +58,7 @@ public class BundleRendererContext {
 		this.contextPath = contextPath;
 		this.variantKey = variantKey;
 		this.includedBundles = new HashSet();
+		this.includedResources = new HashSet();
 		this.useGzip = useGzip;
 		this.isSslRequest = isSslRequest;
 	}
@@ -155,5 +159,20 @@ public class BundleRendererContext {
 		this.includedBundles = includedBundles;
 	}
 
+	/**
+	 * Returns the included resources
+	 * @return the includedResources
+	 */
+	public Set getIncludedResources() {
+		return includedResources;
+	}
+
+	/**
+	 * Sets the included resources
+	 * @param includedResources the includedResources to set
+	 */
+	public void setIncludedResources(Set includedResources) {
+		this.includedResources = includedResources;
+	}
 	
 }

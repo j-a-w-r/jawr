@@ -16,7 +16,6 @@ package net.jawr.web.resource.bundle.renderer;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.Random;
-import java.util.Set;
 
 import net.jawr.web.context.ThreadLocalJawrContext;
 import net.jawr.web.resource.bundle.JoinableResourceBundle;
@@ -112,10 +111,16 @@ public abstract class AbstractBundleLinkRenderer implements BundleRenderer {
 			out.write(sb.toString());
 		}
 
-		// Retrieve the name or names of bundle(s) that belong to/with the requested path.
-		ResourceBundlePathsIterator it = bundler.getBundlePaths(bundle.getId(), new ConditionalCommentRenderer(out), ctx.getVariantKey());
-
-		renderBundleLinks(it, ctx, debugOn, out);
+		// Include the bundle if it has not been included yet
+		if(ctx.getIncludedBundles().add(bundle.getId())){
+			// Retrieve the name or names of bundle(s) that belong to/with the requested path.
+			ResourceBundlePathsIterator it = bundler.getBundlePaths(bundle.getId(), new ConditionalCommentRenderer(out), ctx.getVariantKey());
+			renderBundleLinks(it, ctx, debugOn, out);
+		}else{
+			if (debugOn) {
+				addComment("The bundle '" + bundle.getId() + "' is already included in the page.", out);
+			}
+		}
 		if (debugOn) {
 			addComment("Finished adding members resolved by " + requestedPath, out);
 		}
@@ -140,7 +145,6 @@ public abstract class AbstractBundleLinkRenderer implements BundleRenderer {
 		String contextPath = ctx.getContextPath();
 		boolean useGzip = ctx.isUseGzip();
 		boolean isSslRequest = ctx.isSslRequest();
-		Set includedBundles = ctx.getIncludedBundles();
 		
 		// Add resources to the page as links.
 		while (it.hasNext()) {
@@ -154,12 +158,12 @@ public abstract class AbstractBundleLinkRenderer implements BundleRenderer {
 					if (random < 0)
 						random *= -1;
 					out.write(createBundleLink(resourceName + "?d=" + random, contextPath, isSslRequest));
-				} else if (!debugOn && useGzip)
+				} else if (!debugOn && useGzip){
 					out.write(createGzipBundleLink(resourceName, contextPath, isSslRequest));
-				else
+				}else{
 					out.write(createBundleLink(resourceName, contextPath, isSslRequest));
-					
-				if (!includedBundles.add(resourceName) && debugOn) {
+				}
+				if(!ctx.getIncludedResources().add(resourceName)){
 					addComment("The resource '" + resourceName + "' is already included in the page.", out);
 				}
 			}
