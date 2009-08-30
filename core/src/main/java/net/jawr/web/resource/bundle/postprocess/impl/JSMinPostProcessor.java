@@ -39,6 +39,12 @@ import net.jawr.web.resource.bundle.postprocess.PostProcessFactoryConstant;
 public class JSMinPostProcessor extends
 		AbstractChainedResourceBundlePostProcessor {
 	
+	/** The line feed string */
+	private static final String LF = "\n";
+	
+	/** the carriage return line feed string */
+	private static final String CR_LF = "\r\n";
+
 	/**
 	 * Constructor for a compressor.  
 	 * @param charset
@@ -53,7 +59,12 @@ public class JSMinPostProcessor extends
 	protected StringBuffer doPostProcessBundle(BundleProcessingStatus status,StringBuffer bundleString)
 			throws IOException {
 		Charset charset = status.getJawrConfig().getResourceCharset();
-		byte[] bundleBytes = bundleString.toString().getBytes(charset.name());
+		
+		// The original JSMin doesn't handle Dos (CRLF) line endings
+		// So here we replace the CRLF with LF only
+		String bundleContent = bundleString.toString().replaceAll(CR_LF,LF);
+		
+		byte[] bundleBytes = bundleContent.getBytes(charset.name());
 		ByteArrayInputStream bIs = new ByteArrayInputStream(bundleBytes);
 		ByteArrayOutputStream bOs = new ByteArrayOutputStream();
 		
