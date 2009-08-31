@@ -40,7 +40,7 @@ public class MainPageLocaleFrTest extends MainPageTest {
 	@Test
 	public void checkGeneratedJsLinks(){
 		// Test generated Script link
-	    final List<?> scripts = page.getByXPath("html/head/script");
+	    final List<?> scripts = getJsScriptTags();
 	    assertEquals(1, scripts.size());
 	    final HtmlScript script = (HtmlScript) scripts.get(0);
 	    assertEquals(CONTEXT_PATH+"/680443580.fr/js/bundle/msg.js", script.getSrcAttribute());
@@ -49,7 +49,7 @@ public class MainPageLocaleFrTest extends MainPageTest {
 	@Test
 	public void testJsBundleContent() throws Exception {
 		
-		final List<?> scripts = page.getByXPath("html/head/script");
+		final List<?> scripts = getJsScriptTags();
 		final HtmlScript script = (HtmlScript) scripts.get(0);
 		final JavaScriptPage page = getJavascriptPage(script);
 		assertContentEquals("/net/jawr/web/locale/resources/msg-bundle-fr.js", page);

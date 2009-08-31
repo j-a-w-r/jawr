@@ -44,7 +44,7 @@ public class PageOnlyJsCssJawrServletTest extends AbstractPageTest {
 	@Test
 	public void checkGeneratedJsLinks() {
 		// Test generated Script link
-		final List<?> scripts = page.getByXPath("html/head/script");
+		final List<?> scripts = getJsScriptTags();
 		assertEquals(1, scripts.size());
 		final HtmlScript script = (HtmlScript) scripts.get(0);
 		assertEquals(
@@ -55,7 +55,7 @@ public class PageOnlyJsCssJawrServletTest extends AbstractPageTest {
 	@Test
 	public void testJsBundleContent() throws Exception {
 
-		final List<?> scripts = page.getByXPath("html/head/script");
+		final List<?> scripts = getJsScriptTags();
 		final HtmlScript script = (HtmlScript) scripts.get(0);
 		final JavaScriptPage page = getJavascriptPage(script);
 		assertContentEquals("/net/jawr/web/standard/resources/msg-bundle.js", page);
@@ -64,7 +64,7 @@ public class PageOnlyJsCssJawrServletTest extends AbstractPageTest {
 	@Test
 	public void checkGeneratedCssLinks() {
 		// Test generated Css link
-		final List<?> styleSheets = page.getByXPath("html/head/link");
+		final List<?> styleSheets = getHtmlLinkTags();
 		assertEquals(1, styleSheets.size());
 		final HtmlLink css = (HtmlLink) styleSheets.get(0);
 		assertEquals(
@@ -76,7 +76,7 @@ public class PageOnlyJsCssJawrServletTest extends AbstractPageTest {
 	@Test
 	public void testCssBundleContent() throws Exception {
 
-		final List<?> styleSheets = page.getByXPath("html/head/link");
+		final List<?> styleSheets = getHtmlLinkTags();
 		final HtmlLink css = (HtmlLink) styleSheets.get(0);
 		final TextPage page = getCssPage(css);
 		assertContentEquals("/net/jawr/web/standard/resources/without_img_servlet/component-expected.css", page);

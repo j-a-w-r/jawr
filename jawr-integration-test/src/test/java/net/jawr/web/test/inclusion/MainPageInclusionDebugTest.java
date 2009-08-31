@@ -50,33 +50,33 @@ public class MainPageInclusionDebugTest extends AbstractPageTest {
 	@Test
 	public void checkGeneratedJsLinks() {
 		// Test generated Script link
-		final List<?> scripts = page.getByXPath("html/head/script");
-		assertEquals(27, scripts.size());
-		HtmlScript script = (HtmlScript) scripts.get(11);
+		final List<?> scripts = getJsScriptTags();
+		assertEquals(7, scripts.size());
+		HtmlScript script = (HtmlScript) scripts.get(0);
 		assertGeneratedLinkEquals(
 				CONTEXT_PATH+"/js/global/jawr.js?d=11111",
 				script.getSrcAttribute());
-		script = (HtmlScript) scripts.get(12);
+		script = (HtmlScript) scripts.get(1);
 		assertGeneratedLinkEquals(
 				CONTEXT_PATH+"/js/inclusion/global/global_1.js?d=11111",
 				script.getSrcAttribute());
-		script = (HtmlScript) scripts.get(13);
+		script = (HtmlScript) scripts.get(2);
 		assertGeneratedLinkEquals(
 				CONTEXT_PATH+"/js/inclusion/global/global.js?d=11111",
 				script.getSrcAttribute());
-		script = (HtmlScript) scripts.get(16);
+		script = (HtmlScript) scripts.get(3);
 		assertGeneratedLinkEquals(
 				CONTEXT_PATH+"/js/index/index.js?d=11111",
 				script.getSrcAttribute());
-		script = (HtmlScript) scripts.get(17);
+		script = (HtmlScript) scripts.get(4);
 		assertGeneratedLinkEquals(
 				CONTEXT_PATH+"/jawr_generator.js?generationConfigParam=testJs%3AgeneratedContent.js%40en_US",
 				script.getSrcAttribute());
-		script = (HtmlScript) scripts.get(20);
+		script = (HtmlScript) scripts.get(5);
 		assertGeneratedLinkEquals(
 				CONTEXT_PATH+"/js/inclusion/debugOnly.js?d=11111",
 				script.getSrcAttribute());
-		script = (HtmlScript) scripts.get(25);
+		script = (HtmlScript) scripts.get(6);
 		assertGeneratedLinkEquals(
 				CONTEXT_PATH+"/js/inclusion/externalProduction.js?d=11111",
 				script.getSrcAttribute());
@@ -85,32 +85,32 @@ public class MainPageInclusionDebugTest extends AbstractPageTest {
 	@Test
 	public void testJsBundleContent() throws Exception {
 
-		final List<?> scripts = page.getByXPath("html/head/script");
-		HtmlScript script = (HtmlScript) scripts.get(11);
+		final List<?> scripts = getJsScriptTags();
+		HtmlScript script = (HtmlScript) scripts.get(0);
 		JavaScriptPage page = getJavascriptPage(script);
 		assertContentEquals("/net/jawr/web/inclusion/debug/resources/js/jawr.js", page);
 		
-		script = (HtmlScript) scripts.get(12);
+		script = (HtmlScript) scripts.get(1);
 		page = getJavascriptPage(script);
 		assertContentEquals("/net/jawr/web/inclusion/debug/resources/js/global_1.js", page);
 		
-		script = (HtmlScript) scripts.get(13);
+		script = (HtmlScript) scripts.get(2);
 		page = getJavascriptPage(script);
 		assertContentEquals("/net/jawr/web/inclusion/debug/resources/js/global.js", page);
 		
-		script = (HtmlScript) scripts.get(16);
+		script = (HtmlScript) scripts.get(3);
 		page = getJavascriptPage(script);
 		assertContentEquals("/net/jawr/web/inclusion/debug/resources/js/index.js", page);
 		
-		script = (HtmlScript) scripts.get(17);
+		script = (HtmlScript) scripts.get(4);
 		page = getJavascriptPage(script);
 		assertContentEquals("/net/jawr/web/inclusion/debug/resources/js/generatedContent.js", page);
 		
-		script = (HtmlScript) scripts.get(20);
+		script = (HtmlScript) scripts.get(5);
 		page = getJavascriptPage(script);
 		assertContentEquals("/net/jawr/web/inclusion/debug/resources/js/debugOnly.js", page);
 		
-		script = (HtmlScript) scripts.get(25);
+		script = (HtmlScript) scripts.get(6);
 		page = getJavascriptPage(script);
 		assertContentEquals("/net/jawr/web/inclusion/debug/resources/js/externalProduction.js", page);
 		
@@ -119,7 +119,7 @@ public class MainPageInclusionDebugTest extends AbstractPageTest {
 	@Test
 	public void checkGeneratedCssLinks() {
 		// Test generated Css link
-		final List<?> styleSheets = page.getByXPath("html/head/link");
+		final List<?> styleSheets = getHtmlLinkTags();
 		assertEquals(6, styleSheets.size());
 		HtmlLink css = (HtmlLink) styleSheets.get(0);
 					
@@ -152,7 +152,7 @@ public class MainPageInclusionDebugTest extends AbstractPageTest {
 	@Test
 	public void testCssBundleContent() throws Exception {
 
-		final List<?> styleSheets = page.getByXPath("html/head/link");
+		final List<?> styleSheets = getHtmlLinkTags();
 		HtmlLink css = (HtmlLink) styleSheets.get(0);
 		TextPage page = getCssPage(css);
 		assertContentEquals("/net/jawr/web/inclusion/debug/resources/css/global.css", page);

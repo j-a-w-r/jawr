@@ -44,7 +44,7 @@ public class PageInSubDirTest extends MainPageTest {
 	@Test
 	public void checkGeneratedHtmlImageLinks() {
 		// Test generated HTML image link
-		final List<?> images = page.getByXPath("//img");
+		final List<?> images = getHtmlImageTags();
 		assertEquals(2, images.size());
 		HtmlImage img = (HtmlImage) images.get(0);
 		Utils.assertGeneratedLinkEquals(CONTEXT_PATH+"/cbfc517da02d6a64a68e5fea9a5de472f1/img/appIcons/application.png",
@@ -58,7 +58,7 @@ public class PageInSubDirTest extends MainPageTest {
 	@Test
 	public void checkGeneratedHtmlImageInputLinks() {
 		// Test generated HTML image link
-		final List<?> images = page.getByXPath("//input[@type='image']");
+		final List<?> images = getHtmlImageInputTags();
 		assertEquals(1, images.size());
 		final HtmlImageInput img = (HtmlImageInput) images.get(0);
 		Utils.assertGeneratedLinkEquals(CONTEXT_PATH+"/cb30a18063ef42b090194a7e936086960f/img/cog.png", 

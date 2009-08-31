@@ -42,13 +42,13 @@ public class MainPageLocaleFrDebugTest extends MainPageLocaleFrTest {
 	@Test
 	public void checkGeneratedJsLinks(){
 		// Test generated Script link
-		final List<?> scripts = page.getByXPath("html/head/script");
-		assertEquals(10, scripts.size());
-		HtmlScript script = (HtmlScript) scripts.get(7);
+		final List<?> scripts = getJsScriptTags();
+		assertEquals(2, scripts.size());
+		HtmlScript script = (HtmlScript) scripts.get(0);
 		assertEquals(
 				CONTEXT_PATH+"/jawr_generator.js?generationConfigParam=messages%3Amessages%40fr",
 				script.getSrcAttribute());
-		script = (HtmlScript) scripts.get(8);
+		script = (HtmlScript) scripts.get(1);
 		assertEquals(
 				CONTEXT_PATH+"/jawr_generator.js?generationConfigParam=testJs%3AgeneratedContent.js%40fr",
 				script.getSrcAttribute());
@@ -57,12 +57,12 @@ public class MainPageLocaleFrDebugTest extends MainPageLocaleFrTest {
 	@Test
 	public void testJsBundleContent() throws Exception {
 		
-		final List<?> scripts = page.getByXPath("html/head/script");
-		HtmlScript script = (HtmlScript) scripts.get(7);
+		final List<?> scripts = getJsScriptTags();
+		HtmlScript script = (HtmlScript) scripts.get(0);
 		JavaScriptPage page = getJavascriptPage(script);
 		assertContentEquals("/net/jawr/web/locale/resources/msg-debug-fr.js", page);
 		
-		script = (HtmlScript) scripts.get(8);
+		script = (HtmlScript) scripts.get(1);
 		page = getJavascriptPage(script);
 		assertContentEquals("/net/jawr/web/debug/resources/generatedContent.js", page);
 	}
@@ -70,7 +70,7 @@ public class MainPageLocaleFrDebugTest extends MainPageLocaleFrTest {
 	@Test
 	public void checkGeneratedCssLinks() {
 		// Test generated Css link
-		final List<?> styleSheets = page.getByXPath("html/head/link");
+		final List<?> styleSheets = getHtmlLinkTags();
 		assertEquals(2, styleSheets.size());
 		HtmlLink css = (HtmlLink) styleSheets.get(0);
 		Utils.assertGeneratedLinkEquals(
@@ -85,7 +85,7 @@ public class MainPageLocaleFrDebugTest extends MainPageLocaleFrTest {
 	@Test
 	public void testCssBundleContent() throws Exception {
 
-		final List<?> styleSheets = page.getByXPath("html/head/link");
+		final List<?> styleSheets = getHtmlLinkTags();
 		HtmlLink css = (HtmlLink) styleSheets.get(0);
 		TextPage page = getCssPage(css);
 		assertContentEquals("/net/jawr/web/debug/resources/jar_temp.css", page);

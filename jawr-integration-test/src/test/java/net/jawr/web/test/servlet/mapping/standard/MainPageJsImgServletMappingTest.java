@@ -47,7 +47,7 @@ public class MainPageJsImgServletMappingTest extends AbstractPageTest {
 	@Test
 	public void checkGeneratedJsLinks() {
 		// Test generated Script link
-		final List<?> scripts = page.getByXPath("html/head/script");
+		final List<?> scripts = getJsScriptTags();
 		assertEquals(1, scripts.size());
 		final HtmlScript script = (HtmlScript) scripts.get(0);
 		assertEquals(
@@ -58,7 +58,7 @@ public class MainPageJsImgServletMappingTest extends AbstractPageTest {
 	@Test
 	public void testJsBundleContent() throws Exception {
 
-		final List<?> scripts = page.getByXPath("html/head/script");
+		final List<?> scripts = getJsScriptTags();
 		final HtmlScript script = (HtmlScript) scripts.get(0);
 		final JavaScriptPage page = getJavascriptPage(script);
 		assertContentEquals("/net/jawr/web/servlet/mapping/resources/standard/msg-bundle.js", page);
@@ -67,7 +67,7 @@ public class MainPageJsImgServletMappingTest extends AbstractPageTest {
 	@Test
 	public void checkGeneratedCssLinks() {
 		// Test generated Css link
-		final List<?> styleSheets = page.getByXPath("html/head/link");
+		final List<?> styleSheets = getHtmlLinkTags();
 		assertEquals(1, styleSheets.size());
 		final HtmlLink css = (HtmlLink) styleSheets.get(0);
 		assertEquals(
@@ -79,7 +79,7 @@ public class MainPageJsImgServletMappingTest extends AbstractPageTest {
 	@Test
 	public void testCssBundleContent() throws Exception {
 
-		final List<?> styleSheets = page.getByXPath("html/head/link");
+		final List<?> styleSheets = getHtmlLinkTags();
 		final HtmlLink css = (HtmlLink) styleSheets.get(0);
 		final TextPage page = getCssPage(css);
 		assertContentEquals("/net/jawr/web/servlet/mapping/resources/standard/component-js-img-servlet-mapping-expected.css", page);
@@ -88,7 +88,7 @@ public class MainPageJsImgServletMappingTest extends AbstractPageTest {
 	@Test
 	public void checkGeneratedHtmlImageLinks() {
 		// Test generated HTML image link
-		final List<?> images = page.getByXPath("//img");
+		final List<?> images = getHtmlImageTags();
 		assertEquals(1, images.size());
 		final HtmlImage img = (HtmlImage) images.get(0);
 		Utils.assertGeneratedLinkEquals(CONTEXT_PATH+"/imgJawr/cbfc517da02d6a64a68e5fea9a5de472f1/img/appIcons/application.png",
@@ -99,7 +99,7 @@ public class MainPageJsImgServletMappingTest extends AbstractPageTest {
 	@Test
 	public void checkGeneratedHtmlImageInputLinks() {
 		// Test generated HTML image link
-		final List<?> images = page.getByXPath("//input[@type='image']");
+		final List<?> images = getHtmlImageInputTags();
 		assertEquals(1, images.size());
 		final HtmlImageInput img = (HtmlImageInput) images.get(0);
 		Utils.assertGeneratedLinkEquals(CONTEXT_PATH+"/imgJawr/cb30a18063ef42b090194a7e936086960f/img/cog.png", 

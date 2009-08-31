@@ -49,7 +49,7 @@ public class MainPageInclusionTest extends AbstractPageTest {
 	@Test
 	public void checkGeneratedJsLinks() {
 		// Test generated Script link
-		final List<?> scripts = page.getByXPath("html/head/script");
+		final List<?> scripts = getJsScriptTags();
 		assertEquals(4, scripts.size());
 		HtmlScript script = (HtmlScript) scripts.get(0);
 		assertEquals(
@@ -72,7 +72,7 @@ public class MainPageInclusionTest extends AbstractPageTest {
 	@Test
 	public void testJsBundleContent() throws Exception {
 
-		final List<?> scripts = page.getByXPath("html/head/script");
+		final List<?> scripts = getJsScriptTags();
 		HtmlScript script = (HtmlScript) scripts.get(0);
 		JavaScriptPage page = getJavascriptPage(script);
 		assertContentEquals("/net/jawr/web/inclusion/standard/resources/js/globalBundle.js", page);
@@ -90,7 +90,7 @@ public class MainPageInclusionTest extends AbstractPageTest {
 	@Test
 	public void checkGeneratedCssLinks() {
 		// Test generated Css link
-		final List<?> styleSheets = page.getByXPath("html/head/link");
+		final List<?> styleSheets = getHtmlLinkTags();
 		assertEquals(4, styleSheets.size());
 		HtmlLink css = (HtmlLink) styleSheets.get(0);
 		assertEquals(
@@ -114,7 +114,7 @@ public class MainPageInclusionTest extends AbstractPageTest {
 	@Test
 	public void testCssBundleContent() throws Exception {
 
-		final List<?> styleSheets = page.getByXPath("html/head/link");
+		final List<?> styleSheets = getHtmlLinkTags();
 		HtmlLink css = (HtmlLink) styleSheets.get(0);
 		TextPage page = getCssPage(css);
 		assertContentEquals("/net/jawr/web/inclusion/standard/resources/css/globalBundle.css", page);

@@ -27,6 +27,8 @@ import com.gargoylesoftware.htmlunit.JavaScriptPage;
 import com.gargoylesoftware.htmlunit.Page;
 import com.gargoylesoftware.htmlunit.TextPage;
 import com.gargoylesoftware.htmlunit.WebClient;
+import com.gargoylesoftware.htmlunit.html.HtmlImage;
+import com.gargoylesoftware.htmlunit.html.HtmlImageInput;
 import com.gargoylesoftware.htmlunit.html.HtmlLink;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlScript;
@@ -239,6 +241,42 @@ public abstract class AbstractPageTest {
 		Utils.assertContentEquals(getClass(), fileName, page);
 	}
 
+	/**
+	 * Returns the list of HTML script tags which have an src attribute.
+	 * @return the list of HTML script tag.
+	 */
+	@SuppressWarnings("unchecked")
+	protected List<HtmlScript> getJsScriptTags() {
+		return (List<HtmlScript>) page.getByXPath("html/head/script[@src]");
+	}
+
+	/**
+	 * Returns the list of HTML link tags.
+	 * @return the list of HTML script tags.
+	 */
+	@SuppressWarnings("unchecked")
+	protected List<HtmlLink> getHtmlLinkTags() {
+		return (List<HtmlLink>) page.getByXPath("html/head/link");
+	}
+	
+	/**
+	 * Returns the list of HTML link tags.
+	 * @return the list of HTML script tags.
+	 */
+	@SuppressWarnings("unchecked")
+	protected List<HtmlImage> getHtmlImageTags() {
+		return (List<HtmlImage>) page.getByXPath("//img");
+	}
+	
+	/**
+	 * Returns the list of HTML link tags.
+	 * @return the list of HTML script tags.
+	 */
+	@SuppressWarnings("unchecked")
+	protected List<HtmlImageInput> getHtmlImageInputTags() {
+		return (List<HtmlImageInput>) page.getByXPath("//input[@type='image']");
+	}
+	
 	/**
 	 * Call the webserver to retrieve the javascript page associated to the Html script object.
 	 * 
