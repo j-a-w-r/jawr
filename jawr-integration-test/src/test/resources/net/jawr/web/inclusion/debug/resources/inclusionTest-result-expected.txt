@@ -37,6 +37,15 @@
 <script type="text/javascript" src="/jawr-integration-test/js/inclusion/debugOnly.js?d=11111" ></script>
 <script type="text/javascript">/* Finished adding members resolved by /bundles/debugBundle.js */</script>
 
+ <script type="text/javascript">/* Start adding members resolved by '/bundles/stdBundle.js'. Bundle id is: '/bundles/stdBundle.js' */</script>
+<script type="text/javascript" src="/jawr-integration-test/js/index/index.js?d=11111" ></script>
+<script type="text/javascript">/* The resource '/js/index/index.js' is already included in the page. */</script>
+<script type="text/javascript">/* Finished adding members resolved by /bundles/stdBundle.js */</script>
+
+ <script type="text/javascript">/* Start adding members resolved by '/bundles/stdBundle.js'. Bundle id is: '/bundles/stdBundle.js' */</script>
+<script type="text/javascript">/* The bundle '/bundles/stdBundle.js' is already included in the page. */</script>
+<script type="text/javascript">/* Finished adding members resolved by /bundles/stdBundle.js */</script>
+
  <script type="text/javascript">/* Start adding members resolved by '/bundles/productionBundle.js'. Bundle id is: '/bundles/productionBundle.js' */</script>
 <script type="text/javascript">/* Finished adding members resolved by /bundles/productionBundle.js */</script>
 

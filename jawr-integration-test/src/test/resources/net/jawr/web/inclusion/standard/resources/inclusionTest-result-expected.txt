@@ -15,6 +15,9 @@
 <script type="text/javascript" src="/jawr-integration-test/1160783475/bundles/compositeBundle.js" ></script>
 
  
+ <script type="text/javascript" src="/jawr-integration-test/2009447790/bundles/stdBundle.js" ></script>
+
+ 
  <script type="text/javascript" src="/jawr-integration-test/175033684/bundles/productionBundle.js" ></script>
 
  <script type="text/javascript" src="http://mycompany.com/js/production.js" ></script>

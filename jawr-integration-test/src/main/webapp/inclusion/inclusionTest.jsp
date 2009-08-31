@@ -9,6 +9,8 @@
 
  <jwr:script src="/bundles/compositeBundle.js" />
  <jwr:script src="/bundles/debugBundle.js" />
+ <jwr:script src="/bundles/stdBundle.js" />
+ <jwr:script src="/bundles/stdBundle.js" />
  <jwr:script src="/bundles/productionBundle.js" />
  <jwr:script src="/bundles/externalProductionBundle.js" />
 </head>

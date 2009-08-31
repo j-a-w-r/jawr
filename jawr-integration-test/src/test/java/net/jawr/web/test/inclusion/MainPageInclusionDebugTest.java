@@ -51,7 +51,7 @@ public class MainPageInclusionDebugTest extends AbstractPageTest {
 	public void checkGeneratedJsLinks() {
 		// Test generated Script link
 		final List<?> scripts = getJsScriptTags();
-		assertEquals(7, scripts.size());
+		assertEquals(8, scripts.size());
 		HtmlScript script = (HtmlScript) scripts.get(0);
 		assertGeneratedLinkEquals(
 				CONTEXT_PATH+"/js/global/jawr.js?d=11111",
@@ -77,6 +77,10 @@ public class MainPageInclusionDebugTest extends AbstractPageTest {
 				CONTEXT_PATH+"/js/inclusion/debugOnly.js?d=11111",
 				script.getSrcAttribute());
 		script = (HtmlScript) scripts.get(6);
+		assertGeneratedLinkEquals(
+				CONTEXT_PATH+"/js/index/index.js?d=11111",
+				script.getSrcAttribute());
+		script = (HtmlScript) scripts.get(7);
 		assertGeneratedLinkEquals(
 				CONTEXT_PATH+"/js/inclusion/externalProduction.js?d=11111",
 				script.getSrcAttribute());
@@ -111,6 +115,10 @@ public class MainPageInclusionDebugTest extends AbstractPageTest {
 		assertContentEquals("/net/jawr/web/inclusion/debug/resources/js/debugOnly.js", page);
 		
 		script = (HtmlScript) scripts.get(6);
+		page = getJavascriptPage(script);
+		assertContentEquals("/net/jawr/web/inclusion/debug/resources/js/index.js", page);
+		
+		script = (HtmlScript) scripts.get(7);
 		page = getJavascriptPage(script);
 		assertContentEquals("/net/jawr/web/inclusion/debug/resources/js/externalProduction.js", page);
 		

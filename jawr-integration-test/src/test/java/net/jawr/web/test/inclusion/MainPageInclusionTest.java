@@ -50,7 +50,7 @@ public class MainPageInclusionTest extends AbstractPageTest {
 	public void checkGeneratedJsLinks() {
 		// Test generated Script link
 		final List<?> scripts = getJsScriptTags();
-		assertEquals(4, scripts.size());
+		assertEquals(5, scripts.size());
 		HtmlScript script = (HtmlScript) scripts.get(0);
 		assertEquals(
 				CONTEXT_PATH+"/1473833880/bundles/globalBundle.js",
@@ -61,9 +61,13 @@ public class MainPageInclusionTest extends AbstractPageTest {
 				script.getSrcAttribute());
 		script = (HtmlScript) scripts.get(2);
 		assertEquals(
-				CONTEXT_PATH+"/175033684/bundles/productionBundle.js",
+				CONTEXT_PATH+"/2009447790/bundles/stdBundle.js",
 				script.getSrcAttribute());
 		script = (HtmlScript) scripts.get(3);
+		assertEquals(
+				CONTEXT_PATH+"/175033684/bundles/productionBundle.js",
+				script.getSrcAttribute());
+		script = (HtmlScript) scripts.get(4);
 		assertEquals(
 				"http://mycompany.com/js/production.js",
 				script.getSrcAttribute());
@@ -82,6 +86,10 @@ public class MainPageInclusionTest extends AbstractPageTest {
 		assertContentEquals("/net/jawr/web/inclusion/standard/resources/js/compositeBundle.js", page);
 		
 		script = (HtmlScript) scripts.get(2);
+		page = getJavascriptPage(script);
+		assertContentEquals("/net/jawr/web/inclusion/standard/resources/js/stdBundle.js", page);
+		
+		script = (HtmlScript) scripts.get(3);
 		page = getJavascriptPage(script);
 		assertContentEquals("/net/jawr/web/inclusion/standard/resources/js/productionBundle.js", page);
 		
