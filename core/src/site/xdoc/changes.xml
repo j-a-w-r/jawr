@@ -8,7 +8,29 @@
 	
     <section name="Announcementes and change log">
     <ul>
-    	 <li> <strong>08/10/2009</strong>: Version 3.1 released:<br/>
+    	 <li> <strong>09/01/2009</strong>: Version 3.1.1 released:<br/>
+	      	This version contains only bug fixes.<br/><br/>
+	    	<strong>Fixed issues: </strong>
+	    	 <ul>    	 	
+	      		 <li>
+	      		 	<strong>Issue #76 fixed:</strong> A Page should render resource bundle only once.      
+	      		 </li>      
+	      		 <li>
+	      		 	<strong>Issue #89 fixed:</strong> Multiple invocations of a custom generator.      
+	      		 </li>      
+	      		 <li>
+	      		 	<strong>Issue #90 fixed:</strong> RendererRequestUtils.setRequestDebuggable(...) creates http sessions.
+	      		 </li>        
+	      		 <li>
+	      		 	<strong>Issue #91 fixed:</strong> Src of img tag does not support relative path and is incorrect when the requested page is not in the web application root directory.
+	      		 </li>
+	      		 <li>
+	      		 	<strong>Issue #92 fixed:</strong> Jawr trips over Javascript multiline string literals
+	      		 </li> 
+	      		 We would like to thank qxo, jmundt, reardonm, cpo, kape and axelfont for reporting issues and providing patches when possible. 
+      	  	</ul>
+	    </li>
+	    <li> <strong>08/10/2009</strong>: Version 3.1 released:<br/>
 	      	This version contains mainly bug fixes.<br/><br/>
 	    	<strong>New features/ fixed issues: </strong>
 	    	 <ul>    	 	
