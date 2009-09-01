@@ -40,8 +40,8 @@
 	<img src="./images/index/logo.png" style="border:0 !important" id="mainJawrLogo"  />
 	
 	<div id="jawrlinks">
+		<b>Latest version : 3.1.1</b><br/>
 		<a href="https://jawr.dev.java.net/servlets/ProjectDocumentList?folderID=8543">
-			<b>Latest version : 3.1.1</b><br/>
 			<img src="./images/index/download.png" style="border:0 !important" title="Download the latest version of Jawr"  /></a> 
 		<a href="https://jawr.dev.java.net/tutorials/quickstart.html" >
 			<img src="./images/index/get-started.png" style="border:0 !important" title="Go to the quickstart tutorial and start using Jawr" /></a> 		
