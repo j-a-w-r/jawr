@@ -25,6 +25,7 @@ import net.jawr.web.resource.bundle.renderer.BundleRenderer;
 import net.jawr.web.resource.bundle.renderer.BundleRendererContext;
 import net.jawr.web.resource.bundle.renderer.CSSHTMLBundleLinkRenderer;
 import net.jawr.web.resource.bundle.renderer.JavascriptHTMLBundleLinkRenderer;
+import net.jawr.web.util.StringUtils;
 import test.net.jawr.web.resource.bundle.PredefinedBundlesHandlerUtil;
 import test.net.jawr.web.resource.bundle.handler.ResourceHandlerBasedTest;
 /**
@@ -188,7 +189,7 @@ public class BundleLinkRendererTest  extends ResourceHandlerBasedTest{
 		
 		// Reusing the set, we test that no repeats are allowed. 
 		result = renderToString(jsRenderer,"/js/one/one2.js", bundleRendererCtx);
-		assertTrue("Tags were repeated",assertStartEndSimmilarity(oneTag,"pfx",result.trim()));
+		assertTrue("Tags were repeated", StringUtils.isEmpty(result));
 		
 
 		// Test gzipped link creation
@@ -211,7 +212,8 @@ public class BundleLinkRendererTest  extends ResourceHandlerBasedTest{
 		// Reusing the set, we test that no repeats are allowed. 
 		result = renderToString(jsRenderer,"/js/one/one2.js", bundleRendererCtx);
 		String one2Tag = JS_PRE_TAG + "/ctxPathJs/srvMapping"+BundleRenderer.GZIP_PATH_PREFIX + "pfx/js/one.js" + JS_POST_TAG;
-		assertTrue("Gzip were not repeated",assertStartEndSimmilarity(one2Tag,"pfx",result.trim()));
+		assertTrue("Tags were repeated", StringUtils.isEmpty(result));
+		
 	}
 	
 	private boolean assertStartEndSimmilarity(String toCompare, String splitter, String toMatch) {
@@ -314,7 +316,7 @@ public class BundleLinkRendererTest  extends ResourceHandlerBasedTest{
 		
 		// Reusing the set, we test that no repeats are allowed. 
 		result = renderToString(jsRenderer,"/js/one/one2.js", bundleRendererCtx);
-		assertTrue("Tags were not repeated",assertStartEndSimmilarity(oneTag,"pfx",result.trim()));
+		assertTrue("Tags were repeated", StringUtils.isEmpty(result));
 		
 
 		// Test gzipped link creation
@@ -335,7 +337,8 @@ public class BundleLinkRendererTest  extends ResourceHandlerBasedTest{
 		
 		// Reusing the set, we test that no repeats are allowed. 
 		result = renderToString(jsRenderer,"/js/one/one2.js", bundleRendererCtx);
-		assertTrue("Gzip tags were not repeated",assertStartEndSimmilarity(debOffoneTag,"pfx",result.trim()));
+		assertTrue("Tags were repeated", StringUtils.isEmpty(result));
+		
 	}
 	
 	public void testWriteJSBundleLinksWithHttpsCdn()
@@ -370,9 +373,8 @@ public class BundleLinkRendererTest  extends ResourceHandlerBasedTest{
 		
 		// Reusing the set, we test that no repeats are allowed. 
 		result = renderToString(jsRenderer,"/js/one/one2.js", bundleRendererCtx);
-		assertTrue("Tags were not repeated", assertStartEndSimmilarity(oneTag,"pfx",result.trim()));
+		assertTrue("Tags were repeated", StringUtils.isEmpty(result));
 		
-
 		// Test gzipped link creation
 		String libZTag = JS_PRE_TAG+ contextPathSslOverride+"/srvMapping" + BundleRenderer.GZIP_PATH_PREFIX + "libPfx/library.js" + JS_POST_TAG;
 		String globalZTag = JS_PRE_TAG + contextPathSslOverride+"/srvMapping" + BundleRenderer.GZIP_PATH_PREFIX + "globalPfx/global.js" + JS_POST_TAG;
@@ -392,7 +394,7 @@ public class BundleLinkRendererTest  extends ResourceHandlerBasedTest{
 		
 		// Reusing the set, we test that no repeats are allowed. 
 		result = renderToString(jsRenderer,"/js/one/one2.js", bundleRendererCtx);
-		assertTrue("Gzip tags were not repeated",assertStartEndSimmilarity(debOffoneTag,"pfx",result.trim()));
+		assertTrue("Gzip tags were repeated", StringUtils.isEmpty(result));
 	}
 	
 	public void testWriteJSBundleLinksWithHttpsRelativePath()
@@ -427,7 +429,7 @@ public class BundleLinkRendererTest  extends ResourceHandlerBasedTest{
 		
 		// Reusing the set, we test that no repeats are allowed. 
 		result = renderToString(jsRenderer,"/js/one/one2.js", bundleRendererCtx);
-		assertTrue("Tags were not repeated",assertStartEndSimmilarity(oneTag,"pfx",result.trim()));
+		assertTrue("Tags were repeated", StringUtils.isEmpty(result));
 		
 
 		// Test gzipped link creation
@@ -449,7 +451,7 @@ public class BundleLinkRendererTest  extends ResourceHandlerBasedTest{
 		
 		// Reusing the set, we test that no repeats are allowed. 
 		result = renderToString(jsRenderer,"/js/one/one2.js", bundleRendererCtx);
-		assertTrue("Gzip tags were not repeated",assertStartEndSimmilarity(debOffoneTag,"pfx",result.trim()));
+		assertTrue("Gzip tags were repeated", StringUtils.isEmpty(result));
 	}
 	
 	public void testWriteJSBundleLinksWithRelativePath()
@@ -481,8 +483,7 @@ public class BundleLinkRendererTest  extends ResourceHandlerBasedTest{
 		
 		// Reusing the set, we test that no repeats are allowed. 
 		result = renderToString(jsRenderer,"/js/one/one2.js", bundleRendererCtx);
-		assertTrue("Tags were not repeated",assertStartEndSimmilarity(oneTag,"pfx",result.trim()));
-		
+		assertTrue("Tags were repeated", StringUtils.isEmpty(result));
 
 		// Test gzipped link creation
 		String libZTag = JS_PRE_TAG+ "srvMapping" + BundleRenderer.GZIP_PATH_PREFIX + "libPfx/library.js" + JS_POST_TAG;
@@ -502,6 +503,7 @@ public class BundleLinkRendererTest  extends ResourceHandlerBasedTest{
 		
 		// Reusing the set, we test that no repeats are allowed. 
 		result = renderToString(jsRenderer,"/js/one/one2.js", bundleRendererCtx);
-		assertTrue("Tags were not repeated",assertStartEndSimmilarity(debOffoneTag,"pfx",result.trim()));
+		assertTrue("Tags were repeated", StringUtils.isEmpty(result));
+
 	}
 }
