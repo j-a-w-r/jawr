@@ -62,25 +62,47 @@ public class LocaleUtils {
 	 * @param messageBundlePath the resource bundle path
 	 * @return the list of available locale suffixes for a message resource bundle
 	 */
-	public static List getAvailableLocaleSuffixes(String messageBundlePath) {
+	public static List getAvailableLocaleSuffixesForBundle(String messageBundlePath) {
 
-		List availableLocaleSuffixes = new ArrayList();
-		Locale[] availableLocales = Locale.getAvailableLocales();
-		int idx = FileNameUtils.indexOfExtension(messageBundlePath);
-		if (idx != -1) {
-			messageBundlePath = messageBundlePath.substring(0, idx);
+		int idxNameSpace = messageBundlePath.indexOf("(");
+		int idxFilter = messageBundlePath.indexOf("[");
+		int idx = -1;
+		if(idxNameSpace != -1 && idxFilter != -1){
+			idx = Math.min(idxNameSpace, idxFilter);
+		}else if(idxNameSpace != -1 && idxFilter == -1){
+			idx = idxNameSpace;
+		}else if(idxNameSpace == -1 && idxFilter != -1){
+			idx = idxFilter;
 		}
-
-		addSuffixIfAvailable(messageBundlePath, availableLocaleSuffixes, null);
-
-		for (int i = 0; i < availableLocales.length; i++) {
-			Locale locale = availableLocales[i];
-			addSuffixIfAvailable(messageBundlePath, availableLocaleSuffixes, locale);
+		
+		String messageBundle = null;
+		if(idx > 0){
+			messageBundle = messageBundlePath.substring(0, idx);  
+		}else{
+			messageBundle = messageBundlePath;
 		}
-
-		return availableLocaleSuffixes;
+		return getAvailableLocaleSuffixes(messageBundle);
 	}
 
+	/**
+	 * Returns the list of available locale suffixes for a message resource bundle
+	 * 
+	 * @param messageBundle the resource bundle path
+	 * @return the list of available locale suffixes for a message resource bundle
+	 */
+	public static List getAvailableLocaleSuffixes(String messageBundle) {
+		List availableLocaleSuffixes = new ArrayList();
+		Locale[] availableLocales = Locale.getAvailableLocales();
+	
+		addSuffixIfAvailable(messageBundle, availableLocaleSuffixes, null);
+	
+		for (int i = 0; i < availableLocales.length; i++) {
+			Locale locale = availableLocales[i];
+			addSuffixIfAvailable(messageBundle, availableLocaleSuffixes, locale);
+		}
+	
+		return availableLocaleSuffixes;
+	}
 	/**
 	 * Add the locale suffix if the message resource bundle file exists.
 	 * 
@@ -143,6 +165,8 @@ public class LocaleUtils {
 	 * @exception NullPointerException if <code>baseName</code> or <code>locale</code> is <code>null</code>
 	 */
 	public static String toBundleName(String baseName, Locale locale) {
+		
+		baseName = baseName.replace('.', '/');
 		if (locale == null) {
 			return baseName;
 		}

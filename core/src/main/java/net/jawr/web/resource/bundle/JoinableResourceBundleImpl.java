@@ -428,7 +428,7 @@ public class JoinableResourceBundleImpl implements JoinableResourceBundle {
     	if(StringUtils.isNotEmpty(variantKey) && null != this.localeVariantKeys) {
     		String key = getAvailableLocaleVariant(variantKey);
     		if(null != key)
-    			return prefixMap.get(variantKey) + "." + key + "/";
+    			return prefixMap.get(key) + "." + key + "/";
     	}
     	return this.urlPrefix + "/";
     }

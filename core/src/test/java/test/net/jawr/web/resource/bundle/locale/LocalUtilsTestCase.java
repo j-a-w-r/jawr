@@ -3,11 +3,11 @@
  */
 package test.net.jawr.web.resource.bundle.locale;
 
-import java.util.Iterator;
 import java.util.List;
 
-import net.jawr.web.resource.bundle.locale.LocaleUtils;
+import junit.framework.Assert;
 import junit.framework.TestCase;
+import net.jawr.web.resource.bundle.locale.LocaleUtils;
 
 /**
  * Test case class for Local utils
@@ -19,9 +19,33 @@ public class LocalUtilsTestCase extends TestCase {
 
 	public void testGetLocaleAvailablePrefixes(){
 		
-		List result = LocaleUtils.getAvailableLocaleSuffixes("/bundleLocale/messages.properties");
-		for (Iterator iterator = result.iterator(); iterator.hasNext();) {
-			System.out.println("Suffix : '"+iterator.next()+"'");
-		}
+		List result = LocaleUtils.getAvailableLocaleSuffixesForBundle("bundleLocale.messages");
+		Assert.assertEquals(2, result.size());
+		Assert.assertEquals("",result.get(0));
+		Assert.assertEquals("es",result.get(1));
+	}
+	
+	public void testGetLocaleAvailablePrefixesWithNamespace(){
+		
+		List result = LocaleUtils.getAvailableLocaleSuffixesForBundle("bundleLocale.messages(mynamespace)");
+		Assert.assertEquals(2, result.size());
+		Assert.assertEquals("",result.get(0));
+		Assert.assertEquals("es",result.get(1));
+	}
+	
+	public void testGetLocaleAvailablePrefixesWithFilter(){
+		
+		List result = LocaleUtils.getAvailableLocaleSuffixesForBundle("bundleLocale.messages[ui.msg]");
+		Assert.assertEquals(2, result.size());
+		Assert.assertEquals("",result.get(0));
+		Assert.assertEquals("es",result.get(1));
+	}
+	
+	public void testGetLocaleAvailablePrefixesWithFilterAndNamespace(){
+		
+		List result = LocaleUtils.getAvailableLocaleSuffixesForBundle("bundleLocale.messages(mynamespace)[ui.msg]");
+		Assert.assertEquals(2, result.size());
+		Assert.assertEquals("",result.get(0));
+		Assert.assertEquals("es",result.get(1));
 	}
 }

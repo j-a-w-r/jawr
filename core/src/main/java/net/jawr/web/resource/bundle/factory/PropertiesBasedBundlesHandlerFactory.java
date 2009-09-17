@@ -298,24 +298,15 @@ public class PropertiesBasedBundlesHandlerFactory {
 				if(generatorRegistry.isMessageResourceGenerator(mapping)){
 					int idx = mapping.indexOf(GeneratorRegistry.PREFIX_SEPARATOR);
 					String msgBundle = mapping.substring(idx+1);
-					localeKeys.addAll(LocaleUtils.getAvailableLocaleSuffixes(msgBundle));
+					localeKeys.addAll(LocaleUtils.getAvailableLocaleSuffixesForBundle(msgBundle));
 				}
 			}
 			bundle.setMappings(mappings);
 			bundle.setLocaleVariantKeys(Collections.list(Collections.enumeration(localeKeys)));
-			
-//			String locales = props.getCustomBundleProperty(bundleName,
-//					BUNDLE_FACTORY_CUSTOM_LOCALE_VARIANTS);
-//			if (null != locales) {
-//				
-//				StringTokenizer tkl = new StringTokenizer(locales, ",");
-//				while (tkl.hasMoreTokens())
-//					localeKeys.add(tkl.nextToken().trim());
-//			}
-//			
 		}
 
 		return bundle;
 	}
-
+	
+	
 }
