@@ -6,7 +6,7 @@
 	<artifactId>jawr-ant</artifactId>
 	<packaging>jar</packaging>
 	<name>Java web resources bundling and compression Ant task</name>
-	<version>1.1.1</version>
+	<version>1.1.2</version>
 	<description>The ant task which launch Javascript/CSS bundling and compressing tool for java web apps.
   	By using jawr resources are automatically bundled together and optionally minified and gzipped. 
   	Jawr provides tag libraries to reference a generated bundle either by id or by using the name of any of its members.</description>
@@ -74,7 +74,7 @@
 		<dependency>
 			<groupId>net.jawr</groupId>
 			<artifactId>jawr-bundle-processor</artifactId>
-			<version>1.1.1</version>
+			<version>1.1.2</version>
 		</dependency>
 		<dependency>
 			<groupId>ant</groupId>
