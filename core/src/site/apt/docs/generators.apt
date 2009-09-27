@@ -43,7 +43,7 @@ Jawr Generators
 	jawr.js.bundle.one.mappings=messages:com.myapp.messages(mynamespace)[javascript.messages]
 ------------------------------------------+
 	
-	Note that if you use the parameters, the order must always be paraentheses firs, brackets last. If you need only one parameter, you can omit 
+	Note that if you use the parameters, the order must always be parentheses first, brackets last. If you need only one parameter, you can omit 
 	the brackets param. 
 		 
 *	Jawr generators

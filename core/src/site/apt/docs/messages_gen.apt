@@ -54,17 +54,16 @@ Javascript i18n message generator
 +------------------------------------------+
     jawr.js.bundle.lib.id=/bundles/global.js
     jawr.js.bundle.lib.mappings=messages:com.myapp.jsmessages,/js/lib/**
-    jawr.js.bundle.lib.locales=es
 +------------------------------------------+	
 	
 	As you can see, a mapping was added to 'messages:com.myapp.jsmessages'. All mappings to message bundles will start with 'messages:', followed 
 	by a comma separated list of the basenames for the ResourceBundles. In this case, the mapping refers to properties files located in the 
 	classpath under 'com/myap' with the name 'jsmessages.properties'. 
 	
-	The property 'jawr.js.bundle.lib.locales' defines the variants for this bundle, which in this case defines a spanish language variant. In this 
-	example, Jawr will resolve properties located at 'com/myapp/jsmessages_es.properties' for this locale.   
-	Note that the default english locale does not need to be defined, since it will be used by default if the user's locale does not match 
-	any of the defined variants. Note that this depends on the server's default locale. 
+	The locale variants for this bundle will be found automatically by Jawr. 
+	In this example, Jawr will search for all available message bundles which match 'com/myapp/jsmessages[locale_variant].properties'.
+	Note that the locale, which will be used by default if the user's locale does not match any of the defined variants, 
+	will depend on the server's default locale. 
 	Also note that variants do not need to overwrite every property defined in the base locale messages file. The 
 	non overwritten properties will be read from the base file (which is the normal behavior when using java 
 	ResourceBundles). 
