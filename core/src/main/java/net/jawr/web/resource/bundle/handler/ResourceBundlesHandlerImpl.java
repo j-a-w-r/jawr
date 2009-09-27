@@ -51,6 +51,7 @@ import net.jawr.web.resource.bundle.iterator.ResourceBundlePathsIterator;
 import net.jawr.web.resource.bundle.locale.LocaleUtils;
 import net.jawr.web.resource.bundle.postprocess.BundleProcessingStatus;
 import net.jawr.web.resource.bundle.postprocess.ResourceBundlePostProcessor;
+import net.jawr.web.resource.bundle.postprocess.impl.CSSURLPathRewriterPostProcessor;
 import net.jawr.web.resource.bundle.sorting.GlobalResourceBundleComparator;
 
 import org.apache.log4j.Logger;
@@ -530,7 +531,8 @@ public class ResourceBundlesHandlerImpl implements ResourceBundlesHandler {
 					StringBuffer resourceData = bundle.getUnitaryPostProcessor().postProcessBundle(status, writer.getBuffer());
 
 					// Set the CSS Classpath resource data for the debug mode
-					initializeCssClasspathMap(bundleContent, status, writer.getBuffer(), bundle.getUnitaryPostProcessor());
+					//initializeCssClasspathMap(bundleContent, status, writer.getBuffer(), bundle.getUnitaryPostProcessor());
+					initializeCssClasspathMap(bundleContent, status, writer.getBuffer());
 
 					bundleData.append(resourceData);
 				} else if (null != this.unitaryPostProcessor) {
@@ -539,7 +541,8 @@ public class ResourceBundlesHandlerImpl implements ResourceBundlesHandler {
 					StringBuffer resourceData = this.unitaryPostProcessor.postProcessBundle(status, writer.getBuffer());
 					
 					// Set the CSS Classpath resource data for the debug mode
-					initializeCssClasspathMap(bundleContent, status, writer.getBuffer(), this.unitaryPostProcessor);
+					//initializeCssClasspathMap(bundleContent, status, writer.getBuffer(), this.unitaryPostProcessor);
+					initializeCssClasspathMap(bundleContent, status, writer.getBuffer());
 
 					bundleData.append(resourceData);
 				} else
@@ -570,7 +573,7 @@ public class ResourceBundlesHandlerImpl implements ResourceBundlesHandler {
 	 * @param resourceData the resource data
 	 * @param resourceBundlePostProcessor the resourceBundle post processor
 	 */
-	private void initializeCssClasspathMap(JoinableResourceBundleContent bundleContent, BundleProcessingStatus status, StringBuffer resourceData, ResourceBundlePostProcessor resourceBundlePostProcessor) {
+	private void initializeCssClasspathMap(JoinableResourceBundleContent bundleContent, BundleProcessingStatus status, StringBuffer resourceData) {
 
 		// Set the CSS Classpath resource data for the debug mode
 		String filePath = status.getLastPathAdded();
@@ -582,6 +585,7 @@ public class ResourceBundlesHandlerImpl implements ResourceBundlesHandler {
 			BundleProcessingStatus tempStatus = new BundleProcessingStatus(tempBundle, status.getRsHandler(), status.getJawrConfig());
 			
 			tempStatus.setLastPathAdded(status.getLastPathAdded());
+			CSSURLPathRewriterPostProcessor resourceBundlePostProcessor = new CSSURLPathRewriterPostProcessor();
 			resourceData = resourceBundlePostProcessor.postProcessBundle(tempStatus, resourceData);
 			bundleContent.putCssClasspathDebugContent(filePath.substring(JawrConstant.CLASSPATH_RESOURCE_PREFIX.length()), resourceData.toString());
 		}
