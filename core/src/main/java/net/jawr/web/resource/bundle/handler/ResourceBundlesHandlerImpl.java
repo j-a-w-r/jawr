@@ -531,7 +531,6 @@ public class ResourceBundlesHandlerImpl implements ResourceBundlesHandler {
 					StringBuffer resourceData = bundle.getUnitaryPostProcessor().postProcessBundle(status, writer.getBuffer());
 
 					// Set the CSS Classpath resource data for the debug mode
-					//initializeCssClasspathMap(bundleContent, status, writer.getBuffer(), bundle.getUnitaryPostProcessor());
 					initializeCssClasspathMap(bundleContent, status, writer.getBuffer());
 
 					bundleData.append(resourceData);
@@ -541,7 +540,6 @@ public class ResourceBundlesHandlerImpl implements ResourceBundlesHandler {
 					StringBuffer resourceData = this.unitaryPostProcessor.postProcessBundle(status, writer.getBuffer());
 					
 					// Set the CSS Classpath resource data for the debug mode
-					//initializeCssClasspathMap(bundleContent, status, writer.getBuffer(), this.unitaryPostProcessor);
 					initializeCssClasspathMap(bundleContent, status, writer.getBuffer());
 
 					bundleData.append(resourceData);
