@@ -64,6 +64,9 @@ import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.xml.sax.EntityResolver;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
 /**
  * The bundle processor is managing the bundle processing at build time.
@@ -173,6 +176,14 @@ public class BundleProcessor {
 		// Retrieve the parameters from baseDir+"/WEB-INF/web.xml"
 		File webXml = new File(baseDirPath, WEB_XML_FILE_PATH);
 		DocumentBuilder docBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+		docBuilder.setEntityResolver(new EntityResolver() {
+			
+			public InputSource resolveEntity(String publicId, String systemId)
+					throws SAXException, IOException {
+				
+				return null;
+			}
+		});
 		Document doc = docBuilder.parse(webXml);
 		NodeList servletNodes = doc.getElementsByTagName(SERVLET_TAG_NAME);
 		
