@@ -95,10 +95,6 @@ The Jawr servlet
 
 	Jawr supports images. To enable this feature, you will have to define the Jawr image servlet in your web.xml file. 
 	When the Jawr image servlet is defined in you application, all CSS images will be handled by this servlet.
-	You don't have to declare these images in the <<jawr.image.resources>> property. 
-	This property is used to calculate the hashcode of the images at the image servlet startup. 
-	If an image is not defined in this property, the hashcode of the image will be calculated at runtime.
-	Look for <jawr.image.resources> at the {{{./descriptor_syntax.html}descriptor syntax doc}} for more information.\
 	
 	In order for Jawr to properly handle the CSS images, the Jawr image servlet must start before the Jawr CSS servlet.
 	This means that you will have to set properly the <<load.on.startup>> property in your web.xml like below :
@@ -115,10 +111,6 @@ The Jawr servlet
 		<init-param>
 			<param-name>type</param-name>
 			<param-value>img</param-value>
-		</init-param>
-		<init-param>
-			<param-name>mapping</param-name>
-			<param-value>/jwrImg/</param-value>
 		</init-param>
 		<!-- The Jawr Image servlet must start before the Jawr CSS Servlet -->
 		<load-on-startup>0</load-on-startup>
@@ -141,7 +133,11 @@ The Jawr servlet
 	
 	<servlet-mapping>
 		<servlet-name>JawrImgServlet</servlet-name>
-		<url-pattern>/jwrImg/*</url-pattern>
+		<url-pattern>*.png</url-pattern>
+	</servlet-mapping> 
+	<servlet-mapping>
+		<servlet-name>JawrImgServlet</servlet-name>
+		<url-pattern>*.gif</url-pattern>
 	</servlet-mapping> 
 	<servlet-mapping>
 		<servlet-name>JavascriptServlet</servlet-name>
@@ -150,6 +146,12 @@ The Jawr servlet
 	
 	
 +------------------------------------------+
+	
+	Note : The declaration of your images in the <<jawr.image.resources>> property is not mandatory. 
+	This property is used to calculate the hashcode of the images at the image servlet startup. 
+	If an image is not defined in this property, the hashcode of the image will be calculated at runtime.
+	Look for <jawr.image.resources> at the {{{./descriptor_syntax.html}descriptor syntax doc}} for more information. \
+	
 	
 	[]
 	
