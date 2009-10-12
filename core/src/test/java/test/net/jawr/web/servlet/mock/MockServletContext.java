@@ -216,11 +216,14 @@ public class MockServletContext implements ServletContext {
 
 		path = path.replace('/', File.separatorChar);
 		File resource = new File(baseDir, path);
-
+		if(!resource.exists()){
+			throw new InvalidPathException(baseDir + File.separator + path);
+		}
+		
 		// If the path is not valid throw an exception
 		String[] resArray = resource.list();
 		if (null == resArray)
-			throw new InvalidPathException(baseDir + File.separator + path);
+			return null;
 
 		// Make the returned dirs end with '/', to match a servletcontext behavior.
 		for (int i = 0; i < resArray.length; i++) {

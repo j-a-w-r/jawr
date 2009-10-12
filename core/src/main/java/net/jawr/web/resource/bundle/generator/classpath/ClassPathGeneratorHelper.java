@@ -30,15 +30,25 @@ import net.jawr.web.resource.bundle.generator.GeneratorContext;
 public class ClassPathGeneratorHelper {
 	
 	/**
-	 * Finds a resource from the classpathand returns a reader on it. 
-	 * @param context
-	 * @return
+	 * Finds a resource from the classpath and returns a reader on it. 
+	 * @param context the generator context
+	 * @return the reader
 	 */
 	public Reader createResource(GeneratorContext context) {
+		
+		InputStream is = createStreamResource(context);
+		ReadableByteChannel chan = Channels.newChannel(is);
+		return Channels.newReader(chan,context.getCharset().newDecoder (),-1);
+	}
+	
+	/**
+	 * Finds a resource from the classpath and returns an input stream on it. 
+	 * @param context the generator context
+	 * @return the input stream
+	 */
+	public InputStream createStreamResource(GeneratorContext context) {
 		try {
-			InputStream is = ClassLoaderResourceUtils.getResourceAsStream(context.getPath(), this);
-			 ReadableByteChannel chan = Channels.newChannel(is);
-			 return Channels.newReader(chan,context.getCharset().newDecoder (),-1);
+			return ClassLoaderResourceUtils.getResourceAsStream(context.getPath(), this);
 		} catch (FileNotFoundException e) {
 			throw new RuntimeException(e);
 		}

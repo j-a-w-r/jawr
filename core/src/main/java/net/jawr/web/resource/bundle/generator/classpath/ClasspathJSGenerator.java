@@ -15,21 +15,24 @@ package net.jawr.web.resource.bundle.generator.classpath;
 
 import java.io.Reader;
 
-import net.jawr.web.JawrConstant;
 import net.jawr.web.resource.bundle.generator.AbstractJavascriptGenerator;
 import net.jawr.web.resource.bundle.generator.GeneratorContext;
 import net.jawr.web.resource.bundle.generator.GeneratorRegistry;
 import net.jawr.web.resource.bundle.generator.ResourceGenerator;
 
 /**
- * Loads resources from the classpath.  
+ * This class defines the resource generator, which loads Javascript resources from the classpath.  
  * 
  * @author Jordi Hernández Sellés
  */
 public class ClasspathJSGenerator extends AbstractJavascriptGenerator implements ResourceGenerator {
 
+	/** The classpath generator helper */
 	private ClassPathGeneratorHelper helper;
 	
+	/**
+	 * Constructor
+	 */
 	public ClasspathJSGenerator() {
 		helper = new ClassPathGeneratorHelper();
 	}

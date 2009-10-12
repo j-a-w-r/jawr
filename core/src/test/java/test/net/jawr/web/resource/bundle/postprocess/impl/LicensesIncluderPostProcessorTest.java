@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.Properties;
 
 import net.jawr.web.config.JawrConfig;
-import net.jawr.web.resource.FileSystemResourceHandler;
 import net.jawr.web.resource.bundle.InclusionPattern;
 import net.jawr.web.resource.bundle.JoinableResourceBundle;
 import net.jawr.web.resource.bundle.JoinableResourceBundleImpl;
@@ -24,6 +23,8 @@ import net.jawr.web.resource.bundle.handler.ResourceBundlesHandler;
 import net.jawr.web.resource.bundle.handler.ResourceBundlesHandlerImpl;
 import net.jawr.web.resource.bundle.postprocess.BundleProcessingStatus;
 import net.jawr.web.resource.bundle.postprocess.impl.LicensesIncluderPostProcessor;
+import net.jawr.web.resource.handler.bundle.ResourceBundleHandler;
+import net.jawr.web.resource.handler.reader.ResourceReaderHandler;
 import test.net.jawr.web.resource.bundle.handler.ResourceHandlerBasedTest;
 /**
  *
@@ -34,13 +35,15 @@ public class LicensesIncluderPostProcessorTest  extends  ResourceHandlerBasedTes
 	private static final String ROOT_TESTDIR = "/licenseprocessor/";
 	private LicensesIncluderPostProcessor processor;
 	private JoinableResourceBundle resourcebundle;
-	private FileSystemResourceHandler rsHandler;
+	private ResourceReaderHandler rsHandler;
+	private ResourceBundleHandler rsBundleHandler;
 	private JawrConfig jeesConfig;
 	
 	public LicensesIncluderPostProcessorTest() {
 	    try {			
 		Charset charsetUtf = Charset.forName("UTF-8"); 
-		rsHandler = createResourceHandler(ROOT_TESTDIR,charsetUtf);
+		rsHandler = createResourceReaderHandler(ROOT_TESTDIR,charsetUtf);
+		rsBundleHandler = createResourceBundleHandler(ROOT_TESTDIR,charsetUtf);
 		jeesConfig = new JawrConfig(new Properties());
 		jeesConfig.setCharsetName("UTF-8");
 		
@@ -62,12 +65,13 @@ public class LicensesIncluderPostProcessorTest  extends  ResourceHandlerBasedTes
 	
 	/**
 	 * Test the ability to include license files in a bundle. 
+	 * @throws Exception 
 	 */
-	public void testDoPostProcessBundle() {
-	try {
+	public void testDoPostProcessBundle() throws Exception {
 	    List cols = new ArrayList();
 	    cols.add(resourcebundle);
-	    ResourceBundlesHandler collector = new ResourceBundlesHandlerImpl(cols, rsHandler, jeesConfig);
+	    
+	    ResourceBundlesHandler collector = new ResourceBundlesHandlerImpl(cols, rsHandler, rsBundleHandler, jeesConfig);
 	    collector.initAllBundles();
 	    ByteArrayOutputStream baOs = new ByteArrayOutputStream();
 	    WritableByteChannel wrChannel = Channels.newChannel(baOs);
@@ -78,8 +82,6 @@ public class LicensesIncluderPostProcessorTest  extends  ResourceHandlerBasedTes
 	    String contents = sb.toString();
 	    assertTrue("License in root folder not included",(contents.indexOf("/** License in folder **/")!=-1));
 	    assertTrue("License in subfolder not included",(contents.indexOf("/** License in subfolder **/")!=-1));
-	} catch (Exception ex) {
-	    fail("Error:" +ex.getMessage());
-	}
+	
 	}
 }

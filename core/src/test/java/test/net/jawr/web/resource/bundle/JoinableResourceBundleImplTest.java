@@ -8,10 +8,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import net.jawr.web.resource.ResourceHandler;
 import net.jawr.web.resource.bundle.InclusionPattern;
 import net.jawr.web.resource.bundle.JoinableResourceBundle;
 import net.jawr.web.resource.bundle.JoinableResourceBundleImpl;
+import net.jawr.web.resource.handler.reader.ResourceReaderHandler;
 import test.net.jawr.web.resource.bundle.handler.ResourceHandlerBasedTest;
 
 
@@ -32,14 +32,13 @@ public class JoinableResourceBundleImplTest extends  ResourceHandlerBasedTest  {
 		InclusionPattern pattern = new InclusionPattern(true,0,true,false);
 		List fullMapping = Collections.singletonList("js/**");
 		
-
 		List partialMapping = new ArrayList();
 		partialMapping.add("/js/subfolder/");
 		partialMapping.add("/outsider.js");
 		
-		ResourceHandler rsHandler = null;
+		ResourceReaderHandler rsHandler = null;
 		try {
-			rsHandler = createResourceHandler(ROOT_TESTDIR, Charset.forName("UTF-8"));
+			rsHandler = createResourceReaderHandler(ROOT_TESTDIR, Charset.forName("UTF-8"));
 		} catch (Exception e) {
 			System.out.println("Error in test constructor");
 			e.printStackTrace();

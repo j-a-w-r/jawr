@@ -9,9 +9,8 @@ import java.util.Map;
 import java.util.Set;
 
 import net.jawr.web.exception.DuplicateBundlePathException;
-import net.jawr.web.resource.ResourceHandler;
 import net.jawr.web.resource.bundle.factory.mapper.ResourceBundleDirMapper;
-
+import net.jawr.web.resource.handler.reader.ResourceReaderHandler;
 import test.net.jawr.web.resource.bundle.handler.ResourceHandlerBasedTest;
 
 
@@ -29,7 +28,7 @@ public class ResourceBundleDirMapperTest extends  ResourceHandlerBasedTest {
 		try {			
 			Charset charsetUtf = Charset.forName("UTF-8"); 
 			
-			ResourceHandler rdHandler = createResourceHandler(ROOT_TESTDIR,charsetUtf);
+			ResourceReaderHandler rdHandler = createResourceReaderHandler(ROOT_TESTDIR,charsetUtf);
 			Set exclude = new HashSet();
 			exclude.add("/js/global");
 			exclude.add("/js/lib//");

@@ -1,5 +1,5 @@
 /**
- * Copyright 2007-2009   Jordi Hernández Sellés, Ibrahim Chaehoi
+ * Copyright 2007-2009 Jordi Hernández Sellés, Ibrahim Chaehoi
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -11,7 +11,7 @@
  * either express or implied. See the License for the specific language governing permissions
  * and limitations under the License.
  */
-package net.jawr.web.resource;
+package net.jawr.web.resource.handler.bundle;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -19,7 +19,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.Reader;
 import java.io.Writer;
@@ -45,17 +44,15 @@ import net.jawr.web.util.StringUtils;
 import org.apache.log4j.Logger;
 
 /**
- * Abstract resourcehandler implementation with common functionality.
+ * This class defines the abstract class for the resource bundle handler
  * 
- * @author Jordi Hernández Sellés
  * @author Ibrahim Chaehoi
- * 
  */
-public abstract class AbstractResourceHandler implements ResourceHandler {
+public abstract class AbstractResourceBundleHandler implements ResourceBundleHandler {
 
 	/** The logger */
 	private static final Logger log = Logger
-			.getLogger(AbstractResourceHandler.class.getName());
+			.getLogger(AbstractResourceBundleHandler.class.getName());
 
 	/** The name of the Jawr temp directory */
 	protected static final String TEMP_SUBDIR = "jawrTmp";
@@ -70,7 +67,7 @@ public abstract class AbstractResourceHandler implements ResourceHandler {
 	protected static final String TEMP_CSS_CLASSPATH_SUBDIR = "cssClasspath";
 
 	/** The generator registry */
-	private GeneratorRegistry generatorRegistry;
+//	private GeneratorRegistry generatorRegistry;
 
 	/** The path of the temporary working directory */
 	protected String tempDirPath;
@@ -96,6 +93,9 @@ public abstract class AbstractResourceHandler implements ResourceHandler {
 	/** The flag indicating if the temp directory is a file system directory or if it's embedded in the web application itself */
 	private boolean useFileSystemTempDir = true;
 
+	/** The resource reader */
+//	private ServletContextResourceReaderHandler rsReader;
+	
 	/**
 	 * Build a resource handler based on the specified temporary files root path and charset.
 	 * 
@@ -104,12 +104,12 @@ public abstract class AbstractResourceHandler implements ResourceHandler {
 	 * @param generatorRegistry the generator registry
 	 * @param resourceType the resource type
 	 */
-	protected AbstractResourceHandler(File tempDirRoot, Charset charset,
+	protected AbstractResourceBundleHandler(File tempDirRoot, Charset charset,
 			GeneratorRegistry generatorRegistry, String resourceType) {
 
 		this(tempDirRoot, charset, generatorRegistry, resourceType, true);
 	}
-
+	
 	/**
 	 * Build a resource handler based on the specified temporary files root path and charset.
 	 * 
@@ -119,13 +119,13 @@ public abstract class AbstractResourceHandler implements ResourceHandler {
 	 * @param resourceType the resource type
 	 * @param createTempSubDir the flag indicating if we should use the jawrTemp sub directory
 	 */
-	protected AbstractResourceHandler(String tempDirRoot, Charset charset,
+	protected AbstractResourceBundleHandler(String tempDirRoot, Charset charset,
 			GeneratorRegistry generatorRegistry, String resourceType,
 			boolean createTempSubDir) {
 		super();
 		this.resourceType = resourceType;
 		this.charset = charset;
-		this.generatorRegistry = generatorRegistry;
+//		this.generatorRegistry = generatorRegistry;
 
 		if (StringUtils.isEmpty(resourceType)
 				|| resourceType.equals(JawrConstant.JS_TYPE)) {
@@ -154,14 +154,15 @@ public abstract class AbstractResourceHandler implements ResourceHandler {
 	 * @param resourceType the resource type
 	 * @param createTempSubDir the flag indicating if we should use the jawrTemp sub directory
 	 */
-	protected AbstractResourceHandler(File tempDirRoot, Charset charset,
+	protected AbstractResourceBundleHandler(File tempDirRoot, Charset charset,
 			GeneratorRegistry generatorRegistry, String resourceType,
 			boolean createTempSubDir) {
 		super();
 		this.resourceType = resourceType;
 		this.charset = charset;
-		this.generatorRegistry = generatorRegistry;
-
+//		this.generatorRegistry = generatorRegistry;
+		
+		
 		if (StringUtils.isEmpty(resourceType)
 				|| resourceType.equals(JawrConstant.JS_TYPE)) {
 			mappingFileName = JawrConstant.JAWR_JS_MAPPING_PROPERTIES_FILENAME;
@@ -179,6 +180,7 @@ public abstract class AbstractResourceHandler implements ResourceHandler {
 					"Unexpected IOException creating temporary jawr directory",
 					e);
 		}
+		
 	}
 
 	/**
@@ -226,49 +228,6 @@ public abstract class AbstractResourceHandler implements ResourceHandler {
 	public String getResourceType() {
 
 		return resourceType;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see net.jawr.web.resource.ResourceHandler#getResource(java.lang.String)
-	 */
-	public final Reader getResource(String resourceName)
-			throws ResourceNotFoundException {
-		return getResource(resourceName, false);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see net.jawr.web.resource.ResourceHandler#getResource(java.lang.String, boolean)
-	 */
-	public final Reader getResource(String resourceName,
-			boolean processingBundle) throws ResourceNotFoundException {
-		if (generatorRegistry.isPathGenerated(resourceName)) {
-			return generatorRegistry.createResource(resourceName, this,
-					processingBundle);
-		} else
-			return doGetResource(resourceName);
-	}
-
-	/**
-	 * Retrieves a single resource using the implementation specifics. Invoked by getResource() unless the requested item is generated.
-	 * 
-	 * @param resourceName
-	 * @return
-	 * @throws ResourceNotFoundException
-	 */
-	protected abstract Reader doGetResource(String resourceName)
-			throws ResourceNotFoundException;
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see net.jawr.web.resource.ResourceHandler#isResourceGenerated(java.lang.String)
-	 */
-	public boolean isResourceGenerated(String path) {
-		return generatorRegistry.isPathGenerated(path);
 	}
 
 	/**
@@ -325,50 +284,6 @@ public abstract class AbstractResourceHandler implements ResourceHandler {
 		return is;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see net.jawr.web.resource.ResourceHandler#storeJawrBundleMapping(java.util.Properties)
-	 */
-	public void storeJawrBundleMapping(Properties bundleMapping) {
-
-		File bundleMappingFile = new File(tempDirPath, mappingFileName);
-		OutputStream out = null;
-		try {
-			out = new FileOutputStream(bundleMappingFile);
-			bundleMapping.store(out, "Jawr mapping");
-		} catch (IOException e) {
-			log.error("Unable to store the bundle mapping");
-		} finally {
-			IOUtils.close(out);
-		}
-
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see net.jawr.web.resource.ResourceHandler#getCssClasspathResource(java.lang.String)
-	 */
-	public Reader getCssClasspathResource(String resourceName)
-			throws ResourceNotFoundException {
-
-		String filePath = getStoredBundlePath(cssClasspathDirPath, resourceName);
-		InputStream is = getTemporaryResourceAsStream(filePath);
-		return new InputStreamReader(is);
-	}
-
-	
-	
-	/* (non-Javadoc)
-	 * @see net.jawr.web.resource.ResourceHandler#getResourceAsStream(java.lang.String)
-	 */
-	public InputStream getResourceAsStream(String resourceName)
-			throws ResourceNotFoundException {
-		
-		return doGetResourceAsStream(resourceName);
-	}
-	
 	/* (non-Javadoc)
 	 * @see net.jawr.web.resource.ResourceHandler#getTemporaryResourceAsStream(java.lang.String)
 	 */
@@ -392,12 +307,43 @@ public abstract class AbstractResourceHandler implements ResourceHandler {
 		
 		return is;
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see net.jawr.web.resource.ResourceHandler#getResourceAsStream(java.lang.String)
 	 */
 	protected abstract InputStream doGetResourceAsStream(String resourceName);
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see net.jawr.web.resource.ResourceHandler#storeJawrBundleMapping(java.util.Properties)
+	 */
+	public void storeJawrBundleMapping(Properties bundleMapping) {
+
+		File bundleMappingFile = new File(tempDirPath, mappingFileName);
+		OutputStream out = null;
+		try {
+			out = new FileOutputStream(bundleMappingFile);
+			bundleMapping.store(out, "Jawr mapping");
+		} catch (IOException e) {
+			log.error("Unable to store the bundle mapping");
+		} finally {
+			IOUtils.close(out);
+		}
+
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see net.jawr.web.resource.bundle.ResourceHandler#getResourceBundleBytes(java.lang.String)
+	 */
+	public ReadableByteChannel getResourceBundleChannel(String bundleName)
+			throws ResourceNotFoundException {
+	
+		return getResourceBundleChannel(bundleName, true);
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -408,6 +354,22 @@ public abstract class AbstractResourceHandler implements ResourceHandler {
 		
 		ReadableByteChannel inchannel = getResourceBundleChannel(bundleName, false);
 		return Channels.newReader(inchannel, charset.newDecoder(), -1);
+	}
+
+	/**
+	 * Returns the readable byte channel from the bundle name
+	 * @param bundleName the bundle name
+	 * @param gzipBundle the flag indicating if we want to retrieve the gzip version or not
+	 * @return the readable byte channel from the bundle name
+	 * @throws ResourceNotFoundException if the resource is not found
+	 */
+	public ReadableByteChannel getResourceBundleChannel(String bundleName, boolean gzipBundle)
+			throws ResourceNotFoundException {
+
+		//tempFileName = getStoredBundlePath(bundleName, false);
+		String tempFileName = getStoredBundlePath(bundleName, gzipBundle);
+		InputStream is = getTemporaryResourceAsStream(tempFileName);
+		return Channels.newChannel(is);
 	}
 
 	/**
@@ -445,33 +407,6 @@ public abstract class AbstractResourceHandler implements ResourceHandler {
 			rootDir += File.separator;
 
 		return rootDir + bundleName;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see net.jawr.web.resource.bundle.ResourceHandler#getResourceBundleBytes(java.lang.String)
-	 */
-	public ReadableByteChannel getResourceBundleChannel(String bundleName)
-			throws ResourceNotFoundException {
-	
-		return getResourceBundleChannel(bundleName, true);
-	}
-	
-	/**
-	 * Returns the readable byte channel from the bundle name
-	 * @param bundleName the bundle name
-	 * @param gzipBundle the flag indicating if we want to retrieve the gzip version or not
-	 * @return the readable byte channel from the bundle name
-	 * @throws ResourceNotFoundException if the resource is not found
-	 */
-	public ReadableByteChannel getResourceBundleChannel(String bundleName, boolean gzipBundle)
-			throws ResourceNotFoundException {
-
-		//tempFileName = getStoredBundlePath(bundleName, false);
-		String tempFileName = getStoredBundlePath(bundleName, gzipBundle);
-		InputStream is = getTemporaryResourceAsStream(tempFileName);
-		return Channels.newChannel(is);
 	}
 
 	/*
@@ -571,7 +506,7 @@ public abstract class AbstractResourceHandler implements ResourceHandler {
 	}
 
 	/**
-	 * Creates a directory. If dir is note created for some reson a runtimeexception is thrown.
+	 * Creates a directory. If dir is note created for some reason a runtimeexception is thrown.
 	 * 
 	 * @param dir
 	 * @throws IOException
@@ -581,7 +516,7 @@ public abstract class AbstractResourceHandler implements ResourceHandler {
 		if (path.indexOf("%20") != -1)
 			path = path.replaceAll("%20", " ");
 		File dir = new File(path);
-		if (!dir.exists() && !dir.mkdir())
+		if (!dir.exists() && !dir.mkdirs())
 			throw new RuntimeException(
 					"Error creating temporary jawr directory with path:"
 							+ dir.getPath());

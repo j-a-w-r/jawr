@@ -10,7 +10,6 @@ import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
-import java.nio.channels.ReadableByteChannel;
 import java.security.Principal;
 import java.util.Enumeration;
 import java.util.Locale;
@@ -27,11 +26,13 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import junit.framework.TestCase;
+import net.jawr.web.JawrConstant;
 import net.jawr.web.config.JawrConfig;
 import net.jawr.web.exception.ResourceNotFoundException;
 import net.jawr.web.resource.ImageResourcesHandler;
-import net.jawr.web.resource.ResourceHandler;
-import net.jawr.web.resource.bundle.JoinableResourceBundleContent;
+import net.jawr.web.resource.bundle.generator.GeneratorRegistry;
+import net.jawr.web.resource.handler.reader.ResourceReader;
+import net.jawr.web.resource.handler.reader.ResourceReaderHandler;
 import net.jawr.web.taglib.ImageTagUtils;
 
 /**
@@ -40,25 +41,32 @@ import net.jawr.web.taglib.ImageTagUtils;
  */
 public class ImageTagUtilsTest extends TestCase {
 
+	private JawrConfig config;
+	
+	/* (non-Javadoc)
+	 * @see junit.framework.TestCase#setUp()
+	 */
+	public void setUp(){
+		config = new JawrConfig(new Properties());
+		config.setImageHashAlgorithm("MD5");
+		GeneratorRegistry generatorRegistry = new GeneratorRegistry(JawrConstant.IMG_TYPE);
+		config.setGeneratorRegistry(generatorRegistry);
+		generatorRegistry.setConfig(config);
+	}
+	
 	public void testImageUrl() {
 
-		JawrConfig config = new JawrConfig(new Properties());
-		config.setImageHashAlgorithm("MD5");
 		testImageUrlWithContextPathOverride("http://mycomp.com/basicwebapp", config, "/basicwebapp");
 	}
 	
 	public void testImageUrlWithServletMapping() {
 
-		JawrConfig config = new JawrConfig(new Properties());
-		config.setImageHashAlgorithm("MD5");
 		config.setServletMapping("/jawrImg/");
 		testImageUrlWithContextPathOverride("http://mycomp.com/basicwebapp", config, "/basicwebapp");
 	}
 
 	public void testImageUrlWithContextPathOverride() {
 
-		JawrConfig config = new JawrConfig(new Properties());
-		config.setImageHashAlgorithm("MD5");
 		String contextPathOverride = "http://mycdn";
 		config.setContextPathOverride(contextPathOverride+"/");
 		config.setContextPathSslOverride("https://mycdn/");
@@ -68,8 +76,6 @@ public class ImageTagUtilsTest extends TestCase {
 
 	public void testImageUrlWithContextPathSslOverride() {
 
-		JawrConfig config = new JawrConfig(new Properties());
-		config.setImageHashAlgorithm("MD5");
 		String contextPathOverride = "https://mycdn";
 		config.setContextPathSslOverride(contextPathOverride+"/");
 		config.setContextPathOverride("http://mycdn/");
@@ -82,9 +88,8 @@ public class ImageTagUtilsTest extends TestCase {
 		HttpServletRequest request = new MockHttpServletRequest(requestUrl,
 				"/basicwebapp/", "/basicwebapp/content/myPage.jsp");
 		HttpServletResponse response = new MockHttpResponse();
-		ResourceHandler rsHandler = new MockResourceHandler();
-		ImageResourcesHandler imgRsHandler = new ImageResourcesHandler(config,
-				rsHandler);
+		ResourceReaderHandler rsHandler = new MockResourceHandler();
+		ImageResourcesHandler imgRsHandler = new ImageResourcesHandler(config, rsHandler, null);
 		String servletMapping = null;
 		if(config.getServletMapping() != null && config.getServletMapping().trim().length() > 0){
 			servletMapping = "/"+config.getServletMapping();
@@ -114,15 +119,20 @@ public class ImageTagUtilsTest extends TestCase {
 	}
 
 	
-	private class MockResourceHandler implements ResourceHandler {
+	private class MockResourceHandler implements ResourceReaderHandler {
 
-		public Reader getCssClasspathResource(String resourceName)
+		public InputStream getResourceAsStream(String resourceName)
 				throws ResourceNotFoundException {
-			return null;
+
+			return new ByteArrayInputStream("dummy content".getBytes());
 		}
 
-		public Properties getJawrBundleMapping() {
-			return null;
+		public void addResourceReaderToEnd(ResourceReader rd) {
+			
+		}
+
+		public void addResourceReaderToStart(ResourceReader rd) {
+			
 		}
 
 		public Reader getResource(String resourceName)
@@ -135,40 +145,20 @@ public class ImageTagUtilsTest extends TestCase {
 			return null;
 		}
 
-		public InputStream getResourceAsStream(String resourceName)
-				throws ResourceNotFoundException {
-
-			return new ByteArrayInputStream("dummy content".getBytes());
-		}
-
-		public ReadableByteChannel getResourceBundleChannel(String bundleName)
-				throws ResourceNotFoundException {
+		public InputStream getResourceAsStream(String resourceName,
+				boolean processingBundle) throws ResourceNotFoundException {
 			return null;
 		}
 
-		public Reader getResourceBundleReader(String bundleName)
-				throws ResourceNotFoundException {
+		public Set getResourceNames(String dirPath) {
 			return null;
 		}
 
-		public Set getResourceNames(String path) {
+		public String getWorkingDirectory() {
 			return null;
 		}
 
-		public String getResourceType() {
-			return null;
-		}
-
-		public InputStream getTemporaryResourceAsStream(String resourceName)
-				throws ResourceNotFoundException {
-			return null;
-		}
-
-		public boolean isDirectory(String path) {
-			return false;
-		}
-
-		public boolean isExistingMappingFile() {
+		public boolean isDirectory(String resourcePath) {
 			return false;
 		}
 
@@ -176,13 +166,8 @@ public class ImageTagUtilsTest extends TestCase {
 			return false;
 		}
 
-		public void storeBundle(String bundleName,
-				JoinableResourceBundleContent bundleResourcesContent) {
-
-		}
-
-		public void storeJawrBundleMapping(Properties bundleMapping) {
-
+		public void setWorkingDirectory(String workingDir) {
+			
 		}
 
 	}

@@ -7,11 +7,11 @@ import java.util.List;
 import java.util.Properties;
 
 import net.jawr.web.config.JawrConfig;
-import net.jawr.web.resource.ResourceHandler;
 import net.jawr.web.resource.bundle.CompositeResourceBundle;
 import net.jawr.web.resource.bundle.InclusionPattern;
 import net.jawr.web.resource.bundle.JoinableResourceBundle;
 import net.jawr.web.resource.bundle.JoinableResourceBundleImpl;
+import net.jawr.web.resource.handler.reader.ResourceReaderHandler;
 import test.net.jawr.web.resource.bundle.handler.ResourceHandlerBasedTest;
 
 public class CompositeResourceBundleTest extends ResourceHandlerBasedTest {
@@ -20,9 +20,9 @@ public class CompositeResourceBundleTest extends ResourceHandlerBasedTest {
 	private JoinableResourceBundle compositeCollectionDebug;
 	
 	public CompositeResourceBundleTest() {
-		ResourceHandler rsHandler = null;
+		ResourceReaderHandler rsHandler = null;
 		try {
-			rsHandler = createResourceHandler(ROOT_TESTDIR, Charset.forName("UTF-8"));
+			rsHandler = createResourceReaderHandler(ROOT_TESTDIR, Charset.forName("UTF-8"));
 		} catch (Exception e) {
 			System.out.println("Error in test constructor");
 			e.printStackTrace();

@@ -6,18 +6,20 @@ import java.util.Set;
 
 import net.jawr.web.config.JawrConfig;
 import net.jawr.web.exception.DuplicateBundlePathException;
-import net.jawr.web.resource.ResourceHandler;
 import net.jawr.web.resource.bundle.factory.BundlesHandlerFactory;
 import net.jawr.web.resource.bundle.factory.util.ResourceBundleDefinition;
 import net.jawr.web.resource.bundle.generator.GeneratorRegistry;
 import net.jawr.web.resource.bundle.handler.ResourceBundlesHandler;
+import net.jawr.web.resource.handler.bundle.ResourceBundleHandler;
+import net.jawr.web.resource.handler.reader.ResourceReaderHandler;
 
 public class PredefinedBundlesHandlerUtil {
 
-	public static final ResourceBundlesHandler buildSingleBundleHandler(ResourceHandler handler, JawrConfig config) throws DuplicateBundlePathException {
+	public static final ResourceBundlesHandler buildSingleBundleHandler(ResourceReaderHandler handler, ResourceBundleHandler rsBundleHandler, JawrConfig config) throws DuplicateBundlePathException {
 
 		BundlesHandlerFactory factory = new BundlesHandlerFactory();
-		factory.setResourceHandler(handler);
+		factory.setResourceReaderHandler(handler);
+		factory.setResourceBundleHandler(rsBundleHandler);
 		factory.setBaseDir("/js");
 		factory.setUseSingleResourceFactory(true);			
 		factory.setSingleFileBundleName("script");
@@ -27,15 +29,15 @@ public class PredefinedBundlesHandlerUtil {
 		
 	}
 	
-	public static final ResourceBundlesHandler buildSimpleBundles(ResourceHandler handler,String baseDir, String type,
+	public static final ResourceBundlesHandler buildSimpleBundles(ResourceReaderHandler handler, ResourceBundleHandler rsBundleHandler, String baseDir, String type,
 																JawrConfig config) throws DuplicateBundlePathException {		
 		
 		config.setGeneratorRegistry(new GeneratorRegistry(type));
 		BundlesHandlerFactory factory = new BundlesHandlerFactory();
-		factory.setResourceHandler(handler);
+		factory.setResourceReaderHandler(handler);
+		factory.setResourceBundleHandler(rsBundleHandler);
 		factory.setBaseDir(baseDir);
 		factory.setBundlesType(type);
-		
 		
 		Set customBundles = new HashSet();
 		

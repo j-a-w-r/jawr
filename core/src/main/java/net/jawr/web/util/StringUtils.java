@@ -239,8 +239,6 @@ public class StringUtils {
      * @param sep  the String to chomp, must not be null
      * @return String without chomped ending
      * @throws NullPointerException if str or sep is <code>null</code>
-     * @deprecated Use {@link #chomp(String,String)} instead.
-     *             Method will be removed in Commons Lang 3.0.
      */
     public static String chompLast(String str, String sep) {
         if (str.length() == 0) {

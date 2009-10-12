@@ -24,12 +24,12 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.StringTokenizer;
 
-import net.jawr.web.resource.ResourceHandler;
 import net.jawr.web.resource.bundle.InclusionPattern;
 import net.jawr.web.resource.bundle.JoinableResourceBundle;
 import net.jawr.web.resource.bundle.JoinableResourceBundleImpl;
-import net.jawr.web.resource.bundle.factory.processor.PostProcessorChainFactory;
+import net.jawr.web.resource.bundle.factory.postprocessor.PostProcessorChainFactory;
 import net.jawr.web.resource.bundle.factory.util.PropertiesConfigHelper;
+import net.jawr.web.resource.handler.reader.ResourceReaderHandler;
 import net.jawr.web.util.StringUtils;
 
 /**
@@ -48,7 +48,7 @@ public class FullMappingPropertiesBasedBundlesHandlerFactory {
 	private String resourceType;
 	
 	/** The resource handler */
-	private ResourceHandler rsHandler;
+	private ResourceReaderHandler rsReaderHandler;
 	
 	/**
 	 * Create a PropertiesBasedBundlesHandlerFactory using the specified properties.
@@ -59,12 +59,12 @@ public class FullMappingPropertiesBasedBundlesHandlerFactory {
 	 * @param chainFactory the post processor chain factory
 	 */
 	public FullMappingPropertiesBasedBundlesHandlerFactory(String resourceType, 
-			ResourceHandler rsHandler,
+			ResourceReaderHandler rsHandler,
 			PostProcessorChainFactory chainFactory) {
 
 		this.resourceType = resourceType;
 		this.chainFactory = chainFactory;
-		this.rsHandler = rsHandler;
+		this.rsReaderHandler = rsHandler;
 	}
 
 	/**
@@ -90,14 +90,14 @@ public class FullMappingPropertiesBasedBundlesHandlerFactory {
 					",");
 			while (tk.hasMoreTokens()) {
 				customBundles.add(buildJoinableResourceBundle(props, tk.nextToken()
-						.trim(), fileExtension, rsHandler));
+						.trim(), fileExtension, rsReaderHandler));
 			}
 		} else {
 			Iterator bundleNames = props.getPropertyBundleNameSet().iterator();
 			while (bundleNames.hasNext()) {
 				customBundles.add(buildJoinableResourceBundle(props, 
 						(String) bundleNames.next(), fileExtension,
-						rsHandler));
+						rsReaderHandler));
 			}
 		}
 		
@@ -110,11 +110,11 @@ public class FullMappingPropertiesBasedBundlesHandlerFactory {
 	 * @param props the properties config helper
 	 * @param bundleName the bundle name
 	 * @param rsHandler the resource handler
-	 * @return BundleDefinition
+	 * @return the Resource Bundle
 	 */
 	private JoinableResourceBundle buildJoinableResourceBundle(
 			PropertiesConfigHelper props, String bundleName, String fileExtension,
-			ResourceHandler rsHandler) {
+			ResourceReaderHandler rsHandler) {
 
 		// Id for the bundle
 		String bundleId = props.getCustomBundleProperty(bundleName,

@@ -25,22 +25,26 @@ import java.util.Map.Entry;
 import net.jawr.web.config.JawrConfig;
 import net.jawr.web.exception.DuplicateBundlePathException;
 import net.jawr.web.resource.FileNameUtils;
-import net.jawr.web.resource.ResourceHandler;
 import net.jawr.web.resource.bundle.CompositeResourceBundle;
 import net.jawr.web.resource.bundle.InclusionPattern;
 import net.jawr.web.resource.bundle.JoinableResourceBundle;
 import net.jawr.web.resource.bundle.JoinableResourceBundleImpl;
+import net.jawr.web.resource.bundle.factory.global.preprocessor.BasicProcessorChainFactory;
+import net.jawr.web.resource.bundle.factory.global.preprocessor.GlobalPreprocessorChainFactory;
 import net.jawr.web.resource.bundle.factory.mapper.OrphanResourceBundlesMapper;
 import net.jawr.web.resource.bundle.factory.mapper.ResourceBundleDirMapper;
-import net.jawr.web.resource.bundle.factory.processor.CSSPostProcessorChainFactory;
-import net.jawr.web.resource.bundle.factory.processor.JSPostProcessorChainFactory;
-import net.jawr.web.resource.bundle.factory.processor.PostProcessorChainFactory;
+import net.jawr.web.resource.bundle.factory.postprocessor.CSSPostProcessorChainFactory;
+import net.jawr.web.resource.bundle.factory.postprocessor.JSPostProcessorChainFactory;
+import net.jawr.web.resource.bundle.factory.postprocessor.PostProcessorChainFactory;
 import net.jawr.web.resource.bundle.factory.util.PathNormalizer;
 import net.jawr.web.resource.bundle.factory.util.ResourceBundleDefinition;
+import net.jawr.web.resource.bundle.global.preprocessor.GlobalPreprocessor;
 import net.jawr.web.resource.bundle.handler.CachedResourceBundlesHandler;
 import net.jawr.web.resource.bundle.handler.ResourceBundlesHandler;
 import net.jawr.web.resource.bundle.handler.ResourceBundlesHandlerImpl;
 import net.jawr.web.resource.bundle.postprocess.ResourceBundlePostProcessor;
+import net.jawr.web.resource.handler.bundle.ResourceBundleHandler;
+import net.jawr.web.resource.handler.reader.ResourceReaderHandler;
 
 import org.apache.log4j.Logger;
 
@@ -75,14 +79,23 @@ public class BundlesHandlerFactory {
 	/** The keys of the unitary post processors */
 	private String unitPostProcessorKeys;
 	
+	/** The keys of the resource type processors */
+	private String resourceTypeProcessorKeys;
+	
 	/** The set of bundle definitions */
 	private Set bundleDefinitions;
 	
 	/** The resource handler */
-	private ResourceHandler resourceHandler;
+	private ResourceReaderHandler resourceReaderHandler;
+	
+	/** The resource bundle handler */
+	private ResourceBundleHandler resourceBundleHandler;
 	
 	/** The post processor chain factory */
 	private PostProcessorChainFactory chainFactory;
+	
+	/** The global preprocessor chain factory */
+	private GlobalPreprocessorChainFactory resourceTypeChainFactory;
 	
 	/** The flag indicating if we should use a single resource factory for the orphans resource of the base directory */
 	private boolean useSingleResourceFactory = false;
@@ -122,7 +135,7 @@ public class BundlesHandlerFactory {
 			throw new IllegalStateException(
 					"Must set the JawrConfig for this factory before invoking buildResourceBundlesHandler(). ");
 
-		if (null == resourceHandler)
+		if (null == resourceReaderHandler)
 			throw new IllegalStateException(
 					"Must set the resourceHandler for this factory before invoking buildResourceBundlesHandler(). ");
 		if (useSingleResourceFactory && null == singleFileBundleName)
@@ -137,7 +150,7 @@ public class BundlesHandlerFactory {
 		List resourceBundles = new ArrayList();
 
 		boolean processBundle = !jawrConfig.getUseBundleMapping()
-				|| !resourceHandler.isExistingMappingFile();
+				|| !resourceBundleHandler.isExistingMappingFile();
 		if (processBundle) {
 			initResourceBundles(resourceBundles);
 		} else {
@@ -159,11 +172,19 @@ public class BundlesHandlerFactory {
 		else
 			unitProcessor = this.chainFactory
 					.buildPostProcessorChain(unitPostProcessorKeys);
+		
+		// Build the reource type processor to use on resources.
+		GlobalPreprocessor resourceTypeProcessor = null;
+		if (null == this.resourceTypeProcessorKeys)
+			resourceTypeProcessor = this.resourceTypeChainFactory.buildDefaultProcessorChain();
+		else
+			resourceTypeProcessor = this.resourceTypeChainFactory
+					.buildProcessorChain(resourceTypeProcessorKeys);
 
 		// Build the handler
 		ResourceBundlesHandler collector = new ResourceBundlesHandlerImpl(
-				resourceBundles, resourceHandler, jawrConfig, processor,
-				unitProcessor);
+				resourceBundles, resourceReaderHandler, resourceBundleHandler, jawrConfig, processor,
+				unitProcessor, resourceTypeProcessor);
 
 		// Use the cached proxy if specified when debug mode is off.
 		if (useInMemoryCache && !jawrConfig.isDebugModeOn())
@@ -182,9 +203,9 @@ public class BundlesHandlerFactory {
 		if (log.isInfoEnabled()){
 			log.info("Building bundles from the full bundle mapping. The bundles will not be processed.");
 		}
-		Properties mappingProperties = resourceHandler.getJawrBundleMapping();
+		Properties mappingProperties = resourceBundleHandler.getJawrBundleMapping();
 		FullMappingPropertiesBasedBundlesHandlerFactory factory = new FullMappingPropertiesBasedBundlesHandlerFactory(resourceType, 
-				resourceHandler, chainFactory);
+				resourceReaderHandler, chainFactory);
 		
 		resourceBundles.addAll(factory.getResourceBundles(mappingProperties));
 	}
@@ -227,8 +248,8 @@ public class BundlesHandlerFactory {
 			if (log.isInfoEnabled())
 				log.info("Using ResourceBundleDirMapper. ");
 
-			ResourceBundleDirMapper dirFactory = new ResourceBundleDirMapper(
-					baseDir, resourceHandler, resourceBundles, fileExtension,
+			 ResourceBundleDirMapper dirFactory = new ResourceBundleDirMapper(
+					baseDir, resourceReaderHandler, resourceBundles, fileExtension,
 					excludedDirMapperDirs);
 			Map mappings = dirFactory.getBundleMapping();
 			for (Iterator it = mappings.entrySet().iterator(); it.hasNext();) {
@@ -241,7 +262,7 @@ public class BundlesHandlerFactory {
 		if (this.scanForOrphans) {
 			// Add all orphan bundles
 			OrphanResourceBundlesMapper orphanFactory = new OrphanResourceBundlesMapper(
-					baseDir, resourceHandler, resourceBundles, fileExtension);
+					baseDir, resourceReaderHandler, resourceBundles, fileExtension);
 			List orphans = orphanFactory.getOrphansList();
 
 			// Orphans may be added separately or as one single resource bundle.
@@ -296,7 +317,7 @@ public class BundlesHandlerFactory {
 
 		CompositeResourceBundle composite = new CompositeResourceBundle(
 				definition.getBundleId(), definition.getBundleName(), 
-				childBundles, include, resourceHandler, fileExtension,
+				childBundles, include, resourceReaderHandler, fileExtension,
 				jawrConfig);
 		if (null != definition.getBundlePostProcessorKeys())
 			composite.setBundlePostProcessor(chainFactory
@@ -337,7 +358,7 @@ public class BundlesHandlerFactory {
 		JoinableResourceBundleImpl newBundle = new JoinableResourceBundleImpl(
 				definition.getBundleId(), definition.getBundleName(), 
 				fileExtension, include, definition.getMappings(),
-				resourceHandler);
+				resourceReaderHandler);
 		if (null != definition.getBundlePostProcessorKeys())
 			newBundle.setBundlePostProcessor(chainFactory
 					.buildPostProcessorChain(definition
@@ -374,7 +395,7 @@ public class BundlesHandlerFactory {
 		List path = Collections.singletonList(pathMapping);
 		JoinableResourceBundle newBundle = new JoinableResourceBundleImpl(
 				bundleId, generateBundleNameFromBundleId(bundleId),
-				fileExtension, new InclusionPattern(), path, resourceHandler);
+				fileExtension, new InclusionPattern(), path, resourceReaderHandler);
 		return newBundle;
 	}
 
@@ -409,7 +430,7 @@ public class BundlesHandlerFactory {
 		JoinableResourceBundle newBundle = new JoinableResourceBundleImpl(
 				bundleId, generateBundleNameFromBundleId(bundleId), 
 				fileExtension, new InclusionPattern(), orphanPaths,
-				resourceHandler);
+				resourceReaderHandler);
 		return newBundle;
 	}
 
@@ -425,7 +446,7 @@ public class BundlesHandlerFactory {
 		List paths = Collections.singletonList(mapping);
 		JoinableResourceBundle newBundle = new JoinableResourceBundleImpl(
 				orphanPath, generateBundleNameFromBundleId(orphanPath), 
-				fileExtension, new InclusionPattern(), paths, resourceHandler);
+				fileExtension, new InclusionPattern(), paths, resourceReaderHandler);
 		return newBundle;
 	}
 
@@ -438,7 +459,7 @@ public class BundlesHandlerFactory {
 		// Set the extension for resources and bundles
 		this.resourceType = resourceType;
 		this.fileExtension = "." + resourceType.toLowerCase();
-
+		this.resourceTypeChainFactory = new BasicProcessorChainFactory();
 		// Create the chain factory.
 		if ("js".equals(resourceType))
 			this.chainFactory = new JSPostProcessorChainFactory();
@@ -481,14 +502,33 @@ public class BundlesHandlerFactory {
 	public void setUnitPostProcessorKeys(String unitPostProcessorKeys) {
 		this.unitPostProcessorKeys = unitPostProcessorKeys;
 	}
-
+	
+	/**
+	 * Set the keys to pass to the processor factory upon global processors creation. If none specified, the default version is used.
+	 * 
+	 * @param resourceTypeProcessorKeys String Comma separated list of processor keys.
+	 */
+	public void setResourceTypeProcessorKeys(String resourceTypeProcessorKeys) {
+		this.resourceTypeProcessorKeys = resourceTypeProcessorKeys;
+	}
+	
+	
 	/**
 	 * Set the resource handler to use for file access.
 	 * 
 	 * @param rsHandler
 	 */
-	public void setResourceHandler(ResourceHandler rsHandler) {
-		this.resourceHandler = rsHandler;
+	public void setResourceReaderHandler(ResourceReaderHandler rsHandler) {
+		this.resourceReaderHandler = rsHandler;
+	}
+
+	/**
+	 * Set the resource bundle handler to use for file access.
+	 * 
+	 * @param rsBundleHandler
+	 */
+	public void setResourceBundleHandler(ResourceBundleHandler rsBundleHandler) {
+		this.resourceBundleHandler = rsBundleHandler;
 	}
 
 	/**

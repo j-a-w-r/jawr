@@ -29,7 +29,7 @@ public abstract class AbstractChainedResourceBundlePostProcessor implements
 		ChainedResourceBundlePostProcessor {
 	
 	/** The logger */
-	private static final Logger log = Logger.getLogger(ResourceBundlePostProcessor.class);
+	private static final Logger log = Logger.getLogger(AbstractChainedResourceBundlePostProcessor.class);
 	
 	/** The next post processor */
 	private ChainedResourceBundlePostProcessor nextProcessor;

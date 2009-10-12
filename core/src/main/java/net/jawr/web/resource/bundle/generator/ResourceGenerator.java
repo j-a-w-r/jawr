@@ -23,7 +23,7 @@ import java.io.Reader;
  * @author  Jordi Hernández Sellés, Ibrahim Chaehoi
  *
  */
-public interface ResourceGenerator {
+public interface ResourceGenerator extends PrefixedResourceGenerator{
 
 	/** The javascript debug path */
 	public static final String JAVASCRIPT_DEBUGPATH = "/jawr_generator.js";
@@ -38,19 +38,10 @@ public interface ResourceGenerator {
 	 * @param path
 	 * @param servletContext
 	 * @param charset
-	 * @return
+	 * @return the reader for the generated resource
 	 */
 	public Reader createResource(GeneratorContext context);
 	
-	
-	/**
-	 * Returns the prefix used to create mappings to this generator. 
-	 * The mappings starting with this prefix+colon(:)+mapping will use this generator. 
-	 * For instance, if prefix is 'jar', every mapping such as jar:someString is rendered
-	 * by this generator. 
-	 * @return
-	 */
-	public String getMappingPrefix();
 	
 	/**
 	 * Returns the request path to use when generating a URL to this generator. 
@@ -59,9 +50,8 @@ public interface ResourceGenerator {
 	 * application's path needs. Note that any prefix specified in the servlet mapping 
 	 * does not need to be included in the returned value. 
 	 *   
-	 * @return
+	 * @return the request path to use in debug mode
 	 */
 	public String getDebugModeRequestPath();
-
 	
 }

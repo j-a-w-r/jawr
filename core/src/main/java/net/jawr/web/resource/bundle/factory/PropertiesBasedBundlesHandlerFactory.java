@@ -28,12 +28,12 @@ import java.util.StringTokenizer;
 
 import net.jawr.web.config.JawrConfig;
 import net.jawr.web.exception.DuplicateBundlePathException;
-import net.jawr.web.resource.ResourceHandler;
 import net.jawr.web.resource.bundle.factory.util.PropertiesConfigHelper;
 import net.jawr.web.resource.bundle.factory.util.ResourceBundleDefinition;
 import net.jawr.web.resource.bundle.generator.GeneratorRegistry;
 import net.jawr.web.resource.bundle.handler.ResourceBundlesHandler;
-import net.jawr.web.resource.bundle.locale.LocaleUtils;
+import net.jawr.web.resource.handler.bundle.ResourceBundleHandler;
+import net.jawr.web.resource.handler.reader.ResourceReaderHandler;
 
 /**
  * Properties based configuration entry point.
@@ -68,13 +68,14 @@ public class PropertiesBasedBundlesHandlerFactory {
 	 *            ResourceHandler to access files.
 	 */
 	public PropertiesBasedBundlesHandlerFactory(Properties properties,
-			String resourceType, ResourceHandler rsHandler,
+			String resourceType, ResourceReaderHandler rsHandler, ResourceBundleHandler rsBundleHandler,
 			GeneratorRegistry generatorRegistry) {
 		this.props = new PropertiesConfigHelper(properties, resourceType);
 
 		// Create the BundlesHandlerFactory
 		factory = new BundlesHandlerFactory();
-		factory.setResourceHandler(rsHandler);
+		factory.setResourceReaderHandler(rsHandler);
+		factory.setResourceBundleHandler(rsBundleHandler);
 		factory.setBundlesType(resourceType);
 
 		// Root resources dir
@@ -89,7 +90,9 @@ public class PropertiesBasedBundlesHandlerFactory {
 				.getProperty(PropertiesBundleConstant.BUNDLE_FACTORY_POSTPROCESSOR));
 		factory.setUnitPostProcessorKeys(props
 				.getProperty(PropertiesBundleConstant.BUNDLE_FACTORY_FILE_POSTPROCESSOR));
-
+		factory.setResourceTypeProcessorKeys(props
+				.getProperty(PropertiesBundleConstant.BUNDLE_FACTORY_PROCESSOR));
+		
 		// Single or multiple bundle for orphans settings.
 		factory.setUseSingleResourceFactory(Boolean.valueOf(
 				props.getProperty(PropertiesBundleConstant.FACTORY_USE_SINGLE_BUNDLE, "false"))
@@ -295,18 +298,14 @@ public class PropertiesBasedBundlesHandlerFactory {
 				String mapping = tk.nextToken().trim();
 				mappings.add(mapping);
 				// Add local variants
-				if(generatorRegistry.isMessageResourceGenerator(mapping)){
-					int idx = mapping.indexOf(GeneratorRegistry.PREFIX_SEPARATOR);
-					String msgBundle = mapping.substring(idx+1);
-					localeKeys.addAll(LocaleUtils.getAvailableLocaleSuffixesForBundle(msgBundle));
-				}
+				localeKeys.addAll(generatorRegistry.getAvailableLocales(mapping));
 			}
 			bundle.setMappings(mappings);
 			bundle.setLocaleVariantKeys(Collections.list(Collections.enumeration(localeKeys)));
+			
 		}
 
 		return bundle;
 	}
-	
-	
+
 }

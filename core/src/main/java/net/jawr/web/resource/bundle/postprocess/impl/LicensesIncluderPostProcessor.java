@@ -76,11 +76,11 @@ public class LicensesIncluderPostProcessor extends
 			if(log.isDebugEnabled())
 				log.debug("Adding license file: " + path);
 			
-			Reader rd;
+			Reader rd = null;
 			try {
-				rd = status.getRsHandler().getResource(path);
+				rd = status.getRsReader().getResource(path);
 			} catch (ResourceNotFoundException e) {
-				throw new RuntimeException("Unexpected ResourceNotFoundException when reading a sorting file [" + e.getRequestedPath() + "]",e);
+				throw new RuntimeException("Unexpected ResourceNotFoundException when reading a sorting file [" + path + "]");
 			}
 			
 			// Make a buffered reader, to read line by line. 

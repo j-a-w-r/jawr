@@ -6,9 +6,10 @@ import java.util.Properties;
 
 import net.jawr.web.config.JawrConfig;
 import net.jawr.web.exception.ResourceNotFoundException;
-import net.jawr.web.resource.ResourceHandler;
 import net.jawr.web.resource.bundle.handler.ResourceBundlesHandler;
 import net.jawr.web.resource.bundle.iterator.ResourceBundlePathsIterator;
+import net.jawr.web.resource.handler.bundle.ResourceBundleHandler;
+import net.jawr.web.resource.handler.reader.ResourceReaderHandler;
 import test.net.jawr.web.resource.bundle.PredefinedBundlesHandlerUtil;
 
 
@@ -26,9 +27,14 @@ public class ResourceBundlesHandlerImplTest  extends  ResourceHandlerBasedTest {
 		try {
 			Charset charsetUtf = Charset.forName("UTF-8"); 
 			
-			ResourceHandler handler = createResourceHandler(ROOT_DEFAULT_FOLDER,charsetUtf);
-			ResourceHandler handlerSimple = createResourceHandler(ROOT_SIMPLE_FOLDER,charsetUtf);
-			ResourceHandler handlerDebug = createResourceHandler(ROOT_DEFAULT_DEBUG_FOLDER,charsetUtf);
+			ResourceReaderHandler handler = createResourceReaderHandler(ROOT_DEFAULT_FOLDER,charsetUtf);
+			ResourceReaderHandler handlerSimple = createResourceReaderHandler(ROOT_SIMPLE_FOLDER,charsetUtf);
+			ResourceReaderHandler handlerDebug = createResourceReaderHandler(ROOT_DEFAULT_DEBUG_FOLDER,charsetUtf);
+			
+			ResourceBundleHandler bundleHandler = createResourceBundleHandler(ROOT_DEFAULT_FOLDER,charsetUtf);
+			ResourceBundleHandler bundleHandlerSimple = createResourceBundleHandler(ROOT_SIMPLE_FOLDER,charsetUtf);
+			ResourceBundleHandler bundleHandlerDebug = createResourceBundleHandler(ROOT_DEFAULT_DEBUG_FOLDER,charsetUtf);
+			
 			JawrConfig config = new JawrConfig(new Properties());
 			config.setCharsetName("UTF-8");
 			config.setDebugModeOn(false);
@@ -41,9 +47,9 @@ public class ResourceBundlesHandlerImplTest  extends  ResourceHandlerBasedTest {
 			configDebug.setDebugModeOn(true);
 			//configDebug.setURLPrefix(RESOURCES_PREFIX);
 			
-			defaultHandler = PredefinedBundlesHandlerUtil.buildSingleBundleHandler(handler, config);
-			simpleHandler = PredefinedBundlesHandlerUtil.buildSimpleBundles(handlerSimple,"/js","js", config);
-			defaultDebugCollection = PredefinedBundlesHandlerUtil.buildSimpleBundles(handlerDebug,"/js","js", configDebug);
+			defaultHandler = PredefinedBundlesHandlerUtil.buildSingleBundleHandler(handler, bundleHandler, config);
+			simpleHandler = PredefinedBundlesHandlerUtil.buildSimpleBundles(handlerSimple, bundleHandlerSimple,"/js","js", config);
+			defaultDebugCollection = PredefinedBundlesHandlerUtil.buildSimpleBundles(handlerDebug, bundleHandlerDebug,"/js","js", configDebug);
 			
 		} catch (Exception e) {
 			System.out.println("Error in test constructor");

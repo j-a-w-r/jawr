@@ -14,18 +14,13 @@
 package net.jawr.web.resource.bundle.postprocess.impl;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.Reader;
 import java.io.StringWriter;
-import java.nio.channels.Channels;
-import java.nio.channels.ReadableByteChannel;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import net.jawr.web.JawrConstant;
 import net.jawr.web.exception.ResourceNotFoundException;
 import net.jawr.web.resource.bundle.IOUtils;
-import net.jawr.web.resource.bundle.factory.util.ClassLoaderResourceUtils;
 import net.jawr.web.resource.bundle.factory.util.PathNormalizer;
 import net.jawr.web.resource.bundle.factory.util.RegexUtil;
 import net.jawr.web.resource.bundle.postprocess.AbstractChainedResourceBundlePostProcessor;
@@ -82,7 +77,7 @@ public class CSSImportPostProcessor extends
 
 	/**
 	 * Retrieve the content of the css to import
-	 * @param cssPathToImport
+	 * @param cssPathToImport the path of the css to import
 	 * @param status the bundle processing status
 	 * @return the content of the css to import
 	 * @throws IOException if an IOException occurs
@@ -92,26 +87,17 @@ public class CSSImportPostProcessor extends
 		String currentCssPath = status.getLastPathAdded();
 		
 		String path = cssPathToImport;
-		if(!cssPathToImport.startsWith("/") && !path.startsWith(JawrConstant.CLASSPATH_RESOURCE_PREFIX)){ // relative URL
+
+		if(!cssPathToImport.startsWith("/") && !status.getJawrConfig().getGeneratorRegistry().isPathGenerated(path)){ // relative URL
 			path = PathNormalizer.concatWebPath(currentCssPath, cssPathToImport);
 		}
 		
 		Reader reader = null;
 		
-		if(path.startsWith(JawrConstant.CLASSPATH_RESOURCE_PREFIX)){
-			String realPath = path.substring(JawrConstant.CLASSPATH_RESOURCE_PREFIX.length());
-			InputStream is = ClassLoaderResourceUtils.getResourceAsStream(realPath, this.getClass());
-			if(is == null){
-				throw new IOException("Css to import '"+path+"' was not found");
-			}
-			ReadableByteChannel chan = Channels.newChannel(is);
-			reader = Channels.newReader(chan,status.getJawrConfig().getResourceCharset().newDecoder (),-1);
-		}else{
-			try {
-				reader = status.getRsHandler().getResource(path, true);
-			} catch (ResourceNotFoundException e) {
-				throw new IOException("Css to import '"+path+"' was not found");
-			}
+		try {
+			reader = status.getRsReader().getResource(path, true);
+		} catch (ResourceNotFoundException e) {
+			throw new IOException("Css to import '"+path+"' was not found");
 		}
 		
 		StringWriter content = new StringWriter();

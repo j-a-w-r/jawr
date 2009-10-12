@@ -11,9 +11,9 @@
  * either express or implied. See the License for the specific language governing permissions
  * and limitations under the License.
  */
-package net.jawr.web.resource.bundle.factory.processor;
+package net.jawr.web.resource.bundle.factory.postprocessor;
 
-import net.jawr.web.resource.bundle.postprocess.ChainedResourceBundlePostProcessor;
+import net.jawr.web.resource.bundle.postprocess.AbstractChainedResourceBundlePostProcessor;
 import net.jawr.web.resource.bundle.postprocess.PostProcessFactoryConstant;
 import net.jawr.web.resource.bundle.postprocess.ResourceBundlePostProcessor;
 import net.jawr.web.resource.bundle.postprocess.impl.JSMinPostProcessor;
@@ -47,7 +47,7 @@ public class JSPostProcessorChainFactory extends AbstractPostProcessorChainFacto
 	/* (non-Javadoc)
 	 * @see net.jawr.web.resource.bundle.factory.processor.PostProcessorChainFactory#getPostProcessor(java.lang.String)
 	 */
-	protected ChainedResourceBundlePostProcessor buildProcessorByKey(String procesorKey){
+	protected AbstractChainedResourceBundlePostProcessor buildProcessorByKey(String procesorKey){
 		if(PostProcessFactoryConstant.JSMIN.equals(procesorKey))
 			return buildJSMinPostProcessor();
 		else if (PostProcessFactoryConstant.LICENSE_INCLUDER.equals(procesorKey))

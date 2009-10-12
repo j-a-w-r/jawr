@@ -17,6 +17,8 @@ import java.util.Map;
 
 import net.jawr.web.collections.ConcurrentCollectionsFactory;
 import net.jawr.web.config.JawrConfig;
+import net.jawr.web.resource.handler.bundle.ResourceBundleHandler;
+import net.jawr.web.resource.handler.reader.ResourceReaderHandler;
 
 /**
  * This class defines the image resource handler.
@@ -33,15 +35,20 @@ public class ImageResourcesHandler {
 	private JawrConfig jawrConfig;
 	
 	/** The resource handler */
-	private ResourceHandler rsHandler;
+	private ResourceReaderHandler rsHandler;
+	
+	/** The resource bundle handler */
+	private ResourceBundleHandler rsBundleHandler;
 	
 	/**
 	 * Constructor
 	 * @param config
+	 * @param rsHandler 
 	 */
-	public ImageResourcesHandler(JawrConfig config, ResourceHandler rsHandler){
+	public ImageResourcesHandler(JawrConfig config, ResourceReaderHandler rsHandler, ResourceBundleHandler rsBundleHandler){
 		this.jawrConfig = config;
 		this.rsHandler = rsHandler;
+		this.rsBundleHandler = rsBundleHandler;
 	}
 	
 	/**
@@ -62,15 +69,23 @@ public class ImageResourcesHandler {
 	 * Returns the resource handler
 	 * @return the resource handler
 	 */
-	public ResourceHandler getRsHandler() {
+	public ResourceReaderHandler getRsReaderHandler() {
 		return rsHandler;
+	}
+	
+	/**
+	 * Returns the resource handler
+	 * @return the resource handler
+	 */
+	public ResourceBundleHandler getRsBundleHandler() {
+		return rsBundleHandler;
 	}
 	
 	/**
 	 * Sets the resource handler
 	 * @param rsHandler the resource handler to set
 	 */
-	public void setRsHandler(ResourceHandler rsHandler) {
+	public void setRsReaderHandler(ResourceReaderHandler rsHandler) {
 		this.rsHandler = rsHandler;
 	}
 	

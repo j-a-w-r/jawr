@@ -20,7 +20,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.jawr.web.resource.bundle.factory.util.RegexUtil;
-import net.jawr.web.util.StringUtils;
 
 /**
  * Minifies CSS files by removing expendable whitespace and comments. 

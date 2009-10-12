@@ -19,7 +19,7 @@ import java.util.Locale;
 import javax.servlet.ServletContext;
 
 import net.jawr.web.config.JawrConfig;
-import net.jawr.web.resource.ResourceHandler;
+import net.jawr.web.resource.handler.reader.ResourceReaderHandler;
 
 /**
  * Encapsulates the parameters needed in Generators.
@@ -51,7 +51,7 @@ public class GeneratorContext {
 	private String bracketsParam;
 
 	/** The resource handler */
-	private ResourceHandler resourceHandler;
+	private ResourceReaderHandler resourceReaderHandler;
 
 	/**
 	 * This flag indicates if we are currently processing the bundle or not. This flag has been added so the generator have different behavior
@@ -128,8 +128,8 @@ public class GeneratorContext {
 	 * 
 	 * @return the resourceHandler
 	 */
-	public ResourceHandler getResourceHandler() {
-		return resourceHandler;
+	public ResourceReaderHandler getResourceReaderHandler() {
+		return resourceReaderHandler;
 	}
 
 	/**
@@ -137,8 +137,8 @@ public class GeneratorContext {
 	 * 
 	 * @param resourceHandler the resourceHandler to set
 	 */
-	public void setResourceHandler(ResourceHandler resourceHandler) {
-		this.resourceHandler = resourceHandler;
+	public void setResourceReaderHandler(ResourceReaderHandler resourceHandler) {
+		this.resourceReaderHandler = resourceHandler;
 	}
 
 	/**

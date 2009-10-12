@@ -19,8 +19,8 @@ import java.util.List;
 import java.util.Set;
 
 import net.jawr.web.exception.DuplicateBundlePathException;
-import net.jawr.web.resource.ResourceHandler;
 import net.jawr.web.resource.bundle.factory.util.PathNormalizer;
+import net.jawr.web.resource.handler.reader.ResourceReaderHandler;
 
 import org.apache.log4j.Logger;
 
@@ -49,7 +49,7 @@ public class ResourceBundleDirMapper extends AbstractResourceMapper{
 	 * @param resourceExtension Expected resource extension
 	 * @param excludedPaths Paths to exclude from the mappings. 
 	 */
-	public ResourceBundleDirMapper(String baseDir, ResourceHandler rsHandler, List currentBundles,String resourceExtension, Set excludedPaths) {
+	public ResourceBundleDirMapper(String baseDir, ResourceReaderHandler rsHandler, List currentBundles,String resourceExtension, Set excludedPaths) {
 		super(baseDir,rsHandler,currentBundles,resourceExtension);
 		this.excludedPaths = initExcludedPathList(excludedPaths);
 	}

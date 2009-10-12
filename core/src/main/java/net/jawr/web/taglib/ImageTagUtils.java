@@ -54,7 +54,7 @@ public final class ImageTagUtils {
 		String contextPath = request.getContextPath();
 		
 		// relative path
-		if(!imgSrc.startsWith("/")){ 
+		if(!imgRsHandler.getJawrConfig().getGeneratorRegistry().isGeneratedImage(imgSrc) && !imgSrc.startsWith("/")){ 
 			imgSrc = PathNormalizer.concatWebPath(request.getRequestURI(), imgSrc);
 			int idx = imgSrc.indexOf(contextPath);
 			if(idx > -1){
@@ -67,7 +67,7 @@ public final class ImageTagUtils {
         JawrConfig jawrConfig = imgRsHandler.getJawrConfig();
 		if(newUrl == null){
         	try {
-				newUrl = CheckSumUtils.getCacheBustedUrl(imgSrc, imgRsHandler.getRsHandler(), jawrConfig);
+				newUrl = CheckSumUtils.getCacheBustedUrl(imgSrc, imgRsHandler.getRsReaderHandler(), jawrConfig);
 				imgRsHandler.addMapping(imgSrc, newUrl);
         	} catch (IOException e) {
 	    		logger.info("Unable to create the checksum for the image '"+imgSrc+"' while generating image tag.");

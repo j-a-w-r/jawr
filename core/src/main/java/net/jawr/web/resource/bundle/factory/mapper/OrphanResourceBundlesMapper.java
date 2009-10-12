@@ -20,11 +20,11 @@ import java.util.List;
 import java.util.Set;
 
 import net.jawr.web.exception.DuplicateBundlePathException;
-import net.jawr.web.resource.ResourceHandler;
 import net.jawr.web.resource.bundle.InclusionPattern;
 import net.jawr.web.resource.bundle.JoinableResourceBundle;
 import net.jawr.web.resource.bundle.JoinableResourceBundleImpl;
 import net.jawr.web.resource.bundle.factory.util.PathNormalizer;
+import net.jawr.web.resource.handler.reader.ResourceReaderHandler;
 
 import org.apache.log4j.Logger;
 
@@ -45,7 +45,7 @@ public class OrphanResourceBundlesMapper {
 	protected String baseDir;
 	
 	/** The resource handler */
-	protected ResourceHandler rsHandler;
+	protected ResourceReaderHandler rsHandler;
 	
 	/** The list of current bundles */
 	protected List currentBundles;
@@ -65,7 +65,7 @@ public class OrphanResourceBundlesMapper {
 	 * @param resourceExtension the resource file extension
 	 */
 	public OrphanResourceBundlesMapper(String baseDir,
-			ResourceHandler rsHandler, List currentBundles,
+			ResourceReaderHandler rsHandler, List currentBundles,
 			String resourceExtension) {
 		if(!"".equals(baseDir) && !"/".equals(baseDir))
 			this.baseDir = "/" + PathNormalizer.normalizePath(baseDir) + "/**";

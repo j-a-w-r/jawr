@@ -11,20 +11,19 @@ import java.io.Writer;
 import java.nio.channels.Channels;
 import java.nio.channels.WritableByteChannel;
 import java.nio.charset.Charset;
-import java.util.HashSet;
 import java.util.Properties;
-import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.regex.Pattern;
 
 import net.jawr.web.config.JawrConfig;
 import net.jawr.web.exception.DuplicateBundlePathException;
-import net.jawr.web.resource.FileSystemResourceHandler;
 import net.jawr.web.resource.bundle.handler.ResourceBundlesHandler;
 import net.jawr.web.resource.bundle.renderer.BundleRenderer;
 import net.jawr.web.resource.bundle.renderer.BundleRendererContext;
 import net.jawr.web.resource.bundle.renderer.CSSHTMLBundleLinkRenderer;
 import net.jawr.web.resource.bundle.renderer.JavascriptHTMLBundleLinkRenderer;
+import net.jawr.web.resource.handler.bundle.ResourceBundleHandler;
+import net.jawr.web.resource.handler.reader.ResourceReaderHandler;
 import net.jawr.web.util.StringUtils;
 import test.net.jawr.web.resource.bundle.PredefinedBundlesHandlerUtil;
 import test.net.jawr.web.resource.bundle.handler.ResourceHandlerBasedTest;
@@ -57,15 +56,16 @@ public class BundleLinkRendererTest  extends ResourceHandlerBasedTest{
 	     
 	    Charset charsetUtf = Charset.forName("UTF-8"); 
 			
-	    FileSystemResourceHandler rsHandler = createResourceHandler(ROOT_TESTDIR,charsetUtf);
+	    ResourceReaderHandler rsHandler = createResourceReaderHandler(ROOT_TESTDIR,charsetUtf);
+	    ResourceBundleHandler rsBundleHandler = createResourceBundleHandler(ROOT_TESTDIR,charsetUtf);
 	    jawrConfig = new JawrConfig(new Properties());
 	    jawrConfig.setCharsetName("UTF-8");
 	    jawrConfig.setServletMapping("/srvMapping");
 	    ResourceBundlesHandler jsHandler = null;
 	    ResourceBundlesHandler cssHandler = null;
 	    try {
-	    	jsHandler = PredefinedBundlesHandlerUtil.buildSimpleBundles(rsHandler,JS_BASEDIR,"js", jawrConfig);
-	    	cssHandler = PredefinedBundlesHandlerUtil.buildSimpleBundles(rsHandler,CSS_BASEDIR,"css", jawrConfig);
+	    	jsHandler = PredefinedBundlesHandlerUtil.buildSimpleBundles(rsHandler,rsBundleHandler,JS_BASEDIR,"js", jawrConfig);
+	    	cssHandler = PredefinedBundlesHandlerUtil.buildSimpleBundles(rsHandler,rsBundleHandler,CSS_BASEDIR,"css", jawrConfig);
 		} catch (DuplicateBundlePathException e) {
 			// 
 			throw new RuntimeException(e);
@@ -95,7 +95,6 @@ public class BundleLinkRendererTest  extends ResourceHandlerBasedTest{
 		jawrConfig.setDebugModeOn(false);
 		
 		// Test regular link creation
-	    Set includedBundles = new HashSet();
 	    bundleRendererCtx = new BundleRendererContext(CSS_CTX_PATH, null, false, false);
 	    String result = renderToString(cssRenderer,"/css/lib/lib.css", bundleRendererCtx);
 		
@@ -128,7 +127,6 @@ public class BundleLinkRendererTest  extends ResourceHandlerBasedTest{
 		result = renderToString(cssRenderer,"/css/lib/lib.css", bundleRendererCtx);
 		assertEquals("Tags were repeated","", result.trim());
 		
-		includedBundles = new HashSet();
 		bundleRendererCtx = new BundleRendererContext(CSS_CTX_PATH, null, false, false);
 	    
 		//globalBundleAdded = false;
@@ -168,7 +166,6 @@ public class BundleLinkRendererTest  extends ResourceHandlerBasedTest{
 		jawrConfig.setDebugModeOn(false);
 		
 		// Test regular link creation
-	    Set includedBundles = new HashSet();
 	    bundleRendererCtx = new BundleRendererContext(JS_CTX_PATH, null, false, false);
 	    String result = renderToString(jsRenderer,"/js/one/one2.js", bundleRendererCtx);
 		
@@ -197,7 +194,6 @@ public class BundleLinkRendererTest  extends ResourceHandlerBasedTest{
 		String globalZTag = JS_PRE_TAG + "/ctxPathJs/srvMapping" + BundleRenderer.GZIP_PATH_PREFIX + "globalPfx/global.js" + JS_POST_TAG;
 		String debOffZTag = JS_PRE_TAG + "/ctxPathJs/srvMapping" + BundleRenderer.GZIP_PATH_PREFIX + "pfx/debugOff.js" + JS_POST_TAG;
 		String debOffoneTag = JS_PRE_TAG + "/ctxPathJs/srvMapping" + BundleRenderer.GZIP_PATH_PREFIX + "pfx/js/one.js" + JS_POST_TAG;
-		includedBundles = new HashSet();
 		bundleRendererCtx = new BundleRendererContext(JS_CTX_PATH, null, true, false);
 	    //globalBundleAdded = false;
 		result = renderToString(jsRenderer,"/js/one/one2.js", bundleRendererCtx);
@@ -211,7 +207,6 @@ public class BundleLinkRendererTest  extends ResourceHandlerBasedTest{
 		
 		// Reusing the set, we test that no repeats are allowed. 
 		result = renderToString(jsRenderer,"/js/one/one2.js", bundleRendererCtx);
-		String one2Tag = JS_PRE_TAG + "/ctxPathJs/srvMapping"+BundleRenderer.GZIP_PATH_PREFIX + "pfx/js/one.js" + JS_POST_TAG;
 		assertTrue("Tags were repeated", StringUtils.isEmpty(result));
 		
 	}
@@ -226,7 +221,6 @@ public class BundleLinkRendererTest  extends ResourceHandlerBasedTest{
 		jawrConfig.setDebugModeOn(true);
 		
 		// Test regular link creation
-	    Set includedBundles = new HashSet();
 	    bundleRendererCtx = new BundleRendererContext(JS_CTX_PATH, null, false, false);
 	    
 	    String result = renderToString(jsRenderer,"/js/one/one2.js", bundleRendererCtx);
@@ -294,7 +288,6 @@ public class BundleLinkRendererTest  extends ResourceHandlerBasedTest{
 		//boolean isSslRequest = false;
 		
 		// Test regular link creation
-	    Set includedBundles = new HashSet();
 	    bundleRendererCtx = new BundleRendererContext(JS_CTX_PATH, null, false, false);
 	    
 	    String result = renderToString(jsRenderer,"/js/one/one2.js", bundleRendererCtx);
@@ -324,7 +317,6 @@ public class BundleLinkRendererTest  extends ResourceHandlerBasedTest{
 		String globalZTag = JS_PRE_TAG + contextPathOverride+"/srvMapping" + BundleRenderer.GZIP_PATH_PREFIX + "globalPfx/global.js" + JS_POST_TAG;
 		String debOffZTag = JS_PRE_TAG + contextPathOverride+"/srvMapping" + BundleRenderer.GZIP_PATH_PREFIX + "pfx/debugOff.js" + JS_POST_TAG;
 		String debOffoneTag = JS_PRE_TAG + contextPathOverride+"/srvMapping" + BundleRenderer.GZIP_PATH_PREFIX + "pfx/js/one.js" + JS_POST_TAG;
-		includedBundles = new HashSet();
 		bundleRendererCtx = new BundleRendererContext(JS_CTX_PATH, null, true, false);
 		result = renderToString(jsRenderer,"/js/one/one2.js", bundleRendererCtx);
 		assertNotSame("No gzip script tags written ", "", result.trim());
@@ -351,7 +343,6 @@ public class BundleLinkRendererTest  extends ResourceHandlerBasedTest{
 		jawrConfig.setContextPathSslOverride(contextPathSslOverride+"/");
 		
 		// Test regular link creation
-	    Set includedBundles = new HashSet();
 	    bundleRendererCtx = new BundleRendererContext(JS_CTX_PATH, null, false, true);
 		
 	    String result = renderToString(jsRenderer,"/js/one/one2.js", bundleRendererCtx);
@@ -380,7 +371,6 @@ public class BundleLinkRendererTest  extends ResourceHandlerBasedTest{
 		String globalZTag = JS_PRE_TAG + contextPathSslOverride+"/srvMapping" + BundleRenderer.GZIP_PATH_PREFIX + "globalPfx/global.js" + JS_POST_TAG;
 		String debOffZTag = JS_PRE_TAG + contextPathSslOverride+"/srvMapping" + BundleRenderer.GZIP_PATH_PREFIX + "pfx/debugOff.js" + JS_POST_TAG;
 		String debOffoneTag = JS_PRE_TAG + contextPathSslOverride+"/srvMapping" + BundleRenderer.GZIP_PATH_PREFIX + "pfx/js/one.js" + JS_POST_TAG;
-		includedBundles = new HashSet();
 		bundleRendererCtx = new BundleRendererContext(JS_CTX_PATH, null, true, true);
 		
 		result = renderToString(jsRenderer,"/js/one/one2.js", bundleRendererCtx);
@@ -407,7 +397,6 @@ public class BundleLinkRendererTest  extends ResourceHandlerBasedTest{
 		jawrConfig.setContextPathSslOverride(contextPathSslOverride);
 		
 		// Test regular link creation
-	    Set includedBundles = new HashSet();
 	    bundleRendererCtx = new BundleRendererContext(JS_CTX_PATH, null, false, true);
 		
 	    String result = renderToString(jsRenderer,"/js/one/one2.js", bundleRendererCtx);
@@ -437,7 +426,6 @@ public class BundleLinkRendererTest  extends ResourceHandlerBasedTest{
 		String globalZTag = JS_PRE_TAG + "srvMapping" + BundleRenderer.GZIP_PATH_PREFIX + "globalPfx/global.js" + JS_POST_TAG;
 		String debOffZTag = JS_PRE_TAG + "srvMapping" + BundleRenderer.GZIP_PATH_PREFIX + "pfx/debugOff.js" + JS_POST_TAG;
 		String debOffoneTag = JS_PRE_TAG + "srvMapping" + BundleRenderer.GZIP_PATH_PREFIX + "pfx/js/one.js" + JS_POST_TAG;
-		includedBundles = new HashSet();
 		bundleRendererCtx = new BundleRendererContext(JS_CTX_PATH, null, true, true);
 		
 		result = renderToString(jsRenderer,"/js/one/one2.js", bundleRendererCtx);
@@ -461,7 +449,6 @@ public class BundleLinkRendererTest  extends ResourceHandlerBasedTest{
 		jawrConfig.setContextPathSslOverride("https://mydomain.com/aPath/");
 		
 		// Test regular link creation
-	    Set includedBundles = new HashSet();
 	    bundleRendererCtx = new BundleRendererContext(JS_CTX_PATH, null, false, false);
 		
 	    String result = renderToString(jsRenderer,"/js/one/one2.js", bundleRendererCtx);
@@ -490,7 +477,6 @@ public class BundleLinkRendererTest  extends ResourceHandlerBasedTest{
 		String globalZTag = JS_PRE_TAG + "srvMapping" + BundleRenderer.GZIP_PATH_PREFIX + "globalPfx/global.js" + JS_POST_TAG;
 		String debOffZTag = JS_PRE_TAG + "srvMapping" + BundleRenderer.GZIP_PATH_PREFIX + "pfx/debugOff.js" + JS_POST_TAG;
 		String debOffoneTag = JS_PRE_TAG + "srvMapping" + BundleRenderer.GZIP_PATH_PREFIX + "pfx/js/one.js" + JS_POST_TAG;
-		includedBundles = new HashSet();
 		bundleRendererCtx = new BundleRendererContext(JS_CTX_PATH, null, true, false);
 		result = renderToString(jsRenderer,"/js/one/one2.js", bundleRendererCtx);
 		assertNotSame("No gzip script tags written ", "", result.trim());

@@ -3,7 +3,6 @@ package test.net.jawr.web.resource.bundle.factory;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
-import java.nio.channels.ReadableByteChannel;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -13,17 +12,17 @@ import java.util.Set;
 
 import junit.framework.TestCase;
 import net.jawr.web.exception.ResourceNotFoundException;
-import net.jawr.web.resource.ResourceHandler;
 import net.jawr.web.resource.bundle.InclusionPattern;
 import net.jawr.web.resource.bundle.JoinableResourceBundle;
-import net.jawr.web.resource.bundle.JoinableResourceBundleContent;
 import net.jawr.web.resource.bundle.JoinableResourceBundleImpl;
 import net.jawr.web.resource.bundle.JoinableResourceBundlePropertySerializer;
 import net.jawr.web.resource.bundle.factory.FullMappingPropertiesBasedBundlesHandlerFactory;
-import net.jawr.web.resource.bundle.factory.processor.PostProcessorChainFactory;
+import net.jawr.web.resource.bundle.factory.postprocessor.PostProcessorChainFactory;
 import net.jawr.web.resource.bundle.postprocess.AbstractChainedResourceBundlePostProcessor;
 import net.jawr.web.resource.bundle.postprocess.BundleProcessingStatus;
 import net.jawr.web.resource.bundle.postprocess.ResourceBundlePostProcessor;
+import net.jawr.web.resource.handler.reader.ResourceReader;
+import net.jawr.web.resource.handler.reader.ResourceReaderHandler;
 
 /**
  * Test case for FullMappingPropertiesBasedBundlesHandlerFactory
@@ -36,7 +35,7 @@ public class FullMappingPropertiesBasedBundlesHandlerFactoryTestCase extends
 
 	public void testGetResourceBundles() {
 		
-		ResourceHandler rsHandler = new TestResourceHandler();
+		ResourceReaderHandler rsHandler = new TestResourceReaderHandler();
 		PostProcessorChainFactory chainFactory = new TestPostProcessorChainFactory();
 		
 		FullMappingPropertiesBasedBundlesHandlerFactory factory = new FullMappingPropertiesBasedBundlesHandlerFactory("js", rsHandler, chainFactory);
@@ -95,7 +94,7 @@ public class FullMappingPropertiesBasedBundlesHandlerFactoryTestCase extends
 		String bundleName = "myGlobalBundle";
 		List mappings = Arrays.asList(new String[]{"/bundle/content/**", "/bundle/myScript.js"});
 		
-		ResourceHandler handler = new TestResourceHandler();
+		ResourceReaderHandler handler = new TestResourceReaderHandler();
 		InclusionPattern inclusionPattern = new InclusionPattern(true, 0);
 		JoinableResourceBundle bundle = new JoinableResourceBundleImpl("/bundle/myGlobalBundle.js", bundleName, ".js", inclusionPattern, handler);
 		bundle.setMappings(mappings);
@@ -109,7 +108,7 @@ public class FullMappingPropertiesBasedBundlesHandlerFactoryTestCase extends
 		String bundleName = "myBundle";
 		List mappings = Arrays.asList(new String[]{"/bundle/content/**", "/bundle/myScript.js"});
 		
-		ResourceHandler handler = new TestResourceHandler();
+		ResourceReaderHandler handler = new TestResourceReaderHandler();
 		InclusionPattern inclusionPattern = new InclusionPattern(true, 3, true, false);
 		JoinableResourceBundleImpl bundle = new JoinableResourceBundleImpl("/bundle/myBundle.js", bundleName, ".js", inclusionPattern, handler);
 		bundle.setMappings(mappings);
@@ -177,7 +176,7 @@ public class FullMappingPropertiesBasedBundlesHandlerFactoryTestCase extends
 		}
 	}
 	
-	private static class TestResourceHandler implements ResourceHandler{
+	private static class TestResourceReaderHandler implements ResourceReaderHandler{
 
 		public Set getResourceNames(String path) {
 			
@@ -190,13 +189,12 @@ public class FullMappingPropertiesBasedBundlesHandlerFactoryTestCase extends
 			return path.endsWith("/**");
 		}
 
-		public Reader getCssClasspathResource(String resourceName)
-				throws ResourceNotFoundException {
-			return null;
+		public void addResourceReaderToEnd(ResourceReader rd) {
+			
 		}
 
-		public Properties getJawrBundleMapping() {
-			return null;
+		public void addResourceReaderToStart(ResourceReader rd) {
+			
 		}
 
 		public Reader getResource(String resourceName)
@@ -211,43 +209,25 @@ public class FullMappingPropertiesBasedBundlesHandlerFactoryTestCase extends
 
 		public InputStream getResourceAsStream(String resourceName)
 				throws ResourceNotFoundException {
+				return null;
+		}
+
+		public InputStream getResourceAsStream(String resourceName,
+				boolean processingBundle) throws ResourceNotFoundException {
 			return null;
 		}
 
-		public ReadableByteChannel getResourceBundleChannel(String bundleName)
-				throws ResourceNotFoundException {
+		public String getWorkingDirectory() {
 			return null;
-		}
-
-		public Reader getResourceBundleReader(String bundleName)
-				throws ResourceNotFoundException {
-			return null;
-		}
-
-		public String getResourceType() {
-			return null;
-		}
-
-		public InputStream getTemporaryResourceAsStream(String resourceName)
-				throws ResourceNotFoundException {
-			return null;
-		}
-
-		public boolean isExistingMappingFile() {
-			return false;
 		}
 
 		public boolean isResourceGenerated(String path) {
 			return false;
 		}
 
-		public void storeBundle(String bundleName,
-				JoinableResourceBundleContent bundleResourcesContent) {
-			
-		}
+		public void setWorkingDirectory(String workingDir) {
 
-		public void storeJawrBundleMapping(Properties bundleMapping) {
-			
 		}
+		
 	}
 }

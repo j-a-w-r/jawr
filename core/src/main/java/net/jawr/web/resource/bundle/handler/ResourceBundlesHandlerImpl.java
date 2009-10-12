@@ -36,14 +36,13 @@ import net.jawr.web.collections.ConcurrentCollectionsFactory;
 import net.jawr.web.config.JawrConfig;
 import net.jawr.web.exception.ResourceNotFoundException;
 import net.jawr.web.resource.ImageResourcesHandler;
-import net.jawr.web.resource.ResourceHandler;
 import net.jawr.web.resource.bundle.CompositeResourceBundle;
 import net.jawr.web.resource.bundle.IOUtils;
 import net.jawr.web.resource.bundle.JoinableResourceBundle;
 import net.jawr.web.resource.bundle.JoinableResourceBundleContent;
-import net.jawr.web.resource.bundle.JoinableResourceBundleImpl;
 import net.jawr.web.resource.bundle.JoinableResourceBundlePropertySerializer;
-import net.jawr.web.resource.bundle.generator.ResourceGenerator;
+import net.jawr.web.resource.bundle.global.preprocessor.GlobalPreprocessor;
+import net.jawr.web.resource.bundle.global.preprocessor.GlobalPreprocessingContext;
 import net.jawr.web.resource.bundle.iterator.ConditionalCommentCallbackHandler;
 import net.jawr.web.resource.bundle.iterator.DebugModePathsIteratorImpl;
 import net.jawr.web.resource.bundle.iterator.PathsIteratorImpl;
@@ -51,8 +50,9 @@ import net.jawr.web.resource.bundle.iterator.ResourceBundlePathsIterator;
 import net.jawr.web.resource.bundle.locale.LocaleUtils;
 import net.jawr.web.resource.bundle.postprocess.BundleProcessingStatus;
 import net.jawr.web.resource.bundle.postprocess.ResourceBundlePostProcessor;
-import net.jawr.web.resource.bundle.postprocess.impl.CSSURLPathRewriterPostProcessor;
 import net.jawr.web.resource.bundle.sorting.GlobalResourceBundleComparator;
+import net.jawr.web.resource.handler.bundle.ResourceBundleHandler;
+import net.jawr.web.resource.handler.reader.ResourceReaderHandler;
 
 import org.apache.log4j.Logger;
 
@@ -83,7 +83,10 @@ public class ResourceBundlesHandlerImpl implements ResourceBundlesHandler {
 	private List contextBundles;
 
 	/** The resource handler */
-	private ResourceHandler resourceHandler;
+	private ResourceReaderHandler resourceHandler;
+
+	/** The resource handler */
+	private ResourceBundleHandler resourceBundleHandler;
 
 	/** The Jawr config */
 	private JawrConfig config;
@@ -94,6 +97,9 @@ public class ResourceBundlesHandlerImpl implements ResourceBundlesHandler {
 	/** The unitary post processor */
 	private ResourceBundlePostProcessor unitaryPostProcessor;
 
+	/** The resourceTypeBundle processor */
+	private GlobalPreprocessor resourceTypeProcessor;
+	
 	/** The client side handler generator */
 	private ClientSideHandlerGenerator clientSideHandlerGenerator;
 
@@ -107,8 +113,8 @@ public class ResourceBundlesHandlerImpl implements ResourceBundlesHandler {
 	 * @param resourceHandler The file system access handler.
 	 * @param config Configuration for this handler.
 	 */
-	public ResourceBundlesHandlerImpl(List bundles, ResourceHandler resourceHandler, JawrConfig config) {
-		this(bundles, resourceHandler, config, null, null);
+	public ResourceBundlesHandlerImpl(List bundles, ResourceReaderHandler resourceHandler, ResourceBundleHandler resourceBundleHandler, JawrConfig config) {
+		this(bundles, resourceHandler, resourceBundleHandler, config, null, null, null);
 	}
 
 	/**
@@ -119,13 +125,15 @@ public class ResourceBundlesHandlerImpl implements ResourceBundlesHandler {
 	 * @param config Configuration for this handler.
 	 * @param postProcessor
 	 */
-	public ResourceBundlesHandlerImpl(List bundles, ResourceHandler resourceHandler, JawrConfig config, ResourceBundlePostProcessor postProcessor,
-			ResourceBundlePostProcessor unitaryPostProcessor) {
+	public ResourceBundlesHandlerImpl(List bundles, ResourceReaderHandler resourceHandler, ResourceBundleHandler resourceBundleHandler, JawrConfig config, ResourceBundlePostProcessor postProcessor,
+			ResourceBundlePostProcessor unitaryPostProcessor, GlobalPreprocessor resourceTypeProcessor) {
 		super();
 		this.resourceHandler = resourceHandler;
+		this.resourceBundleHandler = resourceBundleHandler;
 		this.config = config;
 		this.postProcessor = postProcessor;
 		this.unitaryPostProcessor = unitaryPostProcessor;
+		this.resourceTypeProcessor= resourceTypeProcessor;
 		this.bundles = ConcurrentCollectionsFactory.buildCopyOnWriteArrayList();
 		this.bundles.addAll(bundles);
 		splitBundlesByType(bundles);
@@ -277,7 +285,7 @@ public class ResourceBundlesHandlerImpl implements ResourceBundlesHandler {
 		}else{
 			// Prefixes are used only in production mode
 			bundlePath = removePrefixFromPath(bundlePath);
-			rd = resourceHandler.getResourceBundleReader(bundlePath);
+			rd = resourceBundleHandler.getResourceBundleReader(bundlePath);
 		}
 
 		try {
@@ -301,7 +309,7 @@ public class ResourceBundlesHandlerImpl implements ResourceBundlesHandler {
 
 		try {
 		
-			ReadableByteChannel data = resourceHandler.getResourceBundleChannel(bundlePath);
+			ReadableByteChannel data = resourceBundleHandler.getResourceBundleChannel(bundlePath);
 			WritableByteChannel outChannel = Channels.newChannel(out);
 			IOUtils.copy(data, outChannel);
 
@@ -326,13 +334,20 @@ public class ResourceBundlesHandlerImpl implements ResourceBundlesHandler {
 	 */
 	public void initAllBundles() {
 
+		
 		if (config.getUseBundleMapping()) {
-			bundleMapping = resourceHandler.getJawrBundleMapping();
+			bundleMapping = resourceBundleHandler.getJawrBundleMapping();
 		}
-
+		
 		// Run through every bundle
-		boolean mappingFileExists = resourceHandler.isExistingMappingFile();
+		boolean mappingFileExists = resourceBundleHandler.isExistingMappingFile();
 		boolean processBundle = !config.getUseBundleMapping() || !mappingFileExists;
+		
+		if(resourceTypeProcessor != null){
+			GlobalPreprocessingContext ctx = new GlobalPreprocessingContext(config, resourceHandler, processBundle);
+			resourceTypeProcessor.processBundles(ctx, bundles);
+		}
+		
 		for (Iterator itCol = bundles.iterator(); itCol.hasNext();) {
 			JoinableResourceBundle bundle = (JoinableResourceBundle) itCol.next();
 			if (bundle instanceof CompositeResourceBundle)
@@ -341,15 +356,15 @@ public class ResourceBundlesHandlerImpl implements ResourceBundlesHandler {
 				joinAndStoreBundle(bundle, processBundle);
 			
 			if(config.getUseBundleMapping() && !mappingFileExists){
-				JoinableResourceBundlePropertySerializer.serializeInProperties(bundle, resourceHandler.getResourceType(), bundleMapping);
+				JoinableResourceBundlePropertySerializer.serializeInProperties(bundle, resourceBundleHandler.getResourceType(), bundleMapping);
 			}
 		}
 
 		if (config.getUseBundleMapping() && !mappingFileExists) {
-			resourceHandler.storeJawrBundleMapping(bundleMapping);
+			resourceBundleHandler.storeJawrBundleMapping(bundleMapping);
 			
 				
-			if(resourceHandler.getResourceType().equals(JawrConstant.CSS_TYPE)){
+			if(resourceBundleHandler.getResourceType().equals(JawrConstant.CSS_TYPE)){
 				// Retrieve the image servlet mapping
 				ImageResourcesHandler imgRsHandler = (ImageResourcesHandler) config.getContext().getAttribute(JawrConstant.IMG_CONTEXT_ATTRIBUTE);
 				if(imgRsHandler != null){
@@ -364,7 +379,7 @@ public class ResourceBundlesHandlerImpl implements ResourceBundlesHandler {
 						// Store the bundle mapping
 						Properties props = new Properties();
 						props.putAll(imgRsHandler.getImageMap());
-						imgRsHandler.getRsHandler().storeJawrBundleMapping(props);
+						imgRsHandler.getRsBundleHandler().storeJawrBundleMapping(props);
 						
 					}
 				}
@@ -400,7 +415,7 @@ public class ResourceBundlesHandlerImpl implements ResourceBundlesHandler {
 			}
 			String name = LocaleUtils.getLocalizedBundleName(composite.getId(), variant);
 			if (processBundle) {
-				resourceHandler.storeBundle(name, store);
+				resourceBundleHandler.storeBundle(name, store);
 				initBundleDataHashcode(composite, store, variant);
 			} 
 		}
@@ -415,7 +430,7 @@ public class ResourceBundlesHandlerImpl implements ResourceBundlesHandler {
 		// Store the collected resources as a single file, both in text and gzip formats.
 		if (processBundle) {
 
-			resourceHandler.storeBundle(composite.getId(), store);
+			resourceBundleHandler.storeBundle(composite.getId(), store);
 			// Set the data hascode in the bundle, in case the prefix needs to be generated
 			initBundleDataHashcode(composite, store, null);
 		} 
@@ -448,7 +463,7 @@ public class ResourceBundlesHandlerImpl implements ResourceBundlesHandler {
 				String name = LocaleUtils.getLocalizedBundleName(bundle.getId(), variantKey);
 				store = joinandPostprocessBundle(bundle, variantKey, processBundle);
 				if (processBundle) {
-					resourceHandler.storeBundle(name, store);
+					resourceBundleHandler.storeBundle(name, store);
 					initBundleDataHashcode(bundle, store, variantKey);
 					
 				} 
@@ -459,7 +474,7 @@ public class ResourceBundlesHandlerImpl implements ResourceBundlesHandler {
 		store = joinandPostprocessBundle(bundle, null, processBundle);
 
 		if (processBundle) {
-			resourceHandler.storeBundle(bundle.getId(), store);
+			resourceBundleHandler.storeBundle(bundle.getId(), store);
 			// Set the data hascode in the bundle, in case the prefix needs to be generated
 			initBundleDataHashcode(bundle, store, null);
 		} 
@@ -502,7 +517,8 @@ public class ResourceBundlesHandlerImpl implements ResourceBundlesHandler {
 					log.debug("Adding file [" + path + "] to bundle " + bundle.getId());
 
 				// Get a reader on the resource, with appropiate encoding
-				Reader rd;
+				Reader rd = null;
+				
 				try {
 					rd = resourceHandler.getResource(path, true);
 				} catch (ResourceNotFoundException e) {
@@ -510,7 +526,7 @@ public class ResourceBundlesHandlerImpl implements ResourceBundlesHandler {
 					log.warn("A mapped resource was not found: [" + path + "]. Please check your configuration");
 					continue;
 				}
-
+				
 				// Update the status.
 				status.setLastPathAdded(path);
 
@@ -530,18 +546,11 @@ public class ResourceBundlesHandlerImpl implements ResourceBundlesHandler {
 				if (null != bundle.getUnitaryPostProcessor()) {
 					StringBuffer resourceData = bundle.getUnitaryPostProcessor().postProcessBundle(status, writer.getBuffer());
 
-					// Set the CSS Classpath resource data for the debug mode
-					initializeCssClasspathMap(bundleContent, status, writer.getBuffer());
-
 					bundleData.append(resourceData);
 				} else if (null != this.unitaryPostProcessor) {
 					if (log.isDebugEnabled())
 						log.debug("POSTPROCESSING UNIT:" + status.getLastPathAdded());
 					StringBuffer resourceData = this.unitaryPostProcessor.postProcessBundle(status, writer.getBuffer());
-					
-					// Set the CSS Classpath resource data for the debug mode
-					initializeCssClasspathMap(bundleContent, status, writer.getBuffer());
-
 					bundleData.append(resourceData);
 				} else
 					bundleData.append(writer.getBuffer());
@@ -561,32 +570,6 @@ public class ResourceBundlesHandlerImpl implements ResourceBundlesHandler {
 
 		bundleContent.setContent(store);
 		return bundleContent;
-	}
-
-	/**
-	 * Initialize the bundle content for CSS classpath.
-	 * 
-	 * @param bundleContent the bundle content
-	 * @param status the status
-	 * @param resourceData the resource data
-	 * @param resourceBundlePostProcessor the resourceBundle post processor
-	 */
-	private void initializeCssClasspathMap(JoinableResourceBundleContent bundleContent, BundleProcessingStatus status, StringBuffer resourceData) {
-
-		// Set the CSS Classpath resource data for the debug mode
-		String filePath = status.getLastPathAdded();
-		if (filePath.startsWith(JawrConstant.CLASSPATH_RESOURCE_PREFIX)) {
-		
-			// Here we create a new context where the bundle name is the Jawr generator CSS path
-			// The version of the CSS classpath for debug mode will be different compare to the standard one
-			JoinableResourceBundle tempBundle = new JoinableResourceBundleImpl(ResourceGenerator.CSS_DEBUGPATH, null, null, null, null);
-			BundleProcessingStatus tempStatus = new BundleProcessingStatus(tempBundle, status.getRsHandler(), status.getJawrConfig());
-			
-			tempStatus.setLastPathAdded(status.getLastPathAdded());
-			CSSURLPathRewriterPostProcessor resourceBundlePostProcessor = new CSSURLPathRewriterPostProcessor();
-			resourceData = resourceBundlePostProcessor.postProcessBundle(tempStatus, resourceData);
-			bundleContent.putCssClasspathDebugContent(filePath.substring(JawrConstant.CLASSPATH_RESOURCE_PREFIX.length()), resourceData.toString());
-		}
 	}
 
 	/*

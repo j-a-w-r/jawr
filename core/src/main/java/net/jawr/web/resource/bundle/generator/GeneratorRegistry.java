@@ -14,6 +14,7 @@
 package net.jawr.web.resource.bundle.generator;
 
 import java.io.Reader;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -22,21 +23,24 @@ import java.util.Map;
 import net.jawr.web.JawrConstant;
 import net.jawr.web.collections.ConcurrentCollectionsFactory;
 import net.jawr.web.config.JawrConfig;
-import net.jawr.web.resource.ResourceHandler;
 import net.jawr.web.resource.bundle.factory.util.ClassLoaderResourceUtils;
 import net.jawr.web.resource.bundle.generator.classpath.ClassPathCSSGenerator;
+import net.jawr.web.resource.bundle.generator.classpath.ClassPathImgResourceGenerator;
 import net.jawr.web.resource.bundle.generator.classpath.ClasspathJSGenerator;
 import net.jawr.web.resource.bundle.generator.dwr.DWRGeneratorFactory;
 import net.jawr.web.resource.bundle.generator.validator.CommonsValidatorGenerator;
 import net.jawr.web.resource.bundle.locale.ResourceBundleMessagesGenerator;
+import net.jawr.web.resource.handler.reader.LocaleAwareResourceReader;
+import net.jawr.web.resource.handler.reader.ResourceReader;
+import net.jawr.web.resource.handler.reader.ResourceReaderHandler;
 import net.jawr.web.servlet.JawrRequestHandler;
 
 /**
  * Registry for resource generators, which create scripts or CSS data dynamically, 
  * as opposed to the usual behavior of reading a resource from the war file. 
  * It provides methods to determine if a path mapping should be handled by a generator, 
- * and to actually render the resource using the appropiate generator. 
- * Path mappings which require generation will use a prefix (preferrably one which ends with 
+ * and to actually render the resource using the appropriate generator. 
+ * Path mappings which require generation will use a prefix (preferably one which ends with 
  * a colon, such as 'messages:'). 
  * Generators provided with Jawr will be automatically mapped. 
  * 
@@ -63,6 +67,15 @@ public class GeneratorRegistry {
 	/** The generator prefix registry */
 	private final List prefixRegistry = ConcurrentCollectionsFactory.buildCopyOnWriteArrayList();
 	
+	/** The locale aware resource prefix registry */
+	private final List localeAwareResourceGeneratorPrefixRegistry = ConcurrentCollectionsFactory.buildCopyOnWriteArrayList();
+	
+	/** The CSS image resource prefix registry */
+	private final List cssImageResourceGeneratorPrefixRegistry = ConcurrentCollectionsFactory.buildCopyOnWriteArrayList();
+	
+	/** The image resource prefix registry */
+	private final List imageResourceGeneratorPrefixRegistry = ConcurrentCollectionsFactory.buildCopyOnWriteArrayList();
+	
 	/** The generator registry */
 	private final Map registry = ConcurrentCollectionsFactory.buildConcurrentHashMap();
 	
@@ -71,6 +84,9 @@ public class GeneratorRegistry {
 	
 	/** The Jawr config */
 	private JawrConfig config;
+	
+	/** The resource handler */
+	private ResourceReaderHandler rsHandler;
 	
 	/**
 	 * Use only for testing purposes.
@@ -100,26 +116,64 @@ public class GeneratorRegistry {
 	}
 	
 	/**
+	 * Sets the resource handler 
+	 * @param rsHandler the rsHandler to set
+	 */
+	public void setResourceReaderHandler(ResourceReaderHandler rsHandler) {
+		this.rsHandler = rsHandler;
+	}
+
+	/**
 	 * Lazy loads generators, to avoid the need for undesired dependencies. 
 	 * 
 	 * @param generatorKey the generator key
 	 */
 	private void loadGenerator(String generatorKey) {
+		PrefixedResourceGenerator generator = null;
 		if((MESSAGE_BUNDLE_PREFIX + PREFIX_SEPARATOR).equals(generatorKey)){
-			registry.put(generatorKey, new ResourceBundleMessagesGenerator());
+			generator = new ResourceBundleMessagesGenerator();
 		}
 		else if((CLASSPATH_RESOURCE_BUNDLE_PREFIX + PREFIX_SEPARATOR).equals(generatorKey)){
 			if(resourceType.equals(JawrConstant.JS_TYPE)){
-				registry.put(generatorKey, new ClasspathJSGenerator());
+				generator = new ClasspathJSGenerator();
+			}else if(resourceType.equals(JawrConstant.CSS_TYPE)){
+				generator = new ClassPathCSSGenerator(config.isUsingClasspathCssImageServlet());
 			}else{
-				registry.put(generatorKey, new ClassPathCSSGenerator());
+				generator = new ClassPathImgResourceGenerator();
 			}
 		}
 		else if((DWR_BUNDLE_PREFIX + PREFIX_SEPARATOR).equals(generatorKey)){
-			registry.put(generatorKey, DWRGeneratorFactory.createDWRGenerator());
+			generator = DWRGeneratorFactory.createDWRGenerator();
 		}
 		else if((COMMONS_VALIDATOR_PREFIX + PREFIX_SEPARATOR).equals(generatorKey)){
-			registry.put(generatorKey, new CommonsValidatorGenerator());
+			generator = new CommonsValidatorGenerator();
+		}
+		
+		if(generator != null){
+			updateRegistries(generator, generatorKey);
+			ResourceReader proxy = ResourceGeneratorReaderProxyFactory.getResourceReaderProxy(generator, rsHandler, config);
+			rsHandler.addResourceReaderToEnd(proxy);
+		}
+	}
+
+	/**
+	 * Update the registries with the generator given in parameter
+	 * @param generator the generator
+	 * @param generatorKey the generator key
+	 */
+	private void updateRegistries(PrefixedResourceGenerator generator, String generatorKey) {
+		
+		registry.put(generatorKey, generator);
+		if(generator instanceof LocaleAwareResourceReader){
+			localeAwareResourceGeneratorPrefixRegistry.add(generatorKey);
+		}
+		if(generator instanceof StreamResourceGenerator){
+			imageResourceGeneratorPrefixRegistry.add(generatorKey);
+		}
+		if(generator instanceof CssResourceGenerator){
+			if(((CssResourceGenerator) generator).isHandlingCssImage()){
+				cssImageResourceGeneratorPrefixRegistry.add(generatorKey);
+			}
 		}
 	}
 	
@@ -129,7 +183,7 @@ public class GeneratorRegistry {
 	 * @param clazz the classname of the generator
 	 */
 	public void registerGenerator(String clazz){
-		ResourceGenerator generator = (ResourceGenerator) ClassLoaderResourceUtils.buildObjectInstance(clazz);
+		PrefixedResourceGenerator generator = (PrefixedResourceGenerator) ClassLoaderResourceUtils.buildObjectInstance(clazz);
 		
 		if(null == generator.getMappingPrefix() || "".equals(generator.getMappingPrefix()) )
 			throw new IllegalStateException("The getMappingPrefix() method must return something at " + clazz);
@@ -149,7 +203,8 @@ public class GeneratorRegistry {
 		}
 		
 		prefixRegistry.add(generator.getMappingPrefix() + PREFIX_SEPARATOR);
-		registry.put(generator.getMappingPrefix() + PREFIX_SEPARATOR, generator);
+		updateRegistries(generator, generator.getMappingPrefix() + PREFIX_SEPARATOR);
+		rsHandler.addResourceReaderToEnd(ResourceGeneratorReaderProxyFactory.getResourceReaderProxy(generator, rsHandler, config));
 	}
 	
 	/**
@@ -169,7 +224,7 @@ public class GeneratorRegistry {
 	 * @return the reader for the contents
 	 */
 	public Reader createResource(String path,
-			ResourceHandler resourceHandler, boolean processingBundle) {
+			ResourceReaderHandler resourceHandler, boolean processingBundle) {
 		String key = matchPath(path);
 		Locale locale = null;
 		
@@ -192,7 +247,7 @@ public class GeneratorRegistry {
 		}
 		GeneratorContext context = new GeneratorContext(config, path.substring(key.length()));
 		context.setLocale(locale);
-		context.setResourceHandler(resourceHandler);
+		context.setResourceReaderHandler(resourceHandler);
 		context.setProcessingBundle(processingBundle);
 		
 		return ((ResourceGenerator)registry.get(key)).createResource(context);
@@ -239,26 +294,82 @@ public class GeneratorRegistry {
 	 * @return the registry key corresponding to the path
 	 */
 	private String matchPath(String path) {
-		String rets = null;
-		for(Iterator it = prefixRegistry.iterator();it.hasNext() && rets == null;) {
+		String generatorKey = null;
+		for(Iterator it = prefixRegistry.iterator();it.hasNext() && generatorKey == null;) {
 			String prefix = (String) it.next();
 			if(path.startsWith(prefix))
-				rets = prefix;			
+				generatorKey = prefix;			
 		}	
 		// Lazy load generator
-		if(null != rets && !registry.containsKey(rets))
-			loadGenerator(rets);
+		if(null != generatorKey && !registry.containsKey(generatorKey))
+			loadGenerator(generatorKey);
 		
-		return rets;
+		return generatorKey;
 	}
 
 	/**
-	 * Returns true if the path match a message resource generator
-	 * @param path the path
-	 * @return true if the path match a message resource generator
+	 * Loads the generator which corresponds to the specified path. 
+	 * @param path the resource path
 	 */
-	public boolean isMessageResourceGenerator(String path){
+	public void loadGeneratorIfNeeded(String path) {
 		
-		return path.startsWith(MESSAGE_BUNDLE_PREFIX+PREFIX_SEPARATOR);	
+		matchPath(path);
+	}
+	
+	/**
+	 * Returns the available locales for a bundle
+	 * @param bundle the message
+	 * @return the available locales for a bundle
+	 */
+	public List getAvailableLocales(String bundle) {
+		
+		List availableLocales = new ArrayList();
+		String generatorKey = matchPath(bundle);
+		if(generatorKey != null){
+			ResourceGenerator generator = (ResourceGenerator) registry.get(generatorKey);
+			if(generator instanceof LocaleAwareResourceReader){
+				
+				List tempResult = ((LocaleAwareResourceReader)generator).getAvailableLocales(bundle.substring(generatorKey.length()));
+				if(tempResult != null){
+					availableLocales = tempResult;
+				}
+			}
+		}
+		
+		return availableLocales;
+	}
+	
+	/**
+	 * Returns true if the generator associated to the css resource path handle also CSS image.
+	 * @param cssResourcePath the Css resource path
+	 * @return true if the generator associated to the css resource path handle also CSS image.
+	 */
+	public boolean isHandlingCssImage(String cssResourcePath){
+	
+		boolean isHandlingCssImage = false;
+		
+		String generatorKey = matchPath(cssResourcePath);
+		if(generatorKey != null && cssImageResourceGeneratorPrefixRegistry.contains(generatorKey)){
+			isHandlingCssImage = true;
+		}
+		
+		return isHandlingCssImage;
+	}
+	
+	/**
+	 * Returns true if the generator associated to the image resource path is an Image generator.
+	 * @param imgResourcePath the image resource path
+	 * @return true if the generator associated to the image resource path is an Image generator.
+	 */
+	public boolean isGeneratedImage(String imgResourcePath){
+	
+		boolean isGeneratedImage = false;
+		
+		String generatorKey = matchPath(imgResourcePath);
+		if(generatorKey != null && imageResourceGeneratorPrefixRegistry.contains(generatorKey)){
+			isGeneratedImage = true;
+		}
+		
+		return isGeneratedImage;
 	}
 }

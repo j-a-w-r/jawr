@@ -45,9 +45,6 @@ public class JawrConstant {
 	/** The cache buster separator */
 	public static final String CACHE_BUSTER_PREFIX = "cb";
 
-	/** The cache buster separator */
-	public static final String CLASSPATH_CACHE_BUSTER_PREFIX = "cpCb";
-
 	/** The Jawr application config manager attribute */
 	public static final String JAWR_APPLICATION_CONFIG_MANAGER = "net.jawr.web.jmx.JAWR_APPLICATION_CONFIG_MANAGER";
 
@@ -86,5 +83,17 @@ public class JawrConstant {
 
 	/** The property which enables the use of JMX */
 	public static final String JMX_ENABLE_FLAG_SYSTEL_PROPERTY = "com.sun.management.jmxremote";
+	
+	/** The servlet temp directory property name */
+	public static final String SERVLET_CONTEXT_TEMPDIR = "javax.servlet.context.tempdir";
+
+	/** The smartsprites temporary directory */
+	public static final String CSS_SMARTSPRITES_TMP_DIR = "/cssSprites/src/";
+
+	/** The ID of the CSS sprite global preprocessor */
+	public static final String GLOBAL_CSS_SMARTSPRITES_PREPROCESSOR_ID = "smartsprites";
+
+	/** The ID of the empty global preprocessor */
+	public static final String EMPTY_GLOBAL_PREPROCESSOR_ID = "none";
 	
 }

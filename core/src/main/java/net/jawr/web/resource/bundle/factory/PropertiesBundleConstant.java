@@ -48,10 +48,13 @@ public class PropertiesBundleConstant {
 	/** The suffix for the property indicating if we must create a bundle for the orphans */ 
 	public static final String FACTORY_PROCESS_ORPHANS = "factory.use.orphans.mapper";
 
-	/** The suffix for the property defining if the bundle post processors */ 
+	/** The suffix for the property defining the resource type processors */ 
+	public static final String BUNDLE_FACTORY_PROCESSOR = "bundle.factory.global.preprocessors";
+
+	/** The suffix for the property defining the bundle post processors */ 
 	public static final String BUNDLE_FACTORY_POSTPROCESSOR = "bundle.factory.bundlepostprocessors";
 	
-	/** The suffix for the property defining if the file post processors */ 
+	/** The suffix for the property defining the file post processors */ 
 	public static final String BUNDLE_FACTORY_FILE_POSTPROCESSOR = "bundle.factory.filepostprocessors";
 
 	/** The name of the property indicating if we must use the bundle names property to define the bundles to process */

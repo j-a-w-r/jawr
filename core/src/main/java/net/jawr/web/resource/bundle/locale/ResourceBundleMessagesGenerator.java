@@ -14,6 +14,7 @@
 package net.jawr.web.resource.bundle.locale;
 
 import java.io.Reader;
+import java.util.List;
 
 import net.jawr.web.JawrConstant;
 import net.jawr.web.resource.bundle.factory.util.ClassLoaderResourceUtils;
@@ -22,6 +23,7 @@ import net.jawr.web.resource.bundle.generator.GeneratorContext;
 import net.jawr.web.resource.bundle.generator.GeneratorRegistry;
 import net.jawr.web.resource.bundle.generator.ResourceGenerator;
 import net.jawr.web.resource.bundle.locale.message.MessageBundleScriptCreator;
+import net.jawr.web.resource.handler.reader.LocaleAwareResourceReader;
 
 import org.apache.log4j.Logger;
 
@@ -32,7 +34,7 @@ import org.apache.log4j.Logger;
  * @author Jordi Hernández Sellés
  *
  */
-public class ResourceBundleMessagesGenerator extends AbstractJavascriptGenerator implements ResourceGenerator {
+public class ResourceBundleMessagesGenerator extends AbstractJavascriptGenerator implements ResourceGenerator, LocaleAwareResourceReader {
 	
 	/** The logger */
 	private static final Logger log = Logger.getLogger(ResourceBundleMessagesGenerator.class);
@@ -82,5 +84,13 @@ public class ResourceBundleMessagesGenerator extends AbstractJavascriptGenerator
 			path = path.replaceAll("\\|", "_");
 		}
 		return path+"."+JawrConstant.JS_TYPE;
+	}
+
+	/* (non-Javadoc)
+	 * @see net.jawr.web.resource.handler.LocaleAwareResourceReader#getAvailableLocales(java.lang.String)
+	 */
+	public List getAvailableLocales(String resource) {
+		
+		return LocaleUtils.getAvailableLocaleSuffixesForBundle(resource);
 	}
 }

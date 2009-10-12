@@ -17,8 +17,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.jawr.web.config.JawrConfig;
-import net.jawr.web.resource.ResourceHandler;
 import net.jawr.web.resource.bundle.JoinableResourceBundle;
+import net.jawr.web.resource.handler.reader.ResourceReaderHandler;
 
 /**
  * This class encapsulates the status of a bundling process. It is meant to let 
@@ -32,8 +32,8 @@ public class BundleProcessingStatus {
 	/** The current bundle */
 	private final JoinableResourceBundle currentBundle;
 	
-	/** The resource handler */
-	private final ResourceHandler rsHandler;
+	/** The resource reader */
+	private final ResourceReaderHandler rsReader;
 	
 	/** The Jawr config */
 	private final JawrConfig jawrConfig;
@@ -51,10 +51,10 @@ public class BundleProcessingStatus {
 	 * @param jawrConfig the Jawr config
 	 */
 	public BundleProcessingStatus(final JoinableResourceBundle currentBundle,
-			final ResourceHandler rsHandler,final JawrConfig jawrConfig) {
+			final ResourceReaderHandler rsHandler,final JawrConfig jawrConfig) {
 		super();
 		this.currentBundle = currentBundle;
-		this.rsHandler = rsHandler;
+		this.rsReader = rsHandler;
 		this.jawrConfig = jawrConfig;
 	}
 	
@@ -86,8 +86,8 @@ public class BundleProcessingStatus {
 	 * Returns the resource handler
 	 * @return the resource handler
 	 */
-	public ResourceHandler getRsHandler() {
-		return rsHandler;
+	public ResourceReaderHandler getRsReader() {
+		return rsReader;
 	}
 
 	/**

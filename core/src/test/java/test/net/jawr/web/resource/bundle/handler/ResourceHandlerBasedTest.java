@@ -1,17 +1,22 @@
 package test.net.jawr.web.resource.bundle.handler;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.Reader;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 import java.nio.charset.Charset;
+import java.util.Properties;
 import java.util.zip.GZIPInputStream;
 
 import junit.framework.TestCase;
-import net.jawr.web.resource.FileSystemResourceHandler;
+import net.jawr.web.config.JawrConfig;
 import net.jawr.web.resource.bundle.generator.GeneratorRegistry;
+import net.jawr.web.resource.handler.bundle.ResourceBundleHandler;
+import net.jawr.web.resource.handler.bundle.ServletContextResourceBundleHandler;
+import net.jawr.web.resource.handler.reader.ResourceReaderHandler;
+import net.jawr.web.resource.handler.reader.ServletContextResourceReaderHandler;
 import test.net.jawr.web.FileUtils;
+import test.net.jawr.web.servlet.mock.MockServletContext;
 
 /**
  *
@@ -22,19 +27,60 @@ public abstract class ResourceHandlerBasedTest  extends  TestCase {
     protected static final String TMP_DIR = "tmp/";
 	protected static final String WORK_DIR = "work/";
 	
-	protected FileSystemResourceHandler createResourceHandler(String rootDir,Charset charset) {
-	try {
-	    FileUtils.createDir(rootDir);
+	protected ResourceReaderHandler createResourceReaderHandler(String rootDir,Charset charset) {
+		try {
+		    FileUtils.createDir(rootDir);
 
-	    File tmp = FileUtils.createDir(rootDir + TMP_DIR);
+		    String work = FileUtils.createDir(rootDir + WORK_DIR).getCanonicalPath().replaceAll("%20", " ");
+		    MockServletContext ctx = new MockServletContext(work, rootDir + TMP_DIR);
+		    
+		    GeneratorRegistry generatorRegistry = new GeneratorRegistry();
+		    JawrConfig config = new JawrConfig(new Properties());
+		    config.setCharsetName(charset.name());
+			return new ServletContextResourceReaderHandler(ctx, config, generatorRegistry);
+		} catch (Exception ex) {
+		     ex.printStackTrace();
+		   throw new RuntimeException(ex);
+		}
+	}
+	
+	protected ResourceBundleHandler createResourceBundleHandler(String rootDir,Charset charset) {
+	
+		return createResourceBundleHandler(rootDir, charset, "js");
+	}
+	
+	protected ResourceBundleHandler createResourceBundleHandler(String rootDir,Charset charset, String resourceType) {
+		try {
+		    FileUtils.createDir(rootDir);
 
-	    String work = FileUtils.createDir(rootDir + WORK_DIR).getCanonicalPath().replaceAll("%20", " ");
-	    return new FileSystemResourceHandler(work, tmp, charset, new GeneratorRegistry(), null);
-	} catch (Exception ex) {
-	     ex.printStackTrace();
-	   throw new RuntimeException(ex);
+		    String work = FileUtils.createDir(rootDir + WORK_DIR).getCanonicalPath().replaceAll("%20", " ");
+		    String temp = FileUtils.createDir(rootDir + TMP_DIR).getCanonicalPath().replaceAll("%20", " ");
+		    MockServletContext ctx = new MockServletContext(work, temp);
+		    
+		    GeneratorRegistry generatorRegistry = new GeneratorRegistry();
+		    JawrConfig config = new JawrConfig(new Properties());
+		    config.setCharsetName(charset.name());
+			return new ServletContextResourceBundleHandler(ctx, charset, generatorRegistry, resourceType);
+		} catch (Exception ex) {
+		     ex.printStackTrace();
+		   throw new RuntimeException(ex);
+		}
 	}
-	}
+//	protected FileSystemResourceHandler createResourceHandler(String rootDir,Charset charset) {
+//	try {
+//	    FileUtils.createDir(rootDir);
+//
+//	    File tmp = FileUtils.createDir(rootDir + TMP_DIR);
+//
+//	    String work = FileUtils.createDir(rootDir + WORK_DIR).getCanonicalPath().replaceAll("%20", " ");
+//	    MockServletContext ctx = new MockServletContext(work, rootDir + TMP_DIR);
+//	    
+//	    return new FileSystemResourceHandler(work, tmp, charset, new GeneratorRegistry(), null);
+//	} catch (Exception ex) {
+//	     ex.printStackTrace();
+//	   throw new RuntimeException(ex);
+//	}
+//	}
 	
 
 	protected String fullyReadReader(Reader rd)  throws Exception {

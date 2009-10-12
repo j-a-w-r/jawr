@@ -11,7 +11,7 @@
  * either express or implied. See the License for the specific language governing permissions
  * and limitations under the License.
  */
-package net.jawr.web.resource.bundle.factory.processor;
+package net.jawr.web.resource.bundle.factory.postprocessor;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -20,7 +20,7 @@ import java.util.StringTokenizer;
 import java.util.Map.Entry;
 
 import net.jawr.web.resource.bundle.factory.util.ClassLoaderResourceUtils;
-import net.jawr.web.resource.bundle.postprocess.ChainedResourceBundlePostProcessor;
+import net.jawr.web.resource.bundle.postprocess.AbstractChainedResourceBundlePostProcessor;
 import net.jawr.web.resource.bundle.postprocess.EmptyResourceBundlePostProcessor;
 import net.jawr.web.resource.bundle.postprocess.PostProcessFactoryConstant;
 import net.jawr.web.resource.bundle.postprocess.ResourceBundlePostProcessor;
@@ -56,7 +56,7 @@ public abstract class AbstractPostProcessorChainFactory implements	PostProcessor
 		
 		StringTokenizer tk = new StringTokenizer(processorKeys,",");
 		
-		ChainedResourceBundlePostProcessor chain = null;
+		AbstractChainedResourceBundlePostProcessor chain = null;
 		while(tk.hasMoreTokens())
 			chain = addOrCreateChain(chain,tk.nextToken());
 		
@@ -70,12 +70,12 @@ public abstract class AbstractPostProcessorChainFactory implements	PostProcessor
 	 * @param key the id of the post processor
 	 * @return the chained post processor, with the new post processor.
 	 */
-	private ChainedResourceBundlePostProcessor addOrCreateChain(ChainedResourceBundlePostProcessor chain, String key) {
+	private AbstractChainedResourceBundlePostProcessor addOrCreateChain(AbstractChainedResourceBundlePostProcessor chain, String key) {
 		
-		ChainedResourceBundlePostProcessor toAdd;
+		AbstractChainedResourceBundlePostProcessor toAdd;
 		
 		if(null != customPostProcessors.get(key)) {
-			toAdd = (ChainedResourceBundlePostProcessor)customPostProcessors.get(key);
+			toAdd = (AbstractChainedResourceBundlePostProcessor)customPostProcessors.get(key);
 		}
 		else toAdd = buildProcessorByKey(key);
 		
@@ -96,7 +96,7 @@ public abstract class AbstractPostProcessorChainFactory implements	PostProcessor
 	 * @param key the key name of the post processor
 	 * @return the chained post processor
 	 */
-	protected abstract ChainedResourceBundlePostProcessor buildProcessorByKey(String key);
+	protected abstract AbstractChainedResourceBundlePostProcessor buildProcessorByKey(String key);
 	
 
 	/**

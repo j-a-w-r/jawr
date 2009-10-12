@@ -24,6 +24,7 @@ import net.jawr.web.resource.ImageResourcesHandler;
 import net.jawr.web.resource.bundle.CheckSumUtils;
 import net.jawr.web.resource.bundle.factory.util.PathNormalizer;
 import net.jawr.web.resource.bundle.factory.util.RegexUtil;
+import net.jawr.web.resource.bundle.generator.GeneratorRegistry;
 import net.jawr.web.resource.bundle.generator.ResourceGenerator;
 import net.jawr.web.resource.bundle.postprocess.AbstractChainedResourceBundlePostProcessor;
 import net.jawr.web.resource.bundle.postprocess.BundleProcessingStatus;
@@ -204,19 +205,23 @@ public class CSSURLPathRewriterPostProcessor extends
 		
 		// Retrieve the current CSS file from which the CSS image is referenced
 		String currentCss = status.getLastPathAdded();
+		boolean generatedImg = false;
+		if(imgRsHandler != null){
+			GeneratorRegistry imgRsGeneratorRegistry = imgRsHandler.getJawrConfig().getGeneratorRegistry();
+			generatedImg = imgRsGeneratorRegistry.isGeneratedImage(url);
+		}
 		
-		boolean classpathImg = url.startsWith(JawrConstant.CLASSPATH_RESOURCE_PREFIX);
-		boolean classpathCss = isClassPathCss(currentCss, status);
+		boolean cssGeneratorIsHandleCssImage = isCssGeneratorHandlingCssImage(currentCss, status);
 		
 		String rootPath = currentCss;
 		
 		// If the CSS image is taken from the classpath, add the classpath cache prefix
-		if(classpathImg || classpathCss){
+		if(generatedImg || cssGeneratorIsHandleCssImage){
 			
 			String tempUrl = url;
 			
 			// If it's a classpath CSS, the url of the CSS image is defined relatively to it.
-			if(classpathCss){
+			if(cssGeneratorIsHandleCssImage){
 				tempUrl = PathNormalizer.concatWebPath(rootPath, url);
 			}
 
@@ -257,13 +262,13 @@ public class CSSURLPathRewriterPostProcessor extends
 
 
 	/**
-	 * Checks if the Css path in parameter is a classpath CSS. 
-	 * @param currentCss the CSS 
+	 * Checks if the Css generator associated to the Css resource path handle also the Css image resources. 
+	 * @param currentCss the CSS resource path
 	 * @param status the status
-	 * @return true if if the Css path in parameter is a classpath CSS. 
+	 * @return true if the Css generator associated to the Css resource path handle also the Css image resources. 
 	 */
-	private boolean isClassPathCss(String currentCss, BundleProcessingStatus status) {
-		return currentCss.startsWith(JawrConstant.CLASSPATH_RESOURCE_PREFIX) && status.getJawrConfig().isUsingClasspathCssImageServlet();
+	private boolean isCssGeneratorHandlingCssImage(String currentCss, BundleProcessingStatus status) {
+		return status.getJawrConfig().getGeneratorRegistry().isHandlingCssImage(currentCss);
 	}
 	
 	/**
@@ -290,7 +295,7 @@ public class CSSURLPathRewriterPostProcessor extends
 			}
 			// Retrieve the new URL with the cache prefix
 			try {
-				newUrl = CheckSumUtils.getCacheBustedUrl(url, status.getRsHandler(), status.getJawrConfig());
+				newUrl = CheckSumUtils.getCacheBustedUrl(url, imgRsHandler.getRsReaderHandler(), imgRsHandler.getJawrConfig());
 			} catch (ResourceNotFoundException e) {
 				log.info("Impossible to define the checksum for the resource '"+url+"'. ");
 				return url;
@@ -304,7 +309,6 @@ public class CSSURLPathRewriterPostProcessor extends
 		}else{
 			newUrl = url;
 		}
-		
 		
 		// Set the result in a cache, so we will not search for it the next time
 		status.setImageMapping(url, newUrl);

@@ -10,11 +10,11 @@ import java.util.List;
 import java.util.Set;
 
 import net.jawr.web.exception.DuplicateBundlePathException;
-import net.jawr.web.resource.ResourceHandler;
 import net.jawr.web.resource.bundle.InclusionPattern;
 import net.jawr.web.resource.bundle.JoinableResourceBundle;
 import net.jawr.web.resource.bundle.factory.mapper.OrphanResourceBundlesMapper;
 import net.jawr.web.resource.bundle.postprocess.ResourceBundlePostProcessor;
+import net.jawr.web.resource.handler.reader.ResourceReaderHandler;
 import test.net.jawr.web.resource.bundle.handler.ResourceHandlerBasedTest;
 
 /**
@@ -29,7 +29,7 @@ public class OrphanResourceBundlesMapperTest extends  ResourceHandlerBasedTest {
 		try {			
 			Charset charsetUtf = Charset.forName("UTF-8"); 
 			
-			ResourceHandler rsHandler = createResourceHandler(ROOT_TESTDIR,charsetUtf);
+			ResourceReaderHandler rsHandler = createResourceReaderHandler(ROOT_TESTDIR,charsetUtf);
 			List bundles = new ArrayList();
 			
 			List globalPaths = new ArrayList();

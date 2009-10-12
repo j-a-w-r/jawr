@@ -17,7 +17,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import net.jawr.web.config.JawrConfig;
-import net.jawr.web.resource.ResourceHandler;
+import net.jawr.web.resource.handler.reader.ResourceReaderHandler;
 
 /**
  * This class acts as a proxy for a group of bundles which are created independently but share a common id and 
@@ -30,6 +30,7 @@ import net.jawr.web.resource.ResourceHandler;
  */
 public class CompositeResourceBundle extends JoinableResourceBundleImpl {
 	
+	/** The child bundles */
 	private List childBundles;
 
 	/**
@@ -46,7 +47,7 @@ public class CompositeResourceBundle extends JoinableResourceBundleImpl {
      public CompositeResourceBundle(String id, String name,
 									List childBundles,
 									InclusionPattern inclusionPattern,
-									ResourceHandler resourceHandler,
+									ResourceReaderHandler resourceHandler,
 									String fileExtension, 
 									JawrConfig config) {
 		

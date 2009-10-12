@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
-import net.jawr.web.resource.FileNameUtils;
 import net.jawr.web.resource.bundle.factory.util.ClassLoaderResourceUtils;
 import net.jawr.web.util.StringUtils;
 

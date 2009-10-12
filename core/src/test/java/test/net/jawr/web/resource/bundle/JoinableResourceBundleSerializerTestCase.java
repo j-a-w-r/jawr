@@ -6,7 +6,6 @@ package test.net.jawr.web.resource.bundle;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
-import java.nio.channels.ReadableByteChannel;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -15,9 +14,7 @@ import java.util.Set;
 
 import junit.framework.TestCase;
 import net.jawr.web.exception.ResourceNotFoundException;
-import net.jawr.web.resource.ResourceHandler;
 import net.jawr.web.resource.bundle.InclusionPattern;
-import net.jawr.web.resource.bundle.JoinableResourceBundleContent;
 import net.jawr.web.resource.bundle.JoinableResourceBundleImpl;
 import net.jawr.web.resource.bundle.JoinableResourceBundlePropertySerializer;
 import net.jawr.web.resource.bundle.factory.PropertiesBundleConstant;
@@ -25,6 +22,8 @@ import net.jawr.web.resource.bundle.factory.util.PropertiesConfigHelper;
 import net.jawr.web.resource.bundle.postprocess.AbstractChainedResourceBundlePostProcessor;
 import net.jawr.web.resource.bundle.postprocess.BundleProcessingStatus;
 import net.jawr.web.resource.bundle.postprocess.ResourceBundlePostProcessor;
+import net.jawr.web.resource.handler.reader.ResourceReader;
+import net.jawr.web.resource.handler.reader.ResourceReaderHandler;
 
 /**
  * Test case for JoinableResourceBundle  serializer
@@ -39,7 +38,7 @@ public class JoinableResourceBundleSerializerTestCase extends TestCase {
 		String resourceType = "js";
 		List mappings = Arrays.asList(new String[]{"/bundle/content/**", "/bundle/myScript.js"});
 		
-		ResourceHandler handler = new TestResourceHandler();
+		ResourceReaderHandler handler = new TestResourceHandler();
 		InclusionPattern inclusionPattern = new InclusionPattern(true, 0);
 		JoinableResourceBundleImpl bundle = new JoinableResourceBundleImpl("/bundle/myBundle.js", bundleName, ".js", inclusionPattern, handler);
 		bundle.setMappings(mappings);
@@ -67,7 +66,7 @@ public class JoinableResourceBundleSerializerTestCase extends TestCase {
 		String resourceType = "js";
 		List mappings = Arrays.asList(new String[]{"/bundle/content/**", "/bundle/myScript.js"});
 		
-		ResourceHandler handler = new TestResourceHandler();
+		ResourceReaderHandler handler = new TestResourceHandler();
 		InclusionPattern inclusionPattern = new InclusionPattern(false, 3, true, false);
 		JoinableResourceBundleImpl bundle = new JoinableResourceBundleImpl("/bundle/myBundle.js", bundleName, ".js", inclusionPattern, handler);
 		bundle.setMappings(mappings);
@@ -127,7 +126,7 @@ public class JoinableResourceBundleSerializerTestCase extends TestCase {
 		
 	}
 
-	private static class TestResourceHandler implements ResourceHandler{
+	private static class TestResourceHandler implements ResourceReaderHandler{
 
 		public Set getResourceNames(String path) {
 			
@@ -140,13 +139,12 @@ public class JoinableResourceBundleSerializerTestCase extends TestCase {
 			return path.endsWith("/**");
 		}
 
-		public Reader getCssClasspathResource(String resourceName)
-				throws ResourceNotFoundException {
-			return null;
+		public void addResourceReaderToEnd(ResourceReader rd) {
+			
 		}
 
-		public Properties getJawrBundleMapping() {
-			return null;
+		public void addResourceReaderToStart(ResourceReader rd) {
+			
 		}
 
 		public Reader getResource(String resourceName)
@@ -164,39 +162,20 @@ public class JoinableResourceBundleSerializerTestCase extends TestCase {
 			return null;
 		}
 
-		public ReadableByteChannel getResourceBundleChannel(String bundleName)
-				throws ResourceNotFoundException {
+		public InputStream getResourceAsStream(String resourceName,
+				boolean processingBundle) throws ResourceNotFoundException {
 			return null;
 		}
 
-		public Reader getResourceBundleReader(String bundleName)
-				throws ResourceNotFoundException {
+		public String getWorkingDirectory() {
 			return null;
-		}
-
-		public String getResourceType() {
-			return null;
-		}
-
-		public InputStream getTemporaryResourceAsStream(String resourceName)
-				throws ResourceNotFoundException {
-			return null;
-		}
-
-		public boolean isExistingMappingFile() {
-			return false;
 		}
 
 		public boolean isResourceGenerated(String path) {
 			return false;
 		}
 
-		public void storeBundle(String bundleName,
-				JoinableResourceBundleContent bundleResourcesContent) {
-			
-		}
-
-		public void storeJawrBundleMapping(Properties bundleMapping) {
+		public void setWorkingDirectory(String workingDir) {
 			
 		}
 		

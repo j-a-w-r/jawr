@@ -5,7 +5,9 @@ import java.nio.channels.ReadableByteChannel;
 import java.nio.charset.Charset;
 import java.util.Set;
 
-import net.jawr.web.resource.FileSystemResourceHandler;
+import net.jawr.web.resource.bundle.JoinableResourceBundleContent;
+import net.jawr.web.resource.handler.bundle.ResourceBundleHandler;
+import net.jawr.web.resource.handler.reader.ResourceReaderHandler;
 import test.net.jawr.web.resource.bundle.handler.ResourceHandlerBasedTest;
 
 
@@ -24,16 +26,19 @@ public class FileSystemResourceHandlerTest extends ResourceHandlerBasedTest {
 	
 	private final String testStr;
 	
-	FileSystemResourceHandler subject;
+	ResourceReaderHandler rsReaderHandler;
 	
-   	public FileSystemResourceHandlerTest(){
+	ResourceBundleHandler rsBundleHandler;
+	
+	public FileSystemResourceHandlerTest(){
    		String temp = null;
 		try {			
 			// bytes for "αινσϊ€" in utf-8. Best way to avoid garbled class from wrongly encoded SVN commits
 			byte[] data = {-61,-95,-61,-87,	-61,-83,-61,-77,-61,-70,-30,-126,-84};
 			temp = new String(data,"UTF-8");
 			
-			subject = createResourceHandler(ROOT_TESTDIR,charsetUtf);
+			rsReaderHandler = createResourceReaderHandler(ROOT_TESTDIR,charsetUtf);
+			rsBundleHandler = createResourceBundleHandler(ROOT_TESTDIR,charsetUtf);
 		} catch (Exception e) {
 			fail("Error in test constructor " + e.getClass().getName() + ":"+ e.getMessage());
 		}
@@ -46,7 +51,7 @@ public class FileSystemResourceHandlerTest extends ResourceHandlerBasedTest {
          */
 	public void testGetResource() {
 		try {
-			Reader rd = subject.getResource(TEST_FILENAME);
+			Reader rd = rsReaderHandler.getResource(TEST_FILENAME);
 			assertNotNull(TEST_FILENAME + " was not found by the handler. ",rd);
 			String readData = fullyReadReader(rd);
 			
@@ -65,7 +70,7 @@ public class FileSystemResourceHandlerTest extends ResourceHandlerBasedTest {
 	public void testGetResourceNames() {
 		try {
 			// Get all files in root location. 
-			Set files = subject.getResourceNames("");
+			Set files = rsReaderHandler.getResourceNames("");
 			assertNotNull("No resource names found ",files);
 			
 			// File found
@@ -83,8 +88,8 @@ public class FileSystemResourceHandlerTest extends ResourceHandlerBasedTest {
 	 * Test if a directory is properly identified as such. 
 	 */
 	public void testIsDirectory() {
-		assertTrue("Subfolder '/folder/subfolder' was not considered a directory",subject.isDirectory("/folder/subfolder"));
-		assertFalse("File '/folder/second.js' was considered to be a directory", subject.isDirectory("/folder/second.js"));		
+		assertTrue("Subfolder '/folder/subfolder' was not considered a directory",rsReaderHandler.isDirectory("/folder/subfolder"));
+		assertFalse("File '/folder/second.js' was considered to be a directory", rsReaderHandler.isDirectory("/folder/second.js"));		
 	}
 
 	/**
@@ -93,7 +98,7 @@ public class FileSystemResourceHandlerTest extends ResourceHandlerBasedTest {
 	public void testGetResourceBundleReader() {
 		try {
 			// Retrieve a bundle
-			Reader rd = subject.getResourceBundleReader("collected.js");
+			Reader rd = rsBundleHandler.getResourceBundleReader("collected.js");
 			assertNotNull("'collected.js' was not found by the handler. ",rd);
 			
 			// Read its data and check the validity
@@ -112,7 +117,7 @@ public class FileSystemResourceHandlerTest extends ResourceHandlerBasedTest {
 	public void testGetResourceBundleChannel() {
 		try {
 			// Retrieve a bundle
-			ReadableByteChannel chan = subject.getResourceBundleChannel("collected.js");
+			ReadableByteChannel chan = rsBundleHandler.getResourceBundleChannel("collected.js");
 			assertNotNull("'collected.js' was not found by the handler. ",chan);
 			
 			// Read its data and check the validity
@@ -133,10 +138,10 @@ public class FileSystemResourceHandlerTest extends ResourceHandlerBasedTest {
 		StringBuffer sb = new StringBuffer(testStr);
 		try {
 			// Store data
-			subject.storeBundle("/somepath/somesubpath/store/testCollection.js", sb);
+			rsBundleHandler.storeBundle("/somepath/somesubpath/store/testCollection.js", new JoinableResourceBundleContent(sb));
 			
 			// Retrieve it back and check its content. 
-			Reader rd = subject.getResourceBundleReader("/somepath/somesubpath/store/testCollection.js");
+			Reader rd = rsBundleHandler.getResourceBundleReader("/somepath/somesubpath/store/testCollection.js");
 			assertNotNull("'testCollection.js' was not found by the handler. ",rd);
 			String readData = fullyReadReader(rd);
 			assertEquals("Reader returned invalid data. ",testStr, readData);

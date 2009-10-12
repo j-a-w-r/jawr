@@ -26,11 +26,9 @@ import java.util.zip.Checksum;
 import net.jawr.web.JawrConstant;
 import net.jawr.web.config.JawrConfig;
 import net.jawr.web.exception.ResourceNotFoundException;
-import net.jawr.web.resource.ResourceHandler;
-import net.jawr.web.resource.bundle.factory.util.ClassLoaderResourceUtils;
 import net.jawr.web.resource.bundle.factory.util.PathNormalizer;
-
-import org.apache.log4j.Logger;
+import net.jawr.web.resource.bundle.generator.GeneratorRegistry;
+import net.jawr.web.resource.handler.reader.ResourceReaderHandler;
 
 /**
  * This class defines utilities methods for Checksum.
@@ -55,22 +53,20 @@ public final class CheckSumUtils {
 	 * @throws IOException if an IO exception occurs.
 	 * @throws ResourceNotFoundException if the resource is not found.
 	 */
-	public static String getCacheBustedUrl(String url, ResourceHandler rsHandler, JawrConfig jawrConfig) throws IOException, ResourceNotFoundException {
+	public static String getCacheBustedUrl(String url, ResourceReaderHandler rsReader, JawrConfig jawrConfig) throws IOException, ResourceNotFoundException {
 		
 		String checksum = null;
-		String classpathResourceUrl = null;
 		InputStream is = null;
-		boolean fromClasspath = url.startsWith(JawrConstant.CLASSPATH_RESOURCE_PREFIX);
+		
+		boolean generatedImage = jawrConfig.getGeneratorRegistry().isGeneratedImage(url);
+		
 		try {
 			
-			if(fromClasspath){
-				
-				classpathResourceUrl = url.substring(JawrConstant.CLASSPATH_RESOURCE_PREFIX.length());
-				is = ClassLoaderResourceUtils.getResourceAsStream(classpathResourceUrl, CheckSumUtils.class);
-			}else{
+			if(!generatedImage){
 				url = PathNormalizer.asPath(url);
-				is = rsHandler.getResourceAsStream(url);
 			}
+			
+			is = rsReader.getResourceAsStream(url);
 			
 			if(is != null){
 				checksum = CheckSumUtils.getChecksum(is, jawrConfig.getImageHashAlgorithm());
@@ -86,62 +82,24 @@ public final class CheckSumUtils {
 		
 		String result = "";
 		
-		if(fromClasspath){
-			result = JawrConstant.CLASSPATH_CACHE_BUSTER_PREFIX;
-		}else{
-			result = JawrConstant.CACHE_BUSTER_PREFIX;
+		
+		result = JawrConstant.CACHE_BUSTER_PREFIX;
+		
+		if(generatedImage){
+			int idx = url.indexOf(GeneratorRegistry.PREFIX_SEPARATOR);
+			String generatorPrefix = url.substring(0, idx);
+			url = url.substring(idx+1);
+			result = generatorPrefix+"_cb";
 		}
 		
 		result = result+checksum;
-		if(fromClasspath){
-			url = classpathResourceUrl;
-		}
+		
 		if(!url.startsWith("/")){
 			result = result + "/";
 		}
 		// Add the cache buster extension
 		return PathNormalizer.asPath(result+url);
 	}
-	
-	/**
-	 * Return the cache busted url associated to the url passed in parameter 
-	 * @param url the url path to the resource file
-	 * @param is the resource input stream 
-	 * @param jawrConfig the jawrConfig
-	 * @return the cache busted url
-	 * @throws IOException if an IO exception occurs.
-	 */
-	public static String getCacheBustedUrl(String url, InputStream is, JawrConfig jawrConfig) throws IOException{
-		
-		String checksum = null;
-		boolean fromClasspath = url.startsWith(JawrConstant.CLASSPATH_RESOURCE_PREFIX);
-		
-		try {
-			checksum = CheckSumUtils.getChecksum(is, jawrConfig.getImageHashAlgorithm());
-		}
-		finally {
-			IOUtils.close(is);
-		}
-		
-		String result = "";
-		
-		if(fromClasspath){
-			result = JawrConstant.CLASSPATH_CACHE_BUSTER_PREFIX;
-		}else{
-			result = JawrConstant.CACHE_BUSTER_PREFIX;
-		}
-		
-		result = result+checksum;
-		if(fromClasspath){
-			url = url.substring("jar:".length());
-		}
-		if(!url.startsWith("/")){
-			result = result + "/";
-		}
-		// Add the cache buster extension
-		return PathNormalizer.asPath(result+url);
-	}
-	
 	
 	/**
 	 * Returns the checksum value of the input stream taking in count the algorithm passed in parameter

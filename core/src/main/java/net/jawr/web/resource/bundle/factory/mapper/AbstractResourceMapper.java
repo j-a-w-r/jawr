@@ -20,9 +20,9 @@ import java.util.List;
 import java.util.Map;
 
 import net.jawr.web.exception.DuplicateBundlePathException;
-import net.jawr.web.resource.ResourceHandler;
 import net.jawr.web.resource.bundle.JoinableResourceBundle;
 import net.jawr.web.resource.bundle.factory.util.PathNormalizer;
+import net.jawr.web.resource.handler.reader.ResourceReaderHandler;
 
 import org.apache.log4j.Logger;
 
@@ -44,7 +44,7 @@ public abstract class AbstractResourceMapper {
 	protected String baseDir;
 
 	/** The resource handler */
-	protected ResourceHandler rsHandler;
+	protected ResourceReaderHandler rsHandler;
 
 	/** The list of current bundles */
 	protected List currentBundles;
@@ -63,7 +63,7 @@ public abstract class AbstractResourceMapper {
 	 * @param currentBundles the list of current bundles
 	 * @param resourceExtension the resource file extension
 	 */
-	public AbstractResourceMapper(String baseDir, ResourceHandler rsHandler,
+	public AbstractResourceMapper(String baseDir, ResourceReaderHandler rsHandler,
 			List currentBundles, String resourceExtension) {
 		super();
 		this.baseDir = PathNormalizer.normalizePath(baseDir);

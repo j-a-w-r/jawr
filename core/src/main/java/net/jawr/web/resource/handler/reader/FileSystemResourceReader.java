@@ -1,5 +1,5 @@
 /**
- * Copyright 2007-2009 Jordi Hernández Sellés, Ibrahim Chaehoi
+ * Copyright 2009 Ibrahim Chaehoi
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -11,7 +11,7 @@
  * either express or implied. See the License for the specific language governing permissions
  * and limitations under the License.
  */
-package net.jawr.web.resource;
+package net.jawr.web.resource.handler.reader;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -26,36 +26,69 @@ import java.util.HashSet;
 import java.util.Set;
 
 import net.jawr.web.exception.InvalidPathException;
-import net.jawr.web.exception.ResourceNotFoundException;
-import net.jawr.web.resource.bundle.generator.GeneratorRegistry;
 
 /**
- * Implementation of resourcehandler that gets its resources from the filesystem.  
+ * This class defines the resource reader which is based on a file system and which can handle
+ * text and stream resources.
  * 
- * @author Jordi Hernández Sellés
  * @author Ibrahim Chaehoi
+ *
  */
-public class FileSystemResourceHandler extends AbstractResourceHandler implements ResourceHandler {
+public class FileSystemResourceReader implements TextResourceReader, StreamResourceReader {
 
 	/** The base directory */
 	private String baseDir;
 	
+	/** The charset */
+	private Charset charset;
+	
 	/**
-	 * Creates a filesystem based handler. 
-	 * @param baseDir Directory where js files are located. 
-	 * @param tempDirRoot Directory to store temporary files
-	 * @param charset Charset to use for reading/writing the files. 
+	 * Constructor
+	 * 
+	 * @param baseDir the base directory
+	 * @param charset the charset
 	 */
-	public FileSystemResourceHandler(String baseDir, File tempDirRoot,Charset charset,GeneratorRegistry generatorRegistry, String resourceType) {
-		super(tempDirRoot, charset,generatorRegistry, resourceType);
-		this.baseDir = baseDir.replace('/', File.separatorChar);
-        this.baseDir = this.baseDir.replaceAll("%20", " ");
+	public FileSystemResourceReader(String baseDir, Charset charset) {
+		this.baseDir = baseDir;
+		this.charset = charset;
+	}
+	
+	/* (non-Javadoc)
+	 * @see net.jawr.web.resource.handler.ResourceReader#getResource(java.lang.String)
+	 */
+	public Reader getResource(String resourceName) {
+		
+		return getResource(resourceName, false);
 	}
 
 	/* (non-Javadoc)
-	 * @see net.jawr.web.resource.ResourceHandler#getResourceInputStream(java.lang.String)
+	 * @see net.jawr.web.resource.handler.ResourceReader#getResource(java.lang.String, boolean)
 	 */
-	public InputStream doGetResourceAsStream(String resourceName) {
+	public Reader getResource(String resourceName, boolean processingBundle) {
+		
+		Reader rd = null;
+		FileInputStream fis = (FileInputStream) getResourceAsStream(resourceName);
+        if(fis != null){
+        	FileChannel inchannel = fis.getChannel();
+        	rd = Channels.newReader(inchannel,charset.newDecoder (),-1);
+        }
+		
+        return rd;
+	}
+	
+	/* (non-Javadoc)
+	 * @see net.jawr.web.resource.handler.ResourceReader#getResourceAsStream(java.lang.String)
+	 */
+	public InputStream getResourceAsStream(String resourceName) {
+		
+		return getResourceAsStream(resourceName, false);
+	}
+
+	/* (non-Javadoc)
+	 * @see net.jawr.web.resource.handler.stream.StreamResourceReader#getResourceAsStream(java.lang.String, boolean)
+	 */
+	public InputStream getResourceAsStream(String resourceName,
+			boolean processingBundle) {
 		
 		InputStream is = null;
 		try {
@@ -66,24 +99,10 @@ public class FileSystemResourceHandler extends AbstractResourceHandler implement
 		}
 		
 		return is; 
-	}	
-	
-	/* (non-Javadoc)
-	 * @see net.jawr.web.resource.bundle.ResourceHandler#getResource(java.lang.String)
-	 */
-	public Reader doGetResource(String resourceName) throws ResourceNotFoundException {
-		
-		FileInputStream fis = (FileInputStream) getResourceAsStream(resourceName);
-		if(fis == null){
-			throw new ResourceNotFoundException(resourceName);
-		}
-		
-        FileChannel inchannel = fis.getChannel();
-	    return Channels.newReader(inchannel,charset.newDecoder (),-1);
 	}
 
 	/* (non-Javadoc)
-	 * @see net.jawr.web.resource.bundle.ResourceHandler#getResourceNames(java.lang.String)
+	 * @see net.jawr.web.resource.handler.ResourceInfoProvider#getResourceNames(java.lang.String)
 	 */
 	public Set getResourceNames(String path) {
 		path = path.replace('/', File.separatorChar);
@@ -106,7 +125,7 @@ public class FileSystemResourceHandler extends AbstractResourceHandler implement
 	}
 
 	/* (non-Javadoc)
-	 * @see net.jawr.web.resource.bundle.ResourceHandler#isDirectory(java.lang.String)
+	 * @see net.jawr.web.resource.handler.ResourceInfoProvider#isDirectory(java.lang.String)
 	 */
 	public boolean isDirectory(String path) {
 		path = path.replace('/', File.separatorChar);

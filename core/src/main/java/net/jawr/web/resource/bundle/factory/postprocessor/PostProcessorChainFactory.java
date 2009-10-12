@@ -11,7 +11,7 @@
  * either express or implied. See the License for the specific language governing permissions
  * and limitations under the License.
  */
-package net.jawr.web.resource.bundle.factory.processor;
+package net.jawr.web.resource.bundle.factory.postprocessor;
 
 import java.util.Map;
 

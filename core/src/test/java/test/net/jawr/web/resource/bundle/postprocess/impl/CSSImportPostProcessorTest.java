@@ -6,7 +6,6 @@ package test.net.jawr.web.resource.bundle.postprocess.impl;
 import java.io.InputStream;
 import java.io.Reader;
 import java.io.StringReader;
-import java.nio.channels.ReadableByteChannel;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
@@ -14,15 +13,17 @@ import java.util.Set;
 import javax.servlet.ServletContext;
 
 import junit.framework.TestCase;
+import net.jawr.web.JawrConstant;
 import net.jawr.web.config.JawrConfig;
 import net.jawr.web.exception.ResourceNotFoundException;
-import net.jawr.web.resource.ResourceHandler;
 import net.jawr.web.resource.bundle.InclusionPattern;
 import net.jawr.web.resource.bundle.JoinableResourceBundle;
-import net.jawr.web.resource.bundle.JoinableResourceBundleContent;
+import net.jawr.web.resource.bundle.generator.GeneratorRegistry;
 import net.jawr.web.resource.bundle.postprocess.BundleProcessingStatus;
 import net.jawr.web.resource.bundle.postprocess.ResourceBundlePostProcessor;
 import net.jawr.web.resource.bundle.postprocess.impl.CSSImportPostProcessor;
+import net.jawr.web.resource.handler.reader.ResourceReader;
+import net.jawr.web.resource.handler.reader.ResourceReaderHandler;
 import test.net.jawr.web.servlet.mock.MockServletContext;
 
 /**
@@ -49,7 +50,9 @@ public class CSSImportPostProcessorTest extends TestCase {
 		config.setContext(servletContext);
 		config.setServletMapping("/js");
 		config.setCharsetName("UTF-8");
-		
+		GeneratorRegistry generatorRegistry = new GeneratorRegistry(JawrConstant.CSS_TYPE);
+		generatorRegistry.setConfig(config);
+		config.setGeneratorRegistry(generatorRegistry);
 		processor = new CSSImportPostProcessor();
 	}
 
@@ -152,7 +155,8 @@ public class CSSImportPostProcessorTest extends TestCase {
 	}
 
 	private BundleProcessingStatus getBundleProcessingStatus(String filePath, String expectedCssImportPath) {
-		ResourceHandler rsHandler = getResourceHandler(expectedCssImportPath);
+		ResourceReaderHandler rsHandler = getResourceReaderHandler(expectedCssImportPath);
+		config.getGeneratorRegistry().setResourceReaderHandler(rsHandler);
 		BundleProcessingStatus status = new BundleProcessingStatus(bundle, rsHandler, config);
 		status.setLastPathAdded(filePath);
 		return status;
@@ -238,19 +242,30 @@ public class CSSImportPostProcessorTest extends TestCase {
 
 	}
 	
-	private ResourceHandler getResourceHandler(final String expectedResourcePath) {
+	private ResourceReaderHandler getResourceReaderHandler(final String expectedResourcePath) {
 		
-		return new ResourceHandler(){
-
-			public Reader getCssClasspathResource(String resourceName)
-					throws ResourceNotFoundException {
+		return new ResourceReaderHandler() {
+			
+			public void setWorkingDirectory(String workingDir) {
+				
+			}
+			
+			public boolean isResourceGenerated(String path) {
+				return false;
+			}
+			
+			public boolean isDirectory(String resourcePath) {
+				return false;
+			}
+			
+			public String getWorkingDirectory() {
 				return null;
 			}
-
-			public Properties getJawrBundleMapping() {
+			
+			public Set getResourceNames(String dirPath) {
 				return null;
 			}
-
+			
 			public Reader getResource(String resourceName)
 					throws ResourceNotFoundException {
 				
@@ -261,63 +276,31 @@ public class CSSImportPostProcessorTest extends TestCase {
 						"padding : 0 7px; \n" +
 				"}");
 			}
-
+		
 			public Reader getResource(String resourceName,
 					boolean processingBundle) throws ResourceNotFoundException {
 				return new StringReader(".test { align : left; \n" +
 						"padding : 0 7px; \n" +
 				"}");
 			}
-
+			
+			public InputStream getResourceAsStream(String resourceName,
+					boolean processingBundle) throws ResourceNotFoundException {
+				return null;
+			}
+			
 			public InputStream getResourceAsStream(String resourceName)
 					throws ResourceNotFoundException {
 				return null;
 			}
-
-			public ReadableByteChannel getResourceBundleChannel(
-					String bundleName) throws ResourceNotFoundException {
-				return null;
-			}
-
-			public Reader getResourceBundleReader(String bundleName)
-					throws ResourceNotFoundException {
-				return null;
-			}
-
-			public Set getResourceNames(String path) {
-				return null;
-			}
-
-			public String getResourceType() {
-				return null;
-			}
-
-			public InputStream getTemporaryResourceAsStream(String resourceName)
-					throws ResourceNotFoundException {
-				return null;
-			}
-
-			public boolean isDirectory(String path) {
-				return false;
-			}
-
-			public boolean isExistingMappingFile() {
-				return false;
-			}
-
-			public boolean isResourceGenerated(String path) {
-				return false;
-			}
-
-			public void storeBundle(String bundleName,
-					JoinableResourceBundleContent bundleResourcesContent) {
-				
-			}
-
-			public void storeJawrBundleMapping(Properties bundleMapping) {
+			
+			public void addResourceReaderToStart(ResourceReader rd) {
 				
 			}
 			
+			public void addResourceReaderToEnd(ResourceReader rd) {
+				
+			}
 		};
 	}
 }

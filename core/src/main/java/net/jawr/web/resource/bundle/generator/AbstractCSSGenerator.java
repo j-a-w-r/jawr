@@ -21,7 +21,7 @@ import net.jawr.web.JawrConstant;
  * @author Jordi Hernández Sellés
  * @author Ibrahim Chaehoi
  */
-public abstract class AbstractCSSGenerator implements SpecificCDNDebugPathResourceGenerator {
+public abstract class AbstractCSSGenerator implements SpecificCDNDebugPathResourceGenerator, CssResourceGenerator {
 
 	/*
 	 * (non-Javadoc)
@@ -41,4 +41,13 @@ public abstract class AbstractCSSGenerator implements SpecificCDNDebugPathResour
 
 		return path.replaceFirst(GeneratorRegistry.PREFIX_SEPARATOR, JawrConstant.URL_SEPARATOR);
 	}
+
+	/* (non-Javadoc)
+	 * @see net.jawr.web.resource.bundle.generator.CssResourceGenerator#isHandlingCssImage()
+	 */
+	public boolean isHandlingCssImage() {
+		return false;
+	}
+	
+	
 }
