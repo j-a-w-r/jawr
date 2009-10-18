@@ -155,9 +155,6 @@ public class JoinableResourceBundleImpl implements JoinableResourceBundle {
 			String pathMapping = (String) it.next();
 			boolean isGeneratedPath = resourceReaderHandler.isResourceGenerated(pathMapping);
 			// Handle generated resources
-//			if (resourceReaderHandler.isResourceGenerated(pathMapping)) {
-//				itemPathList.add(pathMapping);
-//			}else 
 			// path ends in /, the folder is included without subfolders
 			if (pathMapping.endsWith("/")) {
 				addItemsFromDir(pathMapping, false);
@@ -168,7 +165,9 @@ public class JoinableResourceBundleImpl implements JoinableResourceBundle {
 						.lastIndexOf("**")), true);
 			} else if (pathMapping.endsWith(fileExtension)) {
 				itemPathList.add(asPath(pathMapping, isGeneratedPath));
-			} else if (pathMapping.endsWith(LICENSES_FILENAME)) {
+			} else if (resourceReaderHandler.isResourceGenerated(pathMapping)) {
+				itemPathList.add(pathMapping);
+			}else if (pathMapping.endsWith(LICENSES_FILENAME)) {
 				licensesPathList.add(asPath(pathMapping, isGeneratedPath));
 			} else
 				log.warn("Wrong mapping [" + pathMapping + "] for bundle ["
