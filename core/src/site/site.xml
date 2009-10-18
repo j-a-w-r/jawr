@@ -22,6 +22,7 @@
       <item name="Source order in bundles" href="/docs/source_ordering.html"/>
       <item name="Postprocessors" href="/docs/postprocessors.html"/>
       <item name="Generators" href="/docs/generators.html"/>
+      <item name="Generators" href="/docs/advanced_generators.html"/>
       <item name="Licenses in resources" href="/docs/license_files.html"/>
       <item name="JSP Tag library" href="/docs/taglibs.html"/>
       <item name="Use in HTML pages" href="/docs/plain_html.html"/>
@@ -44,6 +45,7 @@
     
     <menu name="Tutorials">
       <item name="Quick start" href="/tutorials/quickstart.html"/>
+      <item name="How to use Jawr to serve image resources" href="/tutorials/howToUseJawrToServeImage.html"/>
       <item name="FAQ-Howto" href="/tutorials/faq_howto.html"/>
       <item name="Using popular libraries" href="/tutorials/libraries.html"/>   
     </menu>

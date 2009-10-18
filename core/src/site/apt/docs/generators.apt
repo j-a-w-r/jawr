@@ -6,12 +6,12 @@
 
 Jawr Generators
 
-	In some cases it is convenient to generate scripts or CSS dynamically. For instance, Jawr will create certain scripts to, say, copy i18n 
+	In some cases it is convenient to generate scripts, CSS or images dynamically. For instance, Jawr will create certain scripts to, say, copy i18n 
 	messages from a ResourceBundle over to a special script. You may need to retrieve some data from a database and create parameters that 
 	scripts will need, or simply grab parameters from a configuration file and pass them over to the scripting context. For any case where you 
-	may need to generate content you can implement a ResourceGenerator and register it in Jawr to suit your needs. \ 
+	may need to generate content you can implement a Resource Generator and register it in Jawr to suit your needs. \ 
 	
-	Note that a ResourceGenerator is <<not>> a <script servlet>: it will be only invoked once during application startup. The result of this 
+	Note that a Resource Generator is <<not>> a <script servlet>: it will be only invoked once during application startup. The result of this 
 	invocation will be added to whichever bundle you decide and reused until the next redeployment. The point is to be able to generate some 
 	script dynamically but still to be able to minify it and add it to your bundles. A perfect example is the DWR generator: all DWR script 
 	interfaces are created from java classes once during startup but they can be  minified and bundled together.   
@@ -93,20 +93,49 @@ Jawr Generators
 	
 *	Implementing a generator
 
-	A generator is an implementation of the interface net.jawr.web.resource.bundle.generator.ResourceGenerator. This is a simple interface which 
-	exposes three methods: 
+	You will find below the class diagram for generators.
 	
-	* public Reader createResource(GeneratorContext context);
+[../images/generator/jawr_generator.png] Generator class diagram
+
+	The root interface for resource generator is :
 	
-	* public String getMappingPrefix();
+	** net.jawr.web.resource.bundle.generator.PrefixedResourceGenerator. All resource generator must implement a method,
+	which defines the mapping for this generator.	
 	
-	* public String getDebugModeRequestPath();
++------------------------------------------+
+	public String getMappingPrefix();
++------------------------------------------+
+
+	The getMappingPrefix() method returns a key you will use when mapping you generator to bundles. Jawr will recognize this key in the 
+	bundle mappings and use your generator when it applies. So, if you returned 'foo' in this method, you would map your generator like this: 
 	
-	[]
++------------------------------------------+
+	jawr.js.bundle.one.mappings=foo:somePath
++------------------------------------------+	
 	
-	The getDebugModeRequestPath	simply returns a path to be used in debug mode. This is simply a fake script or CSS name and it really has no 
-	importance unless you are mapping the Jawr servlet to a suffix different from *.css or .js. 99% of the use cases don't need to care about 
-	this so you can simply return one of two constants: ResourceGenerator.JAVASCRIPT_DEBUGPATH or ResourceGenerator.CSS_DEBUGPATH:  
+	
+	There are 2 main types of generator:
+	
+	** net.jawr.web.resource.bundle.generator.ResourceGenerator, which is the generator for the text resources (JS and CSS).
+	
+	** net.jawr.web.resource.bundle.generator.StreamResourceGenerator, which is the generator for the image resources.
+	
+	
+	
+	*	Implementing a CSS or a JS generator
+	
+		A JS or a CSS generator is an implementation of the interface net.jawr.web.resource.bundle.generator.ResourceGenerator. This is a simple interface which 
+		exposes two methods: 
+	
+		* public Reader createResource(GeneratorContext context);
+	
+		* public String getDebugModeRequestPath();
+	
+		[]
+	
+		The getDebugModeRequestPath	simply returns a path to be used in debug mode. This is simply a fake script or CSS name and it really has no 
+		importance unless you are mapping the Jawr servlet to a suffix different from *.css or .js. 99% of the use cases don't need to care about 
+		this so you can simply return one of two constants: ResourceGenerator.JAVASCRIPT_DEBUGPATH or ResourceGenerator.CSS_DEBUGPATH:  
 	
 +------------------------------------------+
 public String getDebugModeRequestPath() {
@@ -114,35 +143,39 @@ public String getDebugModeRequestPath() {
 }
 +------------------------------------------+			
 	
-	The getMappingPrefix() method returns a key you will use when mapping you generator to bundles. Jawr will recognize this key in the 
-	bundle mappings and use your generator when it applies. So, if you returned 'foo' in this method, you would map your generator like this: 
-	
-+------------------------------------------+
-	jawr.js.bundle.one.mappings=foo:somePath
-+------------------------------------------+	
-
-
-	Finally, the createResource() method is where the actual generation takes place. This method takes a single parameter of type GeneratorContext, 
-	which contains all the information you need to build a dynamic script or CSS. The useful methods are: 
-	
-	* getPath(): this contains the mapping, without the prefix and parameters. For instance, in a mapping of the form 'prefix:thePath(param)', 
-	this method returns 'thePath'. 
-	
-	* getConfig(): returns the JawrConfig object used throughout the application. It contains data about the Jawr configuration, such as wether 
-	debug mode is on or off, the current servlet mapping, and so on. 
-	
-	* getCharset(): returns the current charset, which the returned script or CSS must conform to. 
-	
-	* getServletContext(): returns the application's ServletContext. 
-	
-	* getParenthesesParam(): returns the params in parentheses, if any were declared. For instance, in a mapping such as 'foo:path(aParam)', this 
-	would return 'aParam'. 
-	
-	* getBracketsParam(): returns the params in brackets, if any were declared. For instance, in a mapping such as 'foo:path(aParam)[anotherParam],
-	 this would return 'anotherParam'.
+		Finally, the createResource() method is where the actual generation takes place. This method takes a single parameter of type GeneratorContext, 
+		which contains all the information you need to build a dynamic script or CSS. The useful methods are: 
+		
+		* getPath(): this contains the mapping, without the prefix and parameters. For instance, in a mapping of the form 'prefix:thePath(param)', 
+		this method returns 'thePath'. 
+		
+		* getConfig(): returns the JawrConfig object used throughout the application. It contains data about the Jawr configuration, such as wether 
+		debug mode is on or off, the current servlet mapping, and so on. 
+		
+		* getCharset(): returns the current charset, which the returned script or CSS must conform to. 
+		
+		* getServletContext(): returns the application's ServletContext. 
+		
+		* getParenthesesParam(): returns the params in parentheses, if any were declared. For instance, in a mapping such as 'foo:path(aParam)', this 
+		would return 'aParam'. 
+		
+		* getBracketsParam(): returns the params in brackets, if any were declared. For instance, in a mapping such as 'foo:path(aParam)[anotherParam],
+		 this would return 'anotherParam'.
+		 
+		Using this information, you should be able to generate a script or CSS and return in in the form of a Reader object (typically a StringReader 
+		is sufficient for the task).  
 	 
-	Using this information, you should be able to generate a script or CSS and return in in the form of a Reader object (typically a StringReader 
-	is sufficient for the task).  
+	*	Implementing an Image resource generator
+	
+		An image generator is an implementation of the interface net.jawr.web.resource.bundle.generator.StreamResourceGenerator. This is a simple interface which 
+		exposes one method: 
+	
+		* public InputStream createResourceAsStream(GeneratorContext context);
+	
+		[]
+		This method will return the input stream for the generated image resource. Like for the createResource method of the ResourceGenerator,
+		this method takes as parameter a GeneratorContext, which contains all the information you need to build the image resource.
+	 
 	 
 *	Mapping a generator
 	

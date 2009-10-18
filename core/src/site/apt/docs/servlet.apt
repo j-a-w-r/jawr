@@ -150,7 +150,7 @@ The Jawr servlet
 	Note : The declaration of your images in the <<jawr.image.resources>> property is not mandatory. 
 	This property is used to calculate the hashcode of the images at the image servlet startup. 
 	If an image is not defined in this property, the hashcode of the image will be calculated at runtime.
-	Look for <jawr.image.resources> at the {{{./descriptor_syntax.html}descriptor syntax doc}} for more information. \
+	Look for <jawr.image.resources> at the {{{./descriptor_syntax.html}descriptor syntax doc}} for more information. 
 	
 	
 	[]
@@ -205,11 +205,7 @@ The Jawr servlet
 		<servlet-name>CssServlet</servlet-name>
 		<url-pattern>*.css</url-pattern>
 	</servlet-mapping>	
- 	<servlet-mapping>
-		<servlet-name>JawrImgServlet</servlet-name>
-		<url-pattern>/jwrImg/*</url-pattern>
-	</servlet-mapping> 
-	
+ 	
 </web-app>
 +------------------------------------------+
 
@@ -251,10 +247,6 @@ The Jawr servlet
 			<param-name>configLocation</param-name>
 			<param-value>/jawr.properties</param-value>
 		</init-param>
-		<init-param>
-			<param-name>mapping</param-name>
-			<param-value>/jwrImg/</param-value>
-		</init-param>
 		<!-- The Jawr Image servlet must start before the Jawr CSS Servlet -->
 		<load-on-startup>0</load-on-startup>
 	</servlet>
@@ -282,7 +274,11 @@ The Jawr servlet
 	</servlet-mapping>	
  	<servlet-mapping>
 		<servlet-name>JawrImgServlet</servlet-name>
-		<url-pattern>/jwrImg/*</url-pattern>
+		<url-pattern>*.png</url-pattern>
+	</servlet-mapping> 
+	<servlet-mapping>
+		<servlet-name>JawrImgServlet</servlet-name>
+		<url-pattern>*.gif</url-pattern>
 	</servlet-mapping> 
 	
 </web-app>
