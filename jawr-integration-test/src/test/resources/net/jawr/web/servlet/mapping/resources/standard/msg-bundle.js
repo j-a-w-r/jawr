@@ -6,4 +6,4 @@ else ret=function(){return val;}
 for(var x=1;x<arguments.length;x++){for(var a in arguments[x])
 ret[a]=arguments[x][a];}
 return ret;}
-window.messages=({"ui":{"msg":{"hello":{"world":p("Hello $ world!")},"salute":p("Mr."),"salut":p("Mr.")}}})})();;function foo(){};
+window.messages=({"ui":{"msg":{"hello":{"world":p("Hello $ world!")},"salute":p("Mr.")}}})})();;function foo(){};

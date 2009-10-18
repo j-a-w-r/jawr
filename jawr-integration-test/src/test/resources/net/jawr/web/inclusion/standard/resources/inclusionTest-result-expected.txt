@@ -3,7 +3,7 @@
 <html>
 <head>    
  <link rel="stylesheet" type="text/css" media="all" href="/jawr-integration-test/1675022186/bundles/globalStyleBundle.css" >
-<link rel="stylesheet" type="text/css" media="all" href="/jawr-integration-test/630517128/bundles/compositeStyleBundle.css" >
+<link rel="stylesheet" type="text/css" media="all" href="/jawr-integration-test/243744149/bundles/compositeStyleBundle.css" >
 
  
  <link rel="stylesheet" type="text/css" media="all" href="/jawr-integration-test/N1086215717/bundles/productionStyleBundle.css" >

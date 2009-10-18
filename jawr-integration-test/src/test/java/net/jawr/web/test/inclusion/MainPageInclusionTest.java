@@ -106,7 +106,7 @@ public class MainPageInclusionTest extends AbstractPageTest {
 				css.getHrefAttribute());
 		css = (HtmlLink) styleSheets.get(1);
 		assertEquals(
-				CONTEXT_PATH+"/630517128/bundles/compositeStyleBundle.css",
+				CONTEXT_PATH+"/243744149/bundles/compositeStyleBundle.css",
 				css.getHrefAttribute());
 		css = (HtmlLink) styleSheets.get(2);
 		assertEquals(

@@ -32,7 +32,7 @@ div {
 .clock {
 	background-repeat: no-repeat;
 	padding-left : 20px;
-	background-image: url("../../../jar:net/jawr/img/clock.png");
+	background-image: url("../../../css/jar:net/jawr/img/clock.png");
 }
 
 .generated_class2 { color : #FFAD00; }

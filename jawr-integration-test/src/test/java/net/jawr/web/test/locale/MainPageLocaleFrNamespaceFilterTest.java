@@ -55,7 +55,7 @@ public class MainPageLocaleFrNamespaceFilterTest extends MainPageTest {
 	    final List<?> scripts = getJsScriptTags();
 	    assertEquals(1, scripts.size());
 	    final HtmlScript script = (HtmlScript) scripts.get(0);
-	    assertEquals(CONTEXT_PATH+"/161261951.fr/js/bundle/msg.js", script.getSrcAttribute());
+	    assertEquals(CONTEXT_PATH+"/N1682290876.fr/js/bundle/msg.js", script.getSrcAttribute());
 	}
 	
 	@Test

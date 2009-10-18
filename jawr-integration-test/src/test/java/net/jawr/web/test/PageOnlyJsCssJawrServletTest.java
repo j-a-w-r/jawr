@@ -48,7 +48,7 @@ public class PageOnlyJsCssJawrServletTest extends AbstractPageTest {
 		assertEquals(1, scripts.size());
 		final HtmlScript script = (HtmlScript) scripts.get(0);
 		assertEquals(
-				CONTEXT_PATH+"/1167375179.en_US/js/bundle/msg.js",
+				CONTEXT_PATH+"/1542603560.en_US/js/bundle/msg.js",
 				script.getSrcAttribute());
 	}
 
@@ -68,7 +68,7 @@ public class PageOnlyJsCssJawrServletTest extends AbstractPageTest {
 		assertEquals(1, styleSheets.size());
 		final HtmlLink css = (HtmlLink) styleSheets.get(0);
 		assertEquals(
-				CONTEXT_PATH+"/N1700903035/fwk/core/component.css",
+				CONTEXT_PATH+"/1266523333/fwk/core/component.css",
 				css.getHrefAttribute());
 
 	}

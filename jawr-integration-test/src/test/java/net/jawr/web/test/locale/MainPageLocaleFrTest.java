@@ -43,7 +43,7 @@ public class MainPageLocaleFrTest extends MainPageTest {
 	    final List<?> scripts = getJsScriptTags();
 	    assertEquals(1, scripts.size());
 	    final HtmlScript script = (HtmlScript) scripts.get(0);
-	    assertEquals(CONTEXT_PATH+"/680443580.fr/js/bundle/msg.js", script.getSrcAttribute());
+	    assertEquals(CONTEXT_PATH+"/N2093830570.fr/js/bundle/msg.js", script.getSrcAttribute());
 	}
 	
 	@Test

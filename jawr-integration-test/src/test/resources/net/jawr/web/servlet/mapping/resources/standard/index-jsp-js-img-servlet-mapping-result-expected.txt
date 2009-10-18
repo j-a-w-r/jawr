@@ -2,9 +2,9 @@
 
 <html>
 <head>    
- <link rel="stylesheet" type="text/css" media="all" href="/jawr-integration-test/N54447842/fwk/core/component.css" >
+ <link rel="stylesheet" type="text/css" media="all" href="/jawr-integration-test/N1515795919/fwk/core/component.css" >
 
- <script type="text/javascript" src="/jawr-integration-test/jsJawr/1167375179.en_US/js/bundle/msg.js" ></script>
+ <script type="text/javascript" src="/jawr-integration-test/jsJawr/1542603560.en_US/js/bundle/msg.js" ></script>
 
 </head>
 <body>

@@ -6,4 +6,4 @@ else ret=function(){return val;}
 for(var x=1;x<arguments.length;x++){for(var a in arguments[x])
 ret[a]=arguments[x][a];}
 return ret;}
-window.mynamespace=({"ui":{"msg":{"hello":{"world":p("Bonjour $ le monde!")},"salute":p("Mr."),"salut":p("Mr.")}},"screen":{"welcome":{"title":p("Bienvenu")}}})})();;function foo(){};
+window.mynamespace=({"ui":{"msg":{"hello":{"world":p("Bonjour $ le monde!")},"salute":p("Mr.")}},"screen":{"welcome":{"title":p("Bienvenu")}}})})();;function foo(){};
