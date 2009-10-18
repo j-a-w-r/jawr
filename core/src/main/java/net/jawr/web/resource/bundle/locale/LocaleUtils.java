@@ -63,6 +63,18 @@ public class LocaleUtils {
 	 */
 	public static List getAvailableLocaleSuffixesForBundle(String messageBundlePath) {
 
+		return getAvailableLocaleSuffixesForBundle(messageBundlePath, MSG_RESOURCE_BUNDLE_SUFFIX);
+	}
+	
+	/**
+	 * Returns the list of available locale suffixes for a message resource bundle
+	 * 
+	 * @param messageBundlePath the resource bundle path
+	 * @param fileSuffix the file suffix
+	 * @return the list of available locale suffixes for a message resource bundle
+	 */
+	public static List getAvailableLocaleSuffixesForBundle(String messageBundlePath, String fileSuffix) {
+
 		int idxNameSpace = messageBundlePath.indexOf("(");
 		int idxFilter = messageBundlePath.indexOf("[");
 		int idx = -1;
@@ -80,7 +92,7 @@ public class LocaleUtils {
 		}else{
 			messageBundle = messageBundlePath;
 		}
-		return getAvailableLocaleSuffixes(messageBundle);
+		return getAvailableLocaleSuffixes(messageBundle, fileSuffix);
 	}
 
 	/**
@@ -90,27 +102,41 @@ public class LocaleUtils {
 	 * @return the list of available locale suffixes for a message resource bundle
 	 */
 	public static List getAvailableLocaleSuffixes(String messageBundle) {
+		
+		return getAvailableLocaleSuffixes(messageBundle, MSG_RESOURCE_BUNDLE_SUFFIX);
+	}
+	
+	/**
+	 * Returns the list of available locale suffixes for a message resource bundle
+	 * 
+	 * @param messageBundle the resource bundle path
+	 * @param fileSuffix the file suffix
+	 * @return the list of available locale suffixes for a message resource bundle
+	 */
+	public static List getAvailableLocaleSuffixes(String messageBundle, String fileSuffix) {
 		List availableLocaleSuffixes = new ArrayList();
 		Locale[] availableLocales = Locale.getAvailableLocales();
 	
-		addSuffixIfAvailable(messageBundle, availableLocaleSuffixes, null);
+		addSuffixIfAvailable(messageBundle, availableLocaleSuffixes, null, fileSuffix);
 	
 		for (int i = 0; i < availableLocales.length; i++) {
 			Locale locale = availableLocales[i];
-			addSuffixIfAvailable(messageBundle, availableLocaleSuffixes, locale);
+			addSuffixIfAvailable(messageBundle, availableLocaleSuffixes, locale, fileSuffix);
 		}
 	
 		return availableLocaleSuffixes;
 	}
+	
 	/**
 	 * Add the locale suffix if the message resource bundle file exists.
 	 * 
 	 * @param messageBundlePath the message resource bundle path
 	 * @param availableLocaleSuffixes the list of available locale suffix to update
 	 * @param locale the locale to check.
+	 * @param fileSuffix the file suffix
 	 */
-	private static void addSuffixIfAvailable(String messageBundlePath, List availableLocaleSuffixes, Locale locale) {
-		String localMsgResourcePath = toBundleName(messageBundlePath, locale) + MSG_RESOURCE_BUNDLE_SUFFIX;
+	private static void addSuffixIfAvailable(String messageBundlePath, List availableLocaleSuffixes, Locale locale, String fileSuffix) {
+		String localMsgResourcePath = toBundleName(messageBundlePath, locale) + fileSuffix;
 		URL resourceUrl = null;
 		try {
 			resourceUrl = ClassLoaderResourceUtils.getResourceURL(localMsgResourcePath, LocaleUtils.class);
@@ -123,11 +149,11 @@ public class LocaleUtils {
 			String suffix = localMsgResourcePath.substring(messageBundlePath.length());
 			if (suffix.length() > 0) {
 
-				if (suffix.length() == MSG_RESOURCE_BUNDLE_SUFFIX.length()) {
+				if (suffix.length() == fileSuffix.length()) {
 					suffix = "";
 				} else {
 					// remove the "_" before the suffix "_en_US" => "en_US"
-					suffix = suffix.substring(1, suffix.length() - MSG_RESOURCE_BUNDLE_SUFFIX.length());
+					suffix = suffix.substring(1, suffix.length() - fileSuffix.length());
 				}
 			}
 			availableLocaleSuffixes.add(suffix);

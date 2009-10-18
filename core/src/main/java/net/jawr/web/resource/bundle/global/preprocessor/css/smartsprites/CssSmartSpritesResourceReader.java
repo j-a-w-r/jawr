@@ -50,9 +50,9 @@ public class CssSmartSpritesResourceReader implements TextResourceReader, Stream
 		
 		this.jawrConfig = jawrConfig;
 		if(isUsingFileSystem){
-			resourceReader = new FileSystemResourceReader(tempDir+JawrConstant.CSS_SMARTSPRITES_TMP_DIR, jawrConfig.getResourceCharset());
+			resourceReader = new FileSystemResourceReader(tempDir+JawrConstant.CSS_SMARTSPRITES_TMP_DIR, jawrConfig);
 		}else{
-			resourceReader = new PathPrefixedServletContextResourceReader(jawrConfig.getContext(), jawrConfig.getResourceCharset(), tempDir+JawrConstant.CSS_SMARTSPRITES_TMP_DIR);
+			resourceReader = new PathPrefixedServletContextResourceReader(jawrConfig.getContext(), jawrConfig, tempDir+JawrConstant.CSS_SMARTSPRITES_TMP_DIR);
 		}
 		
 	}

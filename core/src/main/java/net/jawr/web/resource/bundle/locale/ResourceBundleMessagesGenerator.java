@@ -21,9 +21,9 @@ import net.jawr.web.resource.bundle.factory.util.ClassLoaderResourceUtils;
 import net.jawr.web.resource.bundle.generator.AbstractJavascriptGenerator;
 import net.jawr.web.resource.bundle.generator.GeneratorContext;
 import net.jawr.web.resource.bundle.generator.GeneratorRegistry;
+import net.jawr.web.resource.bundle.generator.LocaleAwareResourceGenerator;
 import net.jawr.web.resource.bundle.generator.ResourceGenerator;
 import net.jawr.web.resource.bundle.locale.message.MessageBundleScriptCreator;
-import net.jawr.web.resource.handler.reader.LocaleAwareResourceReader;
 
 import org.apache.log4j.Logger;
 
@@ -34,7 +34,7 @@ import org.apache.log4j.Logger;
  * @author Jordi Hernández Sellés
  *
  */
-public class ResourceBundleMessagesGenerator extends AbstractJavascriptGenerator implements ResourceGenerator, LocaleAwareResourceReader {
+public class ResourceBundleMessagesGenerator extends AbstractJavascriptGenerator implements ResourceGenerator, LocaleAwareResourceGenerator {
 	
 	/** The logger */
 	private static final Logger log = Logger.getLogger(ResourceBundleMessagesGenerator.class);

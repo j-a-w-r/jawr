@@ -696,6 +696,15 @@ public class JawrConfig {
 					+ "Please check the docs for valid values ");
 	}
 
+	/**
+	 * Returns the value of the property associated to the key passed in parameter
+	 * @param key the key of the property
+	 * @return the value of the property
+	 */
+	public String getProperty(String key){
+		return configProperties.getProperty(key);
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 

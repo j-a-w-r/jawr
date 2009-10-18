@@ -44,9 +44,6 @@ public class ServletContextResourceReaderHandler implements ResourceReaderHandle
 	/** The working directory */
 	private String workingDirectory;
 	
-	/** The Jawr config */
-	private JawrConfig jawrConfig;
-	
 	/** The generator registry */
 	private GeneratorRegistry generatorRegistry;
 	
@@ -77,14 +74,13 @@ public class ServletContextResourceReaderHandler implements ResourceReaderHandle
 		this.servletContext = servletContext;
 		this.generatorRegistry = generatorRegistry;
 		this.generatorRegistry.setResourceReaderHandler(this);
-		this.jawrConfig = jawrConfig;
 		
 		if (tempWorkingDirectory.startsWith(JawrConstant.FILE_URI_PREFIX)) {
 			tempWorkingDirectory = tempWorkingDirectory.substring(JawrConstant.FILE_URI_PREFIX.length());
 		} 
 		this.workingDirectory = tempWorkingDirectory;
 		
-		ServletContextResourceReader rd = new ServletContextResourceReader(servletContext, this.jawrConfig.getResourceCharset());
+		ServletContextResourceReader rd = new ServletContextResourceReader(servletContext, jawrConfig);
 		addResourceReaderToEnd(rd);
 	}
 	
@@ -215,10 +211,20 @@ public class ServletContextResourceReaderHandler implements ResourceReaderHandle
 	public Set getResourceNames(String dirName) {
 		Set resourceNames = new HashSet();
 		for (Iterator iterator = resourceInfoProviders.iterator(); iterator.hasNext();) {
-			ResourceBrowser rsInfoProvider = (ResourceBrowser) iterator.next();
-			if(rsInfoProvider.canHandleResource(dirName)){
-				resourceNames = ((ResourceBrowser) rsInfoProvider).getResourceNames(dirName);
-				break;
+			ResourceBrowser rsBrowser = (ResourceBrowser) iterator.next();
+			if(generatorRegistry.isPathGenerated(dirName)){
+				if (rsBrowser instanceof PrefixedResourceGenerator) {
+					PrefixedResourceGenerator rsGeneratorBrowser = (PrefixedResourceGenerator) rsBrowser;
+					if(dirName.startsWith(rsGeneratorBrowser.getMappingPrefix()+GeneratorRegistry.PREFIX_SEPARATOR)){
+						resourceNames = rsBrowser.getResourceNames(dirName);
+						break;
+					}
+				}
+			}else{
+				if (!(rsBrowser instanceof PrefixedResourceGenerator)) {
+						resourceNames = rsBrowser.getResourceNames(dirName);
+						break;
+				}
 			}
 		}
 		return resourceNames;
@@ -229,11 +235,19 @@ public class ServletContextResourceReaderHandler implements ResourceReaderHandle
 	 */
 	public boolean isDirectory(String resourceName) {
 		boolean result = false;
-		for (Iterator iterator = resourceInfoProviders.iterator(); iterator.hasNext();) {
-			ResourceBrowser rsInfoProvider = (ResourceBrowser) iterator.next();
-			if(rsInfoProvider.canHandleResource(resourceName)){
-				result = ((ResourceBrowser) rsInfoProvider).isDirectory(resourceName);
-				break;
+		for (Iterator iterator = resourceInfoProviders.iterator(); iterator.hasNext() && !result;) {
+			ResourceBrowser rsBrowser = (ResourceBrowser) iterator.next();
+			if(generatorRegistry.isPathGenerated(resourceName)){
+				if (rsBrowser instanceof PrefixedResourceGenerator) {
+					PrefixedResourceGenerator rsGeneratorBrowser = (PrefixedResourceGenerator) rsBrowser;
+					if(resourceName.startsWith(rsGeneratorBrowser.getMappingPrefix()+GeneratorRegistry.PREFIX_SEPARATOR)){
+						result = rsBrowser.isDirectory(resourceName);
+					}
+				}
+			}else{
+				if(!(rsBrowser instanceof PrefixedResourceGenerator)){
+					result = ((ResourceBrowser) rsBrowser).isDirectory(resourceName);
+				}
 			}
 		}
 		return result;

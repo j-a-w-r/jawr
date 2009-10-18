@@ -30,7 +30,6 @@ import net.jawr.web.resource.bundle.generator.classpath.ClasspathJSGenerator;
 import net.jawr.web.resource.bundle.generator.dwr.DWRGeneratorFactory;
 import net.jawr.web.resource.bundle.generator.validator.CommonsValidatorGenerator;
 import net.jawr.web.resource.bundle.locale.ResourceBundleMessagesGenerator;
-import net.jawr.web.resource.handler.reader.LocaleAwareResourceReader;
 import net.jawr.web.resource.handler.reader.ResourceReader;
 import net.jawr.web.resource.handler.reader.ResourceReaderHandler;
 import net.jawr.web.servlet.JawrRequestHandler;
@@ -164,7 +163,7 @@ public class GeneratorRegistry {
 	private void updateRegistries(PrefixedResourceGenerator generator, String generatorKey) {
 		
 		registry.put(generatorKey, generator);
-		if(generator instanceof LocaleAwareResourceReader){
+		if(generator instanceof LocaleAwareResourceGenerator){
 			localeAwareResourceGeneratorPrefixRegistry.add(generatorKey);
 		}
 		if(generator instanceof StreamResourceGenerator){
@@ -202,9 +201,32 @@ public class GeneratorRegistry {
 			}
 		}
 		
+		initializeGeneratorProperties(generator);
+		
 		prefixRegistry.add(generator.getMappingPrefix() + PREFIX_SEPARATOR);
 		updateRegistries(generator, generator.getMappingPrefix() + PREFIX_SEPARATOR);
 		rsHandler.addResourceReaderToEnd(ResourceGeneratorReaderProxyFactory.getResourceReaderProxy(generator, rsHandler, config));
+	}
+
+	/**
+	 * Initializes the generator properties.
+	 * 
+	 * @param generator the generator
+	 */
+	private void initializeGeneratorProperties(
+			PrefixedResourceGenerator generator) {
+		// Initialize the generator
+		if(generator instanceof InitializingResourceGenerator){
+			if(generator instanceof ConfigurationAwareResourceGenerator){
+				((ConfigurationAwareResourceGenerator) generator).setConfig(config);
+			}
+			if(generator instanceof TypeAwareResourceGenerator){
+				((TypeAwareResourceGenerator) generator).setResourceType(resourceType);
+			}
+			if(generator instanceof PostInitializationAwareResourceGenerator){
+				((PostInitializationAwareResourceGenerator) generator).afterPropertiesSet();
+			}
+		}
 	}
 	
 	/**
@@ -327,9 +349,9 @@ public class GeneratorRegistry {
 		String generatorKey = matchPath(bundle);
 		if(generatorKey != null){
 			ResourceGenerator generator = (ResourceGenerator) registry.get(generatorKey);
-			if(generator instanceof LocaleAwareResourceReader){
+			if(generator instanceof LocaleAwareResourceGenerator){
 				
-				List tempResult = ((LocaleAwareResourceReader)generator).getAvailableLocales(bundle.substring(generatorKey.length()));
+				List tempResult = ((LocaleAwareResourceGenerator)generator).getAvailableLocales(bundle.substring(generatorKey.length()));
 				if(tempResult != null){
 					availableLocales = tempResult;
 				}

@@ -142,20 +142,40 @@ public class MessageBundleScriptCreator {
 				}
 			}
 			
-			Enumeration keys = bundle.getKeys();
-			
-			while(keys.hasMoreElements()) {
-				String key = (String) keys.nextElement();
-				
-				if(matchesFilter(key)) {
-						String value = bundle.getString(key);
-						props.put(key, value);
-				}
-			}
+			updateProperties(bundle, props);
 		}
 		return doCreateScript(props);
 	}
 
+	/**
+	 * Loads the message resource bundles specified and uses a BundleStringJasonifier to generate the properties. 
+	 * @return
+	 */
+	public Reader createScript(Charset charset, ResourceBundle bundle){
+		
+		Properties props = new Properties();
+		updateProperties(bundle, props);
+		return doCreateScript(props);
+	}
+	
+	/**
+	 * Loads the message resource bundles specified and uses a BundleStringJasonifier to generate the properties. 
+	 * @return
+	 */
+	public void updateProperties(ResourceBundle bundle, Properties props){
+		
+		Enumeration keys = bundle.getKeys();
+		
+		while(keys.hasMoreElements()) {
+			String key = (String) keys.nextElement();
+			
+			if(matchesFilter(key)) {
+					String value = bundle.getString(key);
+					props.put(key, value);
+			}
+		}
+	}
+	
 	/**
 	 * @return
 	 */

@@ -30,11 +30,11 @@ public interface CssResourceGenerator extends ResourceGenerator {
 	 * 
 	 * For example: if CSS image is referenced as
 	 * 
-	 * backgroung-image : url('/myImg/temp/myIcon.png')
+	 * background-image : url('/myImg/temp/myIcon.png')
 	 * 
 	 * The image path will be interpreted as :
 	 * 
-	 * backgroung-image : url('myGen:/myImg/temp/myIcon.png')
+	 * background-image : url('myGen:/myImg/temp/myIcon.png')
 	 * 
 	 * @return true if the CSS image defined in the generated CSS resource
 	 * are using the CSS generator.

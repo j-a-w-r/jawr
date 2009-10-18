@@ -25,6 +25,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
+import net.jawr.web.config.JawrConfig;
 import net.jawr.web.exception.InvalidPathException;
 
 /**
@@ -34,7 +35,7 @@ import net.jawr.web.exception.InvalidPathException;
  * @author Ibrahim Chaehoi
  *
  */
-public class FileSystemResourceReader implements TextResourceReader, StreamResourceReader {
+public class FileSystemResourceReader implements TextResourceReader, StreamResourceReader, ResourceBrowser {
 
 	/** The base directory */
 	private String baseDir;
@@ -48,9 +49,9 @@ public class FileSystemResourceReader implements TextResourceReader, StreamResou
 	 * @param baseDir the base directory
 	 * @param charset the charset
 	 */
-	public FileSystemResourceReader(String baseDir, Charset charset) {
+	public FileSystemResourceReader(String baseDir, JawrConfig config) {
 		this.baseDir = baseDir;
-		this.charset = charset;
+		this.charset = config.getResourceCharset();
 	}
 	
 	/* (non-Javadoc)
@@ -102,7 +103,7 @@ public class FileSystemResourceReader implements TextResourceReader, StreamResou
 	}
 
 	/* (non-Javadoc)
-	 * @see net.jawr.web.resource.handler.ResourceInfoProvider#getResourceNames(java.lang.String)
+	 * @see net.jawr.web.resource.handler.reader.ResourceBrowser#getResourceNames(java.lang.String)
 	 */
 	public Set getResourceNames(String path) {
 		path = path.replace('/', File.separatorChar);
@@ -125,7 +126,7 @@ public class FileSystemResourceReader implements TextResourceReader, StreamResou
 	}
 
 	/* (non-Javadoc)
-	 * @see net.jawr.web.resource.handler.ResourceInfoProvider#isDirectory(java.lang.String)
+	 * @see net.jawr.web.resource.handler.reader.ResourceBrowser#isDirectory(java.lang.String)
 	 */
 	public boolean isDirectory(String path) {
 		path = path.replace('/', File.separatorChar);

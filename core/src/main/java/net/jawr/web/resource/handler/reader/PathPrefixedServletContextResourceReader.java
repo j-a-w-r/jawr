@@ -13,13 +13,9 @@
  */
 package net.jawr.web.resource.handler.reader;
 
-import java.io.InputStream;
-import java.io.Reader;
-import java.nio.charset.Charset;
-import java.util.Set;
-
 import javax.servlet.ServletContext;
 
+import net.jawr.web.config.JawrConfig;
 import net.jawr.web.resource.bundle.factory.util.PathNormalizer;
 import net.jawr.web.util.StringUtils;
 
@@ -44,10 +40,10 @@ public class PathPrefixedServletContextResourceReader extends
 	/**
 	 * Constructor 
 	 * @param context the context
-	 * @param charset the charset
+	 * @param config the Jawr config
 	 */
-	public PathPrefixedServletContextResourceReader(ServletContext context, Charset charset, String pathPrefix) {
-		super(context, charset);
+	public PathPrefixedServletContextResourceReader(ServletContext context, JawrConfig config, String pathPrefix) {
+		super(context, config);
 		if(StringUtils.isNotEmpty(pathPrefix)){
 			this.pathPrefix = PathNormalizer.asDirPath(pathPrefix);
 		}
@@ -65,30 +61,6 @@ public class PathPrefixedServletContextResourceReader extends
 		}
 		
 		return PathNormalizer.asPath(pathPrefix+path);
-	}
-
-	/* (non-Javadoc)
-	 * @see net.jawr.web.resource.handler.ResourceReader#getResource(java.lang.String, boolean)
-	 */
-	public Reader getResource(String resourceName, boolean processingBundle) {
-		
-		return super.getResource(getFullPath(resourceName), processingBundle);
-	}
-	
-	/* (non-Javadoc)
-	 * @see net.jawr.web.resource.handler.stream.StreamResourceReader#getResourceAsStream(java.lang.String, boolean)
-	 */
-	public InputStream getResourceAsStream(String resourceName,
-			boolean processingBundle) {
-		
-		return  super.getResourceAsStream(getFullPath(resourceName), processingBundle);
-	}
-	
-	/* (non-Javadoc)
-	 * @see net.jawr.web.resource.handler.ResourceInfoProvider#getResourceNames(java.lang.String)
-	 */
-	public Set getResourceNames(String path) {
-		return super.getResourceNames(getFullPath(path));
 	}
 	
 }

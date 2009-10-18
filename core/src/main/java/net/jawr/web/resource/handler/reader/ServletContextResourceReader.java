@@ -23,6 +23,9 @@ import java.util.Set;
 
 import javax.servlet.ServletContext;
 
+import net.jawr.web.config.JawrConfig;
+
+
 
 /**
  * This class defines the resource reader which is based on the servlet context
@@ -43,9 +46,9 @@ public class ServletContextResourceReader implements TextResourceReader, StreamR
 	 * @param context the context
 	 * @param charset the charset
 	 */
-	public ServletContextResourceReader(ServletContext context, Charset charset) {
+	public ServletContextResourceReader(ServletContext context, JawrConfig config) {
 		this.context = context;
-		this.charset = charset;
+		this.charset = config.getResourceCharset();
 	}
 	
 
@@ -103,16 +106,6 @@ public class ServletContextResourceReader implements TextResourceReader, StreamR
 		return names;
 	}
 
-	/* (non-Javadoc)
-	 * @see net.jawr.web.resource.handler.ResourceInfoProvider#canHandleResource(java.lang.String)
-	 */
-	public boolean canHandleResource(String path) {
-		
-		int generatorPrefixSepIdx = path.indexOf(":");
-		int urlSepIdx = path.indexOf("/");
-		return generatorPrefixSepIdx == -1 || urlSepIdx < generatorPrefixSepIdx;
-	}
-	
 	/* (non-Javadoc)
 	 * @see net.jawr.web.resource.handler.ResourceInfoProvider#isDirectory(java.lang.String)
 	 */

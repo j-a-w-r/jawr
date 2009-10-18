@@ -153,13 +153,13 @@ public class JoinableResourceBundleImpl implements JoinableResourceBundle {
 
 		for (Iterator it = pathMappings.iterator(); it.hasNext();) {
 			String pathMapping = (String) it.next();
-
+			boolean isGeneratedPath = resourceReaderHandler.isResourceGenerated(pathMapping);
 			// Handle generated resources
-			if (resourceReaderHandler.isResourceGenerated(pathMapping)) {
-				itemPathList.add(pathMapping);
-			}
+//			if (resourceReaderHandler.isResourceGenerated(pathMapping)) {
+//				itemPathList.add(pathMapping);
+//			}else 
 			// path ends in /, the folder is included without subfolders
-			else if (pathMapping.endsWith("/")) {
+			if (pathMapping.endsWith("/")) {
 				addItemsFromDir(pathMapping, false);
 			}
 			// path ends in /, the folder is included with all subfolders
@@ -167,9 +167,9 @@ public class JoinableResourceBundleImpl implements JoinableResourceBundle {
 				addItemsFromDir(pathMapping.substring(0, pathMapping
 						.lastIndexOf("**")), true);
 			} else if (pathMapping.endsWith(fileExtension)) {
-				itemPathList.add(PathNormalizer.asPath(pathMapping));
+				itemPathList.add(asPath(pathMapping, isGeneratedPath));
 			} else if (pathMapping.endsWith(LICENSES_FILENAME)) {
-				licensesPathList.add(PathNormalizer.asPath(pathMapping));
+				licensesPathList.add(asPath(pathMapping, isGeneratedPath));
 			} else
 				log.warn("Wrong mapping [" + pathMapping + "] for bundle ["
 						+ this.name + "]. Please check configuration. ");
@@ -186,7 +186,7 @@ public class JoinableResourceBundleImpl implements JoinableResourceBundle {
 	 */
 	private void addItemsFromDir(String dirName, boolean addSubDirs) {
 		Set resources = resourceReaderHandler.getResourceNames(dirName);
-
+		boolean isGeneratedPath = resourceReaderHandler.isResourceGenerated(dirName);
 		if (log.isDebugEnabled()) {
 			log.debug("Adding " + resources.size() + " resources from path ["
 					+ dirName + "] to bundle " + getId());
@@ -196,8 +196,8 @@ public class JoinableResourceBundleImpl implements JoinableResourceBundle {
 		if (resources.contains(SORT_FILE_NAME)
 				|| resources.contains("/" + SORT_FILE_NAME)) {
 			
-			String sortFilePath = PathNormalizer.joinPaths(dirName,
-					SORT_FILE_NAME);
+			String sortFilePath = joinPaths(dirName,
+					SORT_FILE_NAME, isGeneratedPath);
 			Reader rd = null;
 			
 			
@@ -217,7 +217,7 @@ public class JoinableResourceBundleImpl implements JoinableResourceBundle {
 
 				// Add subfolders or files
 				if (resourceName.endsWith(fileExtension)) {
-					itemPathList.add(PathNormalizer.asPath(resourceName));
+					itemPathList.add(asPath(resourceName, isGeneratedPath));
 					if (log.isDebugEnabled())
 						log
 								.debug("Added to item path list from the sorting file:"
@@ -231,22 +231,22 @@ public class JoinableResourceBundleImpl implements JoinableResourceBundle {
 		// Add licenses file
 		if (resources.contains(LICENSES_FILENAME)
 				|| resources.contains("/" + LICENSES_FILENAME)) {
-			licensesPathList.add(PathNormalizer.joinPaths(dirName,
-					LICENSES_FILENAME));
+			licensesPathList.add(joinPaths(dirName,
+					LICENSES_FILENAME, isGeneratedPath));
 		}
 
 		// Add remaining resources (remaining after sorting, or all if no sort file present)
 		List folders = new ArrayList();
 		for (Iterator it = resources.iterator(); it.hasNext();) {
 			String resourceName = (String) it.next();
-			String resourcePath = PathNormalizer.joinPaths(dirName,
-					resourceName);
+			String resourcePath = joinPaths(dirName,
+					resourceName, isGeneratedPath);
 			if (resourceName.endsWith(fileExtension)) {
-				itemPathList.add(PathNormalizer.asPath(resourcePath));
+				itemPathList.add(asPath(resourcePath, isGeneratedPath));
 
 				if (log.isDebugEnabled())
 					log.debug("Added to item path list:"
-							+ PathNormalizer.asPath(resourcePath));
+							+ asPath(resourcePath, isGeneratedPath));
 			} else if (addSubDirs
 					&& resourceReaderHandler.isDirectory(resourcePath))
 				folders.add(resourceName);
@@ -256,12 +256,45 @@ public class JoinableResourceBundleImpl implements JoinableResourceBundle {
 		if (addSubDirs) {
 			for (Iterator it = folders.iterator(); it.hasNext();) {
 				String folderName = (String) it.next();
-				addItemsFromDir(PathNormalizer.joinPaths(dirName, folderName),
+				addItemsFromDir(joinPaths(dirName, folderName, isGeneratedPath),
 						true);
 			}
 		}
 	}
 
+	/**
+	 * Normalizes a path and adds a separator at its start, if it's not a generated resource. 
+	 * @param path the path
+	 * @param generatedResource the flag indicating if the resource has been generated
+	 * @return the normalized path
+	 */
+	private String asPath(String path, boolean generatedResource){
+		
+		String result = path;
+		if(!generatedResource){
+			result = PathNormalizer.asPath(path);
+		}
+		return result;
+	}
+	
+	/**
+	 * Normalizes two paths and joins them as a single path. 
+	 * @param prefix the path prefix
+	 * @param path the path
+	 * @param generatedResource the flag indicating if the resource has been generated
+	 * @return the normalized path
+	 */
+	private String joinPaths(String dirName, String folderName, boolean generatedResource){
+		
+		String result = null;
+		if(generatedResource){
+			result = PathNormalizer.joinDomainToPath(dirName, folderName);
+		}else{
+			result = PathNormalizer.joinPaths(dirName, folderName);
+		}
+		return result;
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 

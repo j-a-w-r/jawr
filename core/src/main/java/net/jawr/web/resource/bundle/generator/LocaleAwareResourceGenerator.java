@@ -11,7 +11,7 @@
  * either express or implied. See the License for the specific language governing permissions
  * and limitations under the License.
  */
-package net.jawr.web.resource.handler.reader;
+package net.jawr.web.resource.bundle.generator;
 
 import java.util.List;
 
@@ -22,7 +22,7 @@ import java.util.List;
  * @author Ibrahim Chaehoi
  *
  */
-public interface LocaleAwareResourceReader {
+public interface LocaleAwareResourceGenerator extends PrefixedResourceGenerator{
 	
 	/**
 	 * Returns the list of available locales for a resource 
