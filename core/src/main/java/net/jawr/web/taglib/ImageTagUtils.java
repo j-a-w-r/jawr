@@ -17,7 +17,10 @@ import java.io.IOException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.PageContext;
 
+import net.jawr.web.JawrConstant;
 import net.jawr.web.config.JawrConfig;
 import net.jawr.web.exception.ResourceNotFoundException;
 import net.jawr.web.resource.ImageResourcesHandler;
@@ -96,6 +99,28 @@ public final class ImageTagUtils {
 		return response.encodeURL(newUrl);
 	}
 
-	
+	/**
+	 * Sames as its counterpart, only meant to be used as a JSP EL function. 
+	 * @param imgSrc
+	 * @param pageContext
+	 * @return
+	 * @throws JspException
+	 */
+	public static String getImageUrl(String imgSrc, PageContext pageContext) throws JspException {
+		ImageResourcesHandler imgRsHandler = 
+			(ImageResourcesHandler) pageContext.getServletContext().getAttribute(JawrConstant.IMG_CONTEXT_ATTRIBUTE);
+		if (null == imgRsHandler)
+			throw new JspException(
+					"You are using a Jawr image tag while the Jawr Image servlet has not been initialized. Initialization of Jawr Image servlet either failed or never occurred.");
+
+		HttpServletResponse response = (HttpServletResponse) pageContext
+		.getResponse();
+
+		HttpServletRequest request = (HttpServletRequest) pageContext
+				.getRequest();
+		
+		return getImageUrl(imgSrc, imgRsHandler,request,response);
+		
+	}
 
 }
