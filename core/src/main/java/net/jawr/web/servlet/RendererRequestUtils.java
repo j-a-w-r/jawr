@@ -163,8 +163,8 @@ public class RendererRequestUtils {
 	 */
 	public static boolean isSslRequest(HttpServletRequest request) {
 		
-		String requestUrl = request.getRequestURL().toString();
-		return requestUrl.toLowerCase().startsWith(JawrConstant.HTTPS_URL_PREFIX);
+		String scheme = request.getScheme();
+		return JawrConstant.HTTPS_URL_PREFIX.equals(scheme);
 	}
 
 	public static String getRenderedUrl(String newUrl, JawrConfig jawrConfig,
