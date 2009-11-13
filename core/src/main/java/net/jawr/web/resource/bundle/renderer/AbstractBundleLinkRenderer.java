@@ -94,7 +94,8 @@ public abstract class AbstractBundleLinkRenderer implements BundleRenderer {
 		
 		// If there is a fixed URL for production mode it is rendered and method returns.  
     	if(!debugOn && null != bundle.getAlternateProductionURL()){
-    		out.write(renderLink(bundle.getAlternateProductionURL()));
+    		if(ctx.getIncludedBundles().add(bundle.getId()))
+    			out.write(renderLink(bundle.getAlternateProductionURL()));
     		return;
     	}
     	
