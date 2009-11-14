@@ -199,7 +199,7 @@ public class MockServletContext implements ServletContext {
 		try {
 			is = new FileInputStream(new File(baseDir, path));
 		} catch (FileNotFoundException e) {
-			logger.info("File for path : '" + path + "' not found", e);
+			logger.info("File for path : '" + path + "' not found");
 		}
 
 		return is;
