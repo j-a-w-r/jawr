@@ -360,10 +360,7 @@ public class JawrImageRequestHandler extends JawrRequestHandler {
 
 		try {
 			writeContent(response, filePath);
-
-			// Set the content length, and the content type based on the file extension
-			response.setContentType(contentType);
-
+			
 		} catch (Exception ex) {
 
 			log.error("Unable to load the image for the request URI : " + request.getRequestURI(), ex);
@@ -424,8 +421,6 @@ public class JawrImageRequestHandler extends JawrRequestHandler {
 	 */
 	private void writeContent(HttpServletResponse response, String fileName) throws IOException {
 
-		int length = 0;
-
 		OutputStream os = response.getOutputStream();
 		InputStream is = null;
 
@@ -447,8 +442,6 @@ public class JawrImageRequestHandler extends JawrRequestHandler {
 		}
 
 		IOUtils.copy(is, os, true);
-
-		response.setContentLength(length);
 	}
 
 	/**
