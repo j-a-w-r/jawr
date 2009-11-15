@@ -22,7 +22,7 @@
 	This mean that you could reference a CSS image in the classpath from a standard CSS define in a bundle.</span>
 </div>
 <div style="height: 20px">
-	<input type="image" src="/jawr-integration-test/cb30a18063ef42b090194a7e936086960f/img/cog.png" value="temp" disabled="false" /> This input image use a generated path which force the caching for the browser.
+	<input type="image" src="/jawr-integration-test/cb30a18063ef42b090194a7e936086960f/img/cog.png" value="temp" /> This input image use a generated path which force the caching for the browser.
 </div>
 
 </body>
