@@ -27,6 +27,7 @@ import javax.servlet.ServletContext;
 
 import net.jawr.web.JawrConstant;
 import net.jawr.web.config.JawrConfig;
+import net.jawr.web.exception.ResourceNotFoundException;
 import net.jawr.web.resource.bundle.generator.GeneratorRegistry;
 import net.jawr.web.resource.bundle.generator.PrefixedResourceGenerator;
 import net.jawr.web.util.StringUtils;
@@ -147,7 +148,10 @@ public class ServletContextResourceReaderHandler implements ResourceReaderHandle
 		initReader(rd);
 	}
 
-	public Reader getResource(String resourceName) {
+	/* (non-Javadoc)
+	 * @see net.jawr.web.resource.handler.reader.ResourceReaderHandler#getResource(java.lang.String)
+	 */
+	public Reader getResource(String resourceName) throws ResourceNotFoundException{
 		
 		return getResource(resourceName, false);
 	}
@@ -155,7 +159,7 @@ public class ServletContextResourceReaderHandler implements ResourceReaderHandle
 	/* (non-Javadoc)
 	 * @see net.jawr.web.resource.handler.ResourceReader#getResource(java.lang.String, boolean)
 	 */
-	public Reader getResource(String resourceName, boolean processingBundle) {
+	public Reader getResource(String resourceName, boolean processingBundle) throws ResourceNotFoundException {
 
 		Reader rd = null;
 		
@@ -170,13 +174,18 @@ public class ServletContextResourceReaderHandler implements ResourceReaderHandle
 				}
 			}
 		}
+		
+		if(rd == null){
+			throw new ResourceNotFoundException(resourceName);
+		}
+		
 		return rd;
 	}
 
 	/* (non-Javadoc)
 	 * @see net.jawr.web.resource.handler.ResourceReader#getResourceAsStream(java.lang.String)
 	 */
-	public InputStream getResourceAsStream(String resourceName) {
+	public InputStream getResourceAsStream(String resourceName) throws ResourceNotFoundException {
 
 		return getResourceAsStream(resourceName, false);
 	}
@@ -185,7 +194,7 @@ public class ServletContextResourceReaderHandler implements ResourceReaderHandle
 	 * @see net.jawr.web.resource.handler.stream.StreamResourceReader#getResourceAsStream(java.lang.String, boolean)
 	 */
 	public InputStream getResourceAsStream(String resourceName,
-			boolean processingBundle) {
+			boolean processingBundle) throws ResourceNotFoundException {
 		
 		generatorRegistry.loadGeneratorIfNeeded(resourceName);
 		
@@ -202,6 +211,11 @@ public class ServletContextResourceReaderHandler implements ResourceReaderHandle
 				}
 			}
 		}
+		
+		if(is == null){
+			throw new ResourceNotFoundException(resourceName);
+		}
+		
 		return is;
 	}
 
