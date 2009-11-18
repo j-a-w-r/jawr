@@ -369,7 +369,7 @@ public class ResourceBundlesHandlerImpl implements ResourceBundlesHandler {
 			boolean processBundle = processBundleFlag;
 			if(!ThreadLocalJawrContext.isBundleProcessingAtBuildTime() && null != bundle.getAlternateProductionURL()){
 				if (log.isDebugEnabled()){
-					log.debug("No bundle generated for '" + bundle.getId()+"' because a production URL exists.");
+					log.debug("No bundle generated for '" + bundle.getId()+"' because a production URL is defined for this bundle.");
 				}
 				processBundle = false;
 			}
