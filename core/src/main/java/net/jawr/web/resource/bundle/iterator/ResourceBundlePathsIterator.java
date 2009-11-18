@@ -18,7 +18,7 @@ import java.util.Iterator;
 /**
  * An iterator specialized in doing recursion over the 
  * list of paths that should be included in pages whenever
- * a bunle is invoked on a page.  
+ * a bundle is invoked on a page.  
  * 
  * @author Jordi Hernández Sellés
  */

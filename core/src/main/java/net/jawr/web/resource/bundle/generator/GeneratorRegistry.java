@@ -60,6 +60,9 @@ public class GeneratorRegistry {
 	/** The commons validator bundle prefix */
 	public static final String COMMONS_VALIDATOR_PREFIX = "acv";
 	
+	/** The IE CSS generator bundle prefix */
+	public static final String IE_CSS_GENERATOR_PREFIX = "ieCssGen";
+
 	/** The generator prefix separator */
 	public static final String PREFIX_SEPARATOR = ":";
 	
@@ -103,6 +106,8 @@ public class GeneratorRegistry {
 		prefixRegistry.add(CLASSPATH_RESOURCE_BUNDLE_PREFIX + PREFIX_SEPARATOR);
 		prefixRegistry.add(DWR_BUNDLE_PREFIX + PREFIX_SEPARATOR);
 		prefixRegistry.add(COMMONS_VALIDATOR_PREFIX + PREFIX_SEPARATOR);
+		prefixRegistry.add(MESSAGE_BUNDLE_PREFIX + PREFIX_SEPARATOR);
+		prefixRegistry.add(IE_CSS_GENERATOR_PREFIX + PREFIX_SEPARATOR);
 	}
 	
 	/**
@@ -146,6 +151,8 @@ public class GeneratorRegistry {
 		}
 		else if((COMMONS_VALIDATOR_PREFIX + PREFIX_SEPARATOR).equals(generatorKey)){
 			generator = new CommonsValidatorGenerator();
+		}else if(resourceType.equals(JawrConstant.CSS_TYPE) && (IE_CSS_GENERATOR_PREFIX + PREFIX_SEPARATOR).equals(generatorKey)){
+			generator = new IECssBundleGenerator();
 		}
 		
 		if(generator != null){

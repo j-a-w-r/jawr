@@ -55,11 +55,8 @@ public class RendererRequestUtils {
 		
 		BundleRendererContext ctx = (BundleRendererContext) request.getAttribute(bundleRendererCtxAttributeName);
 		if(ctx == null){
-			String localeKey = renderer.getBundler().getConfig().getLocaleResolver().resolveLocaleCode(request);
-	         boolean isGzippable = isRequestGzippable(request,renderer.getBundler().getConfig());
-	         ctx = new BundleRendererContext(request.getContextPath(), localeKey, isGzippable,
-	                 isSslRequest(request));
-	         request.setAttribute(bundleRendererCtxAttributeName, ctx);
+			ctx = new BundleRendererContext(request, renderer.getBundler().getConfig());
+	        request.setAttribute(bundleRendererCtxAttributeName, ctx);
 		}
 		
 		return ctx;
@@ -85,29 +82,43 @@ public class RendererRequestUtils {
 	 * @param jawrConfig
 	 * @return
 	 */
-	public static boolean isRequestGzippable(HttpServletRequest req, JawrConfig jeesConfig) {
+	public static boolean isRequestGzippable(HttpServletRequest req, JawrConfig jawrConfig) {
 		boolean rets;
 		// If gzip is completely off, return false.
-		if (!jeesConfig.isGzipResourcesModeOn())
+		if (!jawrConfig.isGzipResourcesModeOn())
 			rets = false;
 		else if (req.getHeader("Accept-Encoding") != null && req.getHeader("Accept-Encoding").indexOf("gzip") != -1) {
 
 			// If gzip for IE6 or less is off, the user agent is checked to avoid compression.
-			if (!jeesConfig.isGzipResourcesForIESixOn()) {
-				String agent = req.getHeader("User-Agent");
-				if (log.isDebugEnabled())
-					log.debug("User-Agent for this request:" + agent);
-
-				if (null != agent && agent.indexOf("MSIE") != -1) {
-					rets = agent.indexOf("MSIE 4") == -1 && agent.indexOf("MSIE 5") == -1 && agent.indexOf("MSIE 6") == -1;
-					if (log.isDebugEnabled())
-						log.debug("Gzip enablement for IE executed, with result:" + rets);
-				} else
-					rets = true;
+			if (!jawrConfig.isGzipResourcesForIESixOn() && isIE6orLess(req)) {
+				rets = false;
+				if (log.isDebugEnabled()){
+					log.debug("Gzip enablement for IE executed, with result:" + rets);
+				}
 			} else
 				rets = true;
 		} else
 			rets = false;
+		return rets;
+	}
+
+	/**
+	 * Checks if the user agent is IE6 or less
+	 * @param req the request
+	 * @return true if the user agent is IE6 or less
+	 */
+	public static boolean isIE6orLess(HttpServletRequest req) {
+	
+		boolean rets = false;
+		String agent = req.getHeader("User-Agent");
+		if (log.isDebugEnabled()){
+			log.debug("User-Agent for this request:" + agent);
+		}
+		
+		if (null != agent && agent.indexOf("MSIE") != -1) {
+			rets = agent.indexOf("MSIE 4") != -1 || agent.indexOf("MSIE 5") != -1 || agent.indexOf("MSIE 6") != -1;
+		}
+		
 		return rets;
 	}
 
@@ -164,9 +175,17 @@ public class RendererRequestUtils {
 	public static boolean isSslRequest(HttpServletRequest request) {
 		
 		String scheme = request.getScheme();
-		return JawrConstant.HTTPS_URL_PREFIX.equals(scheme);
+		return JawrConstant.HTTPS.equals(scheme);
 	}
 
+	/**
+	 * Renders the URL taking in account the context path, the jawr config 
+	 * @param newUrl the URL
+	 * @param jawrConfig the jawr config
+	 * @param contextPath the context path
+	 * @param sslRequest the flag indicating if it's an SSL request or not
+	 * @return the new URL
+	 */
 	public static String getRenderedUrl(String newUrl, JawrConfig jawrConfig,
 			String contextPath, boolean sslRequest) {
 		String contextPathOverride = getContextPathOverride(sslRequest, jawrConfig);

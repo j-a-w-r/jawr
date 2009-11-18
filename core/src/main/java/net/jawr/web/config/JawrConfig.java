@@ -71,6 +71,11 @@ public class JawrConfig {
 	public static final String JAWR_GZIP_IE6_ON = "jawr.gzip.ie6.on";
 
 	/**
+	 * The property name to force the CSS bundle in debug mode
+	 */
+	public static final String JAWR_DEBUG_IE6_FORCE_CSS_BUNDLE = "jawr.debug.ie6.force.css.bundle";
+	
+	/**
 	 * The property name for the charset name
 	 */
 	public static final String JAWR_CHARSET_NAME = "jawr.charset.name";
@@ -182,6 +187,11 @@ public class JawrConfig {
 	private boolean gzipResourcesForIESixOn = true;
 
 	/**
+	 * Flag to switch on css resources bundle in debug mode. defaults to false.
+	 */
+	private boolean forceBundleCssForIEOn = false;
+	
+	/**
 	 * Flag which defines if we should process the bundle at server startup. defaults to false.
 	 */
 	private boolean useBundleMapping = false;
@@ -275,6 +285,9 @@ public class JawrConfig {
 		}
 		if (null != props.getProperty(JAWR_GZIP_IE6_ON)) {
 			setGzipResourcesForIESixOn(Boolean.valueOf(props.getProperty(JAWR_GZIP_IE6_ON)).booleanValue());
+		}
+		if (null != props.getProperty(JAWR_DEBUG_IE6_FORCE_CSS_BUNDLE)) {
+			setForceBundleCssForIEOn(Boolean.valueOf(props.getProperty(JAWR_DEBUG_IE6_FORCE_CSS_BUNDLE)).booleanValue());
 		}
 		if (null != props.getProperty(JAWR_URL_CONTEXTPATH_OVERRIDE)) {
 			setContextPathOverride(props.getProperty(JAWR_URL_CONTEXTPATH_OVERRIDE));
@@ -481,6 +494,14 @@ public class JawrConfig {
 	 */
 	public void setGzipResourcesForIESixOn(boolean gzipResourcesForIESixOn) {
 		this.gzipResourcesForIESixOn = gzipResourcesForIESixOn;
+	}
+
+	public boolean isForceBundleCssForIEOn() {
+		return forceBundleCssForIEOn;
+	}
+
+	public void setForceBundleCssForIEOn(boolean forceBundleCssForIEOn) {
+		this.forceBundleCssForIEOn = forceBundleCssForIEOn;
 	}
 
 	/**

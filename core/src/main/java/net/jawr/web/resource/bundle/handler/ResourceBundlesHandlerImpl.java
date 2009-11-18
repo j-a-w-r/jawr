@@ -34,6 +34,7 @@ import java.util.Set;
 import net.jawr.web.JawrConstant;
 import net.jawr.web.collections.ConcurrentCollectionsFactory;
 import net.jawr.web.config.JawrConfig;
+import net.jawr.web.context.ThreadLocalJawrContext;
 import net.jawr.web.exception.ResourceNotFoundException;
 import net.jawr.web.resource.ImageResourcesHandler;
 import net.jawr.web.resource.bundle.CompositeResourceBundle;
@@ -41,6 +42,7 @@ import net.jawr.web.resource.bundle.IOUtils;
 import net.jawr.web.resource.bundle.JoinableResourceBundle;
 import net.jawr.web.resource.bundle.JoinableResourceBundleContent;
 import net.jawr.web.resource.bundle.JoinableResourceBundlePropertySerializer;
+import net.jawr.web.resource.bundle.factory.util.PathNormalizer;
 import net.jawr.web.resource.bundle.global.preprocessor.GlobalPreprocessor;
 import net.jawr.web.resource.bundle.global.preprocessor.GlobalPreprocessingContext;
 import net.jawr.web.resource.bundle.iterator.ConditionalCommentCallbackHandler;
@@ -202,9 +204,33 @@ public class ResourceBundlesHandlerImpl implements ResourceBundlesHandler {
 	/* (non-Javadoc)
 	 * @see net.jawr.web.resource.bundle.handler.ResourceBundlesHandler#getGlobalResourceBundlePaths(net.jawr.web.resource.bundle.iterator.ConditionalCommentCallbackHandler, java.lang.String)
 	 */
+	public ResourceBundlePathsIterator getGlobalResourceBundlePaths(boolean debugMode, ConditionalCommentCallbackHandler commentCallbackHandler, String variantKey){
+		
+		return getBundleIterator(debugMode, globalBundles, commentCallbackHandler, variantKey);
+	}
+	
+	/* (non-Javadoc)
+	 * @see net.jawr.web.resource.bundle.handler.ResourceBundlesHandler#getGlobalResourceBundlePaths(net.jawr.web.resource.bundle.iterator.ConditionalCommentCallbackHandler, java.lang.String)
+	 */
 	public ResourceBundlePathsIterator getGlobalResourceBundlePaths(ConditionalCommentCallbackHandler commentCallbackHandler, String variantKey){
 		
-		return getBundleIterator(globalBundles, commentCallbackHandler, variantKey);
+		return getBundleIterator(getConfig().isDebugModeOn(), globalBundles, commentCallbackHandler, variantKey);
+	}
+	
+	/* (non-Javadoc)
+	 * @see net.jawr.web.resource.bundle.handler.ResourceBundlesHandler#getGlobalResourceBundlePaths(net.jawr.web.resource.bundle.iterator.ConditionalCommentCallbackHandler, java.lang.String)
+	 */
+	public ResourceBundlePathsIterator getGlobalResourceBundlePaths(String bundleId, ConditionalCommentCallbackHandler commentCallbackHandler, String variantKey){
+		
+		List bundles = new ArrayList();
+		for (Iterator it = globalBundles.iterator(); it.hasNext();) {
+			JoinableResourceBundle bundle = (JoinableResourceBundle) it.next();
+			if (bundle.getId().equals(bundleId)) {
+				bundles.add(bundle);
+				break;
+			}
+		}
+		return getBundleIterator(getConfig().isDebugModeOn(), bundles, commentCallbackHandler, variantKey);
 	}
 
 	/*
@@ -214,6 +240,14 @@ public class ResourceBundlesHandlerImpl implements ResourceBundlesHandler {
 	 */
 	public ResourceBundlePathsIterator getBundlePaths(String bundleId, ConditionalCommentCallbackHandler commentCallbackHandler, String variantKey) {
 
+		return getBundlePaths(getConfig().isDebugModeOn(), bundleId, commentCallbackHandler, variantKey);
+	}
+
+	/* (non-Javadoc)
+	 * @see net.jawr.web.resource.bundle.handler.ResourceBundlesHandler#getBundlePaths(boolean, java.lang.String, net.jawr.web.resource.bundle.iterator.ConditionalCommentCallbackHandler, java.lang.String)
+	 */
+	public ResourceBundlePathsIterator getBundlePaths(boolean debugMode, String bundleId, ConditionalCommentCallbackHandler commentCallbackHandler, String variantKey) {
+		
 		List bundles = new ArrayList();
 		
 		// if the path did not correspond to a global bundle, find the requested one.
@@ -227,47 +261,28 @@ public class ResourceBundlesHandlerImpl implements ResourceBundlesHandler {
 			}
 		}
 		
-		return getBundleIterator(bundles, commentCallbackHandler, variantKey);
+		return getBundleIterator(debugMode, bundles, commentCallbackHandler, variantKey);
 	}
-
+	
 	/**
 	 * Returns the bundle iterator
+	 * @param debugMode the flag indicating if we are in debug mode or not 
 	 * @param commentCallbackHandler the comment callback handler
 	 * @param variantKey the variant key
 	 * @return the bundle iterator
 	 */
-	private ResourceBundlePathsIterator getBundleIterator(List bundles, 
+	private ResourceBundlePathsIterator getBundleIterator(boolean debugMode, List bundles, 
 			ConditionalCommentCallbackHandler commentCallbackHandler,
 			String variantKey) {
 		ResourceBundlePathsIterator bundlesIterator;
-		if (getConfig().isDebugModeOn()) {
+		if (debugMode) {
 			bundlesIterator = new DebugModePathsIteratorImpl(bundles, commentCallbackHandler, variantKey);
 		} else
 			bundlesIterator = new PathsIteratorImpl(bundles, commentCallbackHandler, variantKey);
 		return bundlesIterator;
 	}
 	
-	/**
-	 * Removes the URL prefix defined in the configuration from a path. If the prefix contains a variant information, it adds it to the name.
-	 * 
-	 * @param path the path
-	 * @return the path without the prefix
-	 */
-	private String removePrefixFromPath(String path) {
-		// Remove first slash
-		path = path.substring(1, path.length());
-
-		// eval the existence of a suffix
-		String prefix = path.substring(0, path.indexOf("/"));
-
-		// The prefix also contains variant information after a '.'
-		if (prefix.indexOf('.') != -1) {
-			String suffix = '_' + prefix.substring(prefix.indexOf('.') + 1) + path.substring(path.lastIndexOf('.'));
-			path = path.substring(path.indexOf("/"), path.lastIndexOf('.')) + suffix;
-		} else
-			path = path.substring(path.indexOf("/"), path.length());
-		return path;
-	}
+	
 
 	/*
 	 * (non-Javadoc)
@@ -284,7 +299,7 @@ public class ResourceBundlesHandlerImpl implements ResourceBundlesHandler {
 			rd = resourceHandler.getResource(bundlePath);
 		}else{
 			// Prefixes are used only in production mode
-			bundlePath = removePrefixFromPath(bundlePath);
+			bundlePath = PathNormalizer.removeVariantPrefixFromPath(bundlePath);
 			rd = resourceBundleHandler.getResourceBundleReader(bundlePath);
 		}
 
@@ -305,7 +320,7 @@ public class ResourceBundlesHandlerImpl implements ResourceBundlesHandler {
 	public void streamBundleTo(String bundlePath, OutputStream out) throws ResourceNotFoundException {
 
 		// Remove prefix, which are used only in production mode
-		bundlePath = removePrefixFromPath(bundlePath);
+		bundlePath = PathNormalizer.removeVariantPrefixFromPath(bundlePath);
 
 		try {
 		
@@ -341,15 +356,23 @@ public class ResourceBundlesHandlerImpl implements ResourceBundlesHandler {
 		
 		// Run through every bundle
 		boolean mappingFileExists = resourceBundleHandler.isExistingMappingFile();
-		boolean processBundle = !config.getUseBundleMapping() || !mappingFileExists;
+		boolean processBundleFlag = !config.getUseBundleMapping() || !mappingFileExists;
 		
 		if(resourceTypeProcessor != null){
-			GlobalPreprocessingContext ctx = new GlobalPreprocessingContext(config, resourceHandler, processBundle);
+			GlobalPreprocessingContext ctx = new GlobalPreprocessingContext(config, resourceHandler, processBundleFlag);
 			resourceTypeProcessor.processBundles(ctx, bundles);
 		}
 		
 		for (Iterator itCol = bundles.iterator(); itCol.hasNext();) {
 			JoinableResourceBundle bundle = (JoinableResourceBundle) itCol.next();
+			
+			boolean processBundle = processBundleFlag;
+			if(!ThreadLocalJawrContext.isBundleProcessingAtBuildTime() && null != bundle.getAlternateProductionURL()){
+				if (log.isDebugEnabled()){
+					log.debug("No bundle generated for '" + bundle.getId()+"' because a production URL exists.");
+				}
+				processBundle = false;
+			}
 			if (bundle instanceof CompositeResourceBundle)
 				joinAndStoreCompositeResourcebundle((CompositeResourceBundle) bundle, processBundle);
 			else
@@ -413,8 +436,9 @@ public class ResourceBundlesHandlerImpl implements ResourceBundlesHandler {
 				JoinableResourceBundle childbundle = (JoinableResourceBundle) it.next();
 				store.append(joinandPostprocessBundle(childbundle, variant, processBundle));
 			}
-			String name = LocaleUtils.getLocalizedBundleName(composite.getId(), variant);
+			
 			if (processBundle) {
+				String name = LocaleUtils.getLocalizedBundleName(composite.getId(), variant);
 				resourceBundleHandler.storeBundle(name, store);
 				initBundleDataHashcode(composite, store, variant);
 			} 
@@ -459,25 +483,24 @@ public class ResourceBundlesHandlerImpl implements ResourceBundlesHandler {
 		// Process the locale specific variants
 		if (null != bundle.getLocaleVariantKeys()) {
 			for (Iterator it = bundle.getLocaleVariantKeys().iterator(); it.hasNext();) {
-				String variantKey = (String) it.next();
-				String name = LocaleUtils.getLocalizedBundleName(bundle.getId(), variantKey);
-				store = joinandPostprocessBundle(bundle, variantKey, processBundle);
 				if (processBundle) {
+					String variantKey = (String) it.next();
+					String name = LocaleUtils.getLocalizedBundleName(bundle.getId(), variantKey);
+					store = joinandPostprocessBundle(bundle, variantKey, processBundle);
 					resourceBundleHandler.storeBundle(name, store);
 					initBundleDataHashcode(bundle, store, variantKey);
-					
 				} 
 			}
 		}
 
 		// Store the collected resources as a single file, both in text and gzip formats.
-		store = joinandPostprocessBundle(bundle, null, processBundle);
-
 		if (processBundle) {
+			store = joinandPostprocessBundle(bundle, null, processBundle);
 			resourceBundleHandler.storeBundle(bundle.getId(), store);
 			// Set the data hascode in the bundle, in case the prefix needs to be generated
 			initBundleDataHashcode(bundle, store, null);
-		} 
+		}
+		
 	}
 
 	/**

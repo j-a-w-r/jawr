@@ -59,17 +59,55 @@ public interface ResourceBundlesHandler {
 	public ResourceBundlePathsIterator getGlobalResourceBundlePaths(ConditionalCommentCallbackHandler commentCallbackHandler, String variantKey);
 	
 	/**
+	 * Returns the global resource bundle path iterator
+	 * @param debugMode the debug mode
+	 * @param commentCallbackHandler the comment callback handler
+	 * @param variantKey the variant key
+	 * @return the global resource bundle path iterator
+	 */
+	public ResourceBundlePathsIterator getGlobalResourceBundlePaths(boolean debugMode, ConditionalCommentCallbackHandler commentCallbackHandler, String variantKey);
+	
+	/**
+	 * Returns the global resource bundle path iterator for one global bundle
+	 * @param commentCallbackHandler the comment callback handler
+	 * @param variantKey the variant key
+	 * @return the global resource bundle path iterator
+	 */
+	public ResourceBundlePathsIterator getGlobalResourceBundlePaths(String bundlePath,
+			ConditionalCommentCallbackHandler commentCallbackHandler, String variantKey);
+	
+	/**
 	 * Returns an ordered list of the paths to use when accesing a resource bundle. 
 	 * Each implementation may return one or several paths depending on wether all resources
 	 * are unified into one or several bundles. The paths returned should include the prefix
 	 * that uniquely identify the bundle contents. 
 	 * 
-	 * @param bundleId
-	 * @return
+	 * @param debugMode the debug mode
+	 * @param bundleId the bundle ID
+	 * @param commentCallbackHandler the comment callback handler
+	 * @param variantKey the variant key
+	 * @return the iterator of bundle paths
 	 */
 	public ResourceBundlePathsIterator getBundlePaths(String bundleId, 
 														ConditionalCommentCallbackHandler commentCallbackHandler, 
 														String variantKey);
+	
+	/**
+	 * Returns an ordered list of the paths to use when accesing a resource bundle. 
+	 * Each implementation may return one or several paths depending on wether all resources
+	 * are unified into one or several bundles. The paths returned should include the prefix
+	 * that uniquely identify the bundle contents. 
+	 * 
+	 * @param debugMode the debug mode
+	 * @param bundleId the bundle ID
+	 * @param commentCallbackHandler the comment callback handler
+	 * @param variantKey the variant key
+	 * @return the iterator of bundle paths
+	 */
+	public ResourceBundlePathsIterator getBundlePaths(boolean debugMode, String bundleId, 
+														ConditionalCommentCallbackHandler commentCallbackHandler, 
+														String variantKey);
+	
 	
 	/**
 	 * Writes data using the supplied writer, representing a unified bundle of resources. 
@@ -109,6 +147,5 @@ public interface ResourceBundlesHandler {
 	 * @return the client side handler generator
 	 */
 	public ClientSideHandlerGenerator getClientSideHandler();
-	
 	
 }

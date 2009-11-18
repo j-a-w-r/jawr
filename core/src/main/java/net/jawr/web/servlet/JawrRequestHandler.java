@@ -420,6 +420,11 @@ public class JawrRequestHandler implements ConfigChangeListener {
 			processRequest(requestedPath, request, response);
 			
 		} catch (Exception e) {
+			
+			if (log.isDebugEnabled()){
+				log.debug("ServletException : ", e);
+			}
+			
 			throw new ServletException(e);
 		}finally{
 			

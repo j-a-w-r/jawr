@@ -57,6 +57,9 @@ public class JawrConstant {
 	/** The image servlet context attribute name */
 	public static final String IMG_CONTEXT_ATTRIBUTE = "net.jawr.web.resource.bundle.IMG_CONTEXT_ATTRIBUTE";
 
+	/** The https scheme */
+	public static final String HTTPS = "https";
+	
 	/** The https url prefix */
 	public static final String HTTPS_URL_PREFIX = "https://";
 

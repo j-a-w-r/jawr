@@ -44,7 +44,21 @@ public class FileUtils {
 		return (path.delete());
 	}
 
-	public static StringBuffer readFile(File toRead) throws Exception {
+	/**
+	 * Removes the carriage return from he string passed in parameter.
+	 * @param str the string
+	 * @return a string without carriage return.
+	 */
+	public static String removeCarriageReturn(String str){
+		return str.replaceAll("\r\n", "\n");
+	}
+	
+	public static String readClassPathFile(String path) throws Exception {
+		
+		return removeCarriageReturn(readFile(getClassPathFile(path)).toString());
+	}
+
+	public static String readFile(File toRead) throws Exception {
 		StringWriter sw = new StringWriter();
 		FileInputStream fis = new FileInputStream(toRead);
 		FileChannel inchannel = fis.getChannel();
@@ -55,9 +69,9 @@ public class FileUtils {
 		rd.close();
 		sw.close();
 
-		return sw.getBuffer();
+		return removeCarriageReturn(sw.getBuffer().toString());
 	}
-
+	
 	public static String getClasspathRootDir() throws Exception {
 		File tmpRoot = getClassPathFile("test.properties").getParentFile();
 		return tmpRoot.getCanonicalPath().replaceAll("%20", " ");

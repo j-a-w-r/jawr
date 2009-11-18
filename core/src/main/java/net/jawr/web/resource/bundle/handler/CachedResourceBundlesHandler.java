@@ -76,6 +76,13 @@ public class CachedResourceBundlesHandler implements ResourceBundlesHandler {
 	public ResourceBundlePathsIterator getBundlePaths(String bundleId, ConditionalCommentCallbackHandler commentCallbackHandler, String variant) {
 		return rsHandler.getBundlePaths(bundleId, commentCallbackHandler,variant);
 	}
+	
+	/* (non-Javadoc)
+	 * @see net.jawr.web.resource.bundle.ResourceBundlesHandler#getBundlePaths(java.lang.String)
+	 */
+	public ResourceBundlePathsIterator getBundlePaths(boolean debugMode, String bundleId, ConditionalCommentCallbackHandler commentCallbackHandler, String variant) {
+		return rsHandler.getBundlePaths(debugMode, bundleId, commentCallbackHandler,variant);
+	}
 
 	/* (non-Javadoc)
 	 * @see net.jawr.web.resource.bundle.ResourceBundlesHandler#getConfig()
@@ -167,6 +174,27 @@ public class CachedResourceBundlesHandler implements ResourceBundlesHandler {
 		return rsHandler.getClientSideHandler();
 	}
 
+	/* (non-Javadoc)
+	 * @see net.jawr.web.resource.bundle.handler.ResourceBundlesHandler#getGlobalResourceBundlePaths(java.lang.String, net.jawr.web.resource.bundle.iterator.ConditionalCommentCallbackHandler, java.lang.String)
+	 */
+	public ResourceBundlePathsIterator getGlobalResourceBundlePaths(
+			String bundleId, ConditionalCommentCallbackHandler commentCallbackHandler,
+			String variantKey) {
+		
+		return rsHandler.getGlobalResourceBundlePaths(bundleId, commentCallbackHandler, variantKey);
+	}
+	
+	/* (non-Javadoc)
+	 * @see net.jawr.web.resource.bundle.handler.ResourceBundlesHandler#getGlobalResourceBundlePaths(boolean, net.jawr.web.resource.bundle.iterator.ConditionalCommentCallbackHandler, java.lang.String)
+	 */
+	public ResourceBundlePathsIterator getGlobalResourceBundlePaths(
+			boolean debugMode, ConditionalCommentCallbackHandler commentCallbackHandler,
+			String variantKey) {
+		
+		return rsHandler.getGlobalResourceBundlePaths(debugMode, commentCallbackHandler, variantKey);
+	}
+	
+	
 	/* (non-Javadoc)
 	 * @see net.jawr.web.resource.bundle.handler.ResourceBundlesHandler#getGlobalResourceBundlePaths(net.jawr.web.resource.bundle.iterator.ConditionalCommentCallbackHandler, java.lang.String)
 	 */

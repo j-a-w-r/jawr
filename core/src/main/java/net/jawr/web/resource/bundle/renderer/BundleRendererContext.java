@@ -16,6 +16,11 @@ package net.jawr.web.resource.bundle.renderer;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.servlet.http.HttpServletRequest;
+
+import net.jawr.web.config.JawrConfig;
+import net.jawr.web.servlet.RendererRequestUtils;
+
 /**
  * This class defines the Bundle renderer context
  * 
@@ -45,6 +50,9 @@ public class BundleRendererContext {
 	/** The flag indicating if it's an SSL request or not */
 	private boolean isSslRequest;
 
+	/** The servlet request */
+	private HttpServletRequest request;
+	
 	/**
 	 * Constructor
 	 * @param contextPath the context path
@@ -64,11 +72,38 @@ public class BundleRendererContext {
 	}
 
 	/**
+	 * Constructor
+	 * @param contextPath the context path
+	 * @param variantKey the variant key
+	 * @param useGzip the flag indicating if we are using Gzip or not
+	 * @param isSslRequest the flag indicating if it's an SSL request or not
+	 */
+	public BundleRendererContext(HttpServletRequest request, JawrConfig jawrConfig) {
+		super();
+		this.request = request;
+		this.contextPath = request.getContextPath();
+		this.variantKey = jawrConfig.getLocaleResolver().resolveLocaleCode(request);
+		this.useGzip = RendererRequestUtils.isRequestGzippable(request,jawrConfig);
+		this.isSslRequest = RendererRequestUtils.isSslRequest(request);
+		
+		this.includedBundles = new HashSet();
+		this.includedResources = new HashSet();
+	}
+	
+	/**
 	 * Returns the context path
 	 * @return the contextPath
 	 */
 	public String getContextPath() {
 		return contextPath;
+	}
+
+	/**
+	 * Returns the request
+	 * @return the request
+	 */
+	public HttpServletRequest getRequest() {
+		return request;
 	}
 
 	/**

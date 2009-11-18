@@ -381,7 +381,8 @@ public class ImageTagUtilsTest extends TestCase {
 
 		public String getScheme() {
 
-			return null;
+			String url = requestUrl.toString();
+			return url.substring(0,url.indexOf(":"));
 		}
 
 		public String getServerName() {

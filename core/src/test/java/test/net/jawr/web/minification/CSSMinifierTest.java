@@ -7,8 +7,8 @@ import net.jawr.web.minification.CSSMinifier;
 import test.net.jawr.web.FileUtils;
 
 public class CSSMinifierTest extends TestCase {
-	private StringBuffer source;
-	private StringBuffer expected;
+	private String source;
+	private String expected;
 	private static final String TEST_FOLDER = "/cssminifier";
 	
 	protected void setUp() throws Exception {
@@ -18,7 +18,7 @@ public class CSSMinifierTest extends TestCase {
 	
 	public void testMinifyCSS() {
 		CSSMinifier minifier = new CSSMinifier();
-		StringBuffer actual = minifier.minifyCSS(source);
+		StringBuffer actual = minifier.minifyCSS(new StringBuffer(source));
 		assertEquals("Error in minifier",expected.toString(), actual.toString());
 	}
 	
