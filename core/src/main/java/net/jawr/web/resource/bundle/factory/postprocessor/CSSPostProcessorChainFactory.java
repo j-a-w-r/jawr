@@ -20,6 +20,7 @@ import net.jawr.web.resource.bundle.postprocess.ResourceBundlePostProcessor;
 import net.jawr.web.resource.bundle.postprocess.impl.CSSImportPostProcessor;
 import net.jawr.web.resource.bundle.postprocess.impl.CSSMinPostProcessor;
 import net.jawr.web.resource.bundle.postprocess.impl.CSSURLPathRewriterPostProcessor;
+import net.jawr.web.resource.bundle.postprocess.impl.CssCharsetFilterPostProcessor;
 import net.jawr.web.resource.bundle.postprocess.impl.yui.YUICSSCompressor;
 
 /**
@@ -64,6 +65,8 @@ public class CSSPostProcessorChainFactory extends
 			return new CSSMinPostProcessor();
 		else if(PostProcessFactoryConstant.CSS_IMPORT.equals(processorKey))
 			return new CSSImportPostProcessor();
+		else if(PostProcessFactoryConstant.CSS_CHARSET_FILTER.equals(processorKey))
+			return new CssCharsetFilterPostProcessor();
 		else if (PostProcessFactoryConstant.URL_PATH_REWRITER.equals(processorKey))
 			return new CSSURLPathRewriterPostProcessor();
 		else if (PostProcessFactoryConstant.YUI_COMPRESSOR.equals(processorKey))
