@@ -103,6 +103,17 @@ public class RendererRequestUtils {
 	}
 
 	/**
+	 * Checks if the user agent is IE
+	 * @param req the request
+	 * @return true if the user agent is IE
+	 */
+	public static boolean isIE(HttpServletRequest req) {
+	
+		String agent = req.getHeader("User-Agent");
+		return null != agent && agent.indexOf("MSIE") != -1;
+	}
+	
+	/**
 	 * Checks if the user agent is IE6 or less
 	 * @param req the request
 	 * @return true if the user agent is IE6 or less

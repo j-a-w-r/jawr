@@ -155,7 +155,7 @@ public abstract class AbstractBundleLinkRenderer implements BundleRenderer {
 			boolean debugOn) {
 		
 		return debugOn && getResourceType().equals(JawrConstant.CSS_TYPE) && 
-				bundler.getConfig().isForceBundleCssForIEOn() && RendererRequestUtils.isIE6orLess(ctx.getRequest());
+				bundler.getConfig().isForceCssBundleInDebugForIEOn() && RendererRequestUtils.isIE(ctx.getRequest());
 	}
 
 	/**
