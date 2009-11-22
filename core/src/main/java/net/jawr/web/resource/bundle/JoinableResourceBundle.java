@@ -154,12 +154,26 @@ public interface JoinableResourceBundle {
      */
     public List getItemPathList(String variantKey);
     
-    
     /**
+	 * Returns the bundle dependencies
+	 * @return the bundle dependencies
+	 */
+	public List getDependencies();
+
+	/**
+	 * Sets the bundle dependencies
+	 * @param the bundle dependencies to set
+	 */
+	public void setDependencies(List bundleDependencies);
+
+	/**
      * If set, it will force the tag libraries to render a static URL in production mode. 
      * @return
      */
     public String getAlternateProductionURL();
+
+	
+	
 
 	
 }

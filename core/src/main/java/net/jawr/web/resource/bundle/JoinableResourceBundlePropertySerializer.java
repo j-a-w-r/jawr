@@ -13,6 +13,7 @@
  */
 package net.jawr.web.resource.bundle;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -90,7 +91,7 @@ public class JoinableResourceBundlePropertySerializer {
 			props.put(prefix + PropertiesBundleConstant.BUNDLE_FACTORY_CUSTOM_PRODUCTION_ALT_URL, bundle
 					.getAlternateProductionURL());
 		}
-
+		
 		if (bundle.getBundlePostProcessor() != null) {
 			props
 					.put(prefix +PropertiesBundleConstant.BUNDLE_FACTORY_CUSTOM_POSTPROCESSOR,
@@ -132,12 +133,32 @@ public class JoinableResourceBundlePropertySerializer {
 					.put(prefix + PropertiesBundleConstant.BUNDLE_FACTORY_CUSTOM_MAPPINGS,
 							getCommaSeparatedString(itemPathList));
 		}
-
+		List dependencies = bundle.getDependencies();
+		if (dependencies != null && !dependencies.isEmpty()) {
+			List dependenciesBundleName = getBundleNames(bundle.getDependencies());
+			props.put(prefix + PropertiesBundleConstant.BUNDLE_FACTORY_CUSTOM_DEPENDENCIES, getCommaSeparatedString(dependenciesBundleName));
+		}
+		
 		Set licensesPathList = bundle.getLicensesPathList();
 		if (licensesPathList != null && !licensesPathList.isEmpty()) {
 			props.put(prefix + PropertiesBundleConstant.BUNDLE_FACTORY_CUSTOM_LICENCE_PATH_LIST,
 					getCommaSeparatedString(licensesPathList));
 		}
+	}
+
+	/**
+	 * Returns the list of bundle names
+	 * @param bundles the bundles
+	 * @return the list of bundle names
+	 */
+	private static List getBundleNames(List bundles) {
+		
+		List bundleNames = new ArrayList();
+		for (Iterator iterator = bundles.iterator(); iterator
+				.hasNext();) {
+			bundleNames.add(((JoinableResourceBundle) iterator.next()).getName());
+		}
+		return bundleNames;
 	}
 
 	/**

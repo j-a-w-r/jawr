@@ -563,8 +563,15 @@ public class CSSURLRewriterPostProcessorTest extends TestCase {
 			}
 			public void setMappings(List mappings) {
 				
-			}};
-		
+			}
+			public List getDependencies() {
+				return null;
+			}
+			public void setDependencies(List bundleDependencies) {
+				
+			}
+		};
+			
 	}
 	
 	private class FakeResourceReaderHandler implements ResourceReaderHandler {

@@ -16,6 +16,7 @@
 package net.jawr.web.resource.bundle.factory;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -24,6 +25,7 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.StringTokenizer;
 
+import net.jawr.web.JawrConstant;
 import net.jawr.web.resource.bundle.InclusionPattern;
 import net.jawr.web.resource.bundle.JoinableResourceBundle;
 import net.jawr.web.resource.bundle.JoinableResourceBundleImpl;
@@ -101,7 +103,61 @@ public class FullMappingPropertiesBasedBundlesHandlerFactory {
 			}
 		}
 		
+		// Initialize the bundles dependencies
+		Iterator bundleNames = props.getPropertyBundleNameSet().iterator();
+		while (bundleNames.hasNext()) {
+			String bundleName = (String) bundleNames.next();
+			String dependenciesProperty = props.getCustomBundleProperty(bundleName,
+					PropertiesBundleConstant.BUNDLE_FACTORY_CUSTOM_DEPENDENCIES);
+			if(dependenciesProperty != null){
+				String[] tokens = dependenciesProperty.split(JawrConstant.COMMA_SEPARATOR);
+				JoinableResourceBundle bundle = getBundleFromName(bundleName, customBundles);
+				List dependencies = getBundlesFromName(Arrays.asList(tokens), customBundles);
+				bundle.setDependencies(dependencies);
+			}
+		}
+		
 		return customBundles;
+	}
+
+	/**
+	 * Returns a bundle using the bundle name from a list of bundles 
+	 * @param bundleName the bundle name
+	 * @param bundles the list of bundle
+	 * @return a bundle
+	 */
+	private JoinableResourceBundle getBundleFromName(String bundleName, List bundles) {
+		
+		JoinableResourceBundle bundle = null;
+		List names = new ArrayList();
+		names.add(bundleName);
+		List result = getBundlesFromName(names, bundles);
+		if(!result.isEmpty()){
+			bundle = (JoinableResourceBundle) result.get(0);
+		}
+		return bundle;
+	}
+
+	/**
+	 * Returns a list of bundles using the bundle names from a list of bundles 
+	 * @param names the list of bundle name
+	 * @param bundles the list of bundle
+	 * @return a list of bundles
+	 */
+	private List getBundlesFromName(List names, List bundles) {
+		
+		List resultBundles = new ArrayList();
+		for (Iterator iterator = names.iterator(); iterator.hasNext();) {
+			String name = (String) iterator.next();
+			for (Iterator itBundle = bundles.iterator(); itBundle.hasNext();) {
+				JoinableResourceBundle bundle = (JoinableResourceBundle) itBundle.next();
+				if(bundle.getName().equals(name)){
+					resultBundles.add(bundle);
+				}
+			}
+		}
+		
+		return resultBundles;
 	}
 
 	/**
@@ -185,14 +241,8 @@ public class FullMappingPropertiesBasedBundlesHandlerFactory {
 		}
 		
 		// Add the mappings
-		List mappings = new ArrayList();
-		StringTokenizer tk = new StringTokenizer(mappingsProperty, ",");
-		while (tk.hasMoreTokens()) {
-			String mapping = tk.nextToken().trim();
-			mappings.add(mapping);
-		}
-
-		bundle.setMappings(mappings);
+		String[] tokens = mappingsProperty.split(JawrConstant.COMMA_SEPARATOR);
+		bundle.setMappings(Arrays.asList(tokens));
 		
 		Set localeKeys = new HashSet();
 		Set tmpLocales = props.getCustomBundlePropertyAsSet(bundleName, PropertiesBundleConstant.BUNDLE_FACTORY_CUSTOM_LOCALE_VARIANTS);
@@ -213,7 +263,6 @@ public class FullMappingPropertiesBasedBundlesHandlerFactory {
 		String hashcode = props.getCustomBundleProperty(bundleName, PropertiesBundleConstant.BUNDLE_FACTORY_CUSTOM_HASHCODE);
 		bundle.setBundleDataHashCode(null, hashcode);
 	
-		
 		return bundle;
 	}
 

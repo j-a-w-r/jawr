@@ -15,6 +15,8 @@ package net.jawr.web.resource.bundle.renderer;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Random;
 
 import net.jawr.web.JawrConstant;
@@ -78,27 +80,7 @@ public abstract class AbstractBundleLinkRenderer implements BundleRenderer {
 
 		// If the global bundles had been added before, it will not be included again.
 		if(!ctx.isGlobalBundleAdded()){
-			
-			if (debugOn) {
-				addComment("Start adding global members.", out);
-			}
-			if(isForcedToRenderIeCssBundleInDebug(ctx, debugOn)){
-				ResourceBundlePathsIterator resourceBundleIterator = bundler.getGlobalResourceBundlePaths(false, new ConditionalCommentRenderer(out), ctx.getVariantKey());
-				while(resourceBundleIterator.hasNext()){
-					String globalBundlePath = resourceBundleIterator.nextPath();
-					renderIeCssBundleLink(ctx, out, globalBundlePath);
-				}
-			}else{
-				
-				ResourceBundlePathsIterator resourceBundleIterator = bundler.getGlobalResourceBundlePaths(new ConditionalCommentRenderer(out), ctx.getVariantKey());
-				renderBundleLinks(resourceBundleIterator,
-						ctx, debugOn, out);
-			}
-			
-			ctx.setGlobalBundleAdded(true);
-			if (debugOn) {
-				addComment("Finished adding global members.", out);
-			}
+			renderGlobalBundleLinks(ctx, out, debugOn);
 		}
 		
 		// If there is a fixed URL for production mode it is rendered and method returns.  
@@ -108,7 +90,27 @@ public abstract class AbstractBundleLinkRenderer implements BundleRenderer {
     		return;
     	}
     	
+        renderBundleLinks(bundle, requestedPath, ctx, out, debugOn, true);
+		
         if (debugOn) {
+			addComment("Finished adding members resolved by " + requestedPath, out);
+		}
+	}
+
+	/**
+	 * Renders the links for a bundle
+	 * @param bundle the bundle
+	 * @param requestedPath thed requested path
+	 * @param ctx the renderer context
+	 * @param out the writer
+	 * @param debugOn the debug flag
+	 * @param renderDependencyLinks the flag indicating if we must render the dependency links
+	 * @throws IOException if an IOException occurs
+	 */
+	private void renderBundleLinks(JoinableResourceBundle bundle,
+			String requestedPath, BundleRendererContext ctx, Writer out,
+			boolean debugOn, boolean renderDependencyLinks) throws IOException {
+		if (debugOn) {
 			addComment("Start adding members resolved by '" + requestedPath + "'. Bundle id is: '" + bundle.getId() + "'", out);
 		}
 
@@ -123,8 +125,14 @@ public abstract class AbstractBundleLinkRenderer implements BundleRenderer {
 
 		// Include the bundle if it has not been included yet
 		if(ctx.getIncludedBundles().add(bundle.getId())){
+			
+			if(renderDependencyLinks){
+				renderBundleDependenciesLinks(requestedPath, ctx, out, debugOn,
+						bundle.getDependencies());
+			}
+			
 			// Retrieve the name or names of bundle(s) that belong to/with the requested path.
-			 if(isForcedToRenderIeCssBundleInDebug(ctx, debugOn)){
+			if(isForcedToRenderIeCssBundleInDebug(ctx, debugOn)){
 	        	
 				ResourceBundlePathsIterator it = bundler.getBundlePaths(false, bundle.getId(), new ConditionalCommentRenderer(out), ctx.getVariantKey());
 		        while(it.hasNext()){
@@ -140,8 +148,65 @@ public abstract class AbstractBundleLinkRenderer implements BundleRenderer {
 				addComment("The bundle '" + bundle.getId() + "' is already included in the page.", out);
 			}
 		}
+	}
+
+	/**
+	 * Renders the links for the global bundles
+	 * @param ctx the context
+	 * @param out the writer
+	 * @param debugOn the debug flag
+	 * @throws IOException if an IOException occurs.
+	 */
+	private void renderGlobalBundleLinks(BundleRendererContext ctx, Writer out,
+			boolean debugOn) throws IOException {
+		
 		if (debugOn) {
-			addComment("Finished adding members resolved by " + requestedPath, out);
+			addComment("Start adding global members.", out);
+		}
+		if(isForcedToRenderIeCssBundleInDebug(ctx, debugOn)){
+			ResourceBundlePathsIterator resourceBundleIterator = bundler.getGlobalResourceBundlePaths(false, new ConditionalCommentRenderer(out), ctx.getVariantKey());
+			while(resourceBundleIterator.hasNext()){
+				String globalBundlePath = resourceBundleIterator.nextPath();
+				renderIeCssBundleLink(ctx, out, globalBundlePath);
+			}
+		}else{
+			
+			ResourceBundlePathsIterator resourceBundleIterator = bundler.getGlobalResourceBundlePaths(new ConditionalCommentRenderer(out), ctx.getVariantKey());
+			renderBundleLinks(resourceBundleIterator,
+					ctx, debugOn, out);
+		}
+		
+		ctx.setGlobalBundleAdded(true);
+		if (debugOn) {
+			addComment("Finished adding global members.", out);
+		}
+	}
+
+	/**
+	 * Renders the bundle links for the bundle dependencies
+	 * @param requestedPath the request path
+	 * @param ctx the context
+	 * @param out the writer
+	 * @param debugOn the debug flag
+	 * @param dependencies the dependencies
+	 * @throws IOException if an IOException occurs.
+	 */
+	private void renderBundleDependenciesLinks(String requestedPath,
+			BundleRendererContext ctx, Writer out, boolean debugOn,
+			List dependencies) throws IOException {
+		
+		if(dependencies != null && !dependencies.isEmpty()){
+			for (Iterator iterator = dependencies.iterator(); iterator
+					.hasNext();) {
+				JoinableResourceBundle dependencyBundle = (JoinableResourceBundle) iterator.next();
+				if(debugOn){
+					addComment("Start adding dependency '"+dependencyBundle.getId()+"'", out);
+				}
+				renderBundleLinks(dependencyBundle, requestedPath, ctx, out, debugOn, false);
+				if(debugOn){
+					addComment("Finished adding dependency '"+dependencyBundle.getId()+"'", out);
+				}
+			}
 		}
 	}
 
@@ -214,7 +279,8 @@ public abstract class AbstractBundleLinkRenderer implements BundleRenderer {
 				}else{
 					out.write(createBundleLink(resourceName, contextPath, isSslRequest));
 				}
-				if(!ctx.getIncludedResources().add(resourceName)){
+				
+				if(debugOn && !ctx.getIncludedResources().add(resourceName)){
 					addComment("The resource '" + resourceName + "' is already included in the page.", out);
 				}
 			}

@@ -16,6 +16,7 @@ import java.util.StringTokenizer;
 import java.util.regex.Pattern;
 
 import net.jawr.web.config.JawrConfig;
+import net.jawr.web.exception.BundleDependencyException;
 import net.jawr.web.exception.DuplicateBundlePathException;
 import net.jawr.web.resource.bundle.handler.ResourceBundlesHandler;
 import net.jawr.web.resource.bundle.renderer.BundleRenderer;
@@ -52,7 +53,7 @@ public class BundleLinkRendererTest  extends ResourceHandlerBasedTest{
 	
 	private BundleRendererContext bundleRendererCtx = null;
 	
-	public BundleLinkRendererTest(){
+	public BundleLinkRendererTest() {
 	     
 	    Charset charsetUtf = Charset.forName("UTF-8"); 
 			
@@ -61,6 +62,7 @@ public class BundleLinkRendererTest  extends ResourceHandlerBasedTest{
 	    jawrConfig = new JawrConfig(new Properties());
 	    jawrConfig.setCharsetName("UTF-8");
 	    jawrConfig.setServletMapping("/srvMapping");
+	    jawrConfig.setCssLinkFlavor(CSSHTMLBundleLinkRenderer.FLAVORS_XHTML);
 	    ResourceBundlesHandler jsHandler = null;
 	    ResourceBundlesHandler cssHandler = null;
 	    try {
@@ -68,6 +70,8 @@ public class BundleLinkRendererTest  extends ResourceHandlerBasedTest{
 	    	cssHandler = PredefinedBundlesHandlerUtil.buildSimpleBundles(rsHandler,rsBundleHandler,CSS_BASEDIR,"css", jawrConfig);
 		} catch (DuplicateBundlePathException e) {
 			// 
+			throw new RuntimeException(e);
+		} catch (BundleDependencyException e) {
 			throw new RuntimeException(e);
 		}
 	    cssRenderer = new CSSHTMLBundleLinkRenderer(cssHandler,true,null);

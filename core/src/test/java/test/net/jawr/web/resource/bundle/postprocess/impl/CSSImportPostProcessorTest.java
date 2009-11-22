@@ -238,6 +238,14 @@ public class CSSImportPostProcessorTest extends TestCase {
 			public void setMappings(List mappings) {
 
 			}
+			
+			public List getDependencies() {
+				return null;
+			}
+
+			public void setDependencies(List bundleDependencies) {
+				
+			}
 		};
 
 	}

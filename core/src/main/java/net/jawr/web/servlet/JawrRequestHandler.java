@@ -35,6 +35,7 @@ import net.jawr.web.JawrConstant;
 import net.jawr.web.config.JawrConfig;
 import net.jawr.web.config.jmx.JmxUtils;
 import net.jawr.web.context.ThreadLocalJawrContext;
+import net.jawr.web.exception.BundleDependencyException;
 import net.jawr.web.exception.DuplicateBundlePathException;
 import net.jawr.web.exception.ResourceNotFoundException;
 import net.jawr.web.resource.FileNameUtils;
@@ -329,6 +330,8 @@ public class JawrRequestHandler implements ConfigChangeListener {
 		try {
 			bundlesHandler = factory.buildResourceBundlesHandler(jawrConfig);
 		} catch (DuplicateBundlePathException e) {
+			throw new ServletException(e);
+		} catch (BundleDependencyException e) {
 			throw new ServletException(e);
 		}
 

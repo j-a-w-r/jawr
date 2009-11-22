@@ -15,6 +15,7 @@ package net.jawr.web.resource.bundle.factory;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -23,6 +24,7 @@ import java.util.Set;
 import java.util.Map.Entry;
 
 import net.jawr.web.config.JawrConfig;
+import net.jawr.web.exception.BundleDependencyException;
 import net.jawr.web.exception.DuplicateBundlePathException;
 import net.jawr.web.resource.FileNameUtils;
 import net.jawr.web.resource.bundle.CompositeResourceBundle;
@@ -85,6 +87,9 @@ public class BundlesHandlerFactory {
 	/** The set of bundle definitions */
 	private Set bundleDefinitions;
 	
+	/** The set of bundle definitions with dependencies */
+	private Set bundleDefinitionsWithDependencies;
+	
 	/** The resource handler */
 	private ResourceReaderHandler resourceReaderHandler;
 	
@@ -124,9 +129,10 @@ public class BundlesHandlerFactory {
 	 * @param jawrConfig the jawr config
 	 * @return the resource bundles handler
 	 * @throws DuplicateBundlePathException if two bundles are defined with the same path
+	 * @throws BundleDependencyException if an error exists in the dependency definition
 	 */
 	public ResourceBundlesHandler buildResourceBundlesHandler()
-			throws DuplicateBundlePathException {
+			throws DuplicateBundlePathException, BundleDependencyException {
 		if (log.isInfoEnabled())
 			log.info("Building resources handler... ");
 
@@ -215,11 +221,13 @@ public class BundlesHandlerFactory {
 	 * 
 	 * @param resourceBundles the resource bundles
 	 * @throws DuplicateBundlePathException if two bundles are defined with the same path 
+	 * @throws BundleDependencyException if an error exists in the dependency definition
 	 */
 	private void initResourceBundles(List resourceBundles)
-			throws DuplicateBundlePathException {
+			throws DuplicateBundlePathException, BundleDependencyException  {
 
 		// Create custom defined bundles
+		bundleDefinitionsWithDependencies = new HashSet();
 		if (null != bundleDefinitions) {
 			if (log.isInfoEnabled())
 				log.info("Adding custom bundle definitions. ");
@@ -295,6 +303,35 @@ public class BundlesHandlerFactory {
 								+ "(it has been seet to serve *.js or *.css requests). "
 								+ "The orphan files will become unreachable through the server.");
 		}
+		
+		// Initialize bundle dependencies
+		for (Iterator iterator = bundleDefinitionsWithDependencies.iterator(); iterator.hasNext();) {
+			ResourceBundleDefinition definition = (ResourceBundleDefinition) iterator.next();
+			JoinableResourceBundle bundle = getBundleFromName(definition.getBundleName(), resourceBundles);
+			if(bundle != null){
+				bundle.setDependencies(getBundleDependencies(definition, resourceBundles));
+			}
+		}
+	}
+	
+	/**
+	 * Returns a bundle from its name
+	 * @param name the bundle name
+	 * @param bundles the list of bundle
+	 * @return a bundle from its name
+	 */
+	private JoinableResourceBundle getBundleFromName(String name, List bundles){
+		
+		JoinableResourceBundle bundle = null;
+		for (Iterator iterator = bundles.iterator(); iterator.hasNext();) {
+			JoinableResourceBundle aBundle = (JoinableResourceBundle) iterator.next();
+			if(aBundle.getName().equals(name)){
+				bundle = aBundle;
+				break;
+			}
+		}
+		
+		return bundle;
 	}
 
 	/**
@@ -336,6 +373,9 @@ public class BundlesHandlerFactory {
 		if (null != definition.getAlternateProductionURL())
 			composite.setAlternateProductionURL(definition
 					.getAlternateProductionURL());
+		
+		if (null != definition.getDependencies() && !definition.getDependencies().isEmpty())
+			bundleDefinitionsWithDependencies.add(definition);
 
 		return composite;
 	}
@@ -345,9 +385,10 @@ public class BundlesHandlerFactory {
 	 * 
 	 * @param definition the resource bundle definition
 	 * @return a JoinableResourceBundle
+	 * @throws BundleDependencyException  if an error exists in the dependency definition
 	 */
 	private JoinableResourceBundle buildResourcebundle(
-			ResourceBundleDefinition definition) {
+			ResourceBundleDefinition definition) throws BundleDependencyException {
 		if (log.isDebugEnabled())
 			log.debug("Init bundle with id:" + definition.getBundleId());
 
@@ -380,9 +421,97 @@ public class BundlesHandlerFactory {
 			newBundle.setAlternateProductionURL(definition
 					.getAlternateProductionURL());
 
+		if (null != definition.getDependencies() && !definition.getDependencies().isEmpty()){
+			
+			bundleDefinitionsWithDependencies.add(definition);
+		}
+			
 		return newBundle;
 	}
 
+	/**
+	 * Returns the bundle dependencies from the resource bundle definition
+	 * 
+	 * @param definition the resource definition
+	 * @param bundles the list of bundles
+	 * 
+	 * @throws BundleDependencyException  if an error exists in the dependency definition
+	 */
+	private List getBundleDependencies(ResourceBundleDefinition definition, List bundles) throws BundleDependencyException {
+
+		List dependencies = new ArrayList();
+		List processedBundles = new ArrayList();
+		if(definition.isGlobal() && definition.getDependencies() != null && !definition.getDependencies().isEmpty()){
+			throw new BundleDependencyException(definition.getBundleName(), "The dependencies property is not allowed for global bundles. Please use the order property " +
+					"to define the import order.");
+		}
+		initBundleDependencies(definition.getBundleName(), definition, dependencies, processedBundles, bundles);
+		return dependencies;
+	}
+	
+	/**
+	 * Initialize the bundle dependencies
+	 * 
+	 * @param rootBundleDefinition the name of the bundle, whose is initalized
+	 * @param definition the current resource bundle definition
+	 * @param bundleDependencies the bundle dependencies
+	 * @param processedBundles the list of bundles already processed during the dependency resolution
+	 * @param bundles the list of reference bundles
+	 * 
+	 * @throws BundleDependencyException if an error exists in the dependency definition
+	 */
+	private void initBundleDependencies(String rootBundleDefinition, ResourceBundleDefinition definition,
+			List bundleDependencies, List processedBundles, List bundles) throws BundleDependencyException {
+
+		List bundleDefDependencies = definition.getDependencies();
+		if(definition.isGlobal()){
+			if(log.isInfoEnabled()){
+				log.info("The global bundle '"+definition.getBundleName()+"' belongs to the dependencies of '"+rootBundleDefinition+"'." +
+						"As it's a global bundle, it will not be defined as part of the dependencies.");
+			}
+			return;
+		}
+		
+		if (bundleDefDependencies != null && !bundleDefDependencies.isEmpty()) {
+			if (processedBundles.contains(definition.getBundleName())) {
+				throw new BundleDependencyException(rootBundleDefinition, "There is a circular dependency. The bundle in conflict is '"+definition.getBundleName()+"'");	
+			
+			} else {
+			
+				processedBundles.add(definition.getBundleName());
+				for (Iterator iterator = bundleDefDependencies.iterator(); iterator
+						.hasNext();) {
+					String dependency = (String) iterator.next();
+					for (Iterator itDep = bundleDefinitions.iterator(); itDep
+							.hasNext();) {
+						ResourceBundleDefinition dependencyBundle = (ResourceBundleDefinition) itDep
+								.next();
+						String dependencyBundleName = dependencyBundle.getBundleName();
+						if (dependencyBundleName.equals(dependency)) {
+
+							if (!bundleDependencies.contains(dependencyBundleName)){
+								
+								if(!processedBundles.contains(dependencyBundleName)) {
+									initBundleDependencies(rootBundleDefinition, dependencyBundle,
+											bundleDependencies, processedBundles, bundles);
+									bundleDependencies.add(getBundleFromName(dependencyBundleName, bundles));
+								}else{
+									throw new BundleDependencyException(rootBundleDefinition, "There is a circular dependency. The bundle in conflict is '"+dependencyBundleName+"'");
+								}
+							} else {
+								if(log.isInfoEnabled()){
+									log.info("The bundle '"
+											+ dependencyBundle.getBundleId()
+											+ "' occurs multiple time in the dependencies hierarchy of the bundle '"+rootBundleDefinition+"'.");	
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	
 	/**
 	 * Build a bundle based on a mapping returned by the ResourceBundleDirMapperFactory.
 	 * 

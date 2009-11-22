@@ -76,11 +76,14 @@ public class JoinableResourceBundleImpl implements JoinableResourceBundle {
 	/** The alternate URL for the bundle */
 	private String alternateProductionURL;
 
-	/** The prefix mapping for locale vairant version */
+	/** The prefix mapping for locale variant version */
 	private Map prefixMap;
 
 	/** The list of locale variant keys */
 	protected List localeVariantKeys;
+	
+	/** The list of bundle dependencies */
+	protected List dependencies;
 
 	/** The file post processor */
 	private ResourceBundlePostProcessor unitaryPostProcessor;
@@ -470,6 +473,21 @@ public class JoinableResourceBundleImpl implements JoinableResourceBundle {
 				rets.add(path);
 		}
 		return rets;
+	}
+
+	/**
+	 * Sets the bundle dependencies
+	 * @param dependencies the bundle dependencies
+	 */
+	public void setDependencies(List dependencies) {
+		this.dependencies = dependencies;
+	}
+	
+	/* (non-Javadoc)
+	 * @see net.jawr.web.resource.bundle.JoinableResourceBundle#getDependencies()
+	 */
+	public List getDependencies() {
+		return dependencies;
 	}
 
 	/*

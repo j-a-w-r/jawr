@@ -153,28 +153,31 @@ public class OrphanResourceBundlesMapperTest extends  ResourceHandlerBasedTest {
 			}
 
 			public String getBundleDataHashCode(String variantKey) {
-				// TODO Auto-generated method stub
 				return null;
 			}
 
 			public String getName() {
-				// TODO Auto-generated method stub
 				return null;
 			}
 
 			public boolean isComposite() {
-				// TODO Auto-generated method stub
 				return false;
 			}
 
 			public void setBundleDataHashCode(String variantKey,
 					String bundleDataHashCode) {
-				// TODO Auto-generated method stub
 				
 			}
 
 			public void setMappings(List mappings) {
-				// TODO Auto-generated method stub
+				
+			}
+
+			public List getDependencies() {
+				return null;
+			}
+
+			public void setDependencies(List bundleDependencies) {
 				
 			}};		
 	}

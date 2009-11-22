@@ -137,6 +137,14 @@ public class CssBundleCharsetCleanerPostProcessorTest extends TestCase {
 			public boolean belongsToBundle(String itemPath) {
 				return false;
 			}
+
+			public List getDependencies() {
+				return null;
+			}
+
+			public void setDependencies(List bundleDependencies) {
+				
+			}
 		};
 		return bundle;
 		

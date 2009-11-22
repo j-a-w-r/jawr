@@ -27,6 +27,9 @@ public class JawrConstant {
 	/** The URL separator character. */
 	public static final char URL_SEPARATOR_CHAR = '/';
 
+	/** The comma separator */
+	public static final String COMMA_SEPARATOR = ",";
+
 	/** The init parameter servlet for the resource type */
 	public static final String TYPE_INIT_PARAMETER = "type";
 

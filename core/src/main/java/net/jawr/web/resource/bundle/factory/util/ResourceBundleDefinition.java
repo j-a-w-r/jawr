@@ -68,6 +68,9 @@ public class ResourceBundleDefinition {
 	/** The locale variant keys for the bundle  */
 	private List localeVariantKeys;
 
+	/** The list of dependencies */
+	private List dependencies;
+	
 	/**
 	 * Returns the locale variant keys for the bundle 
 	 * @return the locale variant keys for the bundle 
@@ -149,6 +152,22 @@ public class ResourceBundleDefinition {
 	 */
 	public void setMappings(List mappings) {
 		this.mappings = mappings;
+	}
+
+	/**
+	 * Returns the bundle dependencies
+	 * @return the bundle dependencies
+	 */
+	public List getDependencies() {
+		return dependencies;
+	}
+
+	/**
+	 * Sets the bundle dependencies
+	 * @param dependencies the bundle dependencies
+	 */
+	public void setDependencies(List dependencies) {
+		this.dependencies = dependencies;
 	}
 
 	/**

@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import net.jawr.web.config.JawrConfig;
+import net.jawr.web.exception.BundleDependencyException;
 import net.jawr.web.exception.DuplicateBundlePathException;
 import net.jawr.web.resource.bundle.factory.BundlesHandlerFactory;
 import net.jawr.web.resource.bundle.factory.util.ResourceBundleDefinition;
@@ -15,7 +16,7 @@ import net.jawr.web.resource.handler.reader.ResourceReaderHandler;
 
 public class PredefinedBundlesHandlerUtil {
 
-	public static final ResourceBundlesHandler buildSingleBundleHandler(ResourceReaderHandler handler, ResourceBundleHandler rsBundleHandler, JawrConfig config) throws DuplicateBundlePathException {
+	public static final ResourceBundlesHandler buildSingleBundleHandler(ResourceReaderHandler handler, ResourceBundleHandler rsBundleHandler, JawrConfig config) throws DuplicateBundlePathException, BundleDependencyException {
 
 		BundlesHandlerFactory factory = new BundlesHandlerFactory();
 		factory.setResourceReaderHandler(handler);
@@ -30,7 +31,7 @@ public class PredefinedBundlesHandlerUtil {
 	}
 	
 	public static final ResourceBundlesHandler buildSimpleBundles(ResourceReaderHandler handler, ResourceBundleHandler rsBundleHandler, String baseDir, String type,
-																JawrConfig config) throws DuplicateBundlePathException {		
+																JawrConfig config) throws DuplicateBundlePathException, BundleDependencyException {		
 		
 		config.setGeneratorRegistry(new GeneratorRegistry(type));
 		BundlesHandlerFactory factory = new BundlesHandlerFactory();

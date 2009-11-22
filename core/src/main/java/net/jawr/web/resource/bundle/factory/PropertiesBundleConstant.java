@@ -87,6 +87,9 @@ public class PropertiesBundleConstant {
 	/** The suffix for the property defining the order of the bundle inclusion */
 	public static final String BUNDLE_FACTORY_CUSTOM_ORDER = ".order";
 	
+	/** The suffix for the property defining the bundle dependencies */
+	public static final String BUNDLE_FACTORY_CUSTOM_DEPENDENCIES = ".dependencies";
+	
 	/** The suffix for the property indicating if the bundle must be included only in debug */
 	public static final String BUNDLE_FACTORY_CUSTOM_DEBUGONLY = ".debugonly";
 	
