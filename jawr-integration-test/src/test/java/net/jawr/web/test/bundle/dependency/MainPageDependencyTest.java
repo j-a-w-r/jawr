@@ -1,15 +1,15 @@
 /**
  * 
  */
-package net.jawr.web.test.generator.iecssbundle;
+package net.jawr.web.test.bundle.dependency;
 
 import static org.junit.Assert.assertEquals;
 
 import java.util.Collections;
 import java.util.List;
 
+import net.jawr.web.test.AbstractPageTest;
 import net.jawr.web.test.JawrTestConfigFiles;
-import net.jawr.web.test.MainPageTest;
 import net.jawr.web.test.utils.Utils;
 
 import org.junit.Test;
@@ -22,19 +22,19 @@ import com.gargoylesoftware.htmlunit.html.HtmlLink;
 import com.gargoylesoftware.htmlunit.html.HtmlScript;
 
 /**
- * Test case for IE Css bundle standard page in production mode.
+ * Test case for standard page in production mode.
  * 
  * @author ibrahim Chaehoi
  */
-@JawrTestConfigFiles(webXml = "net/jawr/web/standard/config/web.xml", jawrConfig = "net/jawr/web/generator/iecssbundle/standard/config/jawr.properties")
-public class MainPageIECssBundleTest extends MainPageTest {
+@JawrTestConfigFiles(webXml = "net/jawr/web/standard/config/web.xml", jawrConfig = "net/jawr/web/bundle/dependency/standard/config/jawr.properties")
+public class MainPageDependencyTest extends AbstractPageTest {
 
 	/**
 	 * Returns the page URL to test
 	 * @return the page URL to test
 	 */
 	protected String getPageUrl() {
-		return SERVER_URL + CONTEXT_PATH+"/index.jsp";
+		return SERVER_URL + CONTEXT_PATH+"/dependency/dependencyTest.jsp";
 	}
 
 	@Test
@@ -44,7 +44,7 @@ public class MainPageIECssBundleTest extends MainPageTest {
 				.singletonList("A little message retrieved from the message bundle : Hello $ world!");
 		assertEquals(expectedAlerts, collectedAlerts);
 		
-		assertContentEquals("/net/jawr/web/generator/iecssbundle/standard/resources/index-jsp-result-expected.txt", page);
+		assertContentEquals("/net/jawr/web/bundle/dependency/standard/resources/index-jsp-result-expected.txt", page);
 	}
 
 	@Test
@@ -71,14 +71,26 @@ public class MainPageIECssBundleTest extends MainPageTest {
 	public void checkGeneratedCssLinks() {
 		// Test generated Css link
 		final List<HtmlLink> styleSheets = getHtmlLinkTags();
-		assertEquals(2, styleSheets.size());
+		assertEquals(5, styleSheets.size());
 		HtmlLink css = styleSheets.get(0);
 		assertEquals(
 				CONTEXT_PATH+"/N1435483871/bundles/globalStyleBundle.css",
 				css.getHrefAttribute());
 		css = styleSheets.get(1);
 		assertEquals(
-				CONTEXT_PATH+"/435327146/fwk/core/component.css",
+				CONTEXT_PATH+"/1825498621/fwk/core/component3.css",
+				css.getHrefAttribute());
+		css = styleSheets.get(2);
+		assertEquals(
+				CONTEXT_PATH+"/1825498621/fwk/core/component4.css",
+				css.getHrefAttribute());
+		css = styleSheets.get(3);
+		assertEquals(
+				CONTEXT_PATH+"/N87509158/fwk/core/component2.css",
+				css.getHrefAttribute());
+		css = styleSheets.get(4);
+		assertEquals(
+				CONTEXT_PATH+"/348114364/fwk/core/component.css",
 				css.getHrefAttribute());
 
 	}
@@ -89,11 +101,19 @@ public class MainPageIECssBundleTest extends MainPageTest {
 		final List<HtmlLink> styleSheets = getHtmlLinkTags();
 		HtmlLink css = styleSheets.get(0);
 		TextPage page = getCssPage(css);
-		assertContentEquals("/net/jawr/web/generator/iecssbundle/standard/resources/global-expected.css", page);
+		assertContentEquals("/net/jawr/web/bundle/dependency/standard/resources/globalStyleBundle.css", page);
 		
-		css = styleSheets.get(1);
-		page = getCssPage(css);
-		assertContentEquals("/net/jawr/web/standard/resources/component-expected.css", page);
+		page = getCssPage(styleSheets.get(1));
+		assertContentEquals("/net/jawr/web/bundle/dependency/standard/resources/component3.css", page);
+		
+		page = getCssPage(styleSheets.get(2));
+		assertContentEquals("/net/jawr/web/bundle/dependency/standard/resources/component4.css", page);
+		
+		page = getCssPage(styleSheets.get(3));
+		assertContentEquals("/net/jawr/web/bundle/dependency/standard/resources/component2.css", page);
+		
+		page = getCssPage(styleSheets.get(4));
+		assertContentEquals("/net/jawr/web/bundle/dependency/standard/resources/component.css", page);
 	}
 
 	@Test
