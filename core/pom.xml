@@ -165,6 +165,14 @@
       <version>1.1.2</version>
       <scope>provided</scope>
     </dependency>
+    <dependency>
+	  <groupId>org.apache.wicket</groupId>
+	  <artifactId>wicket</artifactId>
+	  <version>1.4.3</version>
+	  <scope>provided</scope>
+    </dependency>
+
+    
     <!--
 			The following dependencies are used for JMX on JDK 1.4. If you build
 			Jawr with a JDK greater or equals to JDK 1.5, you could comment the
