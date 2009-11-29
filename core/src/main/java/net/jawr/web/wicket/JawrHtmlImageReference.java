@@ -16,7 +16,7 @@ package net.jawr.web.wicket;
 import net.jawr.web.resource.bundle.renderer.image.ImgRenderer;
 
 /**
- * This class defines the Jawr Html reference for wicket
+ * This class defines the Jawr Html image reference for wicket
  * 
  * @author Ibrahim Chaehoi
  */
@@ -27,7 +27,7 @@ public class JawrHtmlImageReference extends AbstractJawrImageReference {
 
 	/**
 	 * Constructor
-	 * @param id teh component ID
+	 * @param id the component ID
 	 */
 	public JawrHtmlImageReference(String id) {
 		super(id);

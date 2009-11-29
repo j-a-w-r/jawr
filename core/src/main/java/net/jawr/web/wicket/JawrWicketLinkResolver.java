@@ -32,6 +32,8 @@ import org.apache.wicket.markup.resolver.IComponentResolver;
  */
 public class JawrWicketLinkResolver implements IComponentResolver {
 
+	private static final String IMAGE_TAG_NAME = "image";
+	private static final String IMG_TAG_NAME = "img";
 	/** The serial version UID */
 	private static final long serialVersionUID = -2106412613442819122L;
 
@@ -42,19 +44,19 @@ public class JawrWicketLinkResolver implements IComponentResolver {
 			final MarkupStream markupStream, final ComponentTag tag) {
 		
 		// Only component tags have the id == "_jawrAutolink_"
+		String tagName = tag.getName();
 		if (tag.getId().equals(JawrWicketLinkTagHandler.AUTOLINK_ID)) {
 			
 			// create the right component depending on the tag name
 			WebMarkupContainer jawrTag = null;
-			final String id = tag.getId()
-			+ container.getPage().getAutoIndex();
-			if(tag.getName().equals("img")){
+			final String id = tag.getId()+ container.getPage().getAutoIndex();
+			if(tagName.equalsIgnoreCase(IMG_TAG_NAME)){
 				jawrTag = new JawrHtmlImageReference(id);
-			}else if(tag.getName().equals("image")){
+			}else if(tagName.equalsIgnoreCase("input") && tag.getAttribute("type").equals(IMAGE_TAG_NAME)){
 				jawrTag = new JawrHtmlImageReference(id);
-			}else if(tag.getName().equals("script")){
+			}else if(tagName.equalsIgnoreCase("script")){
 				jawrTag = new JawrJavascriptReference(id);
-			}else if(tag.getName().equals("style")){
+			}else if(tagName.equalsIgnoreCase("link")){
 				jawrTag = new JawrStylesheetReference(id);
 			}
 			
@@ -67,7 +69,7 @@ public class JawrWicketLinkResolver implements IComponentResolver {
 		} else if (tag instanceof WicketTag) {
 
 			// For tag wicket:jawr
-			if (tag.getName().equals("jawr")) {
+			if (tagName.equals("jawr")) {
 
 				final String id = tag.getId()
 						+ container.getPage().getAutoIndex();

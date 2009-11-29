@@ -37,10 +37,10 @@ import org.apache.wicket.util.value.IValueMap;
  * @autor Robert Kopaczewski (Original author) 
  * @author Ibrahim Chaehoi
  */
-public abstract class JawrAbstractReference extends WebMarkupContainer {
+public abstract class AbstractJawrReference extends WebMarkupContainer {
 
 	/** The logger */
-	private static final Logger log = Logger.getLogger(JawrAbstractReference.class);
+	private static final Logger log = Logger.getLogger(AbstractJawrReference.class);
 
 	/** The serial version UID */
 	private static final long serialVersionUID = 6483803210055728200L;
@@ -55,7 +55,7 @@ public abstract class JawrAbstractReference extends WebMarkupContainer {
      * Constructor
      * @param id the ID
      */
-    public JawrAbstractReference(String id) {
+    public AbstractJawrReference(String id) {
         super(id);
     }
 
@@ -74,11 +74,11 @@ public abstract class JawrAbstractReference extends WebMarkupContainer {
                 this.useRandomParam = Boolean.valueOf(useRandom).booleanValue();
             }
 
-            String src = (String) attributes.get("src");
-
+            String src = getReferencePath(attributes);
+            
             // src is mandatory
             if (null == src) {
-                throw new IllegalStateException("The src attribute is mandatory for this Jawr tag. ");
+                throw new IllegalStateException("The src attribute is mandatory for this Jawr reference tag. ");
             }
 
             // Get an instance of the renderer.
@@ -105,6 +105,8 @@ public abstract class JawrAbstractReference extends WebMarkupContainer {
 
         markupStream.skipComponent();
     }
+
+    protected abstract String getReferencePath(final IValueMap attributes);
 
     /**
      * Create the tag renderer.

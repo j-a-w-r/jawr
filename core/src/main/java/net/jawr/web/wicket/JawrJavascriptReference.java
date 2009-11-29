@@ -19,6 +19,7 @@ import net.jawr.web.resource.bundle.renderer.BundleRenderer;
 import net.jawr.web.resource.bundle.renderer.JavascriptHTMLBundleLinkRenderer;
 import org.apache.wicket.markup.ComponentTag;
 import org.apache.wicket.protocol.http.WebApplication;
+import org.apache.wicket.util.value.IValueMap;
 
 /**
  * The abstract class for the CSS and Stylesheet reference for Wicket.
@@ -26,7 +27,7 @@ import org.apache.wicket.protocol.http.WebApplication;
  * @autor Robert Kopaczewski (Original author) 
  * @author Ibrahim Chaehoi
  */
-public class JawrJavascriptReference extends JawrAbstractReference {
+public class JawrJavascriptReference extends AbstractJawrReference {
 
     /** The serial version UID */
 	private static final long serialVersionUID = -2767038866259367402L;
@@ -39,6 +40,13 @@ public class JawrJavascriptReference extends JawrAbstractReference {
         super(id);
     }
 
+	/* (non-Javadoc)
+	 * @see net.jawr.web.wicket.JawrAbstractReference#getReferencePath(org.apache.wicket.util.value.IValueMap)
+	 */
+	protected String getReferencePath(final IValueMap attributes) {
+		return (String) attributes.get("src");
+	}
+	
     /* (non-Javadoc)
      * @see net.jawr.web.wicket.JawrAbstractReference#createRenderer(org.apache.wicket.markup.ComponentTag)
      */
