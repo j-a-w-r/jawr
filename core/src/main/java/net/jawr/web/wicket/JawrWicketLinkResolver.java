@@ -60,7 +60,7 @@ public class JawrWicketLinkResolver implements IComponentResolver {
 				jawrTag = new JawrStylesheetReference(id);
 			}
 			
-			if(tag != null){
+			if(jawrTag != null){
 				container.autoAdd(jawrTag, markupStream);
 			}
 			
