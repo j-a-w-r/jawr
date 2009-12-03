@@ -1,5 +1,5 @@
 /**
- * Copyright 2008 Jordi Hernández Sellés
+ * Copyright 2008-2009 Jordi Hernández Sellés, Ibrahim Chaehoi 
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -36,27 +36,102 @@ import org.springframework.web.util.UrlPathHelper;
  * with Jawr functionality within a Spring DispatcherServlet instance. 
  * 
  * @author Jordi Hernández Sellés
- *
+ * @author Ibrahim Chaehoi
  */
 public class JawrSpringController implements Controller, ServletContextAware, InitializingBean {
 	
+	/** The logger */
+	private static final Logger log = Logger.getLogger(JawrSpringController.class);
+
+	/** The request handler */
 	private JawrRequestHandler requestHandler;
+	
+	/** The initialization parameters */
 	private Map initParams;
+	
 	// Init params
+	/** The type */
 	private String type;
+	
+	/** The configuration properties source class */
 	private String configPropertiesSourceClass;
+	
+	/** The mapping */
 	private String mapping;
+	
+	/** The controller mappingg */
 	private String controllerMapping;
+	
+	/** The URL path helper */
 	private final UrlPathHelper helper = new UrlPathHelper();
 	
 	// Config
+	/** The configuration */
 	private Properties configuration;
 	
-	private ServletContext context;
-	private static final Logger log = Logger.getLogger(JawrSpringController.class);
-
+	/** The configuration file location */
+	private String configLocation;
 	
+	/** The servlet context */
+	private ServletContext context;
+	
+	/* (non-Javadoc)
+	 * @see org.springframework.web.context.ServletContextAware#setServletContext(javax.servlet.ServletContext)
+	 */
+	public void setServletContext(ServletContext context) {
+		this.context = context;
+	}
 
+	/**
+	 * Sets the configuration file location
+	 * @param configLocation the configuration file location
+	 */
+	public void setConfigLocation(String configLocation) {
+		this.configLocation = configLocation;
+	}
+
+	/**
+	 * Sets the type
+	 * @param type the type to set
+	 */
+	public void setType(String type) {
+		this.type = type;
+	}
+
+	/**
+	 * Sets the configPropertiesSourceClass
+	 * @param configPropertiesSourceClass the configPropertiesSourceClass to set
+	 */
+	public void setConfigPropertiesSourceClass(String configPropertiesSourceClass) {
+		this.configPropertiesSourceClass = configPropertiesSourceClass;
+	}
+
+	/**
+	 * Sets the mapping
+	 * @param mapping the mapping to set
+	 */
+	public void setMapping(String mapping) {
+		this.mapping = mapping;
+	}
+
+	/**
+	 * Sets the configuration
+	 * @param configuration the configuration to set
+	 */
+	public void setConfiguration(Properties configuration) {
+		this.configuration = configuration;
+	}
+
+	/**
+	 * Sets the controller mapping
+	 * @param controllerMapping the controllerMapping to set
+	 */
+	public void setControllerMapping(String controllerMapping) {
+		if(controllerMapping.endsWith("/"))
+			controllerMapping = controllerMapping.substring(0,controllerMapping.length()-1);
+		this.controllerMapping = controllerMapping;
+	}
+	
 	/* (non-Javadoc)
 	 * @see org.springframework.web.servlet.mvc.Controller#handleRequest(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
 	 */
@@ -79,9 +154,15 @@ public class JawrSpringController implements Controller, ServletContextAware, In
 		initParams = new HashMap(3);
 		initParams.put("type",type);
 		initParams.put("configPropertiesSourceClass",configPropertiesSourceClass);
+		initParams.put("configLocation", configLocation);
+		if(configLocation != null){
+			configuration = null;
+		}
+		
 		String fullMapping = "";
 		if(null != mapping)
 			fullMapping = mapping;
+		
 		if(null != controllerMapping)
 			fullMapping = PathNormalizer.joinPaths(fullMapping, controllerMapping);
 		
@@ -94,51 +175,5 @@ public class JawrSpringController implements Controller, ServletContextAware, In
 		}else{
 			requestHandler = new JawrRequestHandler(context,initParams, configuration);
 		}
-		
 	}
-
-	/* (non-Javadoc)
-	 * @see org.springframework.web.context.ServletContextAware#setServletContext(javax.servlet.ServletContext)
-	 */
-	public void setServletContext(ServletContext context) {
-		this.context = context;
-	}
-
-	/**
-	 * @param type the type to set
-	 */
-	public void setType(String type) {
-		this.type = type;
-	}
-
-	/**
-	 * @param configPropertiesSourceClass the configPropertiesSourceClass to set
-	 */
-	public void setConfigPropertiesSourceClass(String configPropertiesSourceClass) {
-		this.configPropertiesSourceClass = configPropertiesSourceClass;
-	}
-
-	/**
-	 * @param mapping the mapping to set
-	 */
-	public void setMapping(String mapping) {
-		this.mapping = mapping;
-	}
-
-	/**
-	 * @param configuration the configuration to set
-	 */
-	public void setConfiguration(Properties configuration) {
-		this.configuration = configuration;
-	}
-
-	/**
-	 * @param controllerMapping the controllerMapping to set
-	 */
-	public void setControllerMapping(String controllerMapping) {
-		if(controllerMapping.endsWith("/"))
-			controllerMapping = controllerMapping.substring(0,controllerMapping.length()-1);
-		this.controllerMapping = controllerMapping;
-	}
-
 }

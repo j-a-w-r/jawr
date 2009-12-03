@@ -42,6 +42,7 @@ import net.jawr.web.resource.FileNameUtils;
 import net.jawr.web.resource.ImageResourcesHandler;
 import net.jawr.web.resource.bundle.IOUtils;
 import net.jawr.web.resource.bundle.factory.PropertiesBasedBundlesHandlerFactory;
+import net.jawr.web.resource.bundle.factory.PropsConfigPropertiesSource;
 import net.jawr.web.resource.bundle.factory.util.ClassLoaderResourceUtils;
 import net.jawr.web.resource.bundle.factory.util.ConfigChangeListener;
 import net.jawr.web.resource.bundle.factory.util.ConfigChangeListenerThread;
@@ -164,7 +165,6 @@ public class JawrRequestHandler implements ConfigChangeListener {
 	 * @throws ServletException if an exception occurs
 	 */
 	public JawrRequestHandler(ServletContext context, ServletConfig config) throws ServletException {
-		this.imgMimeMap = MIMETypesSupport.getSupportedProperties(this);
 		this.initParameters = new HashMap();
 		Enumeration params = config.getInitParameterNames();
 		while (params.hasMoreElements()) {
@@ -175,14 +175,46 @@ public class JawrRequestHandler implements ConfigChangeListener {
 
 		if (log.isInfoEnabled())
 			log.info("Initializing jawr config for servlet named " + config.getServletName());
+		
+		initRequestHandler(context, null);
+
+	}
+
+	/**
+	 * Alternate constructor that does not need a ServletConfig object. Parameters normally read from it are read from the initParams Map, and the
+	 * configProps are used instead of reading a .properties file.
+	 * 
+	 * @param servletContext ServletContext
+	 * @param servletConfig ServletConfig
+	 * @throws ServletException if an exception occurs
+	 */
+	public JawrRequestHandler(ServletContext context, Map initParams, Properties configProps) throws ServletException {
+
+		this.imgMimeMap = MIMETypesSupport.getSupportedProperties(this);
+		this.initParameters = initParams;
+		initRequestHandler(context, configProps);
+	}
+	
+	/**
+	 * Initialize the request handler
+	 * @param context the servlet context
+	 * @param configProps the configuration properties
+	 * @throws ServletException if an exception occurs
+	 */
+	private void initRequestHandler(ServletContext context, Properties configProps) throws ServletException {
+		
 		long initialTime = System.currentTimeMillis();
+		if (log.isInfoEnabled())
+			log.info("Initializing jawr config for request handler named " + getInitParameter("handlerName"));
+
+		this.imgMimeMap = MIMETypesSupport.getSupportedProperties(this);
 		this.servletContext = context;
 
-		resourceType = config.getInitParameter("type");
+		resourceType = getInitParameter("type");
 		resourceType = null == resourceType ? "js" : resourceType;
 
-		String configLocation = config.getInitParameter("configLocation");
-		String configPropsSourceClass = config.getInitParameter("configPropertiesSourceClass");
+		String configLocation = getInitParameter("configLocation");
+		String configPropsSourceClass = getInitParameter("configPropertiesSourceClass");
 		if (null == configLocation && null == configPropsSourceClass)
 			throw new ServletException("Neither configLocation nor configPropertiesSourceClass init params were set."
 					+ " You must set at least the configLocation param. Please check your web.xml file");
@@ -196,7 +228,12 @@ public class JawrRequestHandler implements ConfigChangeListener {
 			if (propsSrc instanceof ServletContextAware) {
 				((ServletContextAware) propsSrc).setServletContext(context);
 			}
-		} else {
+		} else if(configProps != null){
+			
+			// configuration retrieved from the in memory configuration properties
+			propsSrc = new PropsConfigPropertiesSource(configProps);
+			
+		}else{
 			// Default config properties source, reads from a .properties file in the classpath.
 			propsSrc = new PropsFilePropertiesSource();
 		}
@@ -237,49 +274,23 @@ public class JawrRequestHandler implements ConfigChangeListener {
 			long totaltime = System.currentTimeMillis() - initialTime;
 			log.info("Init method succesful. jawr started in " + (totaltime / 1000) + " seconds....");
 		}
-
 	}
 
+	/**
+	 * Returns the init parameter value from the parameter name
+	 * @param paramName the parameter name
+	 * @return the init parameter value
+	 */
+	private String getInitParameter(String paramName){
+		return (String) initParameters.get(paramName);
+	}
+	
 	/**
 	 * Returns true if JMX is enabled for the applcation
 	 * @return true if JMX is enabled for the applcation
 	 */
 	private boolean isJmxEnabled() {
 		return System.getProperty(JawrConstant.JMX_ENABLE_FLAG_SYSTEL_PROPERTY) != null;
-	}
-
-	/**
-	 * Alternate constructor that does not need a ServletConfig object. Parameters normally read rom it are read from the initParams Map, and the
-	 * configProps are used instead of reading a .properties file.
-	 * 
-	 * @param servletContext ServletContext
-	 * @param servletConfig ServletConfig
-	 * @throws ServletException if an exception occurs
-	 */
-	public JawrRequestHandler(ServletContext context, Map initParams, Properties configProps) throws ServletException {
-
-		this.imgMimeMap = MIMETypesSupport.getSupportedProperties(this);
-		this.initParameters = initParams;
-
-		if (log.isInfoEnabled())
-			log.info("Initializing jawr config for request handler named " + (String) initParams.get("handlerName"));
-
-		long initialTime = System.currentTimeMillis();
-		this.servletContext = context;
-
-		resourceType = (String) initParameters.get("type");
-		resourceType = null == resourceType ? "js" : resourceType;
-
-		// init registry
-		generatorRegistry = new GeneratorRegistry(resourceType);
-
-		// Initialize config
-		initializeJawrConfig(configProps);
-
-		if (log.isInfoEnabled()) {
-			long totaltime = System.currentTimeMillis() - initialTime;
-			log.info("Init method succesful. jawr started in " + (totaltime / 1000) + " seconds....");
-		}
 	}
 
 	/**
@@ -548,9 +559,8 @@ public class JawrRequestHandler implements ConfigChangeListener {
 				} else {
 
 					Writer out = response.getWriter();
-					bundlesHandler.writeBundleTo(requestedPath, out);
+					bundlesHandler.writeBundleTo(requestedPath, out);	
 				}
-
 			}
 		} catch (ResourceNotFoundException e) {
 			response.setStatus(HttpServletResponse.SC_NOT_FOUND);
@@ -611,7 +621,7 @@ public class JawrRequestHandler implements ConfigChangeListener {
 	/**
 	 * Adds aggresive caching headers to the response in order to prevent browsers requesting the same file twice.
 	 * 
-	 * @param resp
+	 * @param resp the response
 	 */
 	protected void setResponseHeaders(HttpServletResponse resp) {
 		// Force resource caching as best as possible
