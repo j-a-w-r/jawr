@@ -558,8 +558,12 @@ public class JawrRequestHandler implements ConfigChangeListener {
 					out.write(result.toString());
 				} else {
 
-					Writer out = response.getWriter();
-					bundlesHandler.writeBundleTo(requestedPath, out);	
+					if(isValidRequestedPath(requestedPath)){
+						Writer out = response.getWriter();
+						bundlesHandler.writeBundleTo(requestedPath, out);	
+					}else{
+						throw new ResourceNotFoundException(requestedPath);
+					}
 				}
 			}
 		} catch (ResourceNotFoundException e) {
@@ -573,6 +577,26 @@ public class JawrRequestHandler implements ConfigChangeListener {
 			log.debug("request succesfully attended");
 	}
 
+	/**
+	 * Checks if the path is valid and can be accessed.
+	 * @param requestedPath the requested path
+	 * @return true if the path is valid and can be accessed.
+	 */
+	protected boolean isValidRequestedPath(String requestedPath) {
+		
+		boolean result = true;
+		if(requestedPath.startsWith(JawrConstant.WEB_INF_DIR_PREFIX) || requestedPath.startsWith(JawrConstant.META_INF_DIR_PREFIX)){
+			result = false;
+		}else{
+			String extension = FileNameUtils.getExtension(requestedPath);
+			if(!extension.toLowerCase().equals("."+resourceType)){
+				result = false;
+			}
+		}
+		
+		return result;
+	}
+	
 	/**
 	 * Returns the extension for the requested path
 	 * @param requestedPath the requested path

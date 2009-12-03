@@ -43,8 +43,8 @@ import net.jawr.web.resource.bundle.factory.util.PathNormalizer;
 import net.jawr.web.resource.bundle.factory.util.PropertiesConfigHelper;
 import net.jawr.web.resource.handler.bundle.ResourceBundleHandler;
 import net.jawr.web.resource.handler.reader.ResourceReaderHandler;
-
 import net.jawr.web.util.StringUtils;
+
 import org.apache.log4j.Logger;
 
 /**
@@ -357,9 +357,14 @@ public class JawrImageRequestHandler extends JawrRequestHandler {
 
 		// Returns the real file path
 		filePath = getRealFilePath(filePath);
-
+		
 		try {
-			writeContent(response, filePath);
+			if(isValidRequestedPath(filePath)){
+				writeContent(response, filePath);
+			}else{
+				log.error("Unable to load the image for the request URI : " + request.getRequestURI());
+				response.sendError(HttpServletResponse.SC_NOT_FOUND);
+			}
 			
 		} catch (Exception ex) {
 
@@ -398,6 +403,21 @@ public class JawrImageRequestHandler extends JawrRequestHandler {
 		return contentType;
 	}
 
+	/**
+	 * Checks if the path is valid and can be accessed.
+	 * @param requestedPath the requested path
+	 * @return true if the path is valid and can be accessed.
+	 */
+	protected boolean isValidRequestedPath(String requestedPath) {
+		
+		boolean result = true;
+		if(requestedPath.startsWith(JawrConstant.WEB_INF_DIR_PREFIX) || requestedPath.startsWith(JawrConstant.META_INF_DIR_PREFIX)){
+			result = false;
+		}
+		
+		return result;
+	}
+	
 	/**
 	 * Returns the file path
 	 * 

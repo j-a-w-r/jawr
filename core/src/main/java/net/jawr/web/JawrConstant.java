@@ -102,4 +102,11 @@ public class JawrConstant {
 	/** The ID of the empty global preprocessor */
 	public static final String EMPTY_GLOBAL_PREPROCESSOR_ID = "none";
 	
+	/** The META-INF directory prefix */
+	public static final String META_INF_DIR_PREFIX = "/META-INF/";
+
+	/** The WEB-INF directory prefix */
+	public static final String WEB_INF_DIR_PREFIX = "/WEB-INF/";
+
+	
 }
