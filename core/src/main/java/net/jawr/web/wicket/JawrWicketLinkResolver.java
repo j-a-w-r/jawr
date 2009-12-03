@@ -65,7 +65,7 @@ public class JawrWicketLinkResolver implements IComponentResolver {
 			}
 			
 			// Yes, we handled the tag
-			return tag != null;
+			return jawrTag != null;
 		} else if (tag instanceof WicketTag) {
 
 			// For tag wicket:jawr
