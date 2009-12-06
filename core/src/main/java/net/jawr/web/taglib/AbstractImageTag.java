@@ -32,18 +32,28 @@ public class AbstractImageTag extends ImagePathTag {
 	/** The serial version UID */
 	private static final long serialVersionUID = 1085874354131806795L;
 
+	/** The image renderer */
 	private ImgRenderer renderer;
 
+	/** The attribute map */
 	private Map attributeMap; 
 	
-	protected Map getAttributeMap() {
-		return this.attributeMap;
-	}
-	
+	/**
+	 * Constructor
+	 * @param renderer the image renderer
+	 */
 	public AbstractImageTag(ImgRenderer renderer) {
 		super();
 		this.attributeMap = new HashMap();
 		this.renderer = renderer;
+	}
+	
+	/**
+	 * Returns the attribute map
+	 * @return the attribute map
+	 */
+	protected Map getAttributeMap() {
+		return this.attributeMap;
 	}
 	
 	/**
