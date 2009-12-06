@@ -120,6 +120,9 @@ public class BundlesHandlerFactory {
 	/** The map of custom post processor */
 	private Map customPostprocessors;
 	
+	/** The map of custom global pre processor */
+	private Map customGlobalPreprocessors;
+	
 	/** The flag indicating if we should skip the scan for the orphans */
 	private boolean scanForOrphans = true;
 
@@ -180,6 +183,10 @@ public class BundlesHandlerFactory {
 					.buildPostProcessorChain(unitPostProcessorKeys);
 		
 		// Build the reource type processor to use on resources.
+		// Initialize custom postprocessors before using the factory to build the postprocessing chains
+		if (null != customGlobalPreprocessors)
+			resourceTypeChainFactory.setCustomGlobalPreprocessors(customGlobalPreprocessors);
+
 		GlobalPreprocessor resourceTypeProcessor = null;
 		if (null == this.resourceTypeProcessorKeys)
 			resourceTypeProcessor = this.resourceTypeChainFactory.buildDefaultProcessorChain();
@@ -726,7 +733,14 @@ public class BundlesHandlerFactory {
 	}
 
 	/**
-	 * Sets the flag inficating if we should scan or not for the orphan resources
+	 * Sets the map of custom global preprocessor
+	 * @param customGlobalPreprocessors the map to set
+	 */
+	public void setCustomGlobalPreprocessors(Map customGlobalPreprocessors) {
+		this.customGlobalPreprocessors = customGlobalPreprocessors;
+	}
+	/**
+	 * Sets the flag indicating if we should scan or not for the orphan resources
 	 * @param scanForOrphans the flag to set
 	 */
 	public void setScanForOrphans(boolean scanForOrphans) {

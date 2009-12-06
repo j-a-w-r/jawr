@@ -144,15 +144,15 @@ public interface JawrConfigManagerMBean {
 	
 	/**
 	 * @return
-	 * @see net.jawr.web.config.JawrConfig#isUsingClasspathCssImageServlet()
+	 * @see net.jawr.web.config.JawrConfig#isClasspathCssHandlingImage()
 	 */
-	public boolean isUsingClasspathCssImageServlet();
+	public boolean isClasspathCssHandlingImage();
 
 	/**
 	 * @param useClasspathCssImgServlet
-	 * @see net.jawr.web.config.JawrConfig#setUseClasspathCssImageServlet(boolean)
+	 * @see net.jawr.web.config.JawrConfig#setClasspathCssHandlingImage(boolean)
 	 */
-	public void setUsingClasspathCssImageServlet(boolean useClasspathCssImgServlet);
+	public void setClasspathCssHandlingImage(boolean useClasspathCssImgServlet);
 	
 	/**
 	 * @param charsetName

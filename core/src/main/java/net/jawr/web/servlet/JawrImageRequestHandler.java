@@ -54,7 +54,9 @@ import org.apache.log4j.Logger;
  */
 public class JawrImageRequestHandler extends JawrRequestHandler {
 
-	
+	/** The serial version UID */
+	private static final long serialVersionUID = -8342090032443416738L;
+
 	/** The logger */
 	private static final Logger log = Logger.getLogger(JawrImageRequestHandler.class);
 

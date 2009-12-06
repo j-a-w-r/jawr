@@ -14,11 +14,15 @@
 package net.jawr.web.resource.bundle.factory.global.preprocessor;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.StringTokenizer;
+import java.util.Map.Entry;
 
 import net.jawr.web.JawrConstant;
+import net.jawr.web.resource.bundle.factory.util.ClassLoaderResourceUtils;
 import net.jawr.web.resource.bundle.global.preprocessor.AbstractChainedGlobalPreprocessor;
+import net.jawr.web.resource.bundle.global.preprocessor.CustomGlobalPreprocessorChainedWrapper;
 import net.jawr.web.resource.bundle.global.preprocessor.EmptyGlobalPreprocessor;
 import net.jawr.web.resource.bundle.global.preprocessor.GlobalPreprocessor;
 import net.jawr.web.resource.bundle.global.preprocessor.css.smartsprites.CssSmartSpritesGlobalPreprocessor;
@@ -39,10 +43,19 @@ public class BasicProcessorChainFactory implements
 	 * (non-Javadoc)
 	 * 
 	 * @seenet.jawr.web.resource.bundle.factory.global.preprocessor.
-	 * GlobalPreprocessorChainFactory#setCustomPreprocessors(java.util.Map)
+	 * GlobalPreprocessorChainFactory#setCustomGlobalPreprocessors(java.util.Map)
 	 */
-	public void setCustomPreprocessors(Map keysClassNames) {
-		customPreprocessors = keysClassNames;
+	public void setCustomGlobalPreprocessors(Map keysClassNames) {
+		
+		for(Iterator it = keysClassNames.entrySet().iterator(); it.hasNext();){
+			
+			Entry entry = (Entry) it.next();
+			GlobalPreprocessor customGlobalPreprocessor = 
+				(GlobalPreprocessor) ClassLoaderResourceUtils.buildObjectInstance((String) entry.getValue());
+			
+			String key = (String) entry.getKey();			
+			customPreprocessors.put(key, new CustomGlobalPreprocessorChainedWrapper(key, customGlobalPreprocessor));
+		}		
 	}
 
 	/*

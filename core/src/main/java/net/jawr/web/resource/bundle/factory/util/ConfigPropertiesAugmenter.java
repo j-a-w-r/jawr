@@ -16,6 +16,7 @@ package net.jawr.web.resource.bundle.factory.util;
 import java.util.Iterator;
 import java.util.Properties;
 import java.util.Set;
+import java.util.Map.Entry;
 
 import net.jawr.web.resource.bundle.factory.PropertiesBundleConstant;
 
@@ -71,8 +72,11 @@ public class ConfigPropertiesAugmenter {
 	 * @param configToAdd the configuration properties to add
 	 */
 	public void augmentConfiguration(Properties configToAdd) {
-		for(Iterator it = configToAdd.keySet().iterator();it.hasNext();) {
-			String configKey = (String) it.next();
+		for(Iterator it = configToAdd.entrySet().iterator();it.hasNext();) {
+			
+			Entry entry = (Entry) it.next();
+			String configKey = (String) entry.getKey();
+			String configValue = (String) entry.getValue();
 			
 			// Skip the property is it is not overridable
 			if(null != privateConfigProperties && privateConfigProperties.contains(configKey)) {
@@ -85,11 +89,11 @@ public class ConfigPropertiesAugmenter {
 			// Augment mappings
 			if(isAugmentable(configKey)) {
 				String currentValue = configProperties.getProperty(configKey);
-				currentValue += "," + configToAdd.get(configKey);
+				currentValue += "," + configValue;
 				configProperties.put(configKey,currentValue);
 			}
 			else // replace properties
-				configProperties.put(configKey, configToAdd.get(configKey));
+				configProperties.put(configKey, configValue);
 		}
 	}
 

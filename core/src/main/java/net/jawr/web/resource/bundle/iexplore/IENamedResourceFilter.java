@@ -85,7 +85,7 @@ public class IENamedResourceFilter {
 	 */
 	private String createExpressionKey(String sufix) {
 		String[] parts =  sufix.split("_");
-		String ret = "[if ";
+		StringBuffer ret = new StringBuffer("[if ");
 		boolean ieAdded = false;
 		for (int i = 0; i < parts.length; i++) {					
 			if("".equals(parts[i]))
@@ -93,16 +93,16 @@ public class IENamedResourceFilter {
 			if("ie".equals(parts[i]))
 				break;
 			else if(Pattern.matches("(lt|lte|gt|gte)", parts[i])) 
-				ret += parts[i] + " ";
+				ret.append(parts[i] + " ");
 			else {
-				ret += "IE " + parts[i];
+				ret.append("IE " + parts[i]);
 				ieAdded = true;
 			}	
 		}
 		if(!ieAdded)
-			ret += "IE";
-		ret += "]";
-		return ret;
+			ret.append("IE");
+		ret.append("]");
+		return ret.toString();
 	}
 
 }

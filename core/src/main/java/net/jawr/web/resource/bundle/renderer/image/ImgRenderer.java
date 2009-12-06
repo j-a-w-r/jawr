@@ -14,9 +14,11 @@
 package net.jawr.web.resource.bundle.renderer.image;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.io.Writer;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * Renders an img or input type img tag in HTML. 
@@ -24,14 +26,22 @@ import java.util.Map;
  * @author Jordi Hernandez
  *
  */
-public class ImgRenderer {
+public class ImgRenderer implements Serializable {
 	
+	/** The serial versio UID */
+	private static final long serialVersionUID = 5070489835130503527L;
+	
+	/** The image start tag */
 	private static final String IMG_TAG_START = "<img ";
+	
+	/** The input image start tag */
 	private static final String INPUT_TAG_START = "<input type=\"image\" ";
 	
+	/** The start tag prefix used by the renderer */
 	private String tagStart;
 	
 	/**
+	 * Constructor
 	 * @param isPlainImage If true, will render an IMG tag, otherwise an input type="image" is rendered instead
 	 */
 	public ImgRenderer(boolean isPlainImage) {
@@ -44,16 +54,16 @@ public class ImgRenderer {
 	 * @param attributes Attributes for the tag. 
 	 * @param writer Writer to render the HTML into. Will NOT be closed or flushed. 
 	 * 
-	 * @throws IOException
+	 * @throws IOException if an exception occurs
 	 */
 	public void renderImage(String imgSource, Map attributes, final Writer writer) throws IOException{
 		StringBuffer sb = new StringBuffer(tagStart);
 		sb.append("src=\"").append(imgSource).append("\" ");
-		for(Iterator it = attributes.keySet().iterator();it.hasNext();) {
-			String key = (String) it.next();
-			sb.append(key)
+		for(Iterator it = attributes.entrySet().iterator();it.hasNext();) {
+			Entry mapEntry = (Entry) it.next();
+			sb.append(mapEntry.getKey())
 				.append("=\"")
-				.append(attributes.get(key))
+				.append(mapEntry.getValue())
 				.append("\" ");
 			
 		}

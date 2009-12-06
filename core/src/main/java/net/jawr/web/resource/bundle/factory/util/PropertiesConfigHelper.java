@@ -48,6 +48,9 @@ public class PropertiesConfigHelper {
 	/** The post processor class name pattern */
 	private Pattern postProcessorClassPattern = Pattern.compile("(jawr\\.custom\\.postprocessors\\.)([-_a-zA-Z0-9]+).class");
 
+	/** The global preprocessor class name pattern */
+	private Pattern globalPreProcessorClassPattern = Pattern.compile("(jawr\\.custom\\.global\\.preprocessor\\.)([-_a-zA-Z0-9]+).class");
+	
 	/**
 	 * Build a properties wrapper that appends 'jawr.' and the specified
 	 * resourceType to a a supplied key before retrieveing its value from the
@@ -175,19 +178,36 @@ public class PropertiesConfigHelper {
 	 * @return the set of post processor name based on the class definition
 	 */
 	public Map getCustomPostProcessorMap() {
-		Map postProcessorMap = new HashMap();
+		return getCustomMap(postProcessorClassPattern);
+	}
+	
+	/**
+	 * Returns the map of custom global preprocessor
+	 * @return the map of custom global preprocessor
+	 */
+	public Map getCustomGlobalPreprocessorMap() {
+		return getCustomMap(globalPreProcessorClassPattern);
+	}
+	
+	/**
+	 * Returns the map, where the key is the 2 group of the pattern and the value is the property value
+	 * @param keyPattern the pattern of the key
+	 * @return the map.
+	 */
+	private Map getCustomMap(Pattern keyPattern) {
+		Map map = new HashMap();
 
 		for (Iterator it = props.keySet().iterator();it.hasNext();) {
 			String key = (String) it.next();
-			Matcher matcher = postProcessorClassPattern.matcher(key);
+			Matcher matcher = keyPattern.matcher(key);
 			if (matcher.matches()) {
 
-				String postProcessorName = matcher.group(2);
-				String className = props.getProperty(key);
-				postProcessorMap.put(postProcessorName, className);
+				String id = matcher.group(2);
+				String propertyValue = props.getProperty(key);
+				map.put(id, propertyValue);
 			}
 		}
-		return postProcessorMap;
+		return map;
 	}
 	
 	/**

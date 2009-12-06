@@ -13,6 +13,7 @@
  */
 package net.jawr.web.resource.bundle.sorting;
 
+import java.io.Serializable;
 import java.util.Comparator;
 
 import net.jawr.web.resource.bundle.JoinableResourceBundle;
@@ -25,7 +26,10 @@ import net.jawr.web.resource.bundle.JoinableResourceBundle;
  * @author Jordi Hernández Sellés
  *
  */
-public class GlobalResourceBundleComparator implements Comparator {
+public class GlobalResourceBundleComparator implements Comparator, Serializable {
+
+	/** The serial version UID */
+	private static final long serialVersionUID = -277897413409167116L;
 
 	/* (non-Javadoc)
 	 * @see java.util.Comparator#compare(T, T)

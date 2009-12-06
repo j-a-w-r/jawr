@@ -124,9 +124,9 @@ public class JawrConfigManager implements JawrConfigManagerMBean {
 
 	/**
 	 * @return
-	 * @see net.jawr.web.config.JawrConfig#isUsingClasspathCssImageServlet()
+	 * @see net.jawr.web.config.JawrConfig#isClasspathCssHandlingImage()
 	 */
-	public boolean isUsingClasspathCssImageServlet() {
+	public boolean isClasspathCssHandlingImage() {
 		return Boolean.valueOf(configProperties.getProperty(JawrConfig.JAWR_CSS_IMG_USE_CLASSPATH_SERVLET)).booleanValue();
 	}
 
@@ -254,9 +254,9 @@ public class JawrConfigManager implements JawrConfigManagerMBean {
 
 	/**
 	 * @param useClasspathCssImgServlet
-	 * @see net.jawr.web.config.JawrConfig#setUseClasspathCssImageServlet(boolean)
+	 * @see net.jawr.web.config.JawrConfig#setClasspathCssHandlingImage(boolean)
 	 */
-	public void setUsingClasspathCssImageServlet(boolean useClasspathCssImgServlet) {
+	public void setClasspathCssHandlingImage(boolean useClasspathCssImgServlet) {
 		configProperties.setProperty(JawrConfig.JAWR_CSS_IMG_USE_CLASSPATH_SERVLET, Boolean.toString(useClasspathCssImgServlet));
 	}
 

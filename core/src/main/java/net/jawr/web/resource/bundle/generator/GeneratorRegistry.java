@@ -141,7 +141,7 @@ public class GeneratorRegistry {
 			if(resourceType.equals(JawrConstant.JS_TYPE)){
 				generator = new ClasspathJSGenerator();
 			}else if(resourceType.equals(JawrConstant.CSS_TYPE)){
-				generator = new ClassPathCSSGenerator(config.isUsingClasspathCssImageServlet());
+				generator = new ClassPathCSSGenerator(config.isClasspathCssHandlingImage());
 			}else{
 				generator = new ClassPathImgResourceGenerator();
 			}

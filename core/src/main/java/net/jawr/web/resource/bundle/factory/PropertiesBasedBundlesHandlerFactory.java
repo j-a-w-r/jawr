@@ -145,6 +145,9 @@ public class PropertiesBasedBundlesHandlerFactory {
 		
 		factory.setBundleDefinitions(customBundles);
 
+		// Set global bundle preprocessor
+		factory.setCustomGlobalPreprocessors(props.getCustomGlobalPreprocessorMap());
+		
 		// Check if we should use the custom postprocessor names property or
 		// find the postprocessor name using the postprocessor class declaration :
 		// jawr.custom.postprocessors.<name>.class

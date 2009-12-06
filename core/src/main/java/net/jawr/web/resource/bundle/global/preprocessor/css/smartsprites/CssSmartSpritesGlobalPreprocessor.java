@@ -154,7 +154,7 @@ public class CssSmartSpritesGlobalPreprocessor extends
 	 * 
 	 * @author Ibrahim Chaehoi
 	 */
-	private class SmartSpritesResourceHandler implements ResourceHandler {
+	private static class SmartSpritesResourceHandler implements ResourceHandler {
 		
 		/** The resource handler for CSS resources */
 		private ResourceReaderHandler rsHandler;

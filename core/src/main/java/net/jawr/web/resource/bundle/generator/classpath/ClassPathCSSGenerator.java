@@ -96,7 +96,7 @@ public class ClassPathCSSGenerator extends AbstractCSSGenerator implements Worki
 		// The following section is executed in DEBUG mode to retrieve the classpath CSS from the temporary folder, 
 		// if the user defines that the image servlet should be used to retrieve the CSS images.
 		// It's not executed at the initialization process to be able to read data from classpath.
-		if(!context.isProcessingBundle() && context.getConfig().isUsingClasspathCssImageServlet()){
+		if(!context.isProcessingBundle() && context.getConfig().isClasspathCssHandlingImage()){
 
 			Reader rd = null;
 			FileInputStream fis;

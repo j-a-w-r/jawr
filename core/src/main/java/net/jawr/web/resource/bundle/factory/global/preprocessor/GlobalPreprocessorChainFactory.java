@@ -48,6 +48,6 @@ public interface GlobalPreprocessorChainFactory {
 	 * 
 	 * @param keysClassNames the map associated the keys and the class names.
 	 */
-	public abstract void setCustomPreprocessors(Map keysClassNames);
+	public abstract void setCustomGlobalPreprocessors(Map keysClassNames);
 
 }

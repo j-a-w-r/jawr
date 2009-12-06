@@ -13,6 +13,7 @@
  */
 package net.jawr.web.config;
 
+import java.io.Serializable;
 import java.nio.charset.Charset;
 import java.util.Properties;
 
@@ -33,7 +34,10 @@ import net.jawr.web.resource.bundle.renderer.CSSHTMLBundleLinkRenderer;
  * @author Ibrahim Chaehoi
  * @author Matt Ruby
  */
-public class JawrConfig {
+public class JawrConfig implements Serializable {
+
+	/** The serial version UID */
+	private static final long serialVersionUID = -6243263853446050289L;
 
 	/**
 	 * The property name for the css link flavor
@@ -118,9 +122,15 @@ public class JawrConfig {
 
 	/**
 	 * The property name for the flag indicating if JAWR should override the CSS image url to map the classpath image servlet
+	 * TODO remove this property. It's replaced by jawr.css.classpath.handling.image
 	 */
 	public static final String JAWR_CSS_IMG_USE_CLASSPATH_SERVLET = "jawr.css.image.classpath.use.servlet";
-
+	
+	/**
+	 * The property name for the flag indicating if the CSS image for the CSS retrieved from classpath must be also retrieved from classpath
+	 */
+	public static final String JAWR_CSS_CLASSPATH_HANDLING_IMAGE = "jawr.css.classpath.handling.image";
+	
 	/**
 	 * The property name for the image hash algorithm.
 	 */
@@ -227,7 +237,7 @@ public class JawrConfig {
 	/**
 	 * Determines if the servlet, which provide CSS image for CSS define in the classpath should be used or not
 	 */
-	private boolean useClasspathCssImageServlet;
+	private boolean classpathCssHandleImage;
 
 	/**
 	 * Defines the image resources definition.
@@ -317,10 +327,18 @@ public class JawrConfig {
 			setCssLinkFlavor(props.getProperty(JAWR_CSSLINKS_FLAVOR).trim());
 		}
 
-		if (null != props.getProperty(JAWR_CSS_IMG_USE_CLASSPATH_SERVLET)) {
-			setUseClasspathCssImageServlet(Boolean.valueOf(props.getProperty(JAWR_CSS_IMG_USE_CLASSPATH_SERVLET)).booleanValue());
+		if (null != props.getProperty(JAWR_CSS_IMG_USE_CLASSPATH_SERVLET)
+				 && null != props.getProperty(JAWR_CSS_CLASSPATH_HANDLING_IMAGE)) {
+			throw new IllegalStateException("You are using in the same configuration file '"+JAWR_CSS_IMG_USE_CLASSPATH_SERVLET+"' and '"+JAWR_CSS_CLASSPATH_HANDLING_IMAGE+"'. " +
+					"The property '"+JAWR_CSS_IMG_USE_CLASSPATH_SERVLET+"' is deprecated. Please use only the property '"+JAWR_CSS_CLASSPATH_HANDLING_IMAGE+"'");
 		}
-
+		if (null != props.getProperty(JAWR_CSS_IMG_USE_CLASSPATH_SERVLET)) {
+			setClasspathCssHandlingImage(Boolean.valueOf(props.getProperty(JAWR_CSS_IMG_USE_CLASSPATH_SERVLET)).booleanValue());
+		}
+		if (null != props.getProperty(JAWR_CSS_CLASSPATH_HANDLING_IMAGE)) {
+			setClasspathCssHandlingImage(Boolean.valueOf(props.getProperty(JAWR_CSS_CLASSPATH_HANDLING_IMAGE)).booleanValue());
+		}
+		
 		if (null != props.getProperty(JAWR_IMAGE_HASH_ALGORITHM)) {
 			setImageHashAlgorithm(props.getProperty(JAWR_IMAGE_HASH_ALGORITHM).trim());
 		}
@@ -572,8 +590,8 @@ public class JawrConfig {
 	 *         url(getCssImageServletPath()+style/default/ img/bkrnd/header_1_sprite.gif) no-repeat 0 0; And the CSS image servlet will be in charge
 	 *         of loading the image from the classpath.
 	 */
-	public boolean isUsingClasspathCssImageServlet() {
-		return useClasspathCssImageServlet;
+	public boolean isClasspathCssHandlingImage() {
+		return classpathCssHandleImage;
 	}
 
 	/**
@@ -586,8 +604,8 @@ public class JawrConfig {
 	 *            url(getCssImageServletPath()+style /default/img/bkrnd/header_1_sprite.gif) no-repeat 0 0; And the CSS image servlet will be in
 	 *            charge of loading the image from the classpath.
 	 */
-	public void setUseClasspathCssImageServlet(boolean useClasspathCssImgServlet) {
-		this.useClasspathCssImageServlet = useClasspathCssImgServlet;
+	public void setClasspathCssHandlingImage(boolean classpathCssHandleImage) {
+		this.classpathCssHandleImage = classpathCssHandleImage;
 	}
 
 	/**

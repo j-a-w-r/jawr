@@ -697,37 +697,37 @@ public class PathNormalizer {
             toTokeniser.nextToken();
         }
 
-        String relativePath = "";
+        StringBuffer relativePath = new StringBuffer();
 
         // add back refs for the rest of from location.
         while ( fromTokeniser.hasMoreTokens() )
         {
             fromTokeniser.nextToken();
 
-            relativePath += "..";
+            relativePath.append("..");
 
             if ( fromTokeniser.hasMoreTokens() )
             {
-                relativePath += separatorChar;
+            	relativePath.append(separatorChar);
             }
         }
 
         if ( relativePath.length() != 0 && toTokeniser.hasMoreTokens() )
         {
-            relativePath += separatorChar;
+        	relativePath.append(separatorChar);
         }
 
         // add fwd fills for whatevers left of newPath.
         while ( toTokeniser.hasMoreTokens() )
         {
-            relativePath += toTokeniser.nextToken();
+        	relativePath.append(toTokeniser.nextToken());
 
             if ( toTokeniser.hasMoreTokens() )
             {
-                relativePath += separatorChar;
+            	relativePath.append(separatorChar);
             }
         }
-        return relativePath;
+        return relativePath.toString();
     }
 
 	

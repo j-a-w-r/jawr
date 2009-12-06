@@ -469,13 +469,12 @@ public abstract class AbstractResourceBundleHandler implements ResourceBundleHan
 			// Create subdirs if needed
 			if (bundleName.indexOf('/') != -1) {
 				StringTokenizer tk = new StringTokenizer(bundleName, "/");
-				String pathName = rootdir;
+				StringBuffer pathName = new StringBuffer(rootdir);
 				while (tk.hasMoreTokens()) {
 					String name = tk.nextToken();
 					if (tk.hasMoreTokens()) {
-						pathName += File.separator;
-						pathName += name;
-						createDir(pathName);
+						pathName.append(File.separator+name);
+						createDir(pathName.toString());
 					}
 				}
 				bundleName = bundleName.replace('/', File.separatorChar);

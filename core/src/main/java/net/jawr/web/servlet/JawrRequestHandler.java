@@ -15,6 +15,7 @@ package net.jawr.web.servlet;
 
 import java.io.IOException;
 import java.io.Reader;
+import java.io.Serializable;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.Calendar;
@@ -70,7 +71,10 @@ import org.apache.log4j.Logger;
  * @author Jordi Hernández Sellés
  * @author Ibrahim Chaehoi
  */
-public class JawrRequestHandler implements ConfigChangeListener {
+public class JawrRequestHandler implements ConfigChangeListener, Serializable {
+
+	/** The serial version UID */
+	private static final long serialVersionUID = 5762937687546882131L;
 
 	/** The logger */
 	private static final Logger log = Logger.getLogger(JawrRequestHandler.class);
@@ -319,7 +323,7 @@ public class JawrRequestHandler implements ConfigChangeListener {
 		if (null != mapping)
 			jawrConfig.setServletMapping(mapping);
 
-		if (jawrConfig.isUsingClasspathCssImageServlet() && resourceType.equals("css")) {
+		if (jawrConfig.isClasspathCssHandlingImage() && resourceType.equals("css")) {
 			ImageResourcesHandler imgRsHandler = (ImageResourcesHandler) servletContext.getAttribute(JawrConstant.IMG_CONTEXT_ATTRIBUTE);
 			if (imgRsHandler == null) {
 				log.error("You are using the CSS classpath image feature, but the JAWR Image servlet is yet initialized.\n"
@@ -589,7 +593,7 @@ public class JawrRequestHandler implements ConfigChangeListener {
 			result = false;
 		}else{
 			String extension = FileNameUtils.getExtension(requestedPath);
-			if(!extension.toLowerCase().equals("."+resourceType)){
+			if(!extension.toLowerCase().equals(resourceType)){
 				result = false;
 			}
 		}
