@@ -26,6 +26,7 @@ import net.jawr.web.resource.bundle.generator.GeneratorRegistry;
 /**
  * This class defines the resource bundle handler which is based on the servlet context.
  * 
+ * @author Jordi Hernández Sellés
  * @author Ibrahim Chaehoi
  *
  */

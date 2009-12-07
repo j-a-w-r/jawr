@@ -107,7 +107,7 @@ Introduction
 *---------------+---------+--------------+----------------+
 | <<Property name>> | <<Type>>    | <<Purpose>>      | <<Default value>>  | 
 *---------------+---------+--------------+----------------+
-| jawr.css.image.classpath.use.servlet | Boolean | The flag indicating if the CSS images should be retrieved from the classpath, for the CSS defined in the classpath. | None| 
+| jawr.css.classpath.handle.image | Boolean | The flag indicating if the CSS images should be retrieved from the classpath, for the CSS defined in the classpath. | None| 
 *---------------+---------+--------------+----------------+
 | jawr.image.resources | String | The comma separated list of images, whose the hashcode will be calculated at Jawr image servlet startup. If an image is not defined here, the hashcode will be calculated at runtime and put in cache.   | None    | 
 *---------------+---------+--------------+----------------+

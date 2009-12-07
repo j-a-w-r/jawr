@@ -1,0 +1,130 @@
+																		------
+                                    Tutorial: How to use smartsprites with Jawr to generate image sprites
+                                    ------
+                                    ------
+                                    ------
+
+Introduction
+
+	The goal of this tutorial is to explain how to set up Jawr to generate image sprites for CSS using smartsprites. \
+	This feature is available since the version 3.2 of Jawr. \
+	Smartsprites allows the user to create sprites for CSS images from annotations in the CSS files.
+	
+	The reference documentation for <<smartsprites>>, containing the different annotations can be found on the {{{http://csssprites.org/}smartsprites project site}}.\ 
+	
+	It is important to note that the sprite generation feature works only in production mode. \
+	Jawr will not generate the reference the image sprites in the CSS files if you are in debug mode.
+	
+* Requirements
+
+	Smartsprites requires at least the use of JRE 5. If you want to use the sprite generation feature in Jawr,
+	you must have a project which use at least JRE 5.0.
+		
+	Jawr requires at least the version 0.2.5 of smartsprites for this feature.
+
+* How it works ?
+	
+	Smartsprites is a tool, which helps the developper to generate sprites from special annotations in the CSS files.
+	When the user enable the sprite generation feature, Jawr will first let smartsprites process all the CSS files available in the CSS bundles
+	to generate the CSS sprites, and then it will process the CSS files to generate the bundles.
+		
+* Set up Jawr in your project
+
+	Please check the "quickstart" tutorial for the instruction about Jawr installation in your project. \
+	Then add the dependency to smartsprites in your project.
+
+	* For non maven project
+	
+	If you don't use maven, you can find <<smartsprites>> jar and the libraries associated in the package file available in the download section of {{{http://csssprites.org/}smartsprite site}}.\ 
+	
+	* For maven project
+	
+	If you're using maven, you must add the smartsprites repository in your maven user or project settings.
+	
++------------------------------------------+
+    <!-- Smartsprites maven repository -->
+    <repository>
+      <id>maven2-repository.smartsprites</id>
+      <name>Smartsprites Maven Repository</name>
+      <url>http://download.csssprites.org/maven2/</url>
+    </repository> 
++------------------------------------------+
+	
+	And you must also add in your dependencies, the following section : 
+		
++------------------------------------------+
+
+	<dependency>
+		<groupId>org.carrot2</groupId>
+		<artifactId>smartsprites</artifactId>
+		<version>0.2.5</version>
+	</dependency> 
++------------------------------------------+
+
+* Configure instances of the Jawr Servlet
+
+	You must configure Jawr to use the CSS and the image servlets. \
+	Please check the tutorial on {{{http://csssprites.org/}how set up jawr to serve image}}.  
+	
+* Jawr configuration file
+
+	Jawr uses a global preprocessor to generate the CSS sprites.
+	To enable the sprite generation feature, you need to add the following property in your configuration file:
+	
++------------------------------------------+
+
+	jawr.css.bundle.factory.global.preprocessors=smartsprites
++------------------------------------------+
+	 
+	With this property set, when you will start your application in production mode, jawr will generate the image sprite,
+	and these image sprites will be referenced in the bundles. 
+	
+	
+* Test the image sprite generation
+
+	Create an <</img>> directory at the root of your web application and copy 2 <<png>> images in it, and rename them as <<img1.png>> and <<img2.png>>. \
+	Create an <</css>> directory at the root of your web application and write a test CSS file named <<test.css>> and add the following content:
+
++------------------------------------------+
+/** sprite: mysprite; sprite-image: url('../img/mysprite.png'); sprite-layout: vertical */ 
+
+.style1 {
+	background-image: url("../img/img1.png"); /** sprite-ref: mysprite; */
+	background-repeat: no-repeat;
+}
+
+.style2 {
+	background-repeat: no-repeat;
+	background-image: url("../img/img2.png"); /** sprite-ref: mysprite; */ 
+}
++------------------------------------------+		
+	 
+	Write a test JSP page, which has a reference to a bundle containing <<test.css>> and add the following content: 
+
++------------------------------------------+
+<%@ taglib uri="http://jawr.net/tags" prefix="jwr" %>
+<%@ page contentType="text/html;charset=UTF-8" %>
+<html>
+<head>
+	<!-- Reference to a bundle containing test.css -->
+	...
+</head>
+<body>
+	...
+	<div class="style1">div content</div>	
+	<div class="style2">div content</div>
+</body>
+</html>
+
++------------------------------------------+	
+
+	Deploy your application to a server and open the JSP you created.
+	Check the content of the CSS bundle which contains <<test.css>>, you must find references to a new "../img/mysprite.png",
+	where you had before references to <<img1.png>> and <<img2.png>>.    
+	 
+* Page design issue after image sprite generation
+
+	It's possible that the design of your page may be altered after the use of sprite generation. \
+	This is an issue which can happen while using smartsprites. Please check the {{{http://csssprites.org/#faq}FAQ section}} of smartsprites for more information.
+
+	

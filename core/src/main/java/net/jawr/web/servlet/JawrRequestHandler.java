@@ -323,7 +323,7 @@ public class JawrRequestHandler implements ConfigChangeListener, Serializable {
 		if (null != mapping)
 			jawrConfig.setServletMapping(mapping);
 
-		if (jawrConfig.isClasspathCssHandlingImage() && resourceType.equals("css")) {
+		if (jawrConfig.isCssClasspathImageHandledByClasspathCss() && resourceType.equals("css")) {
 			ImageResourcesHandler imgRsHandler = (ImageResourcesHandler) servletContext.getAttribute(JawrConstant.IMG_CONTEXT_ATTRIBUTE);
 			if (imgRsHandler == null) {
 				log.error("You are using the CSS classpath image feature, but the JAWR Image servlet is yet initialized.\n"
@@ -592,9 +592,12 @@ public class JawrRequestHandler implements ConfigChangeListener, Serializable {
 		if(requestedPath.startsWith(JawrConstant.WEB_INF_DIR_PREFIX) || requestedPath.startsWith(JawrConstant.META_INF_DIR_PREFIX)){
 			result = false;
 		}else{
-			String extension = FileNameUtils.getExtension(requestedPath);
-			if(!extension.toLowerCase().equals(resourceType)){
-				result = false;
+			// If it's not a generated path check the extension file 
+			if(!generatorRegistry.isPathGenerated(requestedPath)){
+				String extension = FileNameUtils.getExtension(requestedPath);
+				if(!extension.toLowerCase().equals(resourceType)){
+					result = false;
+				}
 			}
 		}
 		

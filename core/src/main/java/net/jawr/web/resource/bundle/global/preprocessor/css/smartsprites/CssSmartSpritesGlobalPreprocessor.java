@@ -40,6 +40,8 @@ import net.jawr.web.resource.bundle.global.preprocessor.GlobalPreprocessingConte
 import net.jawr.web.resource.handler.reader.ResourceReader;
 import net.jawr.web.resource.handler.reader.ResourceReaderHandler;
 
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 import org.carrot2.labs.smartsprites.SmartSpritesParameters;
 import org.carrot2.labs.smartsprites.SpriteBuilder;
 import org.carrot2.labs.smartsprites.SmartSpritesParameters.PngDepth;
@@ -60,6 +62,9 @@ import org.carrot2.labs.smartsprites.resource.ResourceHandler;
 public class CssSmartSpritesGlobalPreprocessor extends
 		AbstractChainedGlobalPreprocessor {
 
+	/** The logger */
+	private Logger log = Logger.getLogger(CssSmartSpritesGlobalPreprocessor.class);
+	
 	/**
 	 * Constructor 
 	 */
@@ -111,6 +116,13 @@ public class CssSmartSpritesGlobalPreprocessor extends
 			ResourceReaderHandler cssRsHandler, ImageResourcesHandler imgRsHandler, Set resourcePaths,
 			JawrConfig jawrConfig, Charset charset) {
 		
+		Level logLevel = log.getLevel();
+		MessageLevel msgLevel = MessageLevel.valueOf("ERROR");
+		if(logLevel.equals(Level.INFO)){
+			msgLevel = MessageLevel.valueOf("INFO");
+		}else if(logLevel.equals(Level.WARN)){
+			msgLevel = MessageLevel.valueOf("WARN");
+		}
 		MessageLog messageLog = new MessageLog(new MessageSink[]{new PrintStreamMessageSink(
 	            System.out)});
 		
@@ -118,7 +130,7 @@ public class CssSmartSpritesGlobalPreprocessor extends
 				imgRsHandler.getJawrConfig().getGeneratorRegistry(), charset.toString(), messageLog);
 		String outDir = cssRsHandler.getWorkingDirectory()+JawrConstant.CSS_SMARTSPRITES_TMP_DIR;
 		
-		SmartSpritesParameters params = new SmartSpritesParameters("/", null, outDir, null, MessageLevel.valueOf("INFO"), "", PngDepth.valueOf("AUTO"),
+		SmartSpritesParameters params = new SmartSpritesParameters("/", null, outDir, null, msgLevel, "", PngDepth.valueOf("AUTO"),
 			 false, charset.toString());
 		
 		SpriteBuilder spriteBuilder = new SpriteBuilder(params, messageLog, smartSpriteRsHandler);
@@ -279,5 +291,5 @@ public class CssSmartSpritesGlobalPreprocessor extends
 			}
 		}
 	}
-
+	
 }

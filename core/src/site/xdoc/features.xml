@@ -69,9 +69,12 @@
 			<li> <strong>JSF/Facelets support</strong>: If you are using JSF with Facelets as the view technology, you can still use Jawr using a specific tag library.
 			 <a href="./integration/facelets.html" > Learn more</a>. </li> 
 			
+			<li> <strong>Wicket support</strong>: Jawr provides components for JS, CSS and images handled by Jawr.
+			<a href="./integration/wicket.html" > Learn more</a>. </li> 
+		
 			<li> <strong>Grails plugin</strong>: Jawr can be used seamlessly in Grails applications, using a provided plugin that includes a GSP tag library.
 			<a href="./integration/grails.html" > Learn more</a>. </li> 
-		
+			
 			<li> <strong>DWR integration</strong>: You can use DWR and have Jawr handle the serving of the static and dynamic scripts DWR generates, with the 
 					added feature of being able to bundle them together and with other scripts from your application. 
 					<a href="./integration/dwr.html" > Learn more</a>.</li> 
@@ -80,7 +83,11 @@
 						With Jawr you can also bundle the Validator static javascript with other scripts in your application.
 						<a href="./integration/validator.html" > Learn more</a>.</li> 
 					
-			<li> <strong>Library friendly</strong>: Open source javascript libraries can be used seamlessly with Jawr. Most of these are modular or have plugins: add the modules or 
+			 <li><strong>CSS image sprite generation</strong>:
+      		 Jawr supports image sprites generation using smartsprites. <a href="./tutorials/jawrSpriteImage.html">Learn more</a>.
+      		 </li>
+      		 
+      		 <li> <strong>Library friendly</strong>: Open source javascript libraries can be used seamlessly with Jawr. Most of these are modular or have plugins: add the modules or 
 			plugins you need and bundle all together. And, even if you minify them (thus eliminating comments), you can still keep the mandatory licenses in
 			the bundle. The <a href="https://jawr.dev.java.net/tutorials/quickstart.html">libraries tutorial</a> will show you how to integrate popular js libraries such 
 			as Protoype, JQuery or YUI. </li>

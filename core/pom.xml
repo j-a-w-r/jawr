@@ -99,8 +99,7 @@
     <repository>
       <id>maven2-repository.smartsprites</id>
       <name>Smartsprites Maven Repository</name>
-      <!-- url>http://download.csssprites.org/maven2/</url -->
-      <url>http://download.smartsprites.osinski.name/maven2/</url>
+      <url>http://download.csssprites.org/maven2/</url>
     </repository>
     
   </repositories>
@@ -207,7 +206,7 @@
 	<dependency>
 		<groupId>org.carrot2</groupId>
 		<artifactId>smartsprites</artifactId>
-		<version>0.2.5-dev</version>
+		<version>0.2.5</version>
 		<scope>provided</scope>
 	</dependency>
 	

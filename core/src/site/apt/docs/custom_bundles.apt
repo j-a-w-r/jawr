@@ -199,7 +199,115 @@ jawr.js.bundle.comp.child.names=foo, bar
 	
 	With such mapping, we specify that, when in development mode, the composite will not contain the files mapped by the <foo> bundle, and that the 
 	<baz> bundle will not use any postprocessor even if there were globally defined ones. 
+
+* Bundle dependencies
+
+	Since the version 3.2, Jawr allows you to define for your bundles the dependencies to other bundles. 
+	This means that if your bundle defines dependencies to other bundles, when you include your bundle in a page, 
+	Jawr will add the dependencies in your page before referencing your bundle, if these dependencies are not already included.
+	To define your dependencies, you need to use <<dependencies>> property in your bundle definition. \
+	This property contains a list of comma separated bundle names, on which the bundle depends.
+	You can define dependencies to composite bundle.
 	
++------------------------------------------+	
+	
+	jawr.js.bundle.foo.id=/bundles/fooBundle.js
+	jawr.js.bundle.foo.mappings=/js/foo.js, /js/bar.js
+	jawr.js.bundle.foo.dependencies=baz,bar
+	
+	jawr.js.bundle.baz.id=/bundles/bazBundle.js
+	jawr.js.bundle.baz.mappings=/js/baz/**, /js/someScript.js, /js/someSubdir/	
+	
+	jawr.js.bundle.bar.id=/bundles/barBundle.js
+	jawr.js.bundle.bar.mappings=/js/bar/**, /js/someScript1.js, /js/someSubdir1/	
+	
++------------------------------------------+
+	
+	With such mapping, if you include the bundle </bundles/fooBundle.js> in your page, if the bundles </bundles/bazBundle.js> and </bundles/barBundle.js> 
+	are not included, then Jawr will automatically add the reference to the missing dependencies.
+
++------------------------------------------+
+<head>	
+	<jwr:script src="/bundles/fooBundle.js"/> 
+</head>	 
++------------------------------------------+
+	
+	In our example, this will generate:
+	
++------------------------------------------+
+<script type="text/javascript" src="/myWarContext/prefix/bundles/bazBundle.js" ></script>
+<script type="text/javascript" src="/myWarContext/prefix/bundles/barBundle.js" ></script>
+<script type="text/javascript" src="/myWarContext/prefix/bundles/fooBundle.js" ></script>
++------------------------------------------+ 
+
+	* Dependency resolution and inclusion order
+	
+	The dependency resolution algorithm can be sum up like :
+	
+	The dependencies are included before the bundle, and there are included in the same order as the one defined in the dependencies declaration. \
+	And if a dependency bundle has also a dependency in that case, the bundle dependencies will be included before the dependency itself.
+
++------------------------------------------+	
+	
+	jawr.js.bundle.foo.id=/bundles/fooBundle.js
+	jawr.js.bundle.foo.mappings=/js/foo.js, /js/bar.js
+	jawr.js.bundle.foo.dependencies=baz,bar
+	
+	jawr.js.bundle.baz.id=/bundles/bazBundle.js
+	jawr.js.bundle.baz.mappings=/js/baz/**, /js/someScript.js, /js/someSubdir/	
+	jawr.js.bundle.baz.dependencies=qux
+	
+	jawr.js.bundle.bar.id=/bundles/barBundle.js
+	jawr.js.bundle.bar.mappings=/js/bar/**, /js/someScript1.js, /js/someSubdir1/	
+	
+	jawr.js.bundle.qux.id=/bundles/quxBundle.js
+	jawr.js.bundle.qux.mappings=/js/qux/**, /js/someScript2.js, /js/someSubdir2/	
+	
++------------------------------------------+
+	 
+	With the mapping above, this is how Jawr will resolve the dependencies of the bundle <<foo>>:
+
+		1. As <baz> is the first dependency, we check if this bundle has dependencies, \
+		if it's the case, we will try to resolve its dependencies, and include them before <baz>. \
+		2. <baz> has a dependency on <qux>. So we include <qux> and its dependencies before <baz>. \
+		3. <qux> has no dependency. So we just include <qux> before <baz>. \
+		4. We have finished the dependency resolution for <baz>, so we include <baz> and now we try to resolve the dependencies for <bar>. \
+		5. <bar> has no dependency. So it's simply included. \
+		6. <foo> has no more dependency so we add <foo>
+		  
+	So the inclusion order, resulting from the dependency resolution is the following:
+	
++------------------------------------------+
+	bar1, baz, bar, foo
++------------------------------------------+
+	
+	* Global bundle
+	
+	It is unnecessary to reference a global bundle in your dependencies, because it will be automatically be added in any case.
+	It is also important to note that you can't define dependencies for global bundle. This property is not allowed for this kind of bundle.
+	To define the order of the global bundle, you can use the <order> property. Please check {{{../descriptor_syntax.html}the descriptor syntax doc}} for more information.
+	
+	* Circular dependencies
+	
+	The circular dependencies are not allowed. So if you define dependencies, where a bundle appears twice in the dependency chain, a <net.jawr.web.exception.BundleDependencyException> will be thrown 
+	during the bundling process.
+	You will see below an example of circular dependency where </bundles/fooBundle.js> appears twice in the dependency chain.
+
++------------------------------------------+	
+	
+	jawr.js.bundle.foo.id=/bundles/fooBundle.js
+	jawr.js.bundle.foo.mappings=/js/foo.js, /js/bar.js
+	jawr.js.bundle.foo.dependencies=baz,bar
+	
+	jawr.js.bundle.baz.id=/bundles/bazBundle.js
+	jawr.js.bundle.baz.mappings=/js/baz/**, /js/someScript.js, /js/someSubdir/	
+	
+	jawr.js.bundle.bar.id=/bundles/barBundle.js
+	jawr.js.bundle.bar.mappings=/js/bar/**, /js/someScript1.js, /js/someSubdir1/
+	awr.js.bundle.bar.dependencies=foo	
+	
++------------------------------------------+
+		
 * Orphan resources
 
 	In Jawr terminology, orphan resources are those not mapped to any bundle after initial configuration. The 'jawr.[js or css].bundle.basedir' property 

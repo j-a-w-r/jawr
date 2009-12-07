@@ -23,6 +23,7 @@ import java.util.Set;
 
 import javax.servlet.ServletContext;
 
+import net.jawr.web.JawrConstant;
 import net.jawr.web.config.JawrConfig;
 
 
@@ -87,7 +88,11 @@ public class ServletContextResourceReader implements TextResourceReader, StreamR
 	public InputStream getResourceAsStream(String resourceName,
 			boolean processingBundle) {
 		
-		return  context.getResourceAsStream(resourceName);
+		InputStream is = null;
+		if(!resourceName.startsWith(JawrConstant.WEB_INF_DIR_PREFIX) && !resourceName.startsWith(JawrConstant.META_INF_DIR_PREFIX)){
+			is = context.getResourceAsStream(resourceName);
+		}
+		return is;  
 	}
 	
 	/* (non-Javadoc)

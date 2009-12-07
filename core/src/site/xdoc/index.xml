@@ -40,7 +40,7 @@
 	<img src="./images/index/logo.png" style="border:0 !important" id="mainJawrLogo"  />
 	
 	<div id="jawrlinks">
-		<b>Latest version : 3.1.2</b><br/>
+		<b>Latest version : 3.2</b><br/>
 		<a href="https://jawr.dev.java.net/servlets/ProjectDocumentList?folderID=8543">
 			<img src="./images/index/download.png" style="border:0 !important" title="Download the latest version of Jawr"  /></a> 
 		<a href="https://jawr.dev.java.net/tutorials/quickstart.html" >
@@ -153,6 +153,7 @@
 				<a href="./integration/dwr.html">DWR</a>, 
 				<a href="./integration/spring.html">Spring</a>, JSF, 
 				<a href="./integration/facelets.html">Facelets</a>, 
+				<a href="./integration/wicket.html">Wicket</a>, 
 				<a href="./integration/validator.html">Commons Validator (with Struts)</a>, 
 				 and <a href="./integration/grails.html">Grails.</a>  
 				 It can also be easily plugged <a href="./integration/augmenter.html">into your own infrastructure. </a> 
@@ -173,6 +174,80 @@
       <p>Here are the latest announcements regarding Jawr. You can find older version announcements with all the features that have been 
       added over time at the <a href="./changes.html">change log.</a> </p>
       <ul>
+	      <li> <strong>12/XX/2009</strong>: Version 3.2 released:<br/>
+	      	A serious security issue has found in Jawr, which allowed a user to access to the content of the WEB-INF folder, and any file of your web application
+	      	if you use the <strong>jawr.debug.overrideKey</strong> property in your configuration file. \
+	      	This issue is fixed in this new version. <br/>
+	      	<br/>
+	      	We highly recommend you to switch to this new version or at least to remove this property from your configuration file if you want to stay with a previous version.<br/>
+	      	For those, who have created their own resource generator, we recommend them to look at the security issue section of the <a href="./docs/generators.html">generator documentation</a>
+	      	<strong>New features/ fixed issues: </strong>
+	    	<ul>
+      		 <li>
+      		 Jawr support image sprites generation. Jawr uses <a href="http://csssprites.org/">smartsprites</a> for the sprite generation.
+      		 To allow this a new property has been added.
+      		 Thanks to Stanislaw Osinski, smartsprites creator, for his help on the integration of Jawr with smartsprites.<br/>
+      		 Please check <a href="./tutorials/jawrSpriteImage.html">the tutorial of the integration of Smartsprite in Jawr</a> for more detail.
+      		 </li>
+      		 <li>
+      		 Jawr now provides a new property named <li>dependencies</li>, which allow the user to define the dependencies for a bundle.
+      		 Thanks to kgray for the original idea.<br/>
+      		 Please check <a href="./docs/custom_bundles.html">the bundle definition document</a> for more detail.
+      		 </li>
+      		 <li>
+      		 Jawr now provides support for Wicket, thanks to a patch submitted by Robert Kopaczewski.<br/>
+      		 Please check <a href="./integration/wicket.html">the Wicket integration document</a> for more detail.
+      		 </li>
+      		 <li>
+      		 The generator API has been enhanced. Now you can create image generator, locale resource generator and generator, which support directory mapping. 
+      		 Please check <a href="./docs/asvanced_generators.html">the advanced generators document</a> for more detail.
+      		 </li>
+      		 <li>
+      		 Jawr provides an new API for <strong>global preprocessor</strong>. The global preprocesspr are executed before the standard resource bundling and the bundle post processing.
+      		 Please check <a href="./docs/global_preprocessors.html">the global preprocessor document</a> for more detail.
+      		 </li>
+      		 <li>
+      		 Jawr has introduced a new feature to overcome the IE limitation, which can only handle 30 stylesheets in one page. 
+      		 The new property <strong>jawr.debug.ie.force.css.bundle</strong> has been added for that purpose.
+      		 If you set this value to true, with an IE browser, Jawr will render each CSS bundle as a unique CSS resource, instead of referencing all the resources of the bundle. 
+      		 Please check <a href="./docs/descriptor_syntax.html">descriptor syntax docs</a> for more detail.
+      		 </li>
+      		 <li>
+      		 The property <strong>jawr.css.image.classpath.use.servlet</strong> has been renamed to <strong>jawr.css.classpath.handle.image</strong>.  
+      		 So the use of <strong>jawr.css.image.classpath.use.servlet</strong> in your configuration file is deprecated. Please use the property <strong>jawr.css.classpath.handle.image</strong> instead.
+      		 Please check <a href="./docs/descriptor_syntax.html">descriptor syntax docs</a> for more detail.
+      		 </li>
+      		</ul>
+      		 <br/><br/>
+	    	<strong>Fixed issues: </strong>
+	    	 <ul>    	 	
+	      		 <li>
+	      		 	<strong>Issue #98 fixed:</strong> Input image tag produces <b>&lt;input type="image" disabled="false"&gt;</b> which disables the button.      
+	      		 </li>      
+	      		 <li>
+	      		 	<strong>Issue #105 fixed:</strong> css @charset declarations should be filtered out.      
+	      		 </li>
+	      		 <li>
+	      		 	<strong>Issue #107 fixed:</strong> NPE when using JAWR in JSR-168 context.      
+	      		 </li>       
+	      		 <li>
+	      		 	<strong>Issue #108 fixed:</strong> No check for duplicate rendering of bundles using an alternate production URL.      
+	      		 </li>       
+	      		 <li>
+	      		 	<strong>Issue #109 fixed:</strong> Unnecessary bundling process for bundle using alternate production URL.      
+	      		 </li>       
+	      		 <li>
+	      		 	<strong>Issue #110 fixed:</strong> Image content length is set after the response has been sent.      
+	      		 </li>       
+	      		 <li>
+	      		 	<strong>Issue #111 fixed:</strong> Able to view files under web-inf directory.      
+	      		 </li>       
+	      		 <li>
+	      		 	<strong>Issue #112 fixed:</strong> Jawr.config.reload.interval, jawr.config.reload.refreshKey don't work for Jawr with Spring MVC.      
+	      		 </li>       
+	      		 Thanks to rodneyphillips, axelfont, tkaefer and chupa for reporting issues. 
+      	  	</ul>
+      	  </li>
 	      <li> <strong>09/28/2009</strong>: Version 3.1.2 released:<br/>
 	      	This version contains only bug fixes.<br/><br/>
 	    	<strong>Fixed issues: </strong>

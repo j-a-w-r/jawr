@@ -129,7 +129,7 @@ public class JawrConfig implements Serializable {
 	/**
 	 * The property name for the flag indicating if the CSS image for the CSS retrieved from classpath must be also retrieved from classpath
 	 */
-	public static final String JAWR_CSS_CLASSPATH_HANDLING_IMAGE = "jawr.css.classpath.handling.image";
+	public static final String JAWR_CSS_CLASSPATH_HANDLE_IMAGE = "jawr.css.classpath.handle.image";
 	
 	/**
 	 * The property name for the image hash algorithm.
@@ -328,15 +328,15 @@ public class JawrConfig implements Serializable {
 		}
 
 		if (null != props.getProperty(JAWR_CSS_IMG_USE_CLASSPATH_SERVLET)
-				 && null != props.getProperty(JAWR_CSS_CLASSPATH_HANDLING_IMAGE)) {
-			throw new IllegalStateException("You are using in the same configuration file '"+JAWR_CSS_IMG_USE_CLASSPATH_SERVLET+"' and '"+JAWR_CSS_CLASSPATH_HANDLING_IMAGE+"'. " +
-					"The property '"+JAWR_CSS_IMG_USE_CLASSPATH_SERVLET+"' is deprecated. Please use only the property '"+JAWR_CSS_CLASSPATH_HANDLING_IMAGE+"'");
+				 && null != props.getProperty(JAWR_CSS_CLASSPATH_HANDLE_IMAGE)) {
+			throw new IllegalStateException("You are using in the same configuration file '"+JAWR_CSS_IMG_USE_CLASSPATH_SERVLET+"' and '"+JAWR_CSS_CLASSPATH_HANDLE_IMAGE+"'. " +
+					"The property '"+JAWR_CSS_IMG_USE_CLASSPATH_SERVLET+"' is deprecated. Please use only the property '"+JAWR_CSS_CLASSPATH_HANDLE_IMAGE+"'");
 		}
 		if (null != props.getProperty(JAWR_CSS_IMG_USE_CLASSPATH_SERVLET)) {
-			setClasspathCssHandlingImage(Boolean.valueOf(props.getProperty(JAWR_CSS_IMG_USE_CLASSPATH_SERVLET)).booleanValue());
+			setCssClasspathImageHandledByClasspathCss(Boolean.valueOf(props.getProperty(JAWR_CSS_IMG_USE_CLASSPATH_SERVLET)).booleanValue());
 		}
-		if (null != props.getProperty(JAWR_CSS_CLASSPATH_HANDLING_IMAGE)) {
-			setClasspathCssHandlingImage(Boolean.valueOf(props.getProperty(JAWR_CSS_CLASSPATH_HANDLING_IMAGE)).booleanValue());
+		if (null != props.getProperty(JAWR_CSS_CLASSPATH_HANDLE_IMAGE)) {
+			setCssClasspathImageHandledByClasspathCss(Boolean.valueOf(props.getProperty(JAWR_CSS_CLASSPATH_HANDLE_IMAGE)).booleanValue());
 		}
 		
 		if (null != props.getProperty(JAWR_IMAGE_HASH_ALGORITHM)) {
@@ -590,7 +590,7 @@ public class JawrConfig implements Serializable {
 	 *         url(getCssImageServletPath()+style/default/ img/bkrnd/header_1_sprite.gif) no-repeat 0 0; And the CSS image servlet will be in charge
 	 *         of loading the image from the classpath.
 	 */
-	public boolean isClasspathCssHandlingImage() {
+	public boolean isCssClasspathImageHandledByClasspathCss() {
 		return classpathCssHandleImage;
 	}
 
@@ -604,7 +604,7 @@ public class JawrConfig implements Serializable {
 	 *            url(getCssImageServletPath()+style /default/img/bkrnd/header_1_sprite.gif) no-repeat 0 0; And the CSS image servlet will be in
 	 *            charge of loading the image from the classpath.
 	 */
-	public void setClasspathCssHandlingImage(boolean classpathCssHandleImage) {
+	public void setCssClasspathImageHandledByClasspathCss(boolean classpathCssHandleImage) {
 		this.classpathCssHandleImage = classpathCssHandleImage;
 	}
 

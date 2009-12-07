@@ -574,7 +574,7 @@ public class CSSURLRewriterPostProcessorTest extends TestCase {
 			
 	}
 	
-	private class FakeResourceReaderHandler implements ResourceReaderHandler {
+	private static class FakeResourceReaderHandler implements ResourceReaderHandler {
 
 		public Reader getResource(String resourceName)
 				throws ResourceNotFoundException {

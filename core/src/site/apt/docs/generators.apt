@@ -230,16 +230,24 @@ package net.jawr.example;
 	followed by a second alert box with the text 'Mapping contained:And Hello Again!'. 
 	
 
+* Security issues with generator
+		
+	If you develop your own generator which reads content from resources on your server, 
+	you must take care of not allowing users to access resources, to which they are not authorized.
+	You must check if the requested resource is an allowed one or not.
+	For example, the user must not be able to retrieve the files located under /WEB-INF/ or /META-INF/ in your web application,
+	or directly the content of the JSP files.
 	
+	To check if your generator is sensible to this issue, you must launch your application in debug mode, and then
+	try to reach your resource using the following URL: 
 	
++------------------------------------------+
+	http://localhost:8080/myWebAppContext/sample.js?generationConfigParam=/WEB-INF/web.xml
+
++------------------------------------------+
 	
-	
-	
-	
-	
-	
-	
-	
+	If you are able to see the content of the web.xml file, this means that you need to change your generator to fix this issue. 
+	   
 	
 	
 	

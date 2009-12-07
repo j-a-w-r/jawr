@@ -119,7 +119,7 @@ public class ImageTagUtilsTest extends TestCase {
 	}
 
 	
-	private class MockResourceHandler implements ResourceReaderHandler {
+	private static class MockResourceHandler implements ResourceReaderHandler {
 
 		public InputStream getResourceAsStream(String resourceName)
 				throws ResourceNotFoundException {
@@ -172,7 +172,7 @@ public class ImageTagUtilsTest extends TestCase {
 
 	}
 
-	private class MockHttpServletRequest implements HttpServletRequest {
+	private static class MockHttpServletRequest implements HttpServletRequest {
 
 		private String contextPath;
 		private String requestUri;
@@ -415,7 +415,7 @@ public class ImageTagUtilsTest extends TestCase {
 
 	}
 
-	private class MockHttpResponse implements HttpServletResponse {
+	private static class MockHttpResponse implements HttpServletResponse {
 
 		public void addCookie(Cookie cookie) {
 

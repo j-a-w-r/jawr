@@ -142,7 +142,7 @@ public class FullMappingPropertiesBasedBundlesHandlerFactoryTestCase extends
 	
 		return bundle;
 	}
-	private class TestPostProcessorChainFactory implements PostProcessorChainFactory{
+	private static class TestPostProcessorChainFactory implements PostProcessorChainFactory{
 
 		public ResourceBundlePostProcessor buildDefaultProcessorChain() {
 			return null;

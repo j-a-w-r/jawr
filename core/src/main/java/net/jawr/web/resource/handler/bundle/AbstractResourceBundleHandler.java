@@ -46,6 +46,7 @@ import org.apache.log4j.Logger;
 /**
  * This class defines the abstract class for the resource bundle handler
  * 
+ * @author Jordi Hernández Sellés
  * @author Ibrahim Chaehoi
  */
 public abstract class AbstractResourceBundleHandler implements ResourceBundleHandler {
@@ -65,9 +66,6 @@ public abstract class AbstractResourceBundleHandler implements ResourceBundleHan
 
 	/** The name of the directory which contain the CSS defined in classpath for the DEBUG mode */
 	protected static final String TEMP_CSS_CLASSPATH_SUBDIR = "cssClasspath";
-
-	/** The generator registry */
-//	private GeneratorRegistry generatorRegistry;
 
 	/** The path of the temporary working directory */
 	protected String tempDirPath;
