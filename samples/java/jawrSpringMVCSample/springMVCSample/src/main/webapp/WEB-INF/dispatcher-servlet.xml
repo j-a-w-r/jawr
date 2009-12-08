@@ -15,8 +15,10 @@ http://www.springframework.org/schema/util http://www.springframework.org/schema
 		<!-- This must match the controller mapping prefix to which the 
 			jawr controllers are bound at the urlMapping bean below -->
 		<property name="controllerMapping" value="/jawr/"/>
-      	<property name="configuration">
+      	<!--  property name="configuration">
       		<util:properties location="classpath:jawr.properties"/>
+      	</property -->
+      	<property name="configLocation" value="/jawr.properties">
       	</property>
 	</bean>
 
