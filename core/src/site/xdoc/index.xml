@@ -185,12 +185,11 @@
 	    	<ul>
       		 <li>
       		 Jawr support image sprites generation. Jawr uses <a href="http://csssprites.org/">smartsprites</a> for the sprite generation.
-      		 To allow this a new property has been added.
       		 Thanks to Stanislaw Osinski, smartsprites creator, for his help on the integration of Jawr with smartsprites.<br/>
       		 Please check <a href="./tutorials/jawrSpriteImage.html">the tutorial of the integration of Smartsprite in Jawr</a> for more detail.
       		 </li>
       		 <li>
-      		 Jawr now provides a new property named <li>dependencies</li>, which allow the user to define the dependencies for a bundle.
+      		 Jawr now provides a new property named <strong>dependencies</strong>, which allow the user to define the dependencies for a bundle.
       		 Thanks to kgray for the original idea.<br/>
       		 Please check <a href="./docs/custom_bundles.html">the bundle definition document</a> for more detail.
       		 </li>
@@ -199,7 +198,7 @@
       		 Please check <a href="./integration/wicket.html">the Wicket integration document</a> for more detail.
       		 </li>
       		 <li>
-      		 The generator API has been enhanced. Now you can create image generator, locale resource generator and generator, which support directory mapping. 
+      		 The generator API has been enhanced. Now you can create image generator, locale aware generator and generator, which supports directory mapping. 
       		 Please check <a href="./docs/asvanced_generators.html">the advanced generators document</a> for more detail.
       		 </li>
       		 <li>
@@ -207,9 +206,9 @@
       		 Please check <a href="./docs/global_preprocessors.html">the global preprocessor document</a> for more detail.
       		 </li>
       		 <li>
-      		 Jawr has introduced a new feature to overcome the IE limitation, which can only handle 30 stylesheets in one page. 
+      		 Jawr has introduced a new feature to overcome in <strong>debug mode</strong> the IE limitation, which can only handle 30 stylesheets in one page. 
       		 The new property <strong>jawr.debug.ie.force.css.bundle</strong> has been added for that purpose.
-      		 If you set this value to true, with an IE browser, Jawr will render each CSS bundle as a unique CSS resource, instead of referencing all the resources of the bundle. 
+      		 If you set this value to true, with an IE browser, in debug mode Jawr will render each CSS bundle as a unique CSS resource, instead of referencing all the resources of the bundle. 
       		 Please check <a href="./docs/descriptor_syntax.html">descriptor syntax docs</a> for more detail.
       		 </li>
       		 <li>
@@ -225,7 +224,7 @@
 	      		 	<strong>Issue #98 fixed:</strong> Input image tag produces <b>&lt;input type="image" disabled="false"&gt;</b> which disables the button.      
 	      		 </li>      
 	      		 <li>
-	      		 	<strong>Issue #105 fixed:</strong> css @charset declarations should be filtered out.      
+	      		 	<strong>Issue #105 fixed:</strong> css @charset declarations must be filtered out for CSS bundle.      
 	      		 </li>
 	      		 <li>
 	      		 	<strong>Issue #107 fixed:</strong> NPE when using JAWR in JSR-168 context.      
@@ -243,7 +242,7 @@
 	      		 	<strong>Issue #111 fixed:</strong> Able to view files under web-inf directory.      
 	      		 </li>       
 	      		 <li>
-	      		 	<strong>Issue #112 fixed:</strong> Jawr.config.reload.interval, jawr.config.reload.refreshKey don't work for Jawr with Spring MVC.      
+	      		 	<strong>Issue #112 fixed:</strong> <strong>jawr.config.reload.interval</strong>, <strong>jawr.config.reload.refreshKey</strong> don't work for Jawr with Spring MVC.      
 	      		 </li>       
 	      		 Thanks to rodneyphillips, axelfont, tkaefer and chupa for reporting issues. 
       	  	</ul>

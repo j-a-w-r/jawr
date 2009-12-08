@@ -207,7 +207,7 @@ jawr.js.bundle.comp.child.names=foo, bar
 	Jawr will add the dependencies in your page before referencing your bundle, if these dependencies are not already included.
 	To define your dependencies, you need to use <<dependencies>> property in your bundle definition. \
 	This property contains a list of comma separated bundle names, on which the bundle depends.
-	You can define dependencies to composite bundle.
+	You can define dependencies to a bundle or to a composite bundle.
 	
 +------------------------------------------+	
 	
@@ -284,7 +284,7 @@ jawr.js.bundle.comp.child.names=foo, bar
 	* Global bundle
 	
 	It is unnecessary to reference a global bundle in your dependencies, because it will be automatically be added in any case.
-	It is also important to note that you can't define dependencies for global bundle. This property is not allowed for this kind of bundle.
+	It is also important to note that you can't define dependencies for global bundles. This property is not allowed for this kind of bundle.
 	To define the order of the global bundle, you can use the <order> property. Please check {{{../descriptor_syntax.html}the descriptor syntax doc}} for more information.
 	
 	* Circular dependencies

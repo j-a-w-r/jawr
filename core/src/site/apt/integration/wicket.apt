@@ -22,7 +22,8 @@ Jawr with wicket
 	
 ** 2. Setup your wicket application
 
-	In order to use the Jawr in your Wicket application, you must initialize your application: 
+	In order to use the Jawr in your Wicket application, you must initialize your application.
+	Jawr provides an utility class, which initialize your wicket application and register the Jawr link resolver and the Jawr tag handler: 
 	
 +------------------------------------------+
 	 
@@ -38,11 +39,11 @@ Jawr with wicket
 
 ** 3. Reference the Jawr bundles
 
-	To reference your bundles in your page, there is 2 options:\
+	To reference your bundles in your page, there is 2 options:
 	
-	** wicket:jawr tag
+	** <<wicket:jawr>> tag
 	
-	With the <wicket:jawr> tag, you only need to wrap your reference with a << <wicket:jawr> >> tag like this: 
+	With the <<wicket:jawr>> tag, you only need to wrap your bundle references with a << <wicket:jawr> >> tag like this: 
 	
 +------------------------------------------+
 	 
@@ -51,7 +52,7 @@ Jawr with wicket
         <title>Wicket Quickstart Archetype Homepage</title>
      	<wicket:jawr>
      	  <link rel="stylesheet" type="text/css" href="/fwk/core/component.css" media="all" />
- 		  <script type="text/javascript" src="/js/bundle/msg.js" ></script>
+     	  <script type="text/javascript" src="/js/bundle/msg.js" ></script>
      	</wicket:jawr>
     </head>
 ...
@@ -88,7 +89,7 @@ Jawr with wicket
         <title>Wicket Quickstart Archetype Homepage</title>
      	<wicket:head>
      	  <link rel="stylesheet" type="text/css" wicket:id="componentCssBundle" href="/fwk/core/component.css" media="all" />
- 		  <script type="text/javascript" wicket:id="messageJsBundle" src="/js/bundle/msg.js" ></script>
+     	  <script type="text/javascript" wicket:id="messageJsBundle" src="/js/bundle/msg.js" ></script>
      	</wicket:head> 
     </head>
 ...

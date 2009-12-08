@@ -45,9 +45,9 @@ import org.apache.log4j.Logger;
 import org.carrot2.labs.smartsprites.SmartSpritesParameters;
 import org.carrot2.labs.smartsprites.SpriteBuilder;
 import org.carrot2.labs.smartsprites.SmartSpritesParameters.PngDepth;
+import org.carrot2.labs.smartsprites.message.Message;
 import org.carrot2.labs.smartsprites.message.MessageLog;
 import org.carrot2.labs.smartsprites.message.MessageSink;
-import org.carrot2.labs.smartsprites.message.PrintStreamMessageSink;
 import org.carrot2.labs.smartsprites.message.Message.MessageLevel;
 import org.carrot2.labs.smartsprites.resource.ResourceHandler;
 
@@ -63,7 +63,16 @@ public class CssSmartSpritesGlobalPreprocessor extends
 		AbstractChainedGlobalPreprocessor {
 
 	/** The logger */
-	private Logger log = Logger.getLogger(CssSmartSpritesGlobalPreprocessor.class);
+	private static Logger log = Logger.getLogger(CssSmartSpritesGlobalPreprocessor.class);
+	
+	/** The error level name */
+	private static final String ERROR_LEVEL = "ERROR";
+	
+	/** The warn level name */
+	private static final String WARN_LEVEL = "WARN";
+	
+	/** The info level name */
+	private static final String INFO_LEVEL = "INFO";
 	
 	/**
 	 * Constructor 
@@ -116,15 +125,17 @@ public class CssSmartSpritesGlobalPreprocessor extends
 			ResourceReaderHandler cssRsHandler, ImageResourcesHandler imgRsHandler, Set resourcePaths,
 			JawrConfig jawrConfig, Charset charset) {
 		
-		Level logLevel = log.getLevel();
-		MessageLevel msgLevel = MessageLevel.valueOf("ERROR");
-		if(logLevel.equals(Level.INFO)){
-			msgLevel = MessageLevel.valueOf("INFO");
-		}else if(logLevel.equals(Level.WARN)){
-			msgLevel = MessageLevel.valueOf("WARN");
+		Level logLevel = log.getEffectiveLevel();
+		MessageLevel msgLevel = MessageLevel.valueOf(ERROR_LEVEL);
+		if(logLevel != null){
+			if(logLevel.isGreaterOrEqual(Level.DEBUG)){
+				msgLevel = MessageLevel.valueOf(INFO_LEVEL);
+			}else if(logLevel.isGreaterOrEqual(Level.WARN)){
+				msgLevel = MessageLevel.valueOf(WARN_LEVEL);
+			}
 		}
-		MessageLog messageLog = new MessageLog(new MessageSink[]{new PrintStreamMessageSink(
-	            System.out)});
+		
+		MessageLog messageLog = new MessageLog(new MessageSink[]{new LogMessageSink()});
 		
 		SmartSpritesResourceHandler smartSpriteRsHandler = new SmartSpritesResourceHandler(cssRsHandler, imgRsHandler.getRsReaderHandler(), 
 				imgRsHandler.getJawrConfig().getGeneratorRegistry(), charset.toString(), messageLog);
@@ -186,7 +197,7 @@ public class CssSmartSpritesGlobalPreprocessor extends
 		 * @param rsHandler the CSS resource handler
 		 * @param imgRsHandler the image resource handler
 		 * @param imgGeneratorRegistry the image generator registry
-		 * @param charset the charser
+		 * @param charset the charset
 		 * @param messageLog the message log
 		 */
 		public SmartSpritesResourceHandler(
@@ -292,4 +303,25 @@ public class CssSmartSpritesGlobalPreprocessor extends
 		}
 	}
 	
+	/**
+	 * The log message sink
+	 * 
+	 * @author Ibrahim Chaehoi
+	 */
+	private static class LogMessageSink implements MessageSink{
+		
+		
+		/* (non-Javadoc)
+		 * @see org.carrot2.labs.smartsprites.message.MessageSink#add(org.carrot2.labs.smartsprites.message.Message)
+		 */
+		public void add(Message message) {
+			
+			Level logLevel = log.getEffectiveLevel();
+			if(logLevel == null){
+				logLevel = Level.INFO;
+			}
+			log.log(logLevel, message.getFormattedMessage());
+		}
+		
+	}
 }
