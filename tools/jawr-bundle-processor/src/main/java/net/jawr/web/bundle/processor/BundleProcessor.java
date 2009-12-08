@@ -166,10 +166,8 @@ public class BundleProcessor {
 	 */
 	public void process(String baseDirPath, String tmpDirPath, String destDirPath, List servletsToInitialize, boolean generateCdnFiles) throws Exception {
 
-		// 	this(new URL("file://"+webAppPath+"/WEB-INF/classes/"), new URL("file://"+webAppPath+"/WEB-INF/lib/"));
-		
-		URL webAppClasses = new File(baseDirPath+"/WEB-INF/classes/").toURL();
-		URL webAppLibs =  new File(baseDirPath+"/WEB-INF/lib/").toURL();
+		URL webAppClasses = new File(baseDirPath+"/WEB-INF/classes/").toURI().toURL();
+		URL webAppLibs =  new File(baseDirPath+"/WEB-INF/lib/").toURI().toURL();
 		ClassLoader webAppClassLoader = new JawrBundleProcessorCustomClassLoader(new URL[]{webAppClasses, webAppLibs}, getClass().getClassLoader());
 		Thread.currentThread().setContextClassLoader(webAppClassLoader);
 		
@@ -729,8 +727,9 @@ public class BundleProcessor {
 	private static class JawrBundleProcessorCustomClassLoader extends URLClassLoader {
 		
 		/**
-		 * @param urls
-		 * @param parent
+		 * Constructor
+		 * @param urls the URL location for the class loading  
+		 * @param parent the parent classloader
 		 */
 		public JawrBundleProcessorCustomClassLoader(URL[] urls, ClassLoader parent) {
 			super(urls, parent);
@@ -768,13 +767,6 @@ public class BundleProcessor {
 		private int order;
 
 		/**
-		 * Default constructor
-		 */
-		public ServletDefinition() {
-
-		}
-
-		/**
 		 * Constructor.
 		 * 
 		 * @param servletClass the servlet class
@@ -789,35 +781,10 @@ public class BundleProcessor {
 		}
 
 		/**
-		 * Returns the servlet class
-		 * 
-		 * @return the servletClass
-		 */
-		public Class getServletClass() {
-			return servletClass;
-		}
-
-		/**
-		 * Sets the servlet class
-		 * 
-		 * @param servletClass the servletClass to set
-		 */
-		public void setServletClass(Class servletClass) {
-			this.servletClass = servletClass;
-		}
-
-		/**
 		 * @return the servlet
 		 */
 		public HttpServlet getServlet() {
 			return servlet;
-		}
-
-		/**
-		 * @param servlet the servlet to set
-		 */
-		public void setServlet(HttpServlet servlet) {
-			this.servlet = servlet;
 		}
 
 		/**
@@ -827,33 +794,6 @@ public class BundleProcessor {
 		 */
 		public ServletConfig getServletConfig() {
 			return servletConfig;
-		}
-
-		/**
-		 * Sets the servlet config
-		 * 
-		 * @param servletConfig the servletConfig to set
-		 */
-		public void setServletConfig(ServletConfig servletConfig) {
-			this.servletConfig = servletConfig;
-		}
-
-		/**
-		 * Returns the order
-		 * 
-		 * @return the order
-		 */
-		public int getOrder() {
-			return order;
-		}
-
-		/**
-		 * Sets the order
-		 * 
-		 * @param order the order to set
-		 */
-		public void setOrder(int order) {
-			this.order = order;
 		}
 
 		/**
