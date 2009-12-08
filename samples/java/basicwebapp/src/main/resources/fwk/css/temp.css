@@ -2,7 +2,7 @@
 	color:black;
 	background: #fff url(../img/iconInformation.gif) no-repeat left;
 	padding-left : 20px;
-	margin-top : 80px;
+	font-family: sans-serif, courier, arial;
 	border : thin solid rgb(250,0,255);
 }
 

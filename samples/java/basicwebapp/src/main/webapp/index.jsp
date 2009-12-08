@@ -6,6 +6,7 @@
  <jwr:script src="/js/bundle/msg.js" />
 </head>
 <body>
+<div class="header">&nbsp;</div>
 <div class="mandatory">
 	For this element, the style and the image associated are retrieved directly from the classpath.
 </div>
