@@ -23,7 +23,7 @@ import net.jawr.web.resource.bundle.factory.util.ClassLoaderResourceUtils;
 import net.jawr.web.resource.bundle.generator.GeneratorContext;
 
 /**
- * Abstract common functionality to retrieve resources (jss and css) from the classpath. 
+ * Abstract common functionality to retrieve resources (js and css) from the classpath. 
  * @author Jordi Hernández Sellés
  *
  */

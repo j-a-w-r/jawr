@@ -17,7 +17,7 @@ Jawr with wicket
 ** 1. Configure the Jawr servlet
 
 	The first step is to declare the Jawr servlet in the web.xml descriptor. This works exactly the same as in a regular web application, so the 
-	{{{./servlet.html}Jawr Servlet Documentation page}} has all the info you need to do it. You can create the properties file normally, since the 
+	{{{../docs/servlet.html}Jawr Servlet Documentation page}} has all the info you need to do it. You can create the properties file normally, since the 
 	only difference in using Wicket with Jawr has to do with the reference of your web resources in your HTML page or in your Page class. 
 	
 ** 2. Setup your wicket application

@@ -20,9 +20,10 @@
       <item name="Descriptor syntax" href="/docs/descriptor_syntax.html"/>
       <item name="Bundle definition" href="/docs/custom_bundles.html"/>
       <item name="Source order in bundles" href="/docs/source_ordering.html"/>
+      <item name="Global preprocessors" href="/docs/global_preprocessors.html"/>
       <item name="Postprocessors" href="/docs/postprocessors.html"/>
       <item name="Generators" href="/docs/generators.html"/>
-      <item name="Generators" href="/docs/advanced_generators.html"/>
+      <item name="Advanced generators" href="/docs/advanced_generators.html"/>
       <item name="Licenses in resources" href="/docs/license_files.html"/>
       <item name="JSP Tag library" href="/docs/taglibs.html"/>
       <item name="Use in HTML pages" href="/docs/plain_html.html"/>
@@ -38,6 +39,7 @@
       <item name="Add Jawr to your framework" href="/integration/augmenter.html"/>
       <item name="Spring MVC" href="/integration/spring.html"/>
       <item name="Facelets Tag library" href="/integration/facelets.html"/>
+      <item name="Wicket" href="/integration/wicket.html"/>
       <item name="Grails plugin" href="/integration/grails.html"/>
       <item name="DWR" href="/integration/dwr.html"/>
       <item name="Commons Validator - Struts" href="/integration/validator.html"/>
@@ -46,6 +48,7 @@
     <menu name="Tutorials">
       <item name="Quick start" href="/tutorials/quickstart.html"/>
       <item name="How to use Jawr to serve image resources" href="/tutorials/howToUseJawrToServeImage.html"/>
+      <item name="How to generate Image sprites with Jawr" href="/tutorials/jawrSpriteImage.html"/>
       <item name="FAQ-Howto" href="/tutorials/faq_howto.html"/>
       <item name="Using popular libraries" href="/tutorials/libraries.html"/>   
     </menu>

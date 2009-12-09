@@ -202,7 +202,7 @@ jawr.js.bundle.comp.child.names=foo, bar
 
 * Bundle dependencies
 
-	Since the version 3.2, Jawr allows you to define for your bundles the dependencies to other bundles. 
+	Since the version <3.2>, Jawr allows you to define the dependencies for your bundles. 
 	This means that if your bundle defines dependencies to other bundles, when you include your bundle in a page, 
 	Jawr will add the dependencies in your page before referencing your bundle, if these dependencies are not already included.
 	To define your dependencies, you need to use <<dependencies>> property in your bundle definition. \
@@ -242,7 +242,7 @@ jawr.js.bundle.comp.child.names=foo, bar
 
 	* Dependency resolution and inclusion order
 	
-	The dependency resolution algorithm can be sum up like :
+	The dependency resolution algorithm can be summed up as follows:
 	
 	The dependencies are included before the bundle, and there are included in the same order as the one defined in the dependencies declaration. \
 	And if a dependency bundle has also a dependency in that case, the bundle dependencies will be included before the dependency itself.

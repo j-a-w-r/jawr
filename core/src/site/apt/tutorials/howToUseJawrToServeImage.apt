@@ -1,10 +1,10 @@
 																		------
-                                    Tutorial: How to use Jawr to serve images
+                                    Tutorial: How to set up Jawr to serve images
                                     ------
                                     ------
                                     ------
 
-Introduction
+How to set up Jawr to serve images
 
 	The goal of this tutorial is to explain how to set up Jawr to serve images.
 	Since the version 3.0, Jawr is also able to handle images. The images can be reference from

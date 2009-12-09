@@ -94,31 +94,13 @@ public class ClassLoaderResourceUtils {
 		
 		// Try to retrieve by URL
 		if(null == is) {
+			
 			try {
-				URL url = Thread.currentThread().getContextClassLoader().getResource(resourcePath);
-				
-				
-				// Last chance, hack in the classloader
-				if(null == url) {
-					ClassLoader threadClassLoader = Thread.currentThread().getContextClassLoader();
-					try {
-						 Thread.currentThread().setContextClassLoader(source.getClass().getClassLoader());
-						 if(Thread.currentThread().getContextClassLoader() != null){
-							 url = Thread.currentThread().getContextClassLoader().getResource(resourcePath);
-						 }
-					}
-					finally {
-						 Thread.currentThread().setContextClassLoader(threadClassLoader);
-					}
-					
-				}
-				if(null == url){
-					throw new FileNotFoundException( resourcePath + " could not be found. ");
-				}
-				
-				is = new FileInputStream(new File(url.getFile()));			
-			} 
-			catch (IOException e) {
+				URL url = getResourceURL(resourcePath, source);
+				is = new FileInputStream(new File(url.getFile()));
+			} catch (ResourceNotFoundException e) {
+				throw new FileNotFoundException( resourcePath + " could not be found. ");
+			}catch (IOException e) {
 				throw new FileNotFoundException( resourcePath + " could not be found. ");
 			}
 		}

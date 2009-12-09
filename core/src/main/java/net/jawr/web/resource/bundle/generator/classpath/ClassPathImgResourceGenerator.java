@@ -14,10 +14,14 @@
 package net.jawr.web.resource.bundle.generator.classpath;
 
 import java.io.InputStream;
+import java.util.Collection;
+import java.util.Set;
 
+import net.jawr.web.resource.FileNameUtils;
 import net.jawr.web.resource.bundle.generator.GeneratorContext;
 import net.jawr.web.resource.bundle.generator.GeneratorRegistry;
 import net.jawr.web.resource.bundle.generator.StreamResourceGenerator;
+import net.jawr.web.servlet.util.MIMETypesSupport;
 
 /**
  * This class defines the resource generator which loads image resources from the classpath.
@@ -27,6 +31,9 @@ import net.jawr.web.resource.bundle.generator.StreamResourceGenerator;
  */
 public class ClassPathImgResourceGenerator implements StreamResourceGenerator {
 
+	/** The image extensions */
+	private Set imageExtensions;
+	
 	/** The classpath generator helper */
 	private ClassPathGeneratorHelper helper;
 	
@@ -35,6 +42,7 @@ public class ClassPathImgResourceGenerator implements StreamResourceGenerator {
 	 */
 	public ClassPathImgResourceGenerator() {
 		helper = new ClassPathGeneratorHelper();
+		imageExtensions = MIMETypesSupport.getSupportedProperties(this).keySet();
 	}
 	
 	/* (non-Javadoc)
@@ -42,7 +50,12 @@ public class ClassPathImgResourceGenerator implements StreamResourceGenerator {
 	 */
 	public InputStream createResourceAsStream(GeneratorContext context) {
 		
-		return helper.createStreamResource(context);
+		InputStream is = null;
+		if(FileNameUtils.isExtension(context.getPath(), imageExtensions)){
+			is = helper.createStreamResource(context);
+		}
+		
+		return is;
 	}
 
 	/* (non-Javadoc)
@@ -52,5 +65,4 @@ public class ClassPathImgResourceGenerator implements StreamResourceGenerator {
 		
 		return GeneratorRegistry.CLASSPATH_RESOURCE_BUNDLE_PREFIX;
 	}
-
 }

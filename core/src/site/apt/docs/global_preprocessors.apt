@@ -10,14 +10,13 @@ Jawr Global Preprocessors
 	In some cases, it is convenient to preprocess all the JS or CSS files before making the bundle process,
 	because you need to gather information from all the files before making your bundling process.
 	
-	Jawr provides one built-in global preprocessor, which handle the image sprite generation with smartsprites.
-	Jawr use a global preprocessor for the image sprite generation when using smartsprites, 
+	Jawr provides one built-in global preprocessor, which handles the image sprite generation with smartsprites.
+	Jawr uses a global preprocessor for the image sprite generation when using smartsprites, 
 	because this process requires to retrieve information from all the files before being able to generate the sprites. 
 	 
-	you can create and use your own global preprocessor, so here is how to configure the filter chain for global preprocessing. 
+	You can create and use your own global preprocessor, so here is how to configure the filter chain for global preprocessing. 
 		
-	A global preprocessor will be only invoked once during application startup before the bundling process, 
-	and the post process phase. 
+	A global preprocessor will be only invoked once during application startup before the bundling and the post process phases. 
 	The point is to be able to make a treatment which need to be done on all the JS or CSS resources, before the bundling process.   
 	
 	For configuration purposes, every global preprocessor has a unique name key, which you use in a comma-separated 
@@ -30,7 +29,7 @@ Jawr Global Preprocessors
 +------------------------------------------+
 	
 	In this example, the global preprocessors set for <<css>> resources are <smartsprites> and <myGlobalPreprocessor>, meaning that the <<smartsprites>> and th <<myGlobalPreprocessor>> global preprocessors 
-	will be processed for all css resources one before the other. 
+	will be processed for all css resources. The <smartsprites> global preprocessor will be executed before <myGlobalPreprocessor>. 
 	
 *	Custom global preprocessor
 	

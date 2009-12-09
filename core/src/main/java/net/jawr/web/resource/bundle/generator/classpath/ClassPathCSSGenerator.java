@@ -25,6 +25,7 @@ import java.nio.channels.Channels;
 import java.nio.channels.FileChannel;
 
 import net.jawr.web.JawrConstant;
+import net.jawr.web.resource.FileNameUtils;
 import net.jawr.web.resource.bundle.IOUtils;
 import net.jawr.web.resource.bundle.JoinableResourceBundle;
 import net.jawr.web.resource.bundle.JoinableResourceBundleImpl;
@@ -93,37 +94,47 @@ public class ClassPathCSSGenerator extends AbstractCSSGenerator implements Worki
 		
 		Reader reader = null;
 		
-		// The following section is executed in DEBUG mode to retrieve the classpath CSS from the temporary folder, 
-		// if the user defines that the image servlet should be used to retrieve the CSS images.
-		// It's not executed at the initialization process to be able to read data from classpath.
-		if(!context.isProcessingBundle() && context.getConfig().isCssClasspathImageHandledByClasspathCss()){
-
-			Reader rd = null;
-			FileInputStream fis;
-			try {
-				fis = new FileInputStream(new File(workingDir+"/"+TEMP_CSS_CLASSPATH_SUBDIR, context.getPath()));
-			} catch (FileNotFoundException e) {
-				throw new RuntimeException("An error occured while creating temporary resource for "+context.getPath(), e);
+		if(FileNameUtils.isExtension(context.getPath(), JawrConstant.CSS_TYPE)){
+				
+			// The following section is executed in DEBUG mode to retrieve the classpath CSS from the temporary folder, 
+			// if the user defines that the image servlet should be used to retrieve the CSS images.
+			// It's not executed at the initialization process to be able to read data from classpath.
+			if(!context.isProcessingBundle() && context.getConfig().isCssClasspathImageHandledByClasspathCss()){
+	
+				Reader rd = null;
+				FileInputStream fis;
+				try {
+					fis = new FileInputStream(new File(workingDir+"/"+TEMP_CSS_CLASSPATH_SUBDIR, context.getPath()));
+				} catch (FileNotFoundException e) {
+					throw new RuntimeException("An error occured while creating temporary resource for "+context.getPath(), e);
+				}
+		        if(fis != null){
+		        	FileChannel inchannel = fis.getChannel();
+		        	rd = Channels.newReader(inchannel,context.getConfig().getResourceCharset().newDecoder(),-1);
+		        }
+				
+		        return rd;
 			}
-	        if(fis != null){
-	        	FileChannel inchannel = fis.getChannel();
-	        	rd = Channels.newReader(inchannel,context.getConfig().getResourceCharset().newDecoder(),-1);
-	        }
 			
-	        return rd;
-		
-			//reader = context.getResourceReaderHandler().getCssClasspathResource(context.getPath());
+			if(reader == null){
+				reader = helper.createResource(context);
+				if(reader != null){
+					reader = createTempResource(context, reader);
+				}
+			}
 		}
 		
-		if(reader == null){
-			reader = helper.createResource(context);
-			reader = createTempResource(context, reader);
-		}
 		
 		return reader;
 	}
 
 
+	/**
+	 * Creates the temporary resource which will be processed and used to retrieve the content for the path.
+	 * @param generatorContext the context
+	 * @param rd the reader
+	 * @return the reader to the temporary processed resource
+	 */
 	private Reader createTempResource(GeneratorContext generatorContext, Reader rd) {
 		
 		Reader result = null;
@@ -144,10 +155,14 @@ public class ClassPathCSSGenerator extends AbstractCSSGenerator implements Worki
 			result = new StringReader(writer.getBuffer().toString());
 			StringBuffer resourceData = postProcessor.postProcessBundle(tempStatus, writer.getBuffer());
 			
-			File cssTempFile = new File(workingDir+"/"+TEMP_CSS_CLASSPATH_SUBDIR, resourcePath);
+			String tempCssClasspathDir = workingDir+"/"+TEMP_CSS_CLASSPATH_SUBDIR;
+			File cssTempFile = new File(tempCssClasspathDir, resourcePath);
 			File tempCssDir = cssTempFile.getParentFile(); 
 			if(!tempCssDir.exists()){
-				tempCssDir.mkdirs();
+				if(!tempCssDir.mkdirs()){
+					throw new RuntimeException("An error occured while creating temporary resource for "+resourcePath+".\n" +
+							"Enable to create temporary directory '"+tempCssClasspathDir+"'");
+				}
 			}
 			
 			fWriter = new FileWriter(cssTempFile);

@@ -6,8 +6,8 @@
 
 Jawr Advanced Generators
 
-	Please make sure to read the {{{./messages_gen.html}Jawr Generators documentation}} before this page.\
-	In the {{{./messages_gen.html}Jawr Generators documentation}}, we have seen how to implement
+	Please make sure to read the {{{./generators.html}Jawr Generators documentation}} before this page.\
+	In the {{{./generators.html}Jawr Generators documentation}}, we have seen how to implement
 	a basic generator. \
 	Here we will see advanced features about the generators.
 	
@@ -18,7 +18,7 @@ Jawr Advanced Generators
 	
 [../images/generator/jawr_initializingGenerator.png] Initializing Generator class diagram
 	
-	In the class diagram above we can see that there is 3 main interfaces for generator initialization.
+	In the class diagram above, we can see that there are 3 main interfaces for generator initialization.
 	
 	** <<net.jawr.web.resource.bundle.generator.ConfigurationAwareResourceGenerator>>\
 	This interface provides a method to set the Jawr configuration in the generator.
@@ -50,7 +50,7 @@ Jawr Advanced Generators
 	
 *	Locale aware generator
 
-	Jawr allows you to create generators, which can create resources depending on the locale.
+	Jawr allows you to create generators, which can create resources depending on the user locale.
 	
 	There is one locale aware generator, which is already provided In Jawr, and which handles i18n message resources : 
 	

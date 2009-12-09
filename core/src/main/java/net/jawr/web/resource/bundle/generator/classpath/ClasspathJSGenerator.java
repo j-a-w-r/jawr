@@ -15,6 +15,8 @@ package net.jawr.web.resource.bundle.generator.classpath;
 
 import java.io.Reader;
 
+import net.jawr.web.JawrConstant;
+import net.jawr.web.resource.FileNameUtils;
 import net.jawr.web.resource.bundle.generator.AbstractJavascriptGenerator;
 import net.jawr.web.resource.bundle.generator.GeneratorContext;
 import net.jawr.web.resource.bundle.generator.GeneratorRegistry;
@@ -41,7 +43,12 @@ public class ClasspathJSGenerator extends AbstractJavascriptGenerator implements
 	 * @see net.jawr.web.resource.bundle.generator.ResourceGenerator#createResource(java.lang.String, java.nio.charset.Charset)
 	 */
 	public Reader createResource(GeneratorContext context) {
-		return helper.createResource(context);
+		
+		Reader rd = null;
+		if(FileNameUtils.isExtension(context.getPath(), JawrConstant.JS_TYPE)){
+			rd = helper.createResource(context);
+		}
+		return rd;
 	}
 
 	/* (non-Javadoc)
