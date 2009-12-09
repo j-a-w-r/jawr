@@ -1,6 +1,7 @@
 package net.jawr.web.bundle;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Properties;
 
 import junit.framework.Assert;
@@ -9,6 +10,9 @@ import net.jawr.web.JawrConstant;
 import net.jawr.web.bundle.processor.BundleProcessor;
 import net.jawr.web.config.JawrConfig;
 import net.jawr.web.resource.bundle.generator.GeneratorRegistry;
+import net.jawr.web.resource.handler.reader.ResourceReaderHandler;
+import net.jawr.web.resource.handler.reader.ServletContextResourceReaderHandler;
+import net.jawr.web.servlet.mock.MockServletContext;
 
 /**
  * Bundle processor test case
@@ -19,11 +23,15 @@ public class BundleProcessorTestCase extends TestCase {
 
 	private BundleProcessor bundleProcessor = new BundleProcessor();
 	
-	public void testFinalGenerationBundlePath(){
+	public void testFinalGenerationBundlePath() throws IOException{
 	
 		JawrConfig jawrConfig = new JawrConfig(new Properties());
 		GeneratorRegistry generatorRegistry = new GeneratorRegistry();
 		jawrConfig.setGeneratorRegistry(generatorRegistry);
+		MockServletContext servletContext = new MockServletContext();
+		File tmpDir = new File("temp");
+		servletContext.setAttribute(JawrConstant.SERVLET_CONTEXT_TEMPDIR, tmpDir);
+		ResourceReaderHandler handler = new ServletContextResourceReaderHandler(servletContext, jawrConfig, generatorRegistry);
 		
 		// JS without servlet mapping
 		// File path for production mode
@@ -55,6 +63,7 @@ public class BundleProcessorTestCase extends TestCase {
 		jawrConfig.setDebugModeOn(false);
 		jawrConfig.setServletMapping("");
 		generatorRegistry = new GeneratorRegistry(JawrConstant.CSS_TYPE);
+		generatorRegistry.setResourceReaderHandler(handler);
 		jawrConfig.setGeneratorRegistry(generatorRegistry);
 		
 		assertEquals("folder/core/component.css", bundleProcessor.getFinalBundlePath("/1414653084/folder/core/component.css", jawrConfig, ""));
@@ -71,6 +80,7 @@ public class BundleProcessorTestCase extends TestCase {
 		jawrConfig.setServletMapping("cssJawrPath");
 		generatorRegistry = new GeneratorRegistry(JawrConstant.CSS_TYPE);
 		jawrConfig.setGeneratorRegistry(generatorRegistry);
+		generatorRegistry.setResourceReaderHandler(handler);
 		
 		assertEquals("folder/core/component.css", bundleProcessor.getFinalBundlePath("/cssJawrPath/1414653084/folder/core/component.css", jawrConfig, ""));
 		assertEquals("css/two.css", bundleProcessor.getFinalBundlePath("/cssJawrPath/N87509158/css/two.css", jawrConfig, ""));
