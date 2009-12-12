@@ -43,7 +43,6 @@ import org.directwebremoting.extend.Remoter;
 import org.directwebremoting.impl.DefaultCreatorManager;
 import org.directwebremoting.impl.StartupUtil;
 import org.directwebremoting.servlet.EngineHandler;
-import org.directwebremoting.servlet.PathConstants;
 
 /**
  * @author Jordi Hernández Sellés
@@ -142,8 +141,7 @@ public class DWR3BeanGenerator extends AbstractJavascriptGenerator implements Re
 		List<Container> containers = StartupUtil.getAllPublishedContainers(servletContext);
 		
 		for(Container container :containers ) {
-			String engineHandlerUrl = (String) container.getBean("engineHandlerUrl");
-			EngineHandler engHandler = (EngineHandler) container.getBean(PathConstants.PATH_PREFIX + engineHandlerUrl);
+			EngineHandler engHandler = (EngineHandler) container.getBean("url:/engine.js");
 			Map<String, String> replace = engHandler.getSearchReplacePairs();
 			
 			// Adds replacement for the DWR servlet path. 
@@ -333,6 +331,4 @@ public class DWR3BeanGenerator extends AbstractJavascriptGenerator implements Re
 	public String getMappingPrefix() {
 		return GeneratorRegistry.DWR_BUNDLE_PREFIX;
 	}
-	
-
 }
