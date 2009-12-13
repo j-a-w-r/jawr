@@ -114,14 +114,14 @@ public abstract class AbstractBundleLinkRenderer implements BundleRenderer {
 			addComment("Start adding members resolved by '" + requestedPath + "'. Bundle id is: '" + bundle.getId() + "'", out);
 		}
 
-		// If DWR is being used, add a path var to the page
-		if (null != bundler.getConfig().getDwrMapping() && ctx.getIncludedBundles().add(ID_SCRIPT_DWR_PATH)) {
-
-			String contextPath = ctx.getContextPath();
-			StringBuffer sb = DWRParamWriter.buildRequestSpecificParams(contextPath, PathNormalizer.joinPaths(contextPath, bundler.getConfig()
-					.getDwrMapping()));
-			out.write(sb.toString());
-		}
+//		// If DWR is being used, add a path var to the page
+//		if (null != bundler.getConfig().getDwrMapping() && ctx.getIncludedBundles().add(ID_SCRIPT_DWR_PATH)) {
+//
+//			String contextPath = ctx.getContextPath();
+//			StringBuffer sb = DWRParamWriter.buildRequestSpecificParams(contextPath, PathNormalizer.joinPaths(contextPath, bundler.getConfig()
+//					.getDwrMapping()));
+//			out.write(sb.toString());
+//		}
 
 		// Include the bundle if it has not been included yet
 		if(ctx.getIncludedBundles().add(bundle.getId())){
@@ -163,6 +163,16 @@ public abstract class AbstractBundleLinkRenderer implements BundleRenderer {
 		if (debugOn) {
 			addComment("Start adding global members.", out);
 		}
+		
+		// If DWR is being used, add a path var to the page
+		if (null != bundler.getConfig().getDwrMapping()) {
+
+			String contextPath = ctx.getContextPath();
+			StringBuffer sb = DWRParamWriter.buildRequestSpecificParams(contextPath, PathNormalizer.joinPaths(contextPath, bundler.getConfig()
+					.getDwrMapping()));
+			out.write(sb.toString());
+		}
+		
 		if(isForcedToRenderIeCssBundleInDebug(ctx, debugOn)){
 			ResourceBundlePathsIterator resourceBundleIterator = bundler.getGlobalResourceBundlePaths(false, new ConditionalCommentRenderer(out), ctx.getVariantKey());
 			while(resourceBundleIterator.hasNext()){
