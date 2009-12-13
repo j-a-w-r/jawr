@@ -219,7 +219,7 @@ public class JawrRequestHandler implements ConfigChangeListener, Serializable {
 
 		String configLocation = getInitParameter("configLocation");
 		String configPropsSourceClass = getInitParameter("configPropertiesSourceClass");
-		if (null == configLocation && null == configPropsSourceClass)
+		if (null == configProps && null == configLocation && null == configPropsSourceClass)
 			throw new ServletException("Neither configLocation nor configPropertiesSourceClass init params were set."
 					+ " You must set at least the configLocation param. Please check your web.xml file");
 

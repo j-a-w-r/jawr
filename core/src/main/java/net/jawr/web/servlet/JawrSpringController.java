@@ -18,6 +18,7 @@ import java.util.Map;
 import java.util.Properties;
 
 import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -159,6 +160,10 @@ public class JawrSpringController implements Controller, ServletContextAware, In
 			configuration = null;
 		}
 		
+		if (null == configuration && null == configLocation && null == configPropertiesSourceClass)
+			throw new ServletException("Neither configuration nor configLocation nor configPropertiesSourceClass init params were set."
+					+ " You must set at least the configLocation param. Please check your web.xml file");
+
 		String fullMapping = "";
 		if(null != mapping)
 			fullMapping = mapping;
