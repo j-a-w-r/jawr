@@ -148,6 +148,19 @@ Introduction
 	Check the content of the CSS bundle which contains <<test.css>>, you must find references to a new "../img/mysprite.png",
 	where you had before references to <<img1.png>> and <<img2.png>>.    
 	 
+* Sprites for CSS created by generators
+
+ You can define sprites in a CSS created by a generator. But there is one constraint, which is that you need
+ to define the sprite URL with a <<sprite>> prefix, and the URL must be absolute. Don't use relative path like 'sprite:../../mysprite.png'.
+ 
+ For generated CSS, the smartsprites directive must looks like   
+	 
++------------------------------------------+	
+/** sprite: mysprite; sprite-image: url('sprite:/img/mysprite.png'); sprite-layout: vertical */ 
+...
+...
++------------------------------------------+	
+	 
 * Page design issue after image sprite generation
 
 	It's possible that the design of your page may be altered after the use of sprite generation. \
