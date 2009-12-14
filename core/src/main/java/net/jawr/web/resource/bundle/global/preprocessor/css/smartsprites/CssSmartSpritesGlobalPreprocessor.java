@@ -13,15 +13,7 @@
  */
 package net.jawr.web.resource.bundle.global.preprocessor.css.smartsprites;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.Reader;
-import java.io.UnsupportedEncodingException;
-import java.io.Writer;
 import java.nio.charset.Charset;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -30,11 +22,8 @@ import java.util.Set;
 
 import net.jawr.web.JawrConstant;
 import net.jawr.web.config.JawrConfig;
-import net.jawr.web.exception.ResourceNotFoundException;
 import net.jawr.web.resource.ImageResourcesHandler;
 import net.jawr.web.resource.bundle.JoinableResourceBundle;
-import net.jawr.web.resource.bundle.factory.util.PathNormalizer;
-import net.jawr.web.resource.bundle.generator.GeneratorRegistry;
 import net.jawr.web.resource.bundle.global.preprocessor.AbstractChainedGlobalPreprocessor;
 import net.jawr.web.resource.bundle.global.preprocessor.GlobalPreprocessingContext;
 import net.jawr.web.resource.handler.reader.ResourceReader;
@@ -49,7 +38,6 @@ import org.carrot2.labs.smartsprites.message.Message;
 import org.carrot2.labs.smartsprites.message.MessageLog;
 import org.carrot2.labs.smartsprites.message.MessageSink;
 import org.carrot2.labs.smartsprites.message.Message.MessageLevel;
-import org.carrot2.labs.smartsprites.resource.ResourceHandler;
 
 
 /**
@@ -104,7 +92,7 @@ public class CssSmartSpritesGlobalPreprocessor extends
 		}
 		
 		// Update CSS resource handler
-		cssSpriteResourceReader = new CssSmartSpritesResourceReader(rsHandler.getWorkingDirectory(),jawrConfig, ctx.hasBundleToBePreprocessed());
+		cssSpriteResourceReader = new CssSmartSpritesResourceReader(rsHandler.getWorkingDirectory(),jawrConfig);
 		ctx.getRsReaderHandler().addResourceReaderToStart(cssSpriteResourceReader);
 		
 		// Update image resource handler
@@ -150,7 +138,6 @@ public class CssSmartSpritesGlobalPreprocessor extends
 		} catch (IOException e) {
 			throw new RuntimeException("Unable to build sprites", e);
 		}
-		
 	}
 
 	/**
@@ -172,137 +159,6 @@ public class CssSmartSpritesGlobalPreprocessor extends
 		return resourcePaths;
 	}
 
-	/**
-	 * This class defines the resource handler for smartSprites
-	 * 
-	 * @author Ibrahim Chaehoi
-	 */
-	private static class SmartSpritesResourceHandler implements ResourceHandler {
-		
-		/** The resource handler for CSS resources */
-		private ResourceReaderHandler rsHandler;
-
-		/** The resource handler for image resources */
-		private ResourceReaderHandler imgRsHandler;
-		
-		/** The image generator registry */
-		private GeneratorRegistry imgGeneratorRegistry;
-		
-		/** The charset */
-		private final String charset;
-
-		/**
-		 * Constructor
-		 * 
-		 * @param rsHandler the CSS resource handler
-		 * @param imgRsHandler the image resource handler
-		 * @param imgGeneratorRegistry the image generator registry
-		 * @param charset the charset
-		 * @param messageLog the message log
-		 */
-		public SmartSpritesResourceHandler(
-				ResourceReaderHandler rsHandler,
-				ResourceReaderHandler imgRsHandler, 
-				GeneratorRegistry imgGeneratorRegistry,
-				String charset, MessageLog messageLog) {
-			this.rsHandler = rsHandler;
-			this.imgRsHandler = imgRsHandler;
-			this.imgGeneratorRegistry = imgGeneratorRegistry;
-			this.charset = charset;
-		}
-
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see org.carrot2.labs.smartsprites.resource.ResourceHandler#getReader(java.lang.String)
-		 */
-		public Reader getResourceAsReader(String resourceName)
-				throws IOException {
-
-			try {
-				return rsHandler.getResource(resourceName, true);
-			} catch (ResourceNotFoundException e) {
-				throw new IOException("The resource '"+resourceName+"' was not found.");
-			}
-		}
-
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see org.carrot2.labs.smartsprites.resource.ResourceHandler#getResourceAsStream(java.lang.String)
-		 */
-		public InputStream getResourceAsInputStream(String resourceName)
-				throws IOException {
-			
-			try {
-				return imgRsHandler.getResourceAsStream(resourceName);
-			} catch (ResourceNotFoundException e) {
-				throw new IOException("The resource '"+resourceName+"' was not found.");
-			}
-		}
-
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see org.carrot2.labs.smartsprites.resource.ResourceHandler#getResourcePath(java.lang.String, java.lang.String)
-		 */
-		public String getResourcePath(String basePath, String relativePath) {
-
-			String result = null;
-			if (imgGeneratorRegistry.isGeneratedImage(relativePath)) {
-				result = relativePath;
-			} else {
-				result = PathNormalizer.concatWebPath(basePath, relativePath);
-			}
-			return result;
-		}
-
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see org.carrot2.labs.smartsprites.resource.ResourceHandler#getResourceAsOutputStream(java.lang.String)
-		 */
-		public OutputStream getResourceAsOutputStream(String resourceName)
-				throws IOException {
-
-			// Create directories if needed
-			final File parentFile = new File(resourceName).getParentFile();
-			if (!parentFile.exists()) {
-				if (!parentFile.mkdirs()) {
-					throw new IOException("Unable to create the directory : "
-							+ parentFile.getPath());
-				}
-			}
-			
-			File file = new File(resourceName);
-	        try
-	        {
-	        	file = file.getCanonicalFile();
-	        }
-	        catch (final IOException e)
-	        {
-	        	file = file.getAbsoluteFile();
-	        }
-	        
-			return new FileOutputStream(file);
-		}
-
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see org.carrot2.labs.smartsprites.resource.ResourceHandler#getResourceAsWriter(java.lang.String)
-		 */
-		public Writer getResourceAsWriter(String path) throws IOException {
-			try {
-				return new OutputStreamWriter(getResourceAsOutputStream(path),
-						charset);
-			} catch (UnsupportedEncodingException e) {
-				// Should not happen as we're checking the charset in constructor
-				throw new RuntimeException(e);
-			}
-		}
-	}
-	
 	/**
 	 * The log message sink
 	 * 

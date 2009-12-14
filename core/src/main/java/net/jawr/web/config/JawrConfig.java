@@ -19,6 +19,7 @@ import java.util.Properties;
 
 import javax.servlet.ServletContext;
 
+import net.jawr.web.JawrConstant;
 import net.jawr.web.context.ThreadLocalJawrContext;
 import net.jawr.web.resource.bundle.factory.util.ClassLoaderResourceUtils;
 import net.jawr.web.resource.bundle.factory.util.PathNormalizer;
@@ -26,6 +27,7 @@ import net.jawr.web.resource.bundle.generator.GeneratorRegistry;
 import net.jawr.web.resource.bundle.locale.DefaultLocaleResolver;
 import net.jawr.web.resource.bundle.locale.LocaleResolver;
 import net.jawr.web.resource.bundle.renderer.CSSHTMLBundleLinkRenderer;
+import net.jawr.web.util.StringUtils;
 
 /**
  * This class holds configuration details for Jawr in a given ServletContext.
@@ -752,6 +754,16 @@ public class JawrConfig implements Serializable {
 	 */
 	public String getProperty(String key){
 		return configProperties.getProperty(key);
+	}
+	
+	/**
+	 * Returns true if the Jawr working directory is defined in the web application.
+	 * 
+	 * @return true if the Jawr working directory is defined in the web application.
+	 */
+	public boolean isWorkingDirectoryInWebApp(){
+		
+		return useBundleMapping && StringUtils.isNotEmpty(jawrWorkingDirectory) && !jawrWorkingDirectory.startsWith(JawrConstant.FILE_URI_PREFIX);
 	}
 	
 	/*

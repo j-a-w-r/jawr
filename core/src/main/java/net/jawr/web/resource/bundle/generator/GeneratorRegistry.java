@@ -28,6 +28,7 @@ import net.jawr.web.resource.bundle.generator.classpath.ClassPathCSSGenerator;
 import net.jawr.web.resource.bundle.generator.classpath.ClassPathImgResourceGenerator;
 import net.jawr.web.resource.bundle.generator.classpath.ClasspathJSGenerator;
 import net.jawr.web.resource.bundle.generator.dwr.DWRGeneratorFactory;
+import net.jawr.web.resource.bundle.generator.img.SpriteGenerator;
 import net.jawr.web.resource.bundle.generator.validator.CommonsValidatorGenerator;
 import net.jawr.web.resource.bundle.locale.ResourceBundleMessagesGenerator;
 import net.jawr.web.resource.handler.reader.ResourceReader;
@@ -62,6 +63,9 @@ public class GeneratorRegistry {
 	
 	/** The IE CSS generator bundle prefix */
 	public static final String IE_CSS_GENERATOR_PREFIX = "ieCssGen";
+
+	/** The sprite generator prefix */
+	public static final String SPRITE_GENERATOR_PREFIX = "sprite";
 
 	/** The generator prefix separator */
 	public static final String PREFIX_SEPARATOR = ":";
@@ -108,6 +112,7 @@ public class GeneratorRegistry {
 		prefixRegistry.add(COMMONS_VALIDATOR_PREFIX + PREFIX_SEPARATOR);
 		prefixRegistry.add(MESSAGE_BUNDLE_PREFIX + PREFIX_SEPARATOR);
 		prefixRegistry.add(IE_CSS_GENERATOR_PREFIX + PREFIX_SEPARATOR);
+		prefixRegistry.add(SPRITE_GENERATOR_PREFIX + PREFIX_SEPARATOR);
 	}
 	
 	/**
@@ -153,6 +158,9 @@ public class GeneratorRegistry {
 			generator = new CommonsValidatorGenerator();
 		}else if(resourceType.equals(JawrConstant.CSS_TYPE) && (IE_CSS_GENERATOR_PREFIX + PREFIX_SEPARATOR).equals(generatorKey)){
 			generator = new IECssBundleGenerator();
+		}else if((resourceType.equals(JawrConstant.CSS_TYPE) ||
+				resourceType.equals(JawrConstant.IMG_TYPE)) && (SPRITE_GENERATOR_PREFIX+PREFIX_SEPARATOR).equals(generatorKey)){
+			generator = new SpriteGenerator(rsHandler, config);
 		}
 		
 		if(generator != null){

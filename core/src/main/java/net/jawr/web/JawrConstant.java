@@ -108,5 +108,9 @@ public class JawrConstant {
 	/** The WEB-INF directory prefix */
 	public static final String WEB_INF_DIR_PREFIX = "/WEB-INF/";
 
-	
+	/** The directory for CSS created by generators */
+	public static final String SPRITE_GENERATED_CSS_DIR = "/generatedCss/";
+
+	/** The directory for image created the sprite generator */
+	public static final String SPRITE_GENERATED_IMG_DIR = "/generatedSpriteImg/";
 }

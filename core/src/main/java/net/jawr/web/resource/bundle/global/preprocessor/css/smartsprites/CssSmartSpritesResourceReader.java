@@ -18,6 +18,7 @@ import java.io.Reader;
 
 import net.jawr.web.JawrConstant;
 import net.jawr.web.config.JawrConfig;
+import net.jawr.web.resource.bundle.generator.GeneratorRegistry;
 import net.jawr.web.resource.handler.reader.FileSystemResourceReader;
 import net.jawr.web.resource.handler.reader.PathPrefixedServletContextResourceReader;
 import net.jawr.web.resource.handler.reader.ResourceReader;
@@ -43,16 +44,14 @@ public class CssSmartSpritesResourceReader implements TextResourceReader, Stream
 	 * Constructor
 	 * @param tempDir the smartsprites temporary directory
 	 * @param jawrConfig the jawr config
-	 * @param isUsingFileSystem the flag indicating if the temporary directory is in the web application 
-	 * or in a temporary directory inside the work directory. 
 	 */
-	public CssSmartSpritesResourceReader(String tempDir, JawrConfig jawrConfig, boolean isUsingFileSystem) {
+	public CssSmartSpritesResourceReader(String tempDir, JawrConfig jawrConfig) {
 		
 		this.jawrConfig = jawrConfig;
-		if(isUsingFileSystem){
-			resourceReader = new FileSystemResourceReader(tempDir+JawrConstant.CSS_SMARTSPRITES_TMP_DIR, jawrConfig);
-		}else{
+		if(jawrConfig.isWorkingDirectoryInWebApp()){
 			resourceReader = new PathPrefixedServletContextResourceReader(jawrConfig.getContext(), jawrConfig, tempDir+JawrConstant.CSS_SMARTSPRITES_TMP_DIR);
+		}else{
+			resourceReader = new FileSystemResourceReader(tempDir+JawrConstant.CSS_SMARTSPRITES_TMP_DIR, jawrConfig);
 		}
 		
 	}
@@ -77,7 +76,11 @@ public class CssSmartSpritesResourceReader implements TextResourceReader, Stream
 		
 		Reader rd = null;
 		if(processingBundle){
-			rd = ((TextResourceReader) resourceReader).getResource(resourceName, processingBundle);
+			String path = resourceName;
+			if(jawrConfig.getGeneratorRegistry().isPathGenerated(path)){
+				path = JawrConstant.SPRITE_GENERATED_CSS_DIR+path.replace(":", "/");
+			}
+			rd = ((TextResourceReader) resourceReader).getResource(path, processingBundle);
 		}
 		
 		return rd;
@@ -88,7 +91,7 @@ public class CssSmartSpritesResourceReader implements TextResourceReader, Stream
 	 */
 	public InputStream getResourceAsStream(String resourceName) {
 		
-		return ((StreamResourceReader) resourceReader).getResourceAsStream(resourceName);
+		return getResourceAsStream(resourceName, false);
 	}
 
 	/* (non-Javadoc)
@@ -97,7 +100,12 @@ public class CssSmartSpritesResourceReader implements TextResourceReader, Stream
 	public InputStream getResourceAsStream(String resourceName,
 			boolean processingBundle) {
 		
-		return ((StreamResourceReader) resourceReader).getResourceAsStream(resourceName, false);
+		String path = resourceName;
+		GeneratorRegistry generatorRegistry = jawrConfig.getGeneratorRegistry();
+		if(generatorRegistry.isGeneratedImage(path)){
+			path = JawrConstant.SPRITE_GENERATED_IMG_DIR+path.replace(":", "/");
+		}
+		return ((StreamResourceReader) resourceReader).getResourceAsStream(path, processingBundle);
 	}
 
 }

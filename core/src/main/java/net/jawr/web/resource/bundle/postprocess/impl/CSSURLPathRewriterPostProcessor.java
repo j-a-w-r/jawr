@@ -221,7 +221,7 @@ public class CSSURLPathRewriterPostProcessor extends
 			String tempUrl = url;
 			
 			// If it's a classpath CSS, the url of the CSS image is defined relatively to it.
-			if(cssGeneratorIsHandleCssImage){
+			if(cssGeneratorIsHandleCssImage && !generatedImg){
 				tempUrl = PathNormalizer.concatWebPath(rootPath, url);
 			}
 
