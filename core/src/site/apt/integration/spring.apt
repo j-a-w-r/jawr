@@ -27,6 +27,12 @@ Spring MVC integration
 	<!-- This must match the servlet-mapping to which the spring servlet is bound -->
 	<property name="mapping" value="/spring/"/>
 	<property name="configLocation" value="/jawr.properties" />
+	<property name="configuration">
+      	<props>
+	    	<prop>key="jawr.debug.on">false</prop>
+			<prop key="jawr.gzip.on">true</prop> 
+		</props>
+    </property>
 </bean>
 
 <!-- JS controller -->
@@ -62,7 +68,12 @@ Spring MVC integration
 	more info. 
 	
 	* <<configuration>> is a Properties object holding the usual Jawr configuration values. 
-	This property is <<deprecated>> since the version 3.2. We recommend to use the configLocation properties instead.
+	If the <configLocation> property is defined, this property is used to override the values found in the properties defined at the <configLocation>.
+	If the <configLocation> property is not set, then this property is used for the jawr properties.
+	If you use reload feature by defining the <jawr.config.reload.interval> property, and if you use <configLocation> and <configuration> properties, 
+	then for any change in the file defined at the <configLocation>, the standard Jawr bundling process will happen. Jawr will reload with the new values of the file and the configuration property
+	will override the value set in the file. 
+	
 	Check the descriptor syntax page for an overview of what can be specified for the properties. 
 	
 * Mapping the controllers

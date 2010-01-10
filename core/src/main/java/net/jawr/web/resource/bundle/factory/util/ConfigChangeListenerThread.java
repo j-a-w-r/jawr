@@ -13,6 +13,8 @@
  */
 package net.jawr.web.resource.bundle.factory.util;
 
+import java.util.Properties;
+
 import org.apache.log4j.Logger;
 
 /**
@@ -25,13 +27,15 @@ public class ConfigChangeListenerThread extends Thread {
 	
 	private long waitMillis;
 	private ConfigPropertiesSource propertiesSource;
+	private Properties overrideProperties;
 	private ConfigChangeListener listener;
 	private boolean continuePolling;
 	
 	public ConfigChangeListenerThread(ConfigPropertiesSource propertiesSource,
-			ConfigChangeListener listener, long secondsToWait ) {
+			Properties overrideProperties, ConfigChangeListener listener, long secondsToWait ) {
 		super();
 		this.propertiesSource = propertiesSource;
+		this.overrideProperties = overrideProperties;
 		this.listener = listener;
 		this.waitMillis = secondsToWait * 1000;
 		continuePolling = true;
@@ -50,7 +54,11 @@ public class ConfigChangeListenerThread extends Thread {
 			try {
 				// Must check before sleeping, otherwise stopPolling does not work.  
 				if(!firstRun && propertiesSource.configChanged()){
-					listener.configChanged(propertiesSource.getConfigProperties());
+					Properties props = propertiesSource.getConfigProperties();
+					if(overrideProperties != null){
+						props.putAll(overrideProperties);
+					}
+					listener.configChanged(props);
 				}
 				sleep(waitMillis);
 				firstRun = false;				

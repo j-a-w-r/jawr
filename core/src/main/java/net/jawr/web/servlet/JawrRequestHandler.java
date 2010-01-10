@@ -154,6 +154,9 @@ public class JawrRequestHandler implements ConfigChangeListener, Serializable {
 	/** The configuration properties source */
 	protected ConfigPropertiesSource propertiesSource;
 	
+	/** The configuration properties which overrides the one defined with the propertiesSource  */
+	protected Properties overrideProperties;
+	
 	/** The client-side script request handler */
 	protected ClientSideHandlerScriptRequestHandler clientSideScriptRequestHandler;
 
@@ -213,7 +216,7 @@ public class JawrRequestHandler implements ConfigChangeListener, Serializable {
 
 		this.imgMimeMap = MIMETypesSupport.getSupportedProperties(this);
 		this.servletContext = context;
-
+		this.overrideProperties = configProps;
 		resourceType = getInitParameter("type");
 		resourceType = null == resourceType ? "js" : resourceType;
 
@@ -249,7 +252,11 @@ public class JawrRequestHandler implements ConfigChangeListener, Serializable {
 
 		// Read properties from properties source
 		Properties props = propsSrc.getConfigProperties();
-
+		// override the properties if needed
+		if(this.overrideProperties != null){
+			props.putAll(overrideProperties);
+		}
+		
 		// init registry
 		generatorRegistry = new GeneratorRegistry(resourceType);
 
@@ -265,7 +272,8 @@ public class JawrRequestHandler implements ConfigChangeListener, Serializable {
 			log.warn("Jawr started with configuration auto reloading on. "
 					+ "Be aware that a daemon thread will be checking for changes to configuration every " + interval + " seconds.");
 
-			this.configChangeListenerThread = new ConfigChangeListenerThread(propsSrc, this, interval);
+			this.configChangeListenerThread = new ConfigChangeListenerThread(propsSrc, this.overrideProperties, 
+					this, interval);
 			configChangeListenerThread.start();
 		}
 
