@@ -106,7 +106,7 @@ public class PropertiesBasedBundlesHandlerFactory {
 		
 		// Use orphans resolution at all, on by default. FACTORY_PROCESS_ORPHANS
 		factory.setScanForOrphans(Boolean.valueOf(
-				props.getProperty(PropertiesBundleConstant.FACTORY_PROCESS_ORPHANS, "true")).booleanValue());
+				props.getCommonProperty(PropertiesBundleConstant.FACTORY_PROCESS_ORPHANS, "true")).booleanValue());
 
 		// Use the automatic directory-as-bundle mapper.
 		factory.setUseDirMapperFactory(Boolean.valueOf(
