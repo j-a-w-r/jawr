@@ -235,7 +235,7 @@ public class JawrRequestHandler implements ConfigChangeListener, Serializable {
 			if (propsSrc instanceof ServletContextAware) {
 				((ServletContextAware) propsSrc).setServletContext(context);
 			}
-		} else if(configProps != null){
+		} else if(configLocation == null && configProps != null){
 			
 			// configuration retrieved from the in memory configuration properties
 			propsSrc = new PropsConfigPropertiesSource(configProps);

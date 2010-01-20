@@ -48,7 +48,8 @@ import net.jawr.web.util.StringUtils;
 import org.apache.log4j.Logger;
 
 /**
- * Image Request handling class. Jawr image servlet delegates to this class to handle requests.
+ * Image Request handling class. Jawr image servlet delegates to this class to
+ * handle requests.
  * 
  * @author Ibrahim Chaehoi
  */
@@ -58,11 +59,13 @@ public class JawrImageRequestHandler extends JawrRequestHandler {
 	private static final long serialVersionUID = -8342090032443416738L;
 
 	/** The logger */
-	private static final Logger log = Logger.getLogger(JawrImageRequestHandler.class);
+	private static final Logger log = Logger
+			.getLogger(JawrImageRequestHandler.class);
 
 	/** The cache buster pattern */
-	private static Pattern cacheBusterPattern = Pattern.compile("(" 
-			+ "(([a-zA-Z0-9]+)_)?"+JawrConstant.CACHE_BUSTER_PREFIX  + ")[a-zA-Z0-9]+/(.*)$");
+	private static Pattern cacheBusterPattern = Pattern.compile("("
+			+ "(([a-zA-Z0-9]+)_)?" + JawrConstant.CACHE_BUSTER_PREFIX
+			+ ")[a-zA-Z0-9]+/(.*)$");
 
 	/** The index of the generated image prefix in the cache buster pattern */
 	private static final int GENERATED_IMAGE_PREFIX_INDEX = 3;
@@ -81,29 +84,37 @@ public class JawrImageRequestHandler extends JawrRequestHandler {
 
 	/** The bundle mapping */
 	private Properties bundleMapping;
-	
+
 	/**
-	 * Reads the properties file and initializes all configuration using the ServletConfig object. If aplicable, a ConfigChangeListenerThread will be
+	 * Reads the properties file and initializes all configuration using the
+	 * ServletConfig object. If aplicable, a ConfigChangeListenerThread will be
 	 * started to listen to changes in the properties configuration.
 	 * 
-	 * @param servletContext ServletContext
-	 * @param servletConfig ServletConfig
+	 * @param servletContext
+	 *            ServletContext
+	 * @param servletConfig
+	 *            ServletConfig
 	 * @throws ServletException
 	 */
-	public JawrImageRequestHandler(ServletContext context, ServletConfig config) throws ServletException {
+	public JawrImageRequestHandler(ServletContext context, ServletConfig config)
+			throws ServletException {
 		super(context, config);
 		resourceType = JawrConstant.IMG_TYPE;
 	}
 
 	/**
-	 * Alternate constructor that does not need a ServletConfig object. Parameters normally read rom it are read from the initParams Map, and the
+	 * Alternate constructor that does not need a ServletConfig object.
+	 * Parameters normally read rom it are read from the initParams Map, and the
 	 * configProps are used instead of reading a .properties file.
 	 * 
-	 * @param servletContext ServletContext
-	 * @param servletConfig ServletConfig
+	 * @param servletContext
+	 *            ServletContext
+	 * @param servletConfig
+	 *            ServletConfig
 	 * @throws ServletException
 	 */
-	public JawrImageRequestHandler(ServletContext context, Map initParams, Properties configProps) throws ServletException {
+	public JawrImageRequestHandler(ServletContext context, Map initParams,
+			Properties configProps) throws ServletException {
 
 		super(context, initParams, configProps);
 	}
@@ -111,10 +122,13 @@ public class JawrImageRequestHandler extends JawrRequestHandler {
 	/**
 	 * Initialize the Jawr config
 	 * 
-	 * @param props the properties
-	 * @throws ServletException if an exception occurs
+	 * @param props
+	 *            the properties
+	 * @throws ServletException
+	 *             if an exception occurs
 	 */
-	protected void initializeJawrConfig(Properties props) throws ServletException {
+	protected void initializeJawrConfig(Properties props)
+			throws ServletException {
 		// Initialize config
 		if (null != jawrConfig)
 			jawrConfig.invalidate();
@@ -123,12 +137,14 @@ public class JawrImageRequestHandler extends JawrRequestHandler {
 
 		jawrConfig.setContext(servletContext);
 		jawrConfig.setGeneratorRegistry(generatorRegistry);
-		
+
 		// Set the content type to be used for every request.
 		contentType = JawrConstant.IMG_TYPE;
 
-		// Set mapping, to be used by the tag lib to define URLs that point to this servlet.
-		String mapping = (String) initParameters.get(JawrConstant.SERVLET_MAPPING_PROPERTY_NAME);
+		// Set mapping, to be used by the tag lib to define URLs that point to
+		// this servlet.
+		String mapping = (String) initParameters
+				.get(JawrConstant.SERVLET_MAPPING_PROPERTY_NAME);
 		if (null != mapping) {
 			jawrConfig.setServletMapping(mapping);
 		}
@@ -136,26 +152,29 @@ public class JawrImageRequestHandler extends JawrRequestHandler {
 		// Initialize the resource handler
 		rsReaderHandler = initResourceReaderHandler();
 		rsBundleHandler = initResourceBundleHandler();
-		
+
 		// Initialize custom generators
-		PropertiesConfigHelper propertiesHelper = new PropertiesConfigHelper(props, resourceType);
-		Iterator generators = propertiesHelper.getPropertyAsSet(PropertiesBundleConstant.CUSTOM_GENERATORS)
-				.iterator();
+		PropertiesConfigHelper propertiesHelper = new PropertiesConfigHelper(
+				props, resourceType);
+		Iterator generators = propertiesHelper.getPropertyAsSet(
+				PropertiesBundleConstant.CUSTOM_GENERATORS).iterator();
 		while (generators.hasNext()) {
 			String generatorClass = (String) generators.next();
 			generatorRegistry.registerGenerator(generatorClass);
 		}
-		
-		if(jawrConfig.getUseBundleMapping()){
+
+		if (jawrConfig.getUseBundleMapping()) {
 			bundleMapping = rsBundleHandler.getJawrBundleMapping();
-		}else{
+		} else {
 			bundleMapping = new Properties();
 		}
-		
-		ImageResourcesHandler imgRsHandler = new ImageResourcesHandler(jawrConfig, rsReaderHandler, rsBundleHandler);
+
+		ImageResourcesHandler imgRsHandler = new ImageResourcesHandler(
+				jawrConfig, rsReaderHandler, rsBundleHandler);
 		initImageMapping(imgRsHandler);
 
-		servletContext.setAttribute(JawrConstant.IMG_CONTEXT_ATTRIBUTE, imgRsHandler);
+		servletContext.setAttribute(JawrConstant.IMG_CONTEXT_ATTRIBUTE,
+				imgRsHandler);
 
 		if (log.isDebugEnabled()) {
 			log.debug("Configuration read. Current config:");
@@ -164,18 +183,21 @@ public class JawrImageRequestHandler extends JawrRequestHandler {
 
 		// Warn when in debug mode
 		if (jawrConfig.isDebugModeOn()) {
-			log.warn("Jawr initialized in DEVELOPMENT MODE. Do NOT use this mode in production or integration servers. ");
+			log
+					.warn("Jawr initialized in DEVELOPMENT MODE. Do NOT use this mode in production or integration servers. ");
 		}
 	}
 
 	/**
 	 * Initialize the image mapping of the image resources handler
 	 * 
-	 * @param imgRsHandler the image resources handler
+	 * @param imgRsHandler
+	 *            the image resources handler
 	 */
 	private void initImageMapping(ImageResourcesHandler imgRsHandler) {
 
-		if (jawrConfig.getUseBundleMapping() && rsBundleHandler.isExistingMappingFile()) {
+		if (jawrConfig.getUseBundleMapping()
+				&& rsBundleHandler.isExistingMappingFile()) {
 
 			// Initialize the image mapping
 			Iterator mapIterator = bundleMapping.keySet().iterator();
@@ -183,18 +205,23 @@ public class JawrImageRequestHandler extends JawrRequestHandler {
 				String key = (String) mapIterator.next();
 				imgRsHandler.addMapping(key, bundleMapping.getProperty(key));
 			}
-			
+
 		} else {
-			// Create a resource handler to read files from the WAR archive or exploded dir.
-			String imageResourcesDefinition = jawrConfig.getImageResourcesDefinition();
+			// Create a resource handler to read files from the WAR archive or
+			// exploded dir.
+			String imageResourcesDefinition = jawrConfig
+					.getImageResourcesDefinition();
 			if (imageResourcesDefinition != null) {
 
-				StringTokenizer tokenizer = new StringTokenizer(imageResourcesDefinition, ",");
+				StringTokenizer tokenizer = new StringTokenizer(
+						imageResourcesDefinition, ",");
 				while (tokenizer.hasMoreTokens()) {
 					String pathMapping = tokenizer.nextToken();
 
-					// path is a generated image and ends with an image extension
-					if (generatorRegistry.isGeneratedImage(pathMapping) && hasImageFileExtension(pathMapping)) {
+					// path is a generated image and ends with an image
+					// extension
+					if (generatorRegistry.isGeneratedImage(pathMapping)
+							&& hasImageFileExtension(pathMapping)) {
 
 						addImagePath(imgRsHandler, pathMapping);
 					}
@@ -202,22 +229,28 @@ public class JawrImageRequestHandler extends JawrRequestHandler {
 					else if (pathMapping.endsWith("/")) {
 						addItemsFromDir(imgRsHandler, pathMapping, false);
 					}
-					// path ends in /, the folder is included with all subfolders
+					// path ends in /, the folder is included with all
+					// subfolders
 					else if (pathMapping.endsWith("/**")) {
-						addItemsFromDir(imgRsHandler, pathMapping.substring(0, pathMapping.lastIndexOf("**")), true);
+						addItemsFromDir(imgRsHandler, pathMapping.substring(0,
+								pathMapping.lastIndexOf("**")), true);
 					} else if (hasImageFileExtension(pathMapping)) {
 						addImagePath(imgRsHandler, pathMapping);
 					} else
-						log.warn("Wrong mapping [" + pathMapping + "] for image bundle. Please check configuration. ");
+						log
+								.warn("Wrong mapping ["
+										+ pathMapping
+										+ "] for image bundle. Please check configuration. ");
 				}
 			}
 		}
 
 		// Store the bundle mapping
-		if (jawrConfig.getUseBundleMapping() && !rsBundleHandler.isExistingMappingFile()) {
+		if (jawrConfig.getUseBundleMapping()
+				&& !rsBundleHandler.isExistingMappingFile()) {
 			rsBundleHandler.storeJawrBundleMapping(bundleMapping);
 		}
-		
+
 		if (log.isDebugEnabled())
 			log.debug("Finish creation of map for image bundle");
 	}
@@ -225,27 +258,37 @@ public class JawrImageRequestHandler extends JawrRequestHandler {
 	/**
 	 * Add an image path to the image map
 	 * 
-	 * @param imgRsHandler the image resources handler
-	 * @param imgPath the image path
-	 * @param classPathImg the flag indicating if the image should be retrieved from classpath
+	 * @param imgRsHandler
+	 *            the image resources handler
+	 * @param imgPath
+	 *            the image path
+	 * @param classPathImg
+	 *            the flag indicating if the image should be retrieved from
+	 *            classpath
 	 */
 	private void addImagePath(ImageResourcesHandler imgRsHandler, String imgPath) {
 
 		try {
-			String resultPath = CheckSumUtils.getCacheBustedUrl(imgPath, rsReaderHandler, jawrConfig);
+			String resultPath = CheckSumUtils.getCacheBustedUrl(imgPath,
+					rsReaderHandler, jawrConfig);
 			imgRsHandler.addMapping(imgPath, resultPath);
 			bundleMapping.put(imgPath, resultPath);
 		} catch (IOException e) {
-			log.error("An exception occurs while defining the mapping for the file : " + imgPath, e);
+			log.error(
+					"An exception occurs while defining the mapping for the file : "
+							+ imgPath, e);
 		} catch (ResourceNotFoundException e) {
-			log.error("Impossible to define the checksum for the resource '"+imgPath+"'. Unable to retrieve the content of the file.");
+			log.error("Impossible to define the checksum for the resource '"
+					+ imgPath
+					+ "'. Unable to retrieve the content of the file.");
 		}
 	}
 
 	/**
 	 * Returns true of the path contains an image file extension
 	 * 
-	 * @param path the path
+	 * @param path
+	 *            the path
 	 * @return the image file extension
 	 */
 	private boolean hasImageFileExtension(String path) {
@@ -263,27 +306,36 @@ public class JawrImageRequestHandler extends JawrRequestHandler {
 	/**
 	 * Adds all the resources within a path to the image map.
 	 * 
-	 * @param imgRsHandler the image resources handler
-	 * @param dirName the directory name
-	 * @param addSubDirs boolean If subfolders will be included. In such case, every folder below the path is included.
+	 * @param imgRsHandler
+	 *            the image resources handler
+	 * @param dirName
+	 *            the directory name
+	 * @param addSubDirs
+	 *            boolean If subfolders will be included. In such case, every
+	 *            folder below the path is included.
 	 */
-	private void addItemsFromDir(ImageResourcesHandler imgRsHandler, String dirName, boolean addSubDirs) {
+	private void addItemsFromDir(ImageResourcesHandler imgRsHandler,
+			String dirName, boolean addSubDirs) {
 		Set resources = rsReaderHandler.getResourceNames(dirName);
 
 		if (log.isDebugEnabled()) {
-			log.debug("Adding " + resources.size() + " resources from path [" + dirName + "] to image bundle");
+			log.debug("Adding " + resources.size() + " resources from path ["
+					+ dirName + "] to image bundle");
 		}
 
-		// Add remaining resources (remaining after sorting, or all if no sort file present)
+		// Add remaining resources (remaining after sorting, or all if no sort
+		// file present)
 		List folders = new ArrayList();
 		for (Iterator it = resources.iterator(); it.hasNext();) {
 			String resourceName = (String) it.next();
-			String resourcePath = PathNormalizer.joinPaths(dirName, resourceName);
+			String resourcePath = PathNormalizer.joinPaths(dirName,
+					resourceName);
 			if (hasImageFileExtension(resourceName)) {
 				addImagePath(imgRsHandler, resourcePath);
 
 				if (log.isDebugEnabled())
-					log.debug("Added to item path list:" + PathNormalizer.asPath(resourcePath));
+					log.debug("Added to item path list:"
+							+ PathNormalizer.asPath(resourcePath));
 			} else if (addSubDirs) {
 
 				try {
@@ -292,16 +344,20 @@ public class JawrImageRequestHandler extends JawrRequestHandler {
 					}
 				} catch (InvalidPathException e) {
 					if (log.isDebugEnabled())
-						log.debug("Enable to define if the following resource is a directory : " + PathNormalizer.asPath(resourcePath));
+						log
+								.debug("Enable to define if the following resource is a directory : "
+										+ PathNormalizer.asPath(resourcePath));
 				}
 			}
 		}
 
-		// Add subfolders if requested. Subfolders are added last unless specified in sorting file.
+		// Add subfolders if requested. Subfolders are added last unless
+		// specified in sorting file.
 		if (addSubDirs) {
 			for (Iterator it = folders.iterator(); it.hasNext();) {
 				String folderName = (String) it.next();
-				addItemsFromDir(imgRsHandler, PathNormalizer.joinPaths(dirName, folderName), true);
+				addItemsFromDir(imgRsHandler, PathNormalizer.joinPaths(dirName,
+						folderName), true);
 			}
 		}
 	}
@@ -309,11 +365,14 @@ public class JawrImageRequestHandler extends JawrRequestHandler {
 	/**
 	 * Handles a resource request.
 	 * <ul>
-	 * <li>If the request contains an If-Modified-Since header, the 304 status is set and no data is written to the response</li>
-	 * <li>If the requested path begins with the gzip prefix, a gzipped version of the resource is served, with the corresponding content-encoding
+	 * <li>If the request contains an If-Modified-Since header, the 304 status
+	 * is set and no data is written to the response</li>
+	 * <li>If the requested path begins with the gzip prefix, a gzipped version
+	 * of the resource is served, with the corresponding content-encoding
 	 * header.</li>
 	 * <li>Otherwise, the resource is written as text to the response.</li>
-	 * <li>If the resource is not found, the response satus is set to 404 and no response is written.</li>
+	 * <li>If the resource is not found, the response satus is set to 404 and no
+	 * response is written.</li>
 	 * </ul>
 	 * 
 	 * @param requestedPath
@@ -322,20 +381,22 @@ public class JawrImageRequestHandler extends JawrRequestHandler {
 	 * @throws ServletException
 	 * @throws IOException
 	 */
-	public void processRequest(String requestedPath, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	public void processRequest(String requestedPath,
+			HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 
 		if (log.isDebugEnabled())
 			log.debug("Request received for path:" + requestedPath);
 
 		// Retrieve the file path
-		String filePath = getFilePath(request);
-		if (filePath == null) {
+		//String filePath = getFilePath(request);
+		if (requestedPath == null) {
 			response.sendError(HttpServletResponse.SC_NOT_FOUND);
 			return;
 		}
 
 		// Retrieve the content type
-		String imgContentType = getContentType(request, filePath);
+		String imgContentType = getContentType(request, requestedPath);
 		if (imgContentType == null) {
 			response.sendError(HttpServletResponse.SC_NOT_FOUND);
 			return;
@@ -343,10 +404,12 @@ public class JawrImageRequestHandler extends JawrRequestHandler {
 
 		// Set the content type
 		response.setContentType(imgContentType);
-		// If debug mode is off, check for If-Modified-Since and If-none-match headers and set response caching headers.
+		// If debug mode is off, check for If-Modified-Since and If-none-match
+		// headers and set response caching headers.
 		if (!this.jawrConfig.isDebugModeOn()) {
 			// If a browser checks for changes, always respond 'no changes'.
-			if (null != request.getHeader(IF_MODIFIED_SINCE_HEADER) || null != request.getHeader(IF_NONE_MATCH_HEADER)) {
+			if (null != request.getHeader(IF_MODIFIED_SINCE_HEADER)
+					|| null != request.getHeader(IF_NONE_MATCH_HEADER)) {
 				response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
 				if (log.isDebugEnabled())
 					log.debug("Returning 'not modified' header. ");
@@ -358,19 +421,21 @@ public class JawrImageRequestHandler extends JawrRequestHandler {
 		}
 
 		// Returns the real file path
-		filePath = getRealFilePath(filePath);
-		
+		String filePath = getRealFilePath(requestedPath);
+
 		try {
-			if(isValidRequestedPath(filePath)){
+			if (isValidRequestedPath(filePath)) {
 				writeContent(response, filePath);
-			}else{
-				log.error("Unable to load the image for the request URI : " + request.getRequestURI());
+			} else {
+				log.error("Unable to load the image for the request URI : "
+						+ request.getRequestURI());
 				response.sendError(HttpServletResponse.SC_NOT_FOUND);
 			}
-			
+
 		} catch (Exception ex) {
 
-			log.error("Unable to load the image for the request URI : " + request.getRequestURI(), ex);
+			log.error("Unable to load the image for the request URI : "
+					+ request.getRequestURI(), ex);
 			response.sendError(HttpServletResponse.SC_NOT_FOUND);
 		}
 
@@ -381,8 +446,10 @@ public class JawrImageRequestHandler extends JawrRequestHandler {
 	/**
 	 * Returns the content type for the image
 	 * 
-	 * @param request the request
-	 * @param filePath the image file path
+	 * @param request
+	 *            the request
+	 * @param filePath
+	 *            the image file path
 	 * @return the content type of the image
 	 */
 	private String getContentType(HttpServletRequest request, String filePath) {
@@ -399,7 +466,8 @@ public class JawrImageRequestHandler extends JawrRequestHandler {
 		String contentType = (String) imgMimeMap.get(extension);
 		if (contentType == null) {
 
-			log.error("No image extension match the extension '" + extension + "' for the request URI : " + requestUri);
+			log.error("No image extension match the extension '" + extension
+					+ "' for the request URI : " + requestUri);
 			return null;
 		}
 		return contentType;
@@ -407,49 +475,43 @@ public class JawrImageRequestHandler extends JawrRequestHandler {
 
 	/**
 	 * Checks if the path is valid and can be accessed.
-	 * @param requestedPath the requested path
+	 * 
+	 * @param requestedPath
+	 *            the requested path
 	 * @return true if the path is valid and can be accessed.
 	 */
 	protected boolean isValidRequestedPath(String requestedPath) {
-		
+
 		boolean result = true;
-		if(requestedPath.startsWith(JawrConstant.WEB_INF_DIR_PREFIX) || requestedPath.startsWith(JawrConstant.META_INF_DIR_PREFIX)){
+		if (requestedPath.startsWith(JawrConstant.WEB_INF_DIR_PREFIX)
+				|| requestedPath.startsWith(JawrConstant.META_INF_DIR_PREFIX)) {
 			result = false;
 		}
-		
+
 		return result;
-	}
-	
-	/**
-	 * Returns the file path
-	 * 
-	 * @param request the request
-	 * @return the image file path
-	 */
-	private String getFilePath(HttpServletRequest request) {
-
-		String requestedPath = "".equals(jawrConfig.getServletMapping()) ? request.getServletPath() : request.getPathInfo();
-
-		// Return the file path requested
-		return requestedPath;
 	}
 
 	/**
 	 * Write the image content to the response
 	 * 
-	 * @param response the response
-	 * @param fileName the filename
-	 * @throws IOException if an IO exception occurs.
+	 * @param response
+	 *            the response
+	 * @param fileName
+	 *            the filename
+	 * @throws IOException
+	 *             if an IO exception occurs.
 	 */
-	private void writeContent(HttpServletResponse response, String fileName) throws IOException {
+	private void writeContent(HttpServletResponse response, String fileName)
+			throws IOException {
 
 		OutputStream os = response.getOutputStream();
 		InputStream is = null;
 
-		if (!jawrConfig.getGeneratorRegistry().isGeneratedImage(fileName) && !fileName.startsWith("/")) {
+		if (!jawrConfig.getGeneratorRegistry().isGeneratedImage(fileName)
+				&& !fileName.startsWith("/")) {
 			fileName = "/" + fileName;
 		}
-		
+
 		try {
 			is = rsReaderHandler.getResourceAsStream(fileName);
 		} catch (ResourceNotFoundException e) {
@@ -459,7 +521,9 @@ public class JawrImageRequestHandler extends JawrRequestHandler {
 		if (is == null) {
 			response.setStatus(HttpServletResponse.SC_NOT_FOUND);
 			if (log.isInfoEnabled())
-				log.info("Received a request for a non existing image resource: " + fileName);
+				log
+						.info("Received a request for a non existing image resource: "
+								+ fileName);
 			return;
 		}
 
@@ -469,7 +533,8 @@ public class JawrImageRequestHandler extends JawrRequestHandler {
 	/**
 	 * Removes the cache buster
 	 * 
-	 * @param fileName the file name
+	 * @param fileName
+	 *            the file name
 	 * @return the file name without the cache buster.
 	 */
 	private String getRealFilePath(String fileName) {
@@ -480,7 +545,12 @@ public class JawrImageRequestHandler extends JawrRequestHandler {
 		Matcher matcher = cacheBusterPattern.matcher(fileName);
 		StringBuffer result = new StringBuffer();
 		if (matcher.find()) {
-			matcher.appendReplacement(result, StringUtils.isEmpty(matcher.group(GENERATED_IMAGE_PREFIX_INDEX)) ? CACHE_BUSTER_STANDARD_IMAGE_REPLACE_PATTERN : CACHE_BUSTER_GENERATED_IMAGE_REPLACE_PATTERN);
+			matcher
+					.appendReplacement(
+							result,
+							StringUtils.isEmpty(matcher
+									.group(GENERATED_IMAGE_PREFIX_INDEX)) ? CACHE_BUSTER_STANDARD_IMAGE_REPLACE_PATTERN
+									: CACHE_BUSTER_GENERATED_IMAGE_REPLACE_PATTERN);
 			return result.toString();
 		}
 

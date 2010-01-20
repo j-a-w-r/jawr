@@ -81,6 +81,9 @@ public class JawrConstant {
 	/** The servlet mapping property name */
 	public static final String SERVLET_MAPPING_PROPERTY_NAME = "mapping";
 
+	/** The spring servlet mapping property name */
+	public static final String SPRING_SERVLET_MAPPING_PROPERTY_NAME = "springServletMapping";
+
 	/** The file URI prefix */
 	public static final String FILE_URI_PREFIX = "file://";
 

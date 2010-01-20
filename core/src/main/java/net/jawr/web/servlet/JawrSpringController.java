@@ -24,6 +24,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import net.jawr.web.JawrConstant;
 import net.jawr.web.resource.bundle.factory.util.PathNormalizer;
+import net.jawr.web.util.StringUtils;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.InitializingBean;
@@ -92,6 +93,22 @@ public class JawrSpringController implements Controller, ServletContextAware, In
 	}
 
 	/**
+	 * Returns the type of resource handled by the controller
+	 * @return the type of resource handled by the controller
+	 */
+	public String getType() {
+		return type;
+	}
+
+	/**
+	 * Returns the init parameters
+	 * @return the init parameters
+	 */
+	public Map getInitParams() {
+		return initParams;
+	}
+
+	/**
 	 * Sets the type
 	 * @param type the type to set
 	 */
@@ -138,11 +155,12 @@ public class JawrSpringController implements Controller, ServletContextAware, In
 	 */
 	public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
-		String requestedPath = (null == mapping) ? helper.getPathWithinApplication(request) : 
+		String requestedPath = (StringUtils.isEmpty(mapping)) ? helper.getPathWithinApplication(request) : 
 												 helper.getPathWithinServletMapping(request);
 		
-		if(null != controllerMapping)
+		if(StringUtils.isNotEmpty(controllerMapping)){
 			requestedPath = request.getPathInfo().substring(controllerMapping.length());
+		}
 		
 		requestHandler.processRequest(requestedPath, request, response);
 		return null;
@@ -162,13 +180,15 @@ public class JawrSpringController implements Controller, ServletContextAware, In
 					+ " You must set at least the configuration or the configLocation param. Please check your web.xml file");
 
 		String fullMapping = "";
-		if(null != mapping)
+		if(StringUtils.isNotEmpty(mapping))
 			fullMapping = mapping;
 		
-		if(null != controllerMapping)
+		if(StringUtils.isNotEmpty(controllerMapping))
 			fullMapping = PathNormalizer.joinPaths(fullMapping, controllerMapping);
 		
-		initParams.put("mapping",fullMapping);
+		initParams.put(JawrConstant.SERVLET_MAPPING_PROPERTY_NAME,fullMapping);
+		initParams.put(JawrConstant.SPRING_SERVLET_MAPPING_PROPERTY_NAME, PathNormalizer.asDirPath(mapping));
+		
 		if(log.isDebugEnabled())
 			log.debug("Initializing Jawr Controller's JawrRequestHandler");
 		
