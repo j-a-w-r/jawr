@@ -15,15 +15,23 @@ http://www.springframework.org/schema/util http://www.springframework.org/schema
 		<!-- This must match the controller mapping prefix to which the 
 			jawr controllers are bound at the urlMapping bean below -->
 		<property name="controllerMapping" value="/jawr/"/>
-      	<!--  property name="configuration">
-      		<util:properties location="classpath:jawr.properties"/>
-      	</property -->
-      	<property name="configLocation" value="/jawr.properties">
+      	<property name="configuration">
+      		<props>
+	      		<prop key="jawr.gzip.on">false</prop> 
+			</props>
+      	</property>
+      	<!-- property name="configPropertiesSourceClass" value="net.jawr.spring.MyJawPropertiesSource" / -->
+      	<property name="configLocation" value="/jawr.properties" >
       	</property>
 	</bean>
 
       <!-- JS controller -->
       <bean id="jawrJsController" parent="jawrBase" />
+      
+      <!-- Image controller -->
+      <bean id="jawrImgController" parent="jawrBase" >
+      	<property name="type" value="img" />
+      </bean>
       
       <!-- CSS controller -->
       <bean id="jawrCSSController"  parent="jawrBase">
@@ -55,6 +63,8 @@ http://www.springframework.org/schema/util http://www.springframework.org/schema
 		  <prop key="index.htm">index</prop>
 		  <prop key="/jawr/**/*.js">jawrJsController</prop>
 		  <prop key="/jawr/**/*.css">jawrCSSController</prop>
+		  <prop key="/jawr/**/*.png">jawrImgController</prop>
+		  <prop key="/jawr/**/*.gif">jawrImgController</prop>
 		  </props>
 		 </property>
 	</bean>
