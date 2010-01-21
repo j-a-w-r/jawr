@@ -45,6 +45,9 @@ public class MockServletRequest implements HttpServletRequest {
 	/** The requested path */
 	private String requestPath;
 
+	/** The requested path */
+	private String requestURI;
+
 	/** The servlet path */
 	private String servletPath;
 
@@ -70,10 +73,10 @@ public class MockServletRequest implements HttpServletRequest {
 	 */
 	public void setRequestPath(String mapping, String path) {
 		this.requestPath = path;
+		int paramStartIdx = requestPath.indexOf("?");
 		if(StringUtils.isEmpty(mapping)){
-			int idx = requestPath.indexOf("?");
-			if(idx != -1){
-				this.servletPath = requestPath.substring(0, idx);
+			if(paramStartIdx != -1){
+				this.servletPath = requestPath.substring(0, paramStartIdx);
 			}else{
 				this.servletPath = requestPath;
 			}
@@ -82,6 +85,14 @@ public class MockServletRequest implements HttpServletRequest {
 			String pathInfo = removeServletMappingFromPath(path, mapping);
 			this.pathInfo = pathInfo;
 		}
+		
+		// Sets the request URI
+		if(paramStartIdx == -1){
+			this.requestURI = requestPath;
+		}else{
+			this.requestURI = requestPath.substring(0, paramStartIdx);
+		}
+		
 		initParameters();
 		
 	}
@@ -153,7 +164,8 @@ public class MockServletRequest implements HttpServletRequest {
 	 * @see javax.servlet.http.HttpServletRequest#getContextPath()
 	 */
 	public String getContextPath() {
-		return "/";
+		//return "/";
+		return "";
 	}
 
 	/* (non-Javadoc)
@@ -253,7 +265,7 @@ public class MockServletRequest implements HttpServletRequest {
 	 */
 	public String getRequestURI() {
 
-		return null;
+		return requestURI;
 	}
 
 	/* (non-Javadoc)

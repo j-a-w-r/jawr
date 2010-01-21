@@ -2,6 +2,7 @@ package net.jawr.web.bundle;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Properties;
 
 import junit.framework.Assert;
@@ -117,10 +118,86 @@ public class BundleProcessorTestCase extends TestCase {
 		FileUtils.clearDirectory(destDirPath);
 		
 		bundleProcessor.process(baseDirPath, tmpDirPath, destDirPath, true);
+		checkGeneratedContent(destDirPath);
+	}
+	
+	public void testSpringBundleProcessing() throws Exception{
 		
-		String bundlePath = FileUtils.getClasspathRootDir()+"/bundleProcessor/tmpDir/jawrTmp/text/bundle/global.js";
-		Assert.assertTrue("Bundle has not been created", new File(bundlePath).exists());
+		String baseDirPath = FileUtils.getClasspathRootDir()+"/bundleProcessor/spring/wrkDir";
+		String tmpDirPath = FileUtils.getClasspathRootDir()+"/bundleProcessor/spring/tmpDir";
+		String destDirPath = FileUtils.getClasspathRootDir()+"/bundleProcessor/spring/destDir";
+		
+		FileUtils.clearDirectory(tmpDirPath);
+		FileUtils.clearDirectory(destDirPath);
+		
+		bundleProcessor.process(baseDirPath, tmpDirPath, destDirPath, "classpath:/spring-JawrConfig.xml,/WEB-INF/dispatcher-servlet.xml", new ArrayList(), true);
+		checkGeneratedContent(destDirPath);
+	}
+
+	public void testSpringBundleProcessingWithPlaceHolders() throws Exception{
+		
+		String baseDirPath = FileUtils.getClasspathRootDir()+"/bundleProcessor/spring/with-placeholders/wrkDir";
+		String tmpDirPath = FileUtils.getClasspathRootDir()+"/bundleProcessor/spring/with-placeholders/tmpDir";
+		String destDirPath = FileUtils.getClasspathRootDir()+"/bundleProcessor/spring/with-placeholders/destDir";
+		
+		FileUtils.clearDirectory(tmpDirPath);
+		FileUtils.clearDirectory(destDirPath);
+		
+		bundleProcessor.process(baseDirPath, tmpDirPath, destDirPath, "classpath:/spring-JawrConfig.xml,/WEB-INF/dispatcher-servlet.xml", new ArrayList(), true);
+		checkGeneratedContent(destDirPath);
 	}
 	
 	
+	public void testSpringBundleProcessingWithNoSpringConfigSet() throws Exception{
+		
+		String baseDirPath = FileUtils.getClasspathRootDir()+"/bundleProcessor/spring/wrkDir";
+		String tmpDirPath = FileUtils.getClasspathRootDir()+"/bundleProcessor/spring/tmpDir";
+		String destDirPath = FileUtils.getClasspathRootDir()+"/bundleProcessor/spring/destDir";
+		
+		FileUtils.clearDirectory(tmpDirPath);
+		FileUtils.clearDirectory(destDirPath);
+		
+		bundleProcessor.process(baseDirPath, tmpDirPath, destDirPath, true);
+		checkGeneratedContent(destDirPath);
+	}
+	
+	public void testSpringProcessingWithoutMappingBundle() throws Exception{
+		
+		String baseDirPath = FileUtils.getClasspathRootDir()+"/bundleProcessor/spring/without-mapping/wrkDir";
+		String tmpDirPath = FileUtils.getClasspathRootDir()+"/bundleProcessor/spring/without-mapping/tmpDir";
+		String destDirPath = FileUtils.getClasspathRootDir()+"/bundleProcessor/spring/without-mapping/destDir";
+		
+		FileUtils.clearDirectory(tmpDirPath);
+		FileUtils.clearDirectory(destDirPath);
+		
+		bundleProcessor.process(baseDirPath, tmpDirPath, destDirPath, "/WEB-INF/dispatcher-servlet.xml", new ArrayList(), true);
+		checkGeneratedContent(destDirPath);
+	}
+	
+	private void checkGeneratedContent(String destDirPath){
+		
+		checkContentCreated(destDirPath+"/CDN/bundle/js/global.js");
+		checkContentCreated(destDirPath+"/CDN/bundle/css/component.css");
+		checkContentCreated(destDirPath+"/CDN/classpathResources/img/clock.png");
+		checkContentCreated(destDirPath+"/CDN/classpathResources/img/iconInformation.gif");
+		checkContentCreated(destDirPath+"/CDN/css/one.css");
+		checkContentCreated(destDirPath+"/CDN/img/mysprite.png");
+		checkContentCreated(destDirPath+"/CDN/img/appIcons/application.png");
+		checkContentCreated(destDirPath+"/CDN/img/appIcons/application_add.png");
+		checkContentCreated(destDirPath+"/CDN/img/appIcons/application_cascade.png");
+		checkContentCreated(destDirPath+"/CDN/img/appIcons/application_delete.png");
+		checkContentCreated(destDirPath+"/CDN/img/appIcons/application_double.png");
+		checkContentCreated(destDirPath+"/CDN/img/appIcons/application_edit.png");
+		checkContentCreated(destDirPath+"/CDN/img/calendarIcons/calendar.png");
+		checkContentCreated(destDirPath+"/CDN/jawr_generator/css/jar/classpathResources/css/temp.css");
+		checkContentCreated(destDirPath+"/CDN/js/global/jawr.js");
+		checkContentCreated(destDirPath+"/CDN/js/global/module.js");
+		checkContentCreated(destDirPath+"/CDN/js/index/index.js");
+	}
+
+	private void checkContentCreated(String filePath) {
+		File file = new File(filePath);
+		Assert.assertTrue("File '"+filePath+"' has not been created", file.exists());
+		Assert.assertTrue("File '"+filePath+"'is empty", file.length() > 0);
+	}
 }

@@ -99,6 +99,23 @@ public class MockServletContext implements ServletContext {
 		return this;
 	}
 
+	/**
+	 * Puts an init parameter in the servlet context
+	 * @param name the name of init parameter to set
+	 * @param value the name of init parameter to set
+	 */
+	public void putInitParameter(String name, String value){
+		this.initParameters.put(name, value);
+	}
+	
+	/**
+	 * Sets the init parameter in the servlet context
+	 * @param initParameters the init parameters to set
+	 */
+	public void setInitParameters(Map initParameters){
+		this.initParameters = initParameters;
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -114,7 +131,7 @@ public class MockServletContext implements ServletContext {
 	 * @see javax.servlet.ServletContext#getInitParameterNames()
 	 */
 	public Enumeration getInitParameterNames() {
-		return new IteratorEnumeration(attributes.keySet().iterator());
+		return new IteratorEnumeration(initParameters.keySet().iterator());
 	}
 
 	/*

@@ -1,5 +1,5 @@
 /**
- * Copyright 2009 Ibrahim Chaehoi
+ * Copyright 2009-2010 Ibrahim Chaehoi
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -41,6 +41,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import net.jawr.web.JawrConstant;
 import net.jawr.web.bundle.processor.renderer.BasicBundleRenderer;
 import net.jawr.web.bundle.processor.renderer.RenderedLink;
+import net.jawr.web.bundle.processor.spring.SpringControllerBundleProcessor;
 import net.jawr.web.config.JawrConfig;
 import net.jawr.web.context.ThreadLocalJawrContext;
 import net.jawr.web.resource.FileNameUtils;
@@ -78,6 +79,12 @@ public class BundleProcessor {
 	/** The logger */
 	private static Logger logger = Logger.getLogger(BundleProcessor.class);
 	
+	/** The /WEB-INF/lib directory path */
+	private static final String WEB_INF_LIB_DIR_PATH = "/WEB-INF/lib/";
+
+	/** The /WEB-INF/classes directory path */
+	private static final String WEB_INF_CLASSES_DIR_PATH = "/WEB-INF/classes/";
+
 	/** The path to the web.xml file from the web application root directory */
 	private static final String WEB_XML_FILE_PATH = "WEB-INF/web.xml";
 
@@ -89,6 +96,9 @@ public class BundleProcessor {
 
 	/** The name of the servlet tag */
 	private static final String SERVLET_TAG_NAME = "servlet";
+
+	/** The name of the listener tag */
+	private static final String CONTEXT_TAG_NAME = "context-param";
 
 	/** The name of the servlet-class tag */
 	private static final String SERVLET_CLASS_TAG_NAME = "servlet-class";
@@ -108,6 +118,9 @@ public class BundleProcessor {
 	/** The CDN directory name */
 	private static final String CDN_DIR_NAME = "/CDN";
 
+	/** The parameter name of the spring context config location */
+	public static final String CONFIG_LOCATION_PARAM = "contextConfigLocation";
+	
 	// The following constants are related to the jawr-apache-httpd.conf file
 
 	/** The path to the template Jawr apache HTTPD conf */
@@ -151,7 +164,7 @@ public class BundleProcessor {
 	 */
 	public void process(String baseDirPath, String tmpDirPath, String destDirPath, boolean generateCdnFiles) throws Exception {
 
-		process(baseDirPath, tmpDirPath, destDirPath, new ArrayList(), generateCdnFiles);
+		process(baseDirPath, tmpDirPath, destDirPath, null, new ArrayList(),generateCdnFiles);
 	}
 
 	/**
@@ -160,14 +173,17 @@ public class BundleProcessor {
 	 * @param baseDirPath the base directory path
 	 * @param tmpDirPath the temp directory path
 	 * @param destDirPath the destination directory path
+	 * @param springConfigFiles the spring config file to initialize
+	 * @param propertyPlaceHolderFile the path to the property place holder file
 	 * @param servletNames the list of the name of servlets to initialized
 	 * @param generateCdnFiles the flag indicating if we should generate the CDN files or not
 	 * @throws Exception if an exception occurs
 	 */
-	public void process(String baseDirPath, String tmpDirPath, String destDirPath, List servletsToInitialize, boolean generateCdnFiles) throws Exception {
+	public void process(String baseDirPath, String tmpDirPath, String destDirPath, String springConfigFiles, List servletsToInitialize, boolean generateCdnFiles) throws Exception {
 
-		URL webAppClasses = new File(baseDirPath+"/WEB-INF/classes/").toURI().toURL();
-		URL webAppLibs =  new File(baseDirPath+"/WEB-INF/lib/").toURI().toURL();
+		// Creates the web app class loader
+		URL webAppClasses = new File(baseDirPath+WEB_INF_CLASSES_DIR_PATH).toURI().toURL();
+		URL webAppLibs =  new File(baseDirPath+WEB_INF_LIB_DIR_PATH).toURI().toURL();
 		ClassLoader webAppClassLoader = new JawrBundleProcessorCustomClassLoader(new URL[]{webAppClasses, webAppLibs}, getClass().getClassLoader());
 		Thread.currentThread().setContextClassLoader(webAppClassLoader);
 		
@@ -182,11 +198,81 @@ public class BundleProcessor {
 				return null;
 			}
 		});
+		
 		Document doc = docBuilder.parse(webXml);
-		NodeList servletNodes = doc.getElementsByTagName(SERVLET_TAG_NAME);
+		MockServletContext servletContext = initServletContext(doc,
+				baseDirPath, tmpDirPath, springConfigFiles);
+		
+		List servletDefinitions = getWebXmlServletDefinitions(
+				doc, servletContext, servletsToInitialize, webAppClassLoader);
+
+		// Initialize the servlets and retrieve the jawr servlet definitions
+		List jawrServletDefinitions = initServlets(servletDefinitions);
+		if(jawrServletDefinitions.isEmpty()){
+			
+			logger.debug("No Jawr Servlet defined in web.xml");
+			if(servletContext.getInitParameter(CONFIG_LOCATION_PARAM) != null){
+				logger.debug("Spring config location defined. Try loading spring context");
+				jawrServletDefinitions = initJawrSpringControllers(servletContext);
+			}
+		}
+		
+		// Copy the temporary directory in the dest directory
+		FileUtils.copyDirectory(new File(tmpDirPath), new File(destDirPath));
+		
+		if(generateCdnFiles){
+			// Process the Jawr servlet to generate the bundles
+			processJawrServlets(destDirPath, jawrServletDefinitions);
+		}
+		
+	}
+
+	/**
+	 * Initalize the servlet context
+	 * @param webXmlDoc the web.xml document
+	 * @param baseDirPath the base drectory path
+	 * @param tmpDirPath the temp directory path
+	 * @param springConfigFiles the list of spring config files
+	 * @return the servlet context
+	 */
+	private MockServletContext initServletContext(Document webXmlDoc,
+			String baseDirPath, String tmpDirPath, String springConfigFiles) {
+		
+		// Parse the context parameters
+		MockServletContext servletContext = new MockServletContext(baseDirPath, tmpDirPath);
+		Map servletContextInitParams = new HashMap();
+		NodeList contextParamsNodes = webXmlDoc.getElementsByTagName(CONTEXT_TAG_NAME);
+		for (int i = 0; i < contextParamsNodes.getLength(); i++) {
+			Node node = contextParamsNodes.item(i);
+			initializeInitParams(node, servletContextInitParams);
+		}
+		
+		// Override spring config file if needed
+		if(StringUtils.isNotEmpty(springConfigFiles)){
+			servletContextInitParams.put(CONFIG_LOCATION_PARAM, springConfigFiles);
+		}
+		
+		servletContext.setInitParameters(servletContextInitParams);
+		return servletContext;
+	}
+
+	/**
+	 * Returns the list of servlet definition, which must be initialize
+	 * @param webXmlDoc the web.xml document
+	 * @param servletContext the servlet context
+	 * @param servletsToInitialize the list of servlet to initialize
+	 * @param webAppClassLoader the web application class loader
+	 * @return the list of servlet definition, which must be initialize
+	 * @throws ClassNotFoundException if a class is not found
+	 */
+	private List getWebXmlServletDefinitions(Document webXmlDoc,
+			ServletContext servletContext, List servletsToInitialize,	
+			ClassLoader webAppClassLoader) throws ClassNotFoundException {
+
+		// Parse the servlet configuration
+		NodeList servletNodes = webXmlDoc.getElementsByTagName(SERVLET_TAG_NAME);
 		
 		List servletDefinitions = new ArrayList();
-		ServletContext servletContext = new MockServletContext(baseDirPath, tmpDirPath);
 		
 		for (int i = 0; i < servletNodes.getLength(); i++) {
 
@@ -228,18 +314,26 @@ public class BundleProcessor {
 				ServletDefinition servletDef = new ServletDefinition(servletClass, config, order);
 				servletDefinitions.add(servletDef);
 			}
+			// Handle Spring MVC servlet definition
+			if(servletContext.getInitParameter(CONFIG_LOCATION_PARAM) == null && 
+						servletClass.getName().equals("org.springframework.web.servlet.DispatcherServlet")){
+				((MockServletContext)servletContext).putInitParameter(CONFIG_LOCATION_PARAM, "/WEB-INF/"+servletName+"-servlet.xml");
+			}
+			
 		}
+		return servletDefinitions;
+	}
 
-		// Initialize the servlets and retrieve the jawr servlet definitions
-		List jawrServletDefinitions = initServlets(servletDefinitions);
-
-		// Stores the output stream
-		FileUtils.copyDirectory(new File(tmpDirPath), new File(destDirPath));
+	/**
+	 * Initialize the Jawr spring controller
+	 * @param servletContext the servlet context
+	 * @return the Jawr spring controller
+	 * @throws ServletException if a servlet exception occurs
+	 */
+	private List initJawrSpringControllers(ServletContext servletContext) throws ServletException {
 		
-		if(generateCdnFiles){
-			// Process the Jawr servlet to generate the bundles
-			processJawrServlets(destDirPath, jawrServletDefinitions);
-		}
+		SpringControllerBundleProcessor springBundleProcessor = new SpringControllerBundleProcessor();
+		return springBundleProcessor.initJawrSpringServlets(servletContext);
 	}
 
 	/**
@@ -317,7 +411,12 @@ public class BundleProcessor {
 			Map initParameters = ((MockServletConfig) servletConfig).getInitParameters();
 			initParameters.remove("jawr.config.reload.interval");
 			
-			String servletMapping = servletConfig.getInitParameter(JawrConstant.SERVLET_MAPPING_PROPERTY_NAME);
+			String jawrServletMapping  = servletConfig.getInitParameter(JawrConstant.SERVLET_MAPPING_PROPERTY_NAME);
+			String servletMapping = servletConfig.getInitParameter(JawrConstant.SPRING_SERVLET_MAPPING_PROPERTY_NAME);
+			if(servletMapping == null){
+				servletMapping = jawrServletMapping;
+			}
+			
 			ResourceBundlesHandler bundleHandler = null;
 			ImageResourcesHandler imgRsHandler = null;
 
@@ -337,26 +436,26 @@ public class BundleProcessor {
 					}
 				}
 				
-				if(servletMapping != null){
-					jsServletMapping = PathNormalizer.asPath(servletMapping);
+				if(jawrServletMapping != null){
+					jsServletMapping = PathNormalizer.asPath(jawrServletMapping);
 				}
 				
 			} else if (type.equals(JawrConstant.CSS_TYPE)) {
 				bundleHandler = (ResourceBundlesHandler) servletContext.getAttribute(JawrConstant.CSS_CONTEXT_ATTRIBUTE);
-				if(servletMapping != null){
-					cssServletMapping = PathNormalizer.asPath(servletMapping);
+				if(jawrServletMapping != null){
+					cssServletMapping = PathNormalizer.asPath(jawrServletMapping);
 				}
 			} else if (type.equals(JawrConstant.IMG_TYPE)) {
 				imgRsHandler = (ImageResourcesHandler) servletContext.getAttribute(JawrConstant.IMG_CONTEXT_ATTRIBUTE);
-				if(servletMapping != null){
-					imgServletMapping = PathNormalizer.asPath(servletMapping);
+				if(jawrServletMapping != null){
+					imgServletMapping = PathNormalizer.asPath(jawrServletMapping);
 				}
 			}
 
 			if (bundleHandler != null) {
 				createBundles(servletDef.getServlet(), bundleHandler, cdnDestDirPath, servletMapping);
 			} else if (imgRsHandler != null) {
-				createImageBundle(servletDef.getServlet(), imgRsHandler, cdnDestDirPath, servletMapping);
+				createImageBundle(servletDef.getServlet(), imgRsHandler, cdnDestDirPath, servletConfig);
 			}
 		}
 		
@@ -607,7 +706,7 @@ public class BundleProcessor {
 	 * @throws IOException if an IOExceptin occurs
 	 * @throws ServletException if an exception occurs
 	 */
-	private void createImageBundle(HttpServlet servlet, ImageResourcesHandler imgRsHandler, String destDirPath, String servletMapping) throws IOException,
+	private void createImageBundle(HttpServlet servlet, ImageResourcesHandler imgRsHandler, String destDirPath, ServletConfig servletConfig) throws IOException,
 			ServletException {
 		Map bundleImgMap = imgRsHandler.getImageMap();
 
@@ -615,6 +714,13 @@ public class BundleProcessor {
 		MockServletResponse response = new MockServletResponse();
 		MockServletRequest request = new MockServletRequest();
 
+		String jawrServletMapping  = servletConfig.getInitParameter(JawrConstant.SERVLET_MAPPING_PROPERTY_NAME);
+		String servletMapping = servletConfig.getInitParameter(JawrConstant.SPRING_SERVLET_MAPPING_PROPERTY_NAME);
+		if(servletMapping == null){
+			servletMapping = jawrServletMapping;
+		}
+		//String pathPrefix = jawrServletMapping.substring(servletMapping.length());
+		
 		// For the list of bundle defines, create the file associated
 		while (bundleIterator.hasNext()) {
 			String path = (String) bundleIterator.next();
@@ -623,6 +729,7 @@ public class BundleProcessor {
 			File destFile = new File(destDirPath, imageFinalPath);
 			
 			// Update the bundle mapping
+			path = PathNormalizer.concatWebPath(PathNormalizer.asDirPath(jawrServletMapping), path);
 			createBundleFile(servlet, response, request, path, destFile, servletMapping);
 		}
 	}
@@ -744,89 +851,6 @@ public class BundleProcessor {
 				url = super.findResource(name.substring(1));
 			}
 			return url;
-		}
-	}
-	
-	/**
-	 * This class is used internally to handle the definition of a servlet.
-	 * 
-	 * @author Ibrahim Chaehoi
-	 */
-	private static class ServletDefinition implements Comparable {
-
-		/** The servlet instance */
-		private HttpServlet servlet;
-
-		/** The servlet class */
-		private Class servletClass;
-
-		/** The servlet config */
-		private ServletConfig servletConfig;
-
-		/** The initialization order of the servlet */
-		private int order;
-
-		/**
-		 * Constructor.
-		 * 
-		 * @param servletClass the servlet class
-		 * @param servletConfig the servlet config
-		 * @param order the order
-		 */
-		public ServletDefinition(Class servletClass, ServletConfig servletConfig, int order) {
-			super();
-			this.servletClass = servletClass;
-			this.servletConfig = servletConfig;
-			this.order = order;
-		}
-
-		/**
-		 * @return the servlet
-		 */
-		public HttpServlet getServlet() {
-			return servlet;
-		}
-
-		/**
-		 * Returns the servlet config
-		 * 
-		 * @return the servletConfig
-		 */
-		public ServletConfig getServletConfig() {
-			return servletConfig;
-		}
-
-		/**
-		 * Create a new instance of the servlet and initialize it.
-		 * 
-		 * @param servletClass the servlet class
-		 * @param servletConfig the servlet config
-		 * @throws ServletException if a servlet exception occurs.
-		 */
-		public HttpServlet initServlet() throws Exception {
-
-			servlet = (HttpServlet) servletClass.newInstance();
-			servlet.init(servletConfig);
-			return servlet;
-		}
-
-		/**
-		 * Returns true if the servlet definition is a definition for a Jawr servlet
-		 * 
-		 * @return true if the servlet definition is a definition for a Jawr servlet
-		 */
-		public boolean isJawrServletDefinition() {
-			return JawrServlet.class.isAssignableFrom(servletClass);
-		}
-
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see java.lang.Comparable#compareTo(T)
-		 */
-		public int compareTo(Object arg0) {
-
-			return order - ((ServletDefinition) arg0).order;
 		}
 	}
 	
