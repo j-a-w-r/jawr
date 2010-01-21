@@ -69,6 +69,13 @@ public class JawrMojo extends AbstractMojo {
 	private String servletsToInitialize;
 
 	/**
+	 * The list of comma separated path to script config files to use.
+	 * 
+	 * @parameter default-value=""
+	 */
+	private String springConfigFiles;
+
+	/**
 	 * The flag indicating if we  should generate the CDN files or not
 	 * 
 	 * @parameter default-value="true"
@@ -76,10 +83,19 @@ public class JawrMojo extends AbstractMojo {
 	private boolean generateCDNFiles;
 	
 	/**
+	 * Sets the list of servlet to initialize
 	 * @param servletsToInitialize the servletsToInitialize to set
 	 */
 	public void setServletsToInitialize(String servletsToInitialize) {
 		this.servletsToInitialize = servletsToInitialize;
+	}
+
+	/**
+	 * Sets the list of spring config files to use
+	 * @param springConfigFiles the spring config files to set
+	 */
+	public void setSpringConfigFiles(String springConfigFiles) {
+		this.springConfigFiles = springConfigFiles;
 	}
 
 	/**
@@ -179,7 +195,7 @@ public class JawrMojo extends AbstractMojo {
 		}
 		
 		BundleProcessor bundleProcessor = new BundleProcessor();
-		bundleProcessor.process(rootPath, tempDirPath, destDirPath, servlets, generateCDNFiles);
+		bundleProcessor.process(rootPath, tempDirPath, destDirPath, springConfigFiles, servlets, generateCDNFiles);
 	}
 
 }

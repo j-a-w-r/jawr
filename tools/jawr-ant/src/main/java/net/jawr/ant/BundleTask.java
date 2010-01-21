@@ -56,6 +56,11 @@ public class BundleTask extends Task {
 	private String servletsToInitialize;
 
 	/**
+	 * The list of comma separated path to spring config files.
+	 */
+	private String springConfigFiles;
+
+	/**
 	 * The flag indicating if we  should generate the CDN files or not
 	 */
 	private boolean generateCDNFiles = true;
@@ -91,6 +96,14 @@ public class BundleTask extends Task {
 	 */
 	public void setServletsToInitialize(String servletsToInitialize) {
 		this.servletsToInitialize = servletsToInitialize;
+	}
+
+	/**
+	 * Sets the spring config files to use
+	 * @param springConfigFiles the spring config files to use
+	 */
+	public void setSpringConfigFiles(String springConfigFiles) {
+		this.springConfigFiles = springConfigFiles;
 	}
 
 	/**
@@ -150,7 +163,7 @@ public class BundleTask extends Task {
 		}
 		
 		BundleProcessor bundleProcessor = new BundleProcessor();
-		bundleProcessor.process(rootPath, tempDirPath, destDirPath, servlets, generateCDNFiles);
+		bundleProcessor.process(rootPath, tempDirPath, destDirPath, springConfigFiles, servlets, generateCDNFiles);
 	}
 
 	/**
