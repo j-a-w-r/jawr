@@ -111,6 +111,27 @@
 	            <servletsToInitialize>dispatcher</servletsToInitialize> 
 	        </configuration>
 	  </plugin>
+	  <plugin>
+	        <groupId>net.jawr</groupId>
+	        <artifactId>maven-jawr-plugin</artifactId>
+	        <version>1.3</version>
+	        <dependencies>
+	        <dependency>
+				<groupId>org.carrot2</groupId>
+				<artifactId>smartsprites</artifactId>
+				<version>0.2.6</version>
+			</dependency>
+			</dependencies>
+			<executions>
+	          <execution>
+	            <!-- Use this phase so that maven war includes our bundles -->
+	            <phase>prepare-package</phase>
+	          </execution>
+	        </executions>
+	        <configuration>
+	            <generateCDNFiles>true</generateCDNFiles>
+	        </configuration>
+	  </plugin>
     </plugins>
   </build>
 </project>
