@@ -25,7 +25,7 @@ import java.nio.channels.WritableByteChannel;
 
 public class IOUtils {
 
-	// the buffer size for reading data
+	/** the buffer size for reading data */
 	private static final int BUFFER_SIZE = 16384;
 
 	/**
@@ -35,11 +35,29 @@ public class IOUtils {
 	 * @param writer the writer to write to
 	 */
 	public static void copy(Reader reader, Writer writer) throws IOException {
+		copy(reader, writer, false);
+	}
+	
+	/**
+	 * Writes all the contents of a Reader to a Writer.
+	 * 
+	 * @param reader the reader to read from
+	 * @param writer the writer to write to
+	 * @param closeStreams the flag indicating if the stream must be close at the end, even if an exception occurs
+	 */
+	public static void copy(Reader reader, Writer writer, boolean closeStreams) throws IOException {
 		char[] buf = new char[BUFFER_SIZE];
 		int num = 0;
 
-		while ((num = reader.read(buf, 0, buf.length)) != -1) {
-			writer.write(buf, 0, num);
+		try{
+			while ((num = reader.read(buf, 0, buf.length)) != -1) {
+				writer.write(buf, 0, num);
+			}
+		} finally {
+			if (closeStreams) {
+				close(reader);
+				close(writer);
+			}
 		}
 	}
 
@@ -75,6 +93,7 @@ public class IOUtils {
 	 * 
 	 * @param input the input stream to read from
 	 * @param output the output stream to write to
+	 * @param closeStreams the flag indicating if the stream must be close at the end, even if an exception occurs
 	 */
 	public static void copy(InputStream input, OutputStream output,
 			boolean closeStreams) throws IOException {

@@ -13,6 +13,7 @@
  */
 package net.jawr.web.servlet;
 
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.Serializable;
@@ -578,6 +579,8 @@ public class JawrRequestHandler implements ConfigChangeListener, Serializable {
 					}
 				}
 			}
+		} catch (EOFException eofex) {
+			log.debug("Browser cut off response", eofex);
 		} catch (ResourceNotFoundException e) {
 			response.setStatus(HttpServletResponse.SC_NOT_FOUND);
 			if (log.isInfoEnabled())

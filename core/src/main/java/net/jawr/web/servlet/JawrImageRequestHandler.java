@@ -13,6 +13,7 @@
  */
 package net.jawr.web.servlet;
 
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -527,7 +528,14 @@ public class JawrImageRequestHandler extends JawrRequestHandler {
 			return;
 		}
 
-		IOUtils.copy(is, os, true);
+		try {
+			IOUtils.copy(is, os);
+		} catch (EOFException eofex) {
+			log.debug("Browser cut off response", eofex);
+		}
+		finally{
+			IOUtils.close(is);
+		}
 	}
 
 	/**
