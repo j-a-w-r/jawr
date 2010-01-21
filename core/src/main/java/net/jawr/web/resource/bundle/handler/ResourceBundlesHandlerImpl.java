@@ -383,11 +383,12 @@ public class ResourceBundlesHandlerImpl implements ResourceBundlesHandler {
 
 		try {
 			IOUtils.copy(rd, writer);
-			rd.close();
 			writer.flush();
 		} catch (IOException e) {
 			throw new RuntimeException("Unexpected IOException writing bundle["
 					+ bundlePath + "]", e);
+		}finally{
+			IOUtils.close(rd);
 		}
 	}
 
@@ -403,10 +404,10 @@ public class ResourceBundlesHandlerImpl implements ResourceBundlesHandler {
 
 		// Remove prefix, which are used only in production mode
 		bundlePath = PathNormalizer.removeVariantPrefixFromPath(bundlePath);
-
+		ReadableByteChannel data = null;
 		try {
 
-			ReadableByteChannel data = resourceBundleHandler
+			data = resourceBundleHandler
 					.getResourceBundleChannel(bundlePath);
 			WritableByteChannel outChannel = Channels.newChannel(out);
 			IOUtils.copy(data, outChannel);
@@ -415,6 +416,8 @@ public class ResourceBundlesHandlerImpl implements ResourceBundlesHandler {
 			throw new RuntimeException(
 					"Unexpected IOException writing bundle [" + bundlePath
 							+ "]", e);
+		}finally{
+			IOUtils.close(data);
 		}
 	}
 

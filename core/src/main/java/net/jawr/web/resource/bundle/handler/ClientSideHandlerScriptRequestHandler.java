@@ -112,9 +112,7 @@ public class ClientSideHandlerScriptRequestHandler {
 			StringReader rd = new StringReader(handler.data.toString());
 			try {
 				Writer writer = response.getWriter();
-                IOUtils.copy(rd, writer);
-				rd.close();
-				writer.close();
+                IOUtils.copy(rd, writer, true);
 			} catch (IOException e) {
 				throw new RuntimeException("Unexpected IOException writing ClientSideHandlerScript",e);
 			}

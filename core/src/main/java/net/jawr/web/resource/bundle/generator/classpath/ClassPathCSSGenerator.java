@@ -151,7 +151,7 @@ public class ClassPathCSSGenerator extends AbstractCSSGenerator implements Worki
 		FileWriter fWriter = null;
 		try {
 			StringWriter writer = new StringWriter();
-			IOUtils.copy(rd, writer);
+			IOUtils.copy(rd, writer, true);
 			result = new StringReader(writer.getBuffer().toString());
 			StringBuffer resourceData = postProcessor.postProcessBundle(tempStatus, writer.getBuffer());
 			
@@ -166,11 +166,9 @@ public class ClassPathCSSGenerator extends AbstractCSSGenerator implements Worki
 			}
 			
 			fWriter = new FileWriter(cssTempFile);
-			IOUtils.copy(new StringReader(resourceData.toString()), fWriter);
+			IOUtils.copy(new StringReader(resourceData.toString()), fWriter, true);
 		} catch (IOException e) {
 			throw new RuntimeException("An error occured while creating temporary resource for "+resourcePath, e);
-		}finally{
-			IOUtils.close(fWriter);
 		}
 		
 		return result;

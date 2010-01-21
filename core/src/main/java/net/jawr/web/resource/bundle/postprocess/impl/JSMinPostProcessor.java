@@ -112,9 +112,8 @@ public class JSMinPostProcessor extends
 		ReadableByteChannel chan = Channels.newChannel(new ByteArrayInputStream(minified));
         Reader rd = Channels.newReader(chan,charset.newDecoder(),-1);
         StringWriter writer = new StringWriter();
-        IOUtils.copy(rd, writer);
-        rd.close();
-		return writer.getBuffer();
+        IOUtils.copy(rd, writer, true);
+        return writer.getBuffer();
 	}
 
 	/**

@@ -218,9 +218,8 @@ public class DWRBeanGenerator extends AbstractJavascriptGenerator implements Res
 			ReadableByteChannel chan = Channels.newChannel(is);
 			Reader r = Channels.newReader(chan,"utf-8");
 			StringWriter sw = new StringWriter();
-            IOUtils.copy(r, sw);
-			r.close();
-            sb = sw.getBuffer();
+            IOUtils.copy(r, sw, true);
+			sb = sw.getBuffer();
 			
 		} catch (FileNotFoundException e) {
 			throw new RuntimeException(e);

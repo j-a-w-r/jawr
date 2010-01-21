@@ -101,7 +101,7 @@ public class CSSImportPostProcessor extends
 		}
 		
 		StringWriter content = new StringWriter();
-		IOUtils.copy(reader, content);
+		IOUtils.copy(reader, content, true);
 		return content.toString();
 	}
 

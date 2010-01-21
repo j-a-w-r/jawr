@@ -197,17 +197,9 @@ public class FileUtils {
         }
 
         FileInputStream input = new FileInputStream(srcFile);
-        try {
-            FileOutputStream output = new FileOutputStream(destFile);
-            try {
-                IOUtils.copy(input, output);
-            } finally {
-                IOUtils.close(output);
-            }
-        } finally {
-            IOUtils.close(input);
-        }
-
+        FileOutputStream output = new FileOutputStream(destFile);
+        IOUtils.copy(input, output, true);
+        
         if (srcFile.length() != destFile.length()) {
             throw new IOException("Failed to copy full contents from '" +
                     srcFile + "' to '" + destFile + "'");
