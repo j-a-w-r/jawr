@@ -66,7 +66,7 @@ public abstract class AbstractResourceMapper {
 	public AbstractResourceMapper(String baseDir, ResourceReaderHandler rsHandler,
 			List currentBundles, String resourceExtension) {
 		super();
-		this.baseDir = PathNormalizer.normalizePath(baseDir);
+		this.baseDir = PathNormalizer.asDirPath(baseDir);
 		this.rsHandler = rsHandler;
 		this.currentBundles = new ArrayList();
 		if (null != currentBundles)

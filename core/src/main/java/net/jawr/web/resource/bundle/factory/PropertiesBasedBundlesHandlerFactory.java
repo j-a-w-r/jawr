@@ -116,7 +116,7 @@ public class PropertiesBasedBundlesHandlerFactory {
 				.getPropertyAsSet(PropertiesBundleConstant.FACTORY_DIR_MAPPER_EXCLUSION));
 
 		// Initialize custom generators
-		Iterator generators = props.getPropertyAsSet(PropertiesBundleConstant.CUSTOM_GENERATORS)
+		Iterator generators = props.getCommonPropertyAsSet(PropertiesBundleConstant.CUSTOM_GENERATORS)
 				.iterator();
 		while (generators.hasNext()) {
 			String generatorClass = (String) generators.next();

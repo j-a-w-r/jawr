@@ -92,6 +92,20 @@ public class PropertiesConfigHelper {
 	}
 
 	/**
+	 * Returns as a set, the comma separated values of a property 
+	 * @param key the key of the property
+	 * @return a set of the comma separated values of a property 
+	 */
+	public Set getCommonPropertyAsSet(String key) {
+		Set propertiesSet = new HashSet();
+		StringTokenizer tk = new StringTokenizer(props.getProperty(PropertiesBundleConstant.PROPS_PREFIX+key, ""),
+				",");
+		while (tk.hasMoreTokens())
+			propertiesSet.add(tk.nextToken().trim());
+		return propertiesSet;
+	}
+	
+	/**
 	 * Returns the value of the custom bundle property, or the default value if no value is defined
 	 * @param bundleName the bundle name
 	 * @param key the key of the property
@@ -136,7 +150,7 @@ public class PropertiesConfigHelper {
 	 */
 	public Set getPropertyAsSet(String key) {
 		Set propertiesSet = new HashSet();
-		StringTokenizer tk = new StringTokenizer(props.getProperty(key, ""),
+		StringTokenizer tk = new StringTokenizer(props.getProperty(prefix+key, ""),
 				",");
 		while (tk.hasMoreTokens())
 			propertiesSet.add(tk.nextToken().trim());

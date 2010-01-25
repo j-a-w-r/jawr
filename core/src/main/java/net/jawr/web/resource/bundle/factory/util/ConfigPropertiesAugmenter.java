@@ -111,7 +111,7 @@ public class ConfigPropertiesAugmenter {
 				configKey.endsWith(PropertiesBundleConstant.BUNDLE_FACTORY_CUSTOM_COMPOSITE_NAMES) || 	// children of composites
 				configKey.equals(PropertiesBundleConstant.CUSTOM_POSTPROCESSORS + 
 						PropertiesBundleConstant.CUSTOM_POSTPROCESSORS_NAMES) || 		// Postprocessors definition
-				configKey.equals(PropertiesBundleConstant.CUSTOM_GENERATORS));					// Generators definition
+				configKey.equals(PropertiesBundleConstant.PROPS_PREFIX+PropertiesBundleConstant.CUSTOM_GENERATORS));					// Generators definition
 		
 		rets = rets && configProperties.containsKey(configKey);
 		return rets;

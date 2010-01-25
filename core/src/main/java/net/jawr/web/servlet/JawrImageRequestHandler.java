@@ -157,7 +157,7 @@ public class JawrImageRequestHandler extends JawrRequestHandler {
 		// Initialize custom generators
 		PropertiesConfigHelper propertiesHelper = new PropertiesConfigHelper(
 				props, resourceType);
-		Iterator generators = propertiesHelper.getPropertyAsSet(
+		Iterator generators = propertiesHelper.getCommonPropertyAsSet(
 				PropertiesBundleConstant.CUSTOM_GENERATORS).iterator();
 		while (generators.hasNext()) {
 			String generatorClass = (String) generators.next();

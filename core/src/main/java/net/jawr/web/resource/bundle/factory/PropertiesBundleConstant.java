@@ -69,7 +69,7 @@ public class PropertiesBundleConstant {
 	public static final String CUSTOM_POSTPROCESSORS_CLASS = ".class";
 
 	/** The suffix for the property defining the custom generators */
-	public static final String CUSTOM_GENERATORS = "jawr.custom.generators";
+	public static final String CUSTOM_GENERATORS = "custom.generators";
 	
 	// Custom bundle factory parameters
 	/** The suffix for the property defining the names of the bundles  */

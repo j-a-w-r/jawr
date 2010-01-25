@@ -618,7 +618,7 @@ public class BundlesHandlerFactory {
 	 * @param baseDir the base directory to set
 	 */
 	public void setBaseDir(String baseDir) {
-		this.baseDir = PathNormalizer.normalizePath(baseDir);
+		this.baseDir = PathNormalizer.asDirPath(baseDir);
 	}
 
 	/**
@@ -711,7 +711,7 @@ public class BundlesHandlerFactory {
 	 * @param excludedDirMapperDirs
 	 */
 	public void setExludedDirMapperDirs(Set exludedDirMapperDirs) {
-		if (null != excludedDirMapperDirs)
+		if (null != exludedDirMapperDirs)
 			this.excludedDirMapperDirs = PathNormalizer
 					.normalizePaths(exludedDirMapperDirs);
 	}
