@@ -5,7 +5,7 @@
  <script type="text/javascript">/* Start adding global members. */</script>
 <script type="text/javascript">/* Finished adding global members. */</script>
 <script type="text/javascript">/* Start adding members resolved by '/fwk/core/component.css'. Bundle id is: '/fwk/core/component.css' */</script>
-<link rel="stylesheet" type="text/css" media="all" href="/jawr-integration-test/jawr_generator.css?generationConfigParam=jar%3Afwk%2Fcss%2Ftemp.css%40en_US" >
+<link rel="stylesheet" type="text/css" media="all" href="/jawr-integration-test/jawr_generator.css?generationConfigParam=jar%3Afwk%2Fcss%2FtempCssWithSprite.css%40en_US" >
 <link rel="stylesheet" type="text/css" media="all" href="/jawr-integration-test/css/sprite/one.css?d=11111" >
 <script type="text/javascript">/* Finished adding members resolved by /fwk/core/component.css */</script>
 
