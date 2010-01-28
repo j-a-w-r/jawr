@@ -25,11 +25,12 @@ Jawr Ant task
 	
 	* <<servletsToInitialize>> The comma separated list of servlets name to initialize
 	
+	* <<springConfigFiles>> the comma separated list of spring configuration files, which will be used to initialize the Jawr spring controller.
+	 	This property accepts any spring resource location definition like classpath:..., file:..., etc
+	 	
 	* <<generateCDNFiles>> The flag indicating if we should generate the CDN files or not
 	Default value: true 
 	
-    
-
 +------------------------------------------+	
 
 	<!-- Definition of the Jawr bundle task -->
@@ -40,6 +41,21 @@ Jawr Ant task
 	
 	<jawrBundle rootPath="${webapp.dir}" tempDirPath="${temp.dir}/jawrFinal/" 
 			 	destDirPath="${temp.dir}/jawrTemp/" />
+			 	
++------------------------------------------+	
+	
+	For the spring MVC projects, you can use:
+	
++------------------------------------------+	
+
+	<!-- Definition of the Jawr bundle task -->
+	<taskdef name="jawrBundle" classname="net.jawr.ant.BundleTask">
+	</taskdef>
+	
+	...
+	
+	<jawrBundle rootPath="${webapp.dir}" tempDirPath="${temp.dir}/jawrFinal/" 
+			 	destDirPath="${temp.dir}/jawrTemp/" springConfigFiles="classpath:/spring-JawrConfig.xml,/WEB-INF/jawr-controllers.xml"/>
 			 	
 +------------------------------------------+	
 	   	

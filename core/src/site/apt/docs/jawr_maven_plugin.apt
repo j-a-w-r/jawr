@@ -30,6 +30,9 @@ Jawr maven plugin
 	* <<servletsToInitialize>> The comma separated list of servlets name to initialize
 	Default value: ""
 	
+	* <<springConfigFiles>> the comma separated list of spring configuration files, which will be used to initialize the Jawr spring controller.
+	 	This property accepts any spring resource location definition like classpath:..., file:..., etc
+	 	
 	* <<generateCDNFiles>> The flag indicating if we should generate the CDN files or not
 	Default value: true 
 	
@@ -55,6 +58,28 @@ Jawr maven plugin
 	  </plugin>
 +------------------------------------------+	
 	   	
+	For the spring MVC projects, you can use:	
++------------------------------------------+	
+	<plugin>
+	        <groupId>net.jawr</groupId>
+	        <artifactId>maven-jawr-plugin</artifactId>
+	        <version>1.0</version>
+	        <executions>
+	          <execution>
+	            <!-- Use this phase so that we could deal with the war folder just before the war package -->
+	            <phase>prepare-package</phase>
+	            <goals>
+	              <goal>bundle</goal>
+	            </goals>
+	          </execution>
+	        </executions>
+	        <configuration>
+	            <generateCDNFiles>true</generateCDNFiles>
+	            <springConfigFiles>classpath:/spring-JawrConfig.xml,/WEB-INF/jawr-controllers.xml</springConfigFiles>
+	        </configuration>
+	  </plugin>
++------------------------------------------+	
+	  
 	   	
 	You could launch the bundling process directly using the maven command:
 

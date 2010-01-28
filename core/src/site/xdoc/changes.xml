@@ -8,7 +8,46 @@
 	
     <section name="Announcementes and change log">
     <ul>
-    	 <li> <strong>12/09/2009</strong>: Version 3.2 released:<br/>
+    	 <li> <strong>01/XX/2009</strong>: Version 3.2.1 released:<br/>
+	      	This version contains mainly bug fixes.<br/><br/>
+	      	<strong>New feature: </strong>
+	    	<ul>
+      		 <li>
+      		 For spring MVC projects, Jawr now allows you to use simultaneously <strong>configuration</strong> and <strong>configLocation</strong> properties.
+      		 The values found in the configuration file at <strong>configLocation</strong> will be overrided by the properties defined in <strong>configuration</strong>.
+      		 The <strong>configuration</strong> property is no more deprecated.
+      		 Thanks to sfrancois99 and szeller for their feedbacks.<br/>
+      		 Please check the documentation on the <a href="./integration/spring.html">Spring MVC integration</a> for more detail.
+      		 </li>
+      		</ul>
+      		<strong>Fixed issues: </strong>
+	    	 <ul>    	 	
+	      		 <li>
+	      		 	<strong>Issue #81 fixed:</strong> <strong>jawr.[type].factory.dirmapper.excluded</strong> property doesn't work.      
+	      		 </li>      
+	      		 <li>
+	      		 	<strong>Issue #113 fixed:</strong> In spring MVC, when using only configuration property an exception is thrown.      
+	      		 </li>
+	      		 <li>
+	      		 	<strong>Issue #115 fixed:</strong> Css image sprite generation doesn't work for generated CSS resource.      
+	      		 </li>       
+	      		 <li>
+	      		 	<strong>Issue #116 fixed:</strong> Jawr bundle processing with the maven plugin or ant Task doesn't work with a spring MVC project. Please check the <a href="./docs/bundle_preprocessing.html">bundle preprocessing documentation</a> for more detail.      
+	      		 </li>       
+	      		 <li>
+	      		 	<strong>Issue #118 fixed:</strong> Image Streaming throws exception if the browser closes the stream      
+	      		 </li>       
+	      		 <li>
+	      		 	<strong>Issue #123 fixed:</strong> Images are not handled property with JawrSpringController.      
+	      		 </li>       
+	      		 <li>
+	      		 	<strong>Issue #124 fixed:</strong> The property "factory.use.orphans.mapper" is never taken in account. To be compliant with the Jawr properties naming convention,
+	      		 	this property has been renamed to <strong>jawr.factory.use.orphans.mapper</strong>. Please check <a href="./docs/descriptor_syntax.html">descriptor syntax doc</a> for more detail.   
+	      		 </li>       
+	      		 Thanks to qxo, mahoney266 for reporting issues and providing patches. 
+      	  	</ul>
+      	  </li>
+      	  <li> <strong>12/09/2009</strong>: Version 3.2 released:<br/>
 	      	A serious security issue has been found in Jawr when using the property <strong>jawr.debug.overrideKey</strong>, which allowed a user to access the content of the WEB-INF folder, and any file of your web application
 	      	if the user finds the value of the property <strong>jawr.debug.overrideKey</strong>, which is defined your configuration file. <br/>
 	      	This issue is fixed in this new version. <br/>
