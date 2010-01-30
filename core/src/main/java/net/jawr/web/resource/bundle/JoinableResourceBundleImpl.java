@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.Set;
 
 import net.jawr.web.collections.ConcurrentCollectionsFactory;
+import net.jawr.web.exception.BundlingProcessException;
 import net.jawr.web.exception.ResourceNotFoundException;
 import net.jawr.web.resource.bundle.factory.util.PathNormalizer;
 import net.jawr.web.resource.bundle.postprocess.ResourceBundlePostProcessor;
@@ -40,8 +41,8 @@ import org.apache.log4j.Logger;
  */
 public class JoinableResourceBundleImpl implements JoinableResourceBundle {
 
-	private static final Logger log = Logger
-			.getLogger(JoinableResourceBundle.class.getName());
+	private static final Logger LOGGER = Logger
+			.getLogger(JoinableResourceBundleImpl.class);
 
 	/** The name of the bundle used in the configuration properties */
 	private String name;
@@ -135,25 +136,28 @@ public class JoinableResourceBundleImpl implements JoinableResourceBundle {
 			List pathMappings, ResourceReaderHandler resourceReaderHandler) {
 		this(id, name, fileExtension, inclusionPattern, resourceReaderHandler);
 
-		if (log.isDebugEnabled())
-			log.debug("Adding mapped files for bundle " + getId());
+		if (LOGGER.isDebugEnabled()){
+			LOGGER.debug("Adding mapped files for bundle " + id);
+		}
 		this.pathMappings = pathMappings;
 
 		initPathList();
-		if (log.isDebugEnabled())
-			log.debug("Added " + this.itemPathList.size() + " files and "
+		if (LOGGER.isDebugEnabled()){
+			LOGGER.debug("Added " + this.itemPathList.size() + " files and "
 					+ licensesPathList.size() + " licenses for the bundle "
-					+ getId());
-
+					+ id);
+		}
+	
 	}
 
 	/**
 	 * Detects all files that belong to this bundle and adds them to the items path list.
 	 */
 	private void initPathList() {
-		if (log.isDebugEnabled())
-			log.debug("Creating bundle path List for " + getId());
-
+		if (LOGGER.isDebugEnabled()){
+			LOGGER.debug("Creating bundle path List for " + this.id);
+		}
+		
 		for (Iterator it = pathMappings.iterator(); it.hasNext();) {
 			String pathMapping = (String) it.next();
 			boolean isGeneratedPath = resourceReaderHandler.isResourceGenerated(pathMapping);
@@ -173,11 +177,12 @@ public class JoinableResourceBundleImpl implements JoinableResourceBundle {
 			}else if (pathMapping.endsWith(LICENSES_FILENAME)) {
 				licensesPathList.add(asPath(pathMapping, isGeneratedPath));
 			} else
-				log.warn("Wrong mapping [" + pathMapping + "] for bundle ["
+				LOGGER.warn("Wrong mapping [" + pathMapping + "] for bundle ["
 						+ this.name + "]. Please check configuration. ");
 		}
-		if (log.isDebugEnabled())
-			log.debug("Finished creating bundle path List for " + getId());
+		if (LOGGER.isDebugEnabled()){
+			LOGGER.debug("Finished creating bundle path List for " + this.id);
+		}
 	}
 
 	/**
@@ -189,8 +194,8 @@ public class JoinableResourceBundleImpl implements JoinableResourceBundle {
 	private void addItemsFromDir(String dirName, boolean addSubDirs) {
 		Set resources = resourceReaderHandler.getResourceNames(dirName);
 		boolean isGeneratedPath = resourceReaderHandler.isResourceGenerated(dirName);
-		if (log.isDebugEnabled()) {
-			log.debug("Adding " + resources.size() + " resources from path ["
+		if (LOGGER.isDebugEnabled()) {
+			LOGGER.debug("Adding " + resources.size() + " resources from path ["
 					+ dirName + "] to bundle " + getId());
 		}
 
@@ -200,18 +205,17 @@ public class JoinableResourceBundleImpl implements JoinableResourceBundle {
 			
 			String sortFilePath = joinPaths(dirName,
 					SORT_FILE_NAME, isGeneratedPath);
-			Reader rd = null;
 			
-			
+			Reader reader;
 			try {
-				rd = resourceReaderHandler.getResource(sortFilePath);
+				reader = resourceReaderHandler.getResource(sortFilePath);
 			} catch (ResourceNotFoundException e) {
-				throw new RuntimeException(
+				throw new BundlingProcessException(
 						"Unexpected ResourceNotFoundException when reading a sorting file["
 								+ sortFilePath + "]", e);
 			}
 			
-			SortFileParser parser = new SortFileParser(rd, resources, dirName);
+			SortFileParser parser = new SortFileParser(reader, resources, dirName);
 
 			List sortedResources = parser.getSortedResources();
 			for (Iterator it = sortedResources.iterator(); it.hasNext();) {
@@ -220,8 +224,8 @@ public class JoinableResourceBundleImpl implements JoinableResourceBundle {
 				// Add subfolders or files
 				if (resourceName.endsWith(fileExtension)) {
 					itemPathList.add(asPath(resourceName, isGeneratedPath));
-					if (log.isDebugEnabled())
-						log
+					if (LOGGER.isDebugEnabled())
+						LOGGER
 								.debug("Added to item path list from the sorting file:"
 										+ resourceName);
 				} else if (addSubDirs
@@ -246,8 +250,8 @@ public class JoinableResourceBundleImpl implements JoinableResourceBundle {
 			if (resourceName.endsWith(fileExtension)) {
 				itemPathList.add(asPath(resourcePath, isGeneratedPath));
 
-				if (log.isDebugEnabled())
-					log.debug("Added to item path list:"
+				if (LOGGER.isDebugEnabled())
+					LOGGER.debug("Added to item path list:"
 							+ asPath(resourcePath, isGeneratedPath));
 			} else if (addSubDirs
 					&& resourceReaderHandler.isDirectory(resourcePath))

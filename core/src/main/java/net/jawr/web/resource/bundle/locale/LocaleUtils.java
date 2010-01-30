@@ -15,9 +15,11 @@ package net.jawr.web.resource.bundle.locale;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
+import java.util.Set;
 
 import net.jawr.web.resource.bundle.factory.util.ClassLoaderResourceUtils;
 import net.jawr.web.util.StringUtils;
@@ -214,6 +216,36 @@ public class LocaleUtils {
 			sb.append(language);
 		}
 		return sb.toString();
+	}
+	
+	/**
+	 * Returns the set of available locale suffixes
+	 * @return the set of available locale suffixes
+	 */
+	public static Set getAvailableLocaleSuffixes(){
+	
+		Set availableLocaleSuffixes = new HashSet(); 
+		Locale[] availableLocales = Locale.getAvailableLocales();
+		for (int i = 0; i < availableLocales.length; i++) {
+			Locale locale = availableLocales[i];
+			
+			StringBuffer sb = new StringBuffer();
+			if (locale != null) {
+				
+				String language = locale.getLanguage();
+				String country = locale.getCountry();
+				String variant = locale.getVariant();
 
+				if (variant != "") {
+					sb.append(language).append('_').append(country).append('_').append(variant);
+				} else if (country != "") {
+					sb.append(language).append('_').append(country);
+				} else {
+					sb.append(language);
+				}
+			}
+			availableLocaleSuffixes.add(sb.toString());
+		}
+		return availableLocaleSuffixes;
 	}
 }

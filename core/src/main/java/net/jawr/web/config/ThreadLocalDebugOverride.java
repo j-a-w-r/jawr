@@ -17,7 +17,7 @@ package net.jawr.web.config;
  * 
  * @author Matt Ruby
  */
-public class ThreadLocalDebugOverride {
+public final class ThreadLocalDebugOverride {
 	/**
 	 * debugOverride will allow us to override production mode on a request by request basis.
 	 * ThreadLocal is used to hold the overridden status throughout a given request.
@@ -35,17 +35,19 @@ public class ThreadLocalDebugOverride {
 	 * @return gebugOverride Boolean
 	 */
 	public static Boolean getDebugOverride() {
-		if(debugOverride.get() == null){
-			return Boolean.FALSE;
+		
+		Boolean debug = (Boolean) debugOverride.get();
+		if(debug == null){
+			debug = Boolean.FALSE;
 		}
-		return (Boolean) debugOverride.get();
+		return debug;
 	}
 
 	/**
 	 * Set the override flag that will live only for this request
 	 * @param override
 	 */
-	public static void setDebugOverride(Boolean override) {
+	public static void setDebugOverride(final Boolean override) {
 
 		debugOverride.set(override);
 	}

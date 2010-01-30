@@ -21,7 +21,7 @@ import javax.management.ObjectName;
  * @author Matt Ruby
  * @author Ibrahim Chaehoi
  */
-public class ThreadLocalJawrContext {
+public final class ThreadLocalJawrContext {
 
 	/**
 	 * debugOverride will allow us to override production mode on a request by request basis.

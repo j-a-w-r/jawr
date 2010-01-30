@@ -244,6 +244,37 @@ public class PathNormalizer {
     	return JawrConstant.URL_SEPARATOR; 
     }
     
+ // New method
+    /**
+     * Determines the parent path of a filename or a directory.
+     * 
+     * <pre>
+     * PathNormalizer.getPathName( null )                           = ""
+     * PathNormalizer.getPathName( "" )                             = ""
+     * PathNormalizer.getPathName( "/" )                            = "/"
+     * PathNormalizer.getPathName( "/usr/local/" )                  = "local"
+     * PathNormalizer.getPathName( "/usr/local/bin/java.sh" )     = "java.sh"
+     * </pre>
+     * 
+     * @param path the path
+     * @return the parent path.
+     */
+    public static String getPathName(String path){
+    
+    	if(StringUtils.isEmpty(path)){
+    		return "";
+    	}
+    	
+    	if(path.length() > 1 && path.endsWith(JawrConstant.URL_SEPARATOR)){
+    		path = path.substring(0, path.length()-2);
+    	}
+    	int index = path.lastIndexOf(JawrConstant.URL_SEPARATOR);
+    	if(index > 0){
+    		return path.substring(index+1);
+    	}
+    	return JawrConstant.URL_SEPARATOR; 
+    }
+    
     /**
      * Determines the relative path of a filename from a base directory.
      * This method is useful in building relative links within pages of

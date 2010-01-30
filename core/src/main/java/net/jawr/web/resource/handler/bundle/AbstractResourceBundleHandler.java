@@ -34,6 +34,7 @@ import java.util.Map.Entry;
 import java.util.zip.GZIPOutputStream;
 
 import net.jawr.web.JawrConstant;
+import net.jawr.web.exception.BundlingProcessException;
 import net.jawr.web.exception.ResourceNotFoundException;
 import net.jawr.web.resource.bundle.IOUtils;
 import net.jawr.web.resource.bundle.JoinableResourceBundleContent;
@@ -52,7 +53,7 @@ import org.apache.log4j.Logger;
 public abstract class AbstractResourceBundleHandler implements ResourceBundleHandler {
 
 	/** The logger */
-	private static final Logger log = Logger
+	private static final Logger LOGGER = Logger
 			.getLogger(AbstractResourceBundleHandler.class.getName());
 
 	/** The name of the Jawr temp directory */
@@ -91,9 +92,6 @@ public abstract class AbstractResourceBundleHandler implements ResourceBundleHan
 	/** The flag indicating if the temp directory is a file system directory or if it's embedded in the web application itself */
 	private boolean useFileSystemTempDir = true;
 
-	/** The resource reader */
-//	private ServletContextResourceReaderHandler rsReader;
-	
 	/**
 	 * Build a resource handler based on the specified temporary files root path and charset.
 	 * 
@@ -105,7 +103,7 @@ public abstract class AbstractResourceBundleHandler implements ResourceBundleHan
 	protected AbstractResourceBundleHandler(File tempDirRoot, Charset charset,
 			GeneratorRegistry generatorRegistry, String resourceType) {
 
-		this(tempDirRoot, charset, generatorRegistry, resourceType, true);
+		this(tempDirRoot, charset, resourceType, true);
 	}
 	
 	/**
@@ -113,17 +111,14 @@ public abstract class AbstractResourceBundleHandler implements ResourceBundleHan
 	 * 
 	 * @param tempDirRoot Root dir for storing bundle files.
 	 * @param charset Charset to read/write characters.
-	 * @param generatorRegistry the generator registry
 	 * @param resourceType the resource type
 	 * @param createTempSubDir the flag indicating if we should use the jawrTemp sub directory
 	 */
 	protected AbstractResourceBundleHandler(String tempDirRoot, Charset charset,
-			GeneratorRegistry generatorRegistry, String resourceType,
-			boolean createTempSubDir) {
+			final String resourceType, final boolean createTempSubDir) {
 		super();
 		this.resourceType = resourceType;
 		this.charset = charset;
-//		this.generatorRegistry = generatorRegistry;
 
 		if (StringUtils.isEmpty(resourceType)
 				|| resourceType.equals(JawrConstant.JS_TYPE)) {
@@ -148,18 +143,14 @@ public abstract class AbstractResourceBundleHandler implements ResourceBundleHan
 	 * 
 	 * @param tempDirRoot Root dir for storing bundle files.
 	 * @param charset Charset to read/write characters.
-	 * @param generatorRegistry the generator registry
 	 * @param resourceType the resource type
 	 * @param createTempSubDir the flag indicating if we should use the jawrTemp sub directory
 	 */
 	protected AbstractResourceBundleHandler(File tempDirRoot, Charset charset,
-			GeneratorRegistry generatorRegistry, String resourceType,
-			boolean createTempSubDir) {
+			String resourceType, boolean createTempSubDir) {
 		super();
 		this.resourceType = resourceType;
 		this.charset = charset;
-//		this.generatorRegistry = generatorRegistry;
-		
 		
 		if (StringUtils.isEmpty(resourceType)
 				|| resourceType.equals(JawrConstant.JS_TYPE)) {
@@ -174,7 +165,7 @@ public abstract class AbstractResourceBundleHandler implements ResourceBundleHan
 			initTempDirectory(tempDirRoot.getCanonicalPath(), createTempSubDir);
 
 		} catch (IOException e) {
-			throw new RuntimeException(
+			throw new BundlingProcessException(
 					"Unexpected IOException creating temporary jawr directory",
 					e);
 		}
@@ -211,7 +202,7 @@ public abstract class AbstractResourceBundleHandler implements ResourceBundleHan
 				createDir(gzipDirPath);
 				createDir(cssClasspathDirPath);
 			} catch (IOException e) {
-				throw new RuntimeException(
+				throw new BundlingProcessException(
 						"Unexpected IOException creating temporary jawr directory",
 						e);
 			}
@@ -245,18 +236,18 @@ public abstract class AbstractResourceBundleHandler implements ResourceBundleHan
 	 */
 	public Properties getJawrBundleMapping() {
 
-		Properties bundleMapping = new Properties();
+		final Properties bundleMapping = new Properties();
 		InputStream is = null;
 		try {
 			is = getBundleMappingStream();
 			if (is != null) {
 				((Properties) bundleMapping).load(is);
 			} else {
-				log.error("The jawr bundle mapping '" + mappingFileName
+				LOGGER.error("The jawr bundle mapping '" + mappingFileName
 						+ "' is not found");
 			}
 		} catch (IOException e) {
-			log.error("Error while loading the jawr bundle mapping '"
+			LOGGER.error("Error while loading the jawr bundle mapping '"
 					+ JawrConstant.JAWR_JS_MAPPING_PROPERTIES_FILENAME + "'");
 		} finally {
 			IOUtils.close(is);
@@ -324,7 +315,7 @@ public abstract class AbstractResourceBundleHandler implements ResourceBundleHan
 			out = new FileOutputStream(bundleMappingFile);
 			bundleMapping.store(out, "Jawr mapping");
 		} catch (IOException e) {
-			log.error("Unable to store the bundle mapping");
+			LOGGER.error("Unable to store the bundle mapping");
 		} finally {
 			IOUtils.close(out);
 		}
@@ -401,9 +392,10 @@ public abstract class AbstractResourceBundleHandler implements ResourceBundleHan
 			bundleName = bundleName.replace('/', File.separatorChar);
 		}
 
-		if (!bundleName.startsWith(File.separator))
+		if (!bundleName.startsWith(File.separator)){
 			rootDir += File.separator;
-
+		}
+		
 		return rootDir + bundleName;
 	}
 
@@ -456,11 +448,11 @@ public abstract class AbstractResourceBundleHandler implements ResourceBundleHan
 	 */
 	private void storeBundle(String bundleName, String bundledResources,
 			boolean gzipFile, String rootdir) {
-		if (log.isDebugEnabled()) {
+		if (LOGGER.isDebugEnabled()) {
 			String msg = "Storing a generated "
 					+ (gzipFile ? "and gzipped" : "")
 					+ " bundle with an id of:" + bundleName;
-			log.debug(msg);
+			LOGGER.debug(msg);
 		}
 
 		try {
@@ -497,7 +489,7 @@ public abstract class AbstractResourceBundleHandler implements ResourceBundleHan
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
-			throw new RuntimeException(
+			throw new BundlingProcessException(
 					"Unexpected IOException creating temporary jawr file", e);
 		}
 	}
@@ -514,12 +506,13 @@ public abstract class AbstractResourceBundleHandler implements ResourceBundleHan
 			path = path.replaceAll("%20", " ");
 		File dir = new File(path);
 		if (!dir.exists() && !dir.mkdirs())
-			throw new RuntimeException(
+			throw new BundlingProcessException(
 					"Error creating temporary jawr directory with path:"
 							+ dir.getPath());
 
-		if (log.isDebugEnabled())
-			log.debug("Created dir: " + dir.getCanonicalPath());
+		if (LOGGER.isDebugEnabled()){
+			LOGGER.debug("Created dir: " + dir.getCanonicalPath());
+		}
 		return dir;
 	}
 
@@ -537,11 +530,13 @@ public abstract class AbstractResourceBundleHandler implements ResourceBundleHan
 			path = path.replaceAll("%20", " ");
 		File newFile = new File(path);
 
-		if (!newFile.exists() && !newFile.createNewFile())
-			throw new RuntimeException("Unable to create a temporary file at "
+		if (!newFile.exists() && !newFile.createNewFile()){
+			throw new BundlingProcessException("Unable to create a temporary file at "
 					+ path);
-		if (log.isDebugEnabled())
-			log.debug("Created file: " + newFile.getCanonicalPath());
+		}
+		
+		if (LOGGER.isDebugEnabled())
+			LOGGER.debug("Created file: " + newFile.getCanonicalPath());
 		return newFile;
 	}
 

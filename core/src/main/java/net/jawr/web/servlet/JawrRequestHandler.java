@@ -38,6 +38,7 @@ import net.jawr.web.config.JawrConfig;
 import net.jawr.web.config.jmx.JmxUtils;
 import net.jawr.web.context.ThreadLocalJawrContext;
 import net.jawr.web.exception.BundleDependencyException;
+import net.jawr.web.exception.BundlingProcessException;
 import net.jawr.web.exception.DuplicateBundlePathException;
 import net.jawr.web.exception.ResourceNotFoundException;
 import net.jawr.web.resource.FileNameUtils;
@@ -117,13 +118,13 @@ public class JawrRequestHandler implements ConfigChangeListener, Serializable {
 	public static final String CLIENTSIDE_HANDLER_REQ_PATH = "/jawr_loader.js";
 
 	/** The generated image pattern */
-	private static Pattern GENERATED_IMG_PATTERN = Pattern.compile("(url\\(([\"' ]*))(([a-zA-Z]+)(?! (http|data)):(/)?)([^\\)\"']*)([\"']?\\))");
+	private static final Pattern GENERATED_IMG_PATTERN = Pattern.compile("(url\\(([\"' ]*))(([a-zA-Z]+)(?! (http|data)):(/)?)([^\\)\"']*)([\"']?\\))");
 
 	/** The URL separator pattern */
-	private static Pattern URL_SEPARATOR_PATTERN = Pattern.compile("([^/]*)/");
+	private static final Pattern URL_SEPARATOR_PATTERN = Pattern.compile("([^/]*)/");
 
 	/** The pattern to go to the root */
-	private static String ROOT_REPLACE_PATTERN = "../";
+	private static final String ROOT_REPLACE_PATTERN = "../";
 
 	/** The resource bundles handler */
 	protected ResourceBundlesHandler bundlesHandler;
@@ -386,7 +387,7 @@ public class JawrRequestHandler implements ConfigChangeListener, Serializable {
 			try {
 				rsHandler = new ServletContextResourceReaderHandler(servletContext, jawrConfig, generatorRegistry);
 			} catch (IOException e) {
-				throw new RuntimeException(e);
+				throw new BundlingProcessException(e);
 			}
 		}
 		
@@ -635,22 +636,23 @@ public class JawrRequestHandler implements ConfigChangeListener, Serializable {
 	 */
 	private String getRootRelativeCssUrlPath(HttpServletRequest request, String url) {
 
+		String finalUrl = url;
 		String servletPath = "".equals(jawrConfig.getServletMapping()) ? "" : request.getServletPath();
 		String originalRequestPath = "".equals(jawrConfig.getServletMapping()) ? request.getServletPath() : request.getPathInfo();
 		// Deals with Jawr generated resource path containing /jawr_generator.css
 		if(originalRequestPath.startsWith(ResourceGenerator.CSS_DEBUGPATH)){
-			url = ResourceGenerator.CSS_DEBUGPATH;
+			finalUrl = ResourceGenerator.CSS_DEBUGPATH;
 		}
 
-		url = PathNormalizer.asPath(servletPath + url);
+		finalUrl = PathNormalizer.asPath(servletPath + finalUrl);
 		
-		Matcher matcher = URL_SEPARATOR_PATTERN.matcher(url);
+		Matcher matcher = URL_SEPARATOR_PATTERN.matcher(finalUrl);
 		StringBuffer result = new StringBuffer();
-		int i = 0;
+		boolean first = true;
 		while (matcher.find()) {
-			if (i == 0) {
+			if (first) {
 				matcher.appendReplacement(result, "");
-				i++;
+				first = false;
 			} else {
 				matcher.appendReplacement(result, ROOT_REPLACE_PATTERN);
 			}
@@ -700,7 +702,7 @@ public class JawrRequestHandler implements ConfigChangeListener, Serializable {
 			
 			initializeJawrConfig(newConfig);
 		} catch (Exception e) {
-			throw new RuntimeException("Error reloading Jawr config: " + e.getMessage(), e);
+			throw new BundlingProcessException("Error reloading Jawr config: " + e.getMessage(), e);
 		}finally{
 			
 			// Reset the Thread local for the Jawr context

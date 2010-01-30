@@ -58,7 +58,7 @@ public class ServletContextResourceBundleHandler extends
 	 * @param resourceType the resource type
 	 */
 	public ServletContextResourceBundleHandler(ServletContext context, String workingDirectory, Charset charset,GeneratorRegistry generatorRegistry, String resourceType) {
-		super(workingDirectory,charset,generatorRegistry, resourceType, false);		
+		super(workingDirectory,charset,resourceType, false);		
 		this.context  = context;
 		this.charset = charset;
 	}

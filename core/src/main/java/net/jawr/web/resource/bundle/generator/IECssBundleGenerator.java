@@ -61,6 +61,8 @@ public class IECssBundleGenerator extends AbstractCSSGenerator {
 		ResourceBundlesHandler bundlesHandler = (ResourceBundlesHandler) context
 				.getServletContext().getAttribute(
 						JawrConstant.CSS_CONTEXT_ATTRIBUTE);
+		
+		// TODO Manage skin variant
 		String variantKey = null;
 		String bundlePath = PathNormalizer.removeVariantPrefixFromPath(context
 				.getPath());

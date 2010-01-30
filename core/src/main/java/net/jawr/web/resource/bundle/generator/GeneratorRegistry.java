@@ -254,44 +254,6 @@ public class GeneratorRegistry {
 	}
 	
 	/**
-	 * Creates the contents corresponding to a path, by using the appropriate generator. 
-	 * @param path the resource path
-	 * @param resourceHandler the current resource handler
-	 * @param processingBundle the flag indicating if if we are currently processing the bundles
-	 * @return the reader for the contents
-	 */
-	public Reader createResource(String path,
-			ResourceReaderHandler resourceHandler, boolean processingBundle) {
-		String key = matchPath(path);
-		Locale locale = null;
-		
-		if(path.indexOf('@') != -1){
-			String localeKey = path.substring(path.indexOf('@')+1);
-			path = path.substring(0,path.indexOf('@'));
-			
-			// Resourcebundle should be doing this for me...
-			String[] params = localeKey.split("_");			
-			switch(params.length) {
-				case 3:
-					locale = new Locale(params[0],params[1],params[2]);
-					break;
-				case 2: 
-					locale = new Locale(params[0],params[1]);
-					break;
-				default:
-					locale = new Locale(localeKey);
-			}
-		}
-		GeneratorContext context = new GeneratorContext(config, path.substring(key.length()));
-		context.setLocale(locale);
-		context.setResourceReaderHandler(resourceHandler);
-		context.setProcessingBundle(processingBundle);
-		
-		return ((ResourceGenerator)registry.get(key)).createResource(context);
-	}
-	
-	
-	/**
 	 * Returns the path to use in the generation URL for debug mode. 
 	 * @param path the resource path
 	 * @return the path to use in the generation URL for debug mode. 

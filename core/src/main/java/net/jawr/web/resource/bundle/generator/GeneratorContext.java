@@ -41,6 +41,9 @@ public class GeneratorContext {
 	/** The current Jawr config */
 	private JawrConfig config;
 
+	/** The variant */
+	private String variant;
+	
 	/** The locale */
 	private Locale locale;
 
@@ -103,6 +106,22 @@ public class GeneratorContext {
 	 */
 	public void setLocale(Locale locale) {
 		this.locale = locale;
+	}
+
+	/**
+	 * Returns the resource variant
+	 * @return the resource variant
+	 */
+	public String getVariant() {
+		return variant;
+	}
+
+	/**
+	 * Sets the resource variant
+	 * @param variant the variant to set
+	 */
+	public void setVariant(String variant) {
+		this.variant = variant;
 	}
 
 	/**

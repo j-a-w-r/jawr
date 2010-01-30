@@ -164,12 +164,12 @@ public class JawrConfig implements Serializable {
 	private Properties configProperties;
 
 	/**
-	 * Name of the charset to use to interprest and sen resources. Defaults to UTF-8
+	 * Name of the charset to use to interpret and send resources. Defaults to UTF-8
 	 */
 	private String charsetName = "UTF-8";
 
 	/**
-	 * The charset to use to interprest and sen resources.
+	 * The charset to use to interpret and send resources.
 	 */
 	private Charset resourceCharset;
 
@@ -271,53 +271,53 @@ public class JawrConfig implements Serializable {
 	public JawrConfig(Properties props) {
 		this.configProperties = props;
 		if (null != props.getProperty(JAWR_DEBUG_ON)) {
-			setDebugModeOn(Boolean.valueOf(props.getProperty(JAWR_DEBUG_ON)).booleanValue());
+			this.debugModeOn = Boolean.valueOf(props.getProperty(JAWR_DEBUG_ON)).booleanValue();
 		}
 		// If system flag is available, override debug mode from properties
 		if (null != System.getProperty(DEBUG_MODE_SYSTEM_FLAG)) {
-			setDebugModeOn(Boolean.valueOf(System.getProperty(DEBUG_MODE_SYSTEM_FLAG)).booleanValue());
+			this.debugModeOn = Boolean.valueOf(System.getProperty(DEBUG_MODE_SYSTEM_FLAG)).booleanValue();
 		}
 		if (null != props.getProperty(JAWR_DEBUG_OVERRIDE_KEY)) {
-			setDebugOverrideKey(props.getProperty(JAWR_DEBUG_OVERRIDE_KEY));
+			this.debugOverrideKey = props.getProperty(JAWR_DEBUG_OVERRIDE_KEY);
 		}
 		
 		if (null != props.getProperty(JAWR_USE_BUNDLE_MAPPING)) {
-			setUseBundleMapping(Boolean.valueOf(props.getProperty(JAWR_USE_BUNDLE_MAPPING)).booleanValue());
+			this.useBundleMapping = Boolean.valueOf(props.getProperty(JAWR_USE_BUNDLE_MAPPING)).booleanValue();
 		}
 		
 		if (null != props.getProperty(JAWR_WORKING_DIRECTORY)) {
-			setJawrWorkingDirectory(props.getProperty(JAWR_WORKING_DIRECTORY));
+			this.jawrWorkingDirectory = props.getProperty(JAWR_WORKING_DIRECTORY);
 		}
 		
 		if (null != props.getProperty(JAWR_GZIP_ON)) {
-			setGzipResourcesModeOn(Boolean.valueOf(props.getProperty(JAWR_GZIP_ON)).booleanValue());
+			this.gzipResourcesModeOn = Boolean.valueOf(props.getProperty(JAWR_GZIP_ON)).booleanValue();
 		}
 		if (null != props.getProperty(JAWR_CHARSET_NAME)) {
 			setCharsetName(props.getProperty(JAWR_CHARSET_NAME));
 		}
 		if (null != props.getProperty(JAWR_GZIP_IE6_ON)) {
-			setGzipResourcesForIESixOn(Boolean.valueOf(props.getProperty(JAWR_GZIP_IE6_ON)).booleanValue());
+			this.gzipResourcesForIESixOn = Boolean.valueOf(props.getProperty(JAWR_GZIP_IE6_ON)).booleanValue();
 		}
 		if (null != props.getProperty(JAWR_DEBUG_IE_FORCE_CSS_BUNDLE)) {
-			setForceCssBundleInDebugForIEOn(Boolean.valueOf(props.getProperty(JAWR_DEBUG_IE_FORCE_CSS_BUNDLE)).booleanValue());
+			this.forceCssBundleInDebugForIEOn = Boolean.valueOf(props.getProperty(JAWR_DEBUG_IE_FORCE_CSS_BUNDLE)).booleanValue();
 		}
 		if (null != props.getProperty(JAWR_URL_CONTEXTPATH_OVERRIDE)) {
-			setContextPathOverride(props.getProperty(JAWR_URL_CONTEXTPATH_OVERRIDE));
+			this.contextPathOverride = props.getProperty(JAWR_URL_CONTEXTPATH_OVERRIDE);
 		}
 		if (null != props.getProperty(JAWR_URL_CONTEXTPATH_SSL_OVERRIDE)) {
-			setContextPathSslOverride(props.getProperty(JAWR_URL_CONTEXTPATH_SSL_OVERRIDE));
+			this.contextPathSslOverride = props.getProperty(JAWR_URL_CONTEXTPATH_SSL_OVERRIDE);
 		}
 		
 		if (null != props.getProperty(JAWR_USE_URL_CONTEXTPATH_OVERRIDE_IN_DEBUG_MODE)) {
-			setUseContextPathOverrideInDebugMode(Boolean.valueOf(props.getProperty(JAWR_USE_URL_CONTEXTPATH_OVERRIDE_IN_DEBUG_MODE)).booleanValue());
+			this.useContextPathOverrideInDebugMode = Boolean.valueOf(props.getProperty(JAWR_USE_URL_CONTEXTPATH_OVERRIDE_IN_DEBUG_MODE)).booleanValue();
 		}
 		
 		if (null != props.getProperty(JAWR_CONFIG_RELOAD_REFRESH_KEY)) {
-			setRefreshKey(props.getProperty(JAWR_CONFIG_RELOAD_REFRESH_KEY));
+			this.refreshKey = props.getProperty(JAWR_CONFIG_RELOAD_REFRESH_KEY);
 		}
 		
 		if (null != props.getProperty(JAWR_DWR_MAPPING)) {
-			setDwrMapping(props.getProperty(JAWR_DWR_MAPPING));
+			this.dwrMapping = props.getProperty(JAWR_DWR_MAPPING);
 		}
 
 		if (null != props.getProperty(JAWR_LOCALE_RESOLVER)) {
@@ -335,18 +335,18 @@ public class JawrConfig implements Serializable {
 					"The property '"+JAWR_CSS_IMG_USE_CLASSPATH_SERVLET+"' is deprecated. Please use only the property '"+JAWR_CSS_CLASSPATH_HANDLE_IMAGE+"'");
 		}
 		if (null != props.getProperty(JAWR_CSS_IMG_USE_CLASSPATH_SERVLET)) {
-			setCssClasspathImageHandledByClasspathCss(Boolean.valueOf(props.getProperty(JAWR_CSS_IMG_USE_CLASSPATH_SERVLET)).booleanValue());
+			this.classpathCssHandleImage = Boolean.valueOf(props.getProperty(JAWR_CSS_IMG_USE_CLASSPATH_SERVLET)).booleanValue();
 		}
 		if (null != props.getProperty(JAWR_CSS_CLASSPATH_HANDLE_IMAGE)) {
-			setCssClasspathImageHandledByClasspathCss(Boolean.valueOf(props.getProperty(JAWR_CSS_CLASSPATH_HANDLE_IMAGE)).booleanValue());
+			this.classpathCssHandleImage = Boolean.valueOf(props.getProperty(JAWR_CSS_CLASSPATH_HANDLE_IMAGE)).booleanValue();
 		}
 		
 		if (null != props.getProperty(JAWR_IMAGE_HASH_ALGORITHM)) {
-			setImageHashAlgorithm(props.getProperty(JAWR_IMAGE_HASH_ALGORITHM).trim());
+			this.imageHashAlgorithm = props.getProperty(JAWR_IMAGE_HASH_ALGORITHM).trim();
 		}
 		
 		if (null != props.getProperty(JAWR_IMAGE_RESOURCES)) {
-			setImageResourcesDefinition(props.getProperty(JAWR_IMAGE_RESOURCES).trim());
+			this.imageResourcesDefinition = props.getProperty(JAWR_IMAGE_RESOURCES).trim();
 		}
 		
 	}

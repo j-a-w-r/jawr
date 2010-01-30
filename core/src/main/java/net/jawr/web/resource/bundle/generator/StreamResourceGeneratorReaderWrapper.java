@@ -59,7 +59,6 @@ public class StreamResourceGeneratorReaderWrapper implements StreamResourceReade
 			boolean processingBundle) {
 		
 		GeneratorContext context = new GeneratorContext(config, resourceName.substring((generator.getMappingPrefix()+GeneratorRegistry.PREFIX_SEPARATOR).length()));
-		context.setLocale(null);
 		context.setResourceReaderHandler(rsHandler);
 		context.setProcessingBundle(processingBundle);
 		
