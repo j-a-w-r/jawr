@@ -43,7 +43,7 @@ import org.springframework.web.util.UrlPathHelper;
 public class JawrSpringController implements Controller, ServletContextAware, InitializingBean {
 	
 	/** The logger */
-	private static final Logger log = Logger.getLogger(JawrSpringController.class);
+	private static final Logger LOGGER = Logger.getLogger(JawrSpringController.class);
 
 	/** The request handler */
 	private JawrRequestHandler requestHandler;
@@ -159,7 +159,7 @@ public class JawrSpringController implements Controller, ServletContextAware, In
 												 helper.getPathWithinServletMapping(request);
 		
 		if(StringUtils.isNotEmpty(controllerMapping)){
-			requestedPath = request.getPathInfo().substring(controllerMapping.length());
+			requestedPath = requestedPath.substring(controllerMapping.length());
 		}
 		
 		requestHandler.processRequest(requestedPath, request, response);
@@ -187,10 +187,12 @@ public class JawrSpringController implements Controller, ServletContextAware, In
 			fullMapping = PathNormalizer.joinPaths(fullMapping, controllerMapping);
 		
 		initParams.put(JawrConstant.SERVLET_MAPPING_PROPERTY_NAME,fullMapping);
-		initParams.put(JawrConstant.SPRING_SERVLET_MAPPING_PROPERTY_NAME, PathNormalizer.asDirPath(mapping));
+		if(mapping != null){
+			initParams.put(JawrConstant.SPRING_SERVLET_MAPPING_PROPERTY_NAME, PathNormalizer.asDirPath(mapping));
+		}
 		
-		if(log.isDebugEnabled())
-			log.debug("Initializing Jawr Controller's JawrRequestHandler");
+		if(LOGGER.isDebugEnabled())
+			LOGGER.debug("Initializing Jawr Controller's JawrRequestHandler");
 		
 		if(JawrConstant.IMG_TYPE.equals(type)){
 			requestHandler = new JawrImageRequestHandler(context,initParams, configuration);
