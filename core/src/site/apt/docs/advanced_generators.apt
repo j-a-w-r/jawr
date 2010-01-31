@@ -145,11 +145,12 @@ Jawr Advanced Generators
 	jawr.js.bundle.myBundle.mappings=myGen:/js/one.js
 +------------------------------------------+
 		
-	If you want to use the <directory> syntax for generated resource, your generator must implement the interface <<net.jawr.web.resource.bundle.generator.GeneratedResourceBrowser>>
+	If you want to use the <directory> syntax for generated resource, your generator must implement the interface <<net.jawr.web.resource.handler.reader.ResourceBrowser>>,
+	like the <<GeneratedResourceBrowser>> interface defined below.
 	
 [../images/generator/jawr_resourceBrowserGenerator.png] Resource Browser interface
 	
-	** <<net.jawr.web.resource.bundle.generator.GeneratedResourceBrowser>>\
+	** <<net.jawr.web.resource.handler.reader.ResourceBrowser>>\
 	This interface is implemented by the generators, which are able to handle hierachical generated resource search.
 	
 	

@@ -44,7 +44,10 @@
 	      		 	<strong>Issue #124 fixed:</strong> The property "factory.use.orphans.mapper" is never taken in account. To be compliant with the Jawr properties naming convention,
 	      		 	this property has been renamed to <strong>jawr.factory.use.orphans.mapper</strong>. Please check <a href="./docs/descriptor_syntax.html">descriptor syntax doc</a> for more detail.   
 	      		 </li>       
-	      		 Thanks to qxo, mahoney266 for reporting issues and providing patches. 
+	      		 <li>
+	      		 	<strong>Issue #125 fixed:</strong> In Spring MVC, an exception is thrown when the controller mapping is defined while the Spring servlet mapping is set to "/*".   
+	      		 </li>    
+	      		 Thanks to qxo, mahoney266 and Robin Sander for reporting issues. 
       	  	</ul>
       	  </li>
       	  <li> <strong>12/09/2009</strong>: Version 3.2 released:<br/>
