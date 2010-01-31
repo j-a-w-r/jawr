@@ -16,6 +16,7 @@ package net.jawr.web.resource.bundle.renderer;
 import java.io.IOException;
 import java.io.Writer;
 
+import net.jawr.web.exception.BundlingProcessException;
 import net.jawr.web.resource.bundle.iterator.ConditionalCommentCallbackHandler;
 
 /**
@@ -44,7 +45,7 @@ public class ConditionalCommentRenderer implements ConditionalCommentCallbackHan
 		try {
 			out.write(sb.toString());
 		} catch (IOException e) {
-			throw new RuntimeException(e);
+			throw new BundlingProcessException(e);
 		}
 	}
 	
@@ -55,7 +56,7 @@ public class ConditionalCommentRenderer implements ConditionalCommentCallbackHan
 		try {
 			out.write(CLOSING_TAG);
 		} catch (IOException e) {
-			throw new RuntimeException(e);
+			throw new BundlingProcessException(e);
 		}
 	}
 

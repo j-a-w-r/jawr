@@ -57,9 +57,9 @@ public class ResourceGeneratorReaderWrapper implements TextResourceReader {
 	/* (non-Javadoc)
 	 * @see net.jawr.web.resource.handler.ResourceReader#getResource(java.lang.String, boolean)
 	 */
-	public Reader getResource(String resourceName, boolean processingBundle) {
-		
+	public Reader getResource(String requestedResource, boolean processingBundle) {
 			
+		String resourceName = requestedResource;
 		Locale locale = null;
 		if(resourceName.indexOf('@') != -1){
 			String localeKey = resourceName.substring(resourceName.indexOf('@')+1);

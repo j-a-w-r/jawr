@@ -56,53 +56,26 @@ public final class ImageTagUtils {
 	
 		String contextPath = request.getContextPath();
 		
+		String finalImgSrc = imgSrc;
 		// relative path
-		if(!imgRsHandler.getJawrConfig().getGeneratorRegistry().isGeneratedImage(imgSrc) && !imgSrc.startsWith("/")){ 
-			imgSrc = PathNormalizer.concatWebPath(request.getRequestURI(), imgSrc);
-			int idx = imgSrc.indexOf(contextPath);
+		if(!imgRsHandler.getJawrConfig().getGeneratorRegistry().isGeneratedImage(finalImgSrc) && !finalImgSrc.startsWith("/")){ 
+			finalImgSrc = PathNormalizer.concatWebPath(request.getRequestURI(), finalImgSrc);
+			int idx = finalImgSrc.indexOf(contextPath);
 			if(idx > -1){
-				imgSrc = imgSrc.substring(idx+contextPath.length());
+				finalImgSrc = finalImgSrc.substring(idx+contextPath.length());
 			}
 		}
 		
-		String newUrl = (String) imgRsHandler.getCacheUrl(imgSrc);
-		
-        JawrConfig jawrConfig = imgRsHandler.getJawrConfig();
-		if(newUrl == null){
-        	try {
-				newUrl = CheckSumUtils.getCacheBustedUrl(imgSrc, imgRsHandler.getRsReaderHandler(), jawrConfig);
-				imgRsHandler.addMapping(imgSrc, newUrl);
-        	} catch (IOException e) {
-	    		LOGGER.info("Unable to create the checksum for the image '"+imgSrc+"' while generating image tag.");
-			} catch (ResourceNotFoundException e) {
-				LOGGER.info("Unable to find the image '"+imgSrc+"' while generating image tag.");
-			}
-    	}
-        
-        if(newUrl == null){
-        	newUrl = imgSrc;
-        }
-        
-        String imageServletMapping = jawrConfig.getServletMapping();
-		if("".equals(imageServletMapping)){
-			if(newUrl.startsWith("/")){
-				newUrl = newUrl.substring(1);
-			}
-		}else{
-			newUrl = PathNormalizer.joinDomainToPath(imageServletMapping, newUrl);
-		}
-		
-		boolean sslRequest = RendererRequestUtils.isSslRequest(request);
-		
-		newUrl = RendererRequestUtils.getRenderedUrl(newUrl, jawrConfig, contextPath, sslRequest);
+		String newUrl = getImageUrl(finalImgSrc, imgRsHandler, request,
+				contextPath);
 		
 		return response.encodeURL(newUrl);
 	}
 
 	/**
 	 * Sames as its counterpart, only meant to be used as a JSP EL function. 
-	 * @param imgSrc
-	 * @param pageContext
+	 * @param imgSrc The image path
+	 * @param pageContext the page context
 	 * @return
 	 * @throws JspException
 	 */
@@ -121,6 +94,50 @@ public final class ImageTagUtils {
 		
 		return getImageUrl(imgSrc, imgRsHandler,request,response);
 		
+	}
+	
+	/**
+	 * Returns the image URL
+	 * @param imgSrc the image path
+	 * @param imgRsHandler the image resource handler
+	 * @param request the request
+	 * @param contextPath the context path
+	 * @return the image URL
+	 */
+	private static String getImageUrl(String finalImgSrc,
+			ImageResourcesHandler imgRsHandler, HttpServletRequest request,
+			String contextPath) {
+		String newUrl = (String) imgRsHandler.getCacheUrl(finalImgSrc);
+		
+        JawrConfig jawrConfig = imgRsHandler.getJawrConfig();
+		if(newUrl == null){
+        	try {
+				newUrl = CheckSumUtils.getCacheBustedUrl(finalImgSrc, imgRsHandler.getRsReaderHandler(), jawrConfig);
+				imgRsHandler.addMapping(finalImgSrc, newUrl);
+        	} catch (IOException e) {
+	    		LOGGER.info("Unable to create the checksum for the image '"+finalImgSrc+"' while generating image tag.");
+			} catch (ResourceNotFoundException e) {
+				LOGGER.info("Unable to find the image '"+finalImgSrc+"' while generating image tag.");
+			}
+    	}
+        
+        if(newUrl == null){
+        	newUrl = finalImgSrc;
+        }
+        
+        String imageServletMapping = jawrConfig.getServletMapping();
+		if("".equals(imageServletMapping)){
+			if(newUrl.startsWith("/")){
+				newUrl = newUrl.substring(1);
+			}
+		}else{
+			newUrl = PathNormalizer.joinDomainToPath(imageServletMapping, newUrl);
+		}
+		
+		boolean sslRequest = RendererRequestUtils.isSslRequest(request);
+		
+		newUrl = RendererRequestUtils.getRenderedUrl(newUrl, jawrConfig, contextPath, sslRequest);
+		return newUrl;
 	}
 
 }

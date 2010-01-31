@@ -40,7 +40,7 @@ import org.apache.wicket.util.value.IValueMap;
 public abstract class AbstractJawrReference extends WebMarkupContainer {
 
 	/** The logger */
-	private static final Logger log = Logger.getLogger(AbstractJawrReference.class);
+	private static final Logger LOGGER = Logger.getLogger(AbstractJawrReference.class);
 
 	/** The serial version UID */
 	private static final long serialVersionUID = 6483803210055728200L;
@@ -100,7 +100,7 @@ public abstract class AbstractJawrReference extends WebMarkupContainer {
             		ctx,
                     writer);
         } catch (IOException ex) {
-            log.error("onRender() error : ", ex);
+            LOGGER.error("onRender() error : ", ex);
         }
 
         markupStream.skipComponent();

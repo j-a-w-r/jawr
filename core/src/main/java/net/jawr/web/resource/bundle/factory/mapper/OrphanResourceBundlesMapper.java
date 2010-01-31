@@ -39,7 +39,7 @@ import org.apache.log4j.Logger;
 public class OrphanResourceBundlesMapper {
 	
 	/** The logger */
-	private static final Logger log = Logger.getLogger(OrphanResourceBundlesMapper.class);
+	private static final Logger LOGGER = Logger.getLogger(OrphanResourceBundlesMapper.class);
 	
 	/** The base directory */
 	protected String baseDir;
@@ -130,12 +130,12 @@ public class OrphanResourceBundlesMapper {
 			else if (licenses.contains(filePath))
 				return;
 			else if(filePath.equals(bundle.getId())){
-				log.fatal("Duplicate bundle id resulted from orphan mapping of:" + filePath);
+				LOGGER.fatal("Duplicate bundle id resulted from orphan mapping of:" + filePath);
 				throw new DuplicateBundlePathException(filePath);
 			}
 		}
-		if(log.isDebugEnabled())
-			log.debug("Adding orphan resource: " + filePath);
+		if(LOGGER.isDebugEnabled())
+			LOGGER.debug("Adding orphan resource: " + filePath);
 		
 		// If we got here, the resource belongs to no other bundle.  
 		bundleMapping.add(filePath);		

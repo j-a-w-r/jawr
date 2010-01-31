@@ -24,6 +24,7 @@ import java.nio.channels.WritableByteChannel;
 import java.nio.charset.Charset;
 import java.util.Iterator;
 
+import net.jawr.web.exception.BundlingProcessException;
 import net.jawr.web.exception.ResourceNotFoundException;
 import net.jawr.web.resource.bundle.JoinableResourceBundle;
 import net.jawr.web.resource.bundle.postprocess.AbstractChainedResourceBundlePostProcessor;
@@ -45,7 +46,7 @@ public class LicensesIncluderPostProcessor extends
 		AbstractChainedResourceBundlePostProcessor {
 
 	/** The logger */
-	private static final Logger log = Logger.getLogger(LicensesIncluderPostProcessor.class);
+	private static final Logger LOGGER = Logger.getLogger(LicensesIncluderPostProcessor.class);
 
 	/**
 	 * Constructor 
@@ -73,14 +74,14 @@ public class LicensesIncluderPostProcessor extends
 		
 		for(Iterator it = bundle.getLicensesPathList().iterator();it.hasNext();) {
 			String path = (String) it.next();
-			if(log.isDebugEnabled())
-				log.debug("Adding license file: " + path);
+			if(LOGGER.isDebugEnabled())
+				LOGGER.debug("Adding license file: " + path);
 			
 			Reader rd = null;
 			try {
 				rd = status.getRsReader().getResource(path);
 			} catch (ResourceNotFoundException e) {
-				throw new RuntimeException("Unexpected ResourceNotFoundException when reading a sorting file [" + path + "]");
+				throw new BundlingProcessException("Unexpected ResourceNotFoundException when reading a sorting file [" + path + "]");
 			}
 			
 			// Make a buffered reader, to read line by line. 

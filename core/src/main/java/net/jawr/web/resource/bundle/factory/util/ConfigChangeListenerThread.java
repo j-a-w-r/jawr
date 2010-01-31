@@ -23,7 +23,7 @@ import org.apache.log4j.Logger;
  * @author Jordi Hernández Sellés
  */
 public class ConfigChangeListenerThread extends Thread {
-	private static final Logger log = Logger.getLogger(ConfigChangeListenerThread.class.getName());
+	private static final Logger LOGGER = Logger.getLogger(ConfigChangeListenerThread.class.getName());
 	
 	private long waitMillis;
 	private ConfigPropertiesSource propertiesSource;
@@ -67,7 +67,7 @@ public class ConfigChangeListenerThread extends Thread {
 					log.debug("Verifying wether properties are changed...");
 					*/
 			} catch (InterruptedException e) {
-				log.error("Failure at config reloading checker thread.");
+				LOGGER.error("Failure at config reloading checker thread.");
 			}
 		}
 	}
@@ -76,8 +76,8 @@ public class ConfigChangeListenerThread extends Thread {
 	 * Causes the thread to stop polling for changes. 
 	 */
 	public void stopPolling() {
-		if(log.isDebugEnabled())
-			log.debug("Stopping the configuration change polling");
+		if(LOGGER.isDebugEnabled())
+			LOGGER.debug("Stopping the configuration change polling");
 		
 		continuePolling = false;
 	}

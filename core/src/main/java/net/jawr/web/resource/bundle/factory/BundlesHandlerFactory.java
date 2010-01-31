@@ -60,7 +60,7 @@ import org.apache.log4j.Logger;
 public class BundlesHandlerFactory {
 	
 	/** The logger */
-	private static final Logger log = Logger
+	private static final Logger LOGGER = Logger
 			.getLogger(BundlesHandlerFactory.class);
 
 	/** The flag indicating if we should use the in memory cache */
@@ -136,8 +136,8 @@ public class BundlesHandlerFactory {
 	 */
 	public ResourceBundlesHandler buildResourceBundlesHandler()
 			throws DuplicateBundlePathException, BundleDependencyException {
-		if (log.isInfoEnabled())
-			log.info("Building resources handler... ");
+		if (LOGGER.isInfoEnabled())
+			LOGGER.info("Building resources handler... ");
 
 		// Ensure state is correct
 		if (null == jawrConfig)
@@ -213,8 +213,8 @@ public class BundlesHandlerFactory {
 	 */
 	private void initResourceBundlesFromFullMapping(List resourceBundles) {
 
-		if (log.isInfoEnabled()){
-			log.info("Building bundles from the full bundle mapping. The bundles will not be processed.");
+		if (LOGGER.isInfoEnabled()){
+			LOGGER.info("Building bundles from the full bundle mapping. The bundles will not be processed.");
 		}
 		Properties mappingProperties = resourceBundleHandler.getJawrBundleMapping();
 		FullMappingPropertiesBasedBundlesHandlerFactory factory = new FullMappingPropertiesBasedBundlesHandlerFactory(resourceType, 
@@ -236,8 +236,8 @@ public class BundlesHandlerFactory {
 		// Create custom defined bundles
 		bundleDefinitionsWithDependencies = new HashSet();
 		if (null != bundleDefinitions) {
-			if (log.isInfoEnabled())
-				log.info("Adding custom bundle definitions. ");
+			if (LOGGER.isInfoEnabled())
+				LOGGER.info("Adding custom bundle definitions. ");
 			for (Iterator it = bundleDefinitions.iterator(); it.hasNext();) {
 				ResourceBundleDefinition def = (ResourceBundleDefinition) it
 						.next();
@@ -260,8 +260,8 @@ public class BundlesHandlerFactory {
 
 		// Use the dirmapper if specified
 		if (useDirMapperFactory) {
-			if (log.isInfoEnabled())
-				log.info("Using ResourceBundleDirMapper. ");
+			if (LOGGER.isInfoEnabled())
+				LOGGER.info("Using ResourceBundleDirMapper. ");
 
 			 ResourceBundleDirMapper dirFactory = new ResourceBundleDirMapper(
 					baseDir, resourceReaderHandler, resourceBundles, fileExtension,
@@ -286,8 +286,8 @@ public class BundlesHandlerFactory {
 				if (!singleFileBundleName.endsWith(fileExtension))
 					singleFileBundleName += fileExtension;
 
-				if (log.isInfoEnabled())
-					log
+				if (LOGGER.isInfoEnabled())
+					LOGGER
 							.info("Building bundle of orphan resources with the name: "
 									+ singleFileBundleName);
 
@@ -295,17 +295,17 @@ public class BundlesHandlerFactory {
 						singleFileBundleName, orphans));
 
 			} else {
-				if (log.isInfoEnabled())
-					log.info("Creating mappings for orphan resources. ");
+				if (LOGGER.isInfoEnabled())
+					LOGGER.info("Creating mappings for orphan resources. ");
 				for (Iterator it = orphans.iterator(); it.hasNext();) {
 					resourceBundles.add(buildOrphanResourceBundle((String) it
 							.next()));
 				}
 			}
-		} else if (log.isDebugEnabled()) {
-			log.debug("Skipping orphan file auto processing. ");
+		} else if (LOGGER.isDebugEnabled()) {
+			LOGGER.debug("Skipping orphan file auto processing. ");
 			if ("".equals(jawrConfig.getServletMapping()))
-				log
+				LOGGER
 						.debug("Note that there is no specified mapping for Jawr "
 								+ "(it has been seet to serve *.js or *.css requests). "
 								+ "The orphan files will become unreachable through the server.");
@@ -351,8 +351,8 @@ public class BundlesHandlerFactory {
 	private JoinableResourceBundle buildCompositeResourcebundle(
 			ResourceBundleDefinition definition, List childBundles) {
 
-		if (log.isDebugEnabled())
-			log.debug("Init composite bundle with id:"
+		if (LOGGER.isDebugEnabled())
+			LOGGER.debug("Init composite bundle with id:"
 					+ definition.getBundleId());
 
 		InclusionPattern include = new InclusionPattern(definition.isGlobal(),
@@ -396,8 +396,8 @@ public class BundlesHandlerFactory {
 	 */
 	private JoinableResourceBundle buildResourcebundle(
 			ResourceBundleDefinition definition) throws BundleDependencyException {
-		if (log.isDebugEnabled())
-			log.debug("Init bundle with id:" + definition.getBundleId());
+		if (LOGGER.isDebugEnabled())
+			LOGGER.debug("Init bundle with id:" + definition.getBundleId());
 
 		InclusionPattern include = new InclusionPattern(definition.isGlobal(),
 				definition.getInclusionOrder(), definition.isDebugOnly(),
@@ -472,8 +472,8 @@ public class BundlesHandlerFactory {
 
 		List bundleDefDependencies = definition.getDependencies();
 		if(definition.isGlobal()){
-			if(log.isInfoEnabled()){
-				log.info("The global bundle '"+definition.getBundleName()+"' belongs to the dependencies of '"+rootBundleDefinition+"'." +
+			if(LOGGER.isInfoEnabled()){
+				LOGGER.info("The global bundle '"+definition.getBundleName()+"' belongs to the dependencies of '"+rootBundleDefinition+"'." +
 						"As it's a global bundle, it will not be defined as part of the dependencies.");
 			}
 			return;
@@ -506,8 +506,8 @@ public class BundlesHandlerFactory {
 									throw new BundleDependencyException(rootBundleDefinition, "There is a circular dependency. The bundle in conflict is '"+dependencyBundleName+"'");
 								}
 							} else {
-								if(log.isInfoEnabled()){
-									log.info("The bundle '"
+								if(LOGGER.isInfoEnabled()){
+									LOGGER.info("The bundle '"
 											+ dependencyBundle.getBundleId()
 											+ "' occurs multiple time in the dependencies hierarchy of the bundle '"+rootBundleDefinition+"'.");	
 								}

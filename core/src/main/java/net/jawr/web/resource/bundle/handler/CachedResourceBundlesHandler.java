@@ -26,6 +26,7 @@ import java.util.Map;
 
 import net.jawr.web.collections.ConcurrentCollectionsFactory;
 import net.jawr.web.config.JawrConfig;
+import net.jawr.web.exception.BundlingProcessException;
 import net.jawr.web.exception.ResourceNotFoundException;
 import net.jawr.web.resource.bundle.JoinableResourceBundle;
 import net.jawr.web.resource.bundle.iterator.ConditionalCommentCallbackHandler;
@@ -135,7 +136,7 @@ public class CachedResourceBundlesHandler implements ResourceBundlesHandler {
 				out.write(gzip.get(x)); // Use absolute get method
 		
 		} catch (IOException e) {
-			throw new RuntimeException("Unexpected IOException writing bundle[" + bundlePath + "]",e);
+			throw new BundlingProcessException("Unexpected IOException writing bundle[" + bundlePath + "]",e);
 		}
 
 	}
@@ -163,7 +164,7 @@ public class CachedResourceBundlesHandler implements ResourceBundlesHandler {
 			writer.flush();
 			
 		} catch (IOException e) {
-			throw new RuntimeException("Unexpected IOException writing bundle[" + bundlePath + "]",e);
+			throw new BundlingProcessException("Unexpected IOException writing bundle[" + bundlePath + "]",e);
 		}
 	}
 

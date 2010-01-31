@@ -24,6 +24,7 @@ import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 
 import net.jawr.web.JawrConstant;
+import net.jawr.web.exception.BundlingProcessException;
 import net.jawr.web.exception.ResourceNotFoundException;
 import net.jawr.web.resource.FileNameUtils;
 import net.jawr.web.resource.bundle.factory.util.PathNormalizer;
@@ -127,10 +128,11 @@ public class SmartSpritesResourceHandler implements ResourceHandler {
 	 * 
 	 * @see org.carrot2.labs.smartsprites.resource.ResourceHandler#getResourceAsOutputStream(java.lang.String)
 	 */
-	public OutputStream getResourceAsOutputStream(String resourceName)
+	public OutputStream getResourceAsOutputStream(String requestedResource)
 			throws IOException {
 
 		// Create directories if needed
+		String resourceName = requestedResource;
 		String generatedFilePath = resourceName.substring(workingDir.length());
 		if(!FileNameUtils.isExtension(generatedFilePath, JawrConstant.CSS_TYPE) && imgGeneratorRegistry.isGeneratedImage(generatedFilePath)){
 			// for generated image put it  in the generated Image directory
@@ -168,7 +170,7 @@ public class SmartSpritesResourceHandler implements ResourceHandler {
 					charset);
 		} catch (UnsupportedEncodingException e) {
 			// Should not happen as we're checking the charset in constructor
-			throw new RuntimeException(e);
+			throw new BundlingProcessException(e);
 		}
 	}
 }

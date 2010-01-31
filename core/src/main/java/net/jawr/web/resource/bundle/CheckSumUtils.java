@@ -25,6 +25,7 @@ import java.util.zip.Checksum;
 
 import net.jawr.web.JawrConstant;
 import net.jawr.web.config.JawrConfig;
+import net.jawr.web.exception.BundlingProcessException;
 import net.jawr.web.exception.ResourceNotFoundException;
 import net.jawr.web.resource.bundle.factory.util.PathNormalizer;
 import net.jawr.web.resource.bundle.generator.GeneratorRegistry;
@@ -58,23 +59,24 @@ public final class CheckSumUtils {
 		String checksum = null;
 		InputStream is = null;
 		
-		boolean generatedImage = jawrConfig.getGeneratorRegistry().isGeneratedImage(url);
+		String newUrl = url;
+		boolean generatedImage = jawrConfig.getGeneratorRegistry().isGeneratedImage(newUrl);
 		
 		try {
 			
 			if(!generatedImage){
-				url = PathNormalizer.asPath(url);
+				newUrl = PathNormalizer.asPath(newUrl);
 			}
 			
-			is = rsReader.getResourceAsStream(url);
+			is = rsReader.getResourceAsStream(newUrl);
 			
 			if(is != null){
 				checksum = CheckSumUtils.getChecksum(is, jawrConfig.getImageHashAlgorithm());
 			}else{
-				throw new ResourceNotFoundException(url);
+				throw new ResourceNotFoundException(newUrl);
 			}
 		}catch (FileNotFoundException e) {
-			throw new ResourceNotFoundException(url);
+			throw new ResourceNotFoundException(newUrl);
 		}
 		finally {
 			IOUtils.close(is);
@@ -86,19 +88,19 @@ public final class CheckSumUtils {
 		result = JawrConstant.CACHE_BUSTER_PREFIX;
 		
 		if(generatedImage){
-			int idx = url.indexOf(GeneratorRegistry.PREFIX_SEPARATOR);
-			String generatorPrefix = url.substring(0, idx);
-			url = url.substring(idx+1);
+			int idx = newUrl.indexOf(GeneratorRegistry.PREFIX_SEPARATOR);
+			String generatorPrefix = newUrl.substring(0, idx);
+			newUrl = newUrl.substring(idx+1);
 			result = generatorPrefix+"_cb";
 		}
 		
 		result = result+checksum;
 		
-		if(!url.startsWith("/")){
+		if(!newUrl.startsWith("/")){
 			result = result + "/";
 		}
 		// Add the cache buster extension
-		return PathNormalizer.asPath(result+url);
+		return PathNormalizer.asPath(result+newUrl);
 	}
 	
 	/**
@@ -115,7 +117,7 @@ public final class CheckSumUtils {
 		}else if(algorithm.equals(MD5_ALGORITHM)){
 			return getMD5Checksum(is);
 		}else{
-			throw new RuntimeException("The checksum algorithm '"+algorithm+"' is not supported.\n" +
+			throw new BundlingProcessException("The checksum algorithm '"+algorithm+"' is not supported.\n" +
 					"The only supported algorithm are 'CRC32' or 'MD5'.");
 		}
 	}
@@ -155,14 +157,14 @@ public final class CheckSumUtils {
 		byte[] digest = null;
 		try {
 			MessageDigest md = MessageDigest.getInstance(MD5_ALGORITHM);
-			is = new DigestInputStream(is, md);
+			InputStream digestIs = new DigestInputStream(is, md);
 			// read stream to EOF as normal...
-			while (is.read() != -1) {
+			while (digestIs.read() != -1) {
 
 			}
 			digest = md.digest();
 		} catch (NoSuchAlgorithmException e) {
-			throw new RuntimeException("MD5 algorithm needs to be installed", e);
+			throw new BundlingProcessException("MD5 algorithm needs to be installed", e);
 		}
 
 		return new BigInteger(1, digest).toString(16);

@@ -114,7 +114,7 @@ public abstract class AbstractResourceBundleHandler implements ResourceBundleHan
 	 * @param resourceType the resource type
 	 * @param createTempSubDir the flag indicating if we should use the jawrTemp sub directory
 	 */
-	protected AbstractResourceBundleHandler(String tempDirRoot, Charset charset,
+	protected AbstractResourceBundleHandler(final String tempDirRoot, final Charset charset,
 			final String resourceType, final boolean createTempSubDir) {
 		super();
 		this.resourceType = resourceType;
@@ -129,13 +129,14 @@ public abstract class AbstractResourceBundleHandler implements ResourceBundleHan
 			mappingFileName = JawrConstant.JAWR_IMG_MAPPING_PROPERTIES_FILENAME;
 		}
 
-		if (tempDirRoot.startsWith(JawrConstant.FILE_URI_PREFIX)) {
-			tempDirRoot = tempDirRoot.substring(JawrConstant.FILE_URI_PREFIX.length());
+		String tempDirRootPath = tempDirRoot; 
+		if (tempDirRootPath.startsWith(JawrConstant.FILE_URI_PREFIX)) {
+			tempDirRootPath = tempDirRootPath.substring(JawrConstant.FILE_URI_PREFIX.length());
 		} else {
 			useFileSystemTempDir = false;
 		}
 
-		initTempDirectory(tempDirRoot, createTempSubDir);
+		initTempDirectory(tempDirRootPath, createTempSubDir);
 	}
 
 	/**
@@ -388,15 +389,18 @@ public abstract class AbstractResourceBundleHandler implements ResourceBundleHan
 	 * @return the file path
 	 */
 	private String getStoredBundlePath(String rootDir, String bundleName) {
-		if (bundleName.indexOf('/') != -1) {
-			bundleName = bundleName.replace('/', File.separatorChar);
+		
+		String storedPath = bundleName;
+		
+		if (storedPath.indexOf('/') != -1) {
+			storedPath = storedPath.replace('/', File.separatorChar);
 		}
 
-		if (!bundleName.startsWith(File.separator)){
-			rootDir += File.separator;
+		if (!storedPath.startsWith(File.separator)){
+			storedPath = File.separator+storedPath;
 		}
 		
-		return rootDir + bundleName;
+		return rootDir + storedPath;
 	}
 
 	/*
@@ -446,8 +450,10 @@ public abstract class AbstractResourceBundleHandler implements ResourceBundleHan
 	 * @param gzipFile a fag defining if the file is gzipped or not
 	 * @param rootDir the root directory
 	 */
-	private void storeBundle(String bundleName, String bundledResources,
+	private void storeBundle(String storedBundleName, String bundledResources,
 			boolean gzipFile, String rootdir) {
+		
+		String bundleName = storedBundleName;
 		if (LOGGER.isDebugEnabled()) {
 			String msg = "Storing a generated "
 					+ (gzipFile ? "and gzipped" : "")
@@ -497,11 +503,12 @@ public abstract class AbstractResourceBundleHandler implements ResourceBundleHan
 	/**
 	 * Creates a directory. If dir is note created for some reason a runtimeexception is thrown.
 	 * 
-	 * @param dir
+	 * @param dirPath the directory path
 	 * @throws IOException
 	 */
-	private File createDir(String path) throws IOException {
+	private File createDir(String dirPath) throws IOException {
 		// In windows, pathnames with spaces are returned as %20
+		String path = dirPath;
 		if (path.indexOf("%20") != -1)
 			path = path.replaceAll("%20", " ");
 		File dir = new File(path);

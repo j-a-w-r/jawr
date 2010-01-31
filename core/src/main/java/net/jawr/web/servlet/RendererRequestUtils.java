@@ -38,7 +38,7 @@ import org.apache.log4j.Logger;
 public class RendererRequestUtils {
 	
 	/** The logger */
-	private static final Logger log = Logger.getLogger(RendererRequestUtils.class.getName());
+	private static final Logger LOGGER = Logger.getLogger(RendererRequestUtils.class.getName());
 	
 	/** The bundle renderer context attribute name */
 	private static final String BUNDLE_RENDERER_CONTEXT_ATTR_PREFIX = "net.jawr.web.resource.renderer.BUNDLE_RENDERER_CONTEXT";
@@ -92,8 +92,8 @@ public class RendererRequestUtils {
 			// If gzip for IE6 or less is off, the user agent is checked to avoid compression.
 			if (!jawrConfig.isGzipResourcesForIESixOn() && isIE6orLess(req)) {
 				rets = false;
-				if (log.isDebugEnabled()){
-					log.debug("Gzip enablement for IE executed, with result:" + rets);
+				if (LOGGER.isDebugEnabled()){
+					LOGGER.debug("Gzip enablement for IE executed, with result:" + rets);
 				}
 			} else
 				rets = true;
@@ -122,8 +122,8 @@ public class RendererRequestUtils {
 	
 		boolean rets = false;
 		String agent = req.getHeader("User-Agent");
-		if (log.isDebugEnabled()){
-			log.debug("User-Agent for this request:" + agent);
+		if (LOGGER.isDebugEnabled()){
+			LOGGER.debug("User-Agent for this request:" + agent);
 		}
 		
 		if (null != agent && agent.indexOf("MSIE") != -1) {
@@ -199,6 +199,8 @@ public class RendererRequestUtils {
 	 */
 	public static String getRenderedUrl(String newUrl, JawrConfig jawrConfig,
 			String contextPath, boolean sslRequest) {
+		
+		String renderedUrl = newUrl;
 		String contextPathOverride = getContextPathOverride(sslRequest, jawrConfig);
 		// If the contextPathOverride is not null and we are in production mode,
 		// or if we are in debug mode but we should use the contextPathOverride even in debug mode
@@ -210,12 +212,12 @@ public class RendererRequestUtils {
 				String override = contextPathOverride;
 				// Blank override, create url relative to path
 				if ("".equals(override)) {
-					newUrl = newUrl.substring(1);
+					renderedUrl = renderedUrl.substring(1);
 				} else
-					newUrl = PathNormalizer.joinPaths(override, newUrl);
+					renderedUrl = PathNormalizer.joinPaths(override, renderedUrl);
 		} else
-			newUrl = PathNormalizer.joinPaths(contextPath, newUrl);
-		return newUrl;
+			renderedUrl = PathNormalizer.joinPaths(contextPath, renderedUrl);
+		return renderedUrl;
 	}
 
 	/**

@@ -28,7 +28,7 @@ import net.jawr.web.resource.bundle.factory.util.PropsFilePropertiesSource;
 public class PropsConfigPropertiesSource implements ConfigPropertiesSource {
 
 	/** The logger */
-	private static final Logger log = Logger.getLogger(PropsFilePropertiesSource.class.getName());
+	private static final Logger LOGGER = Logger.getLogger(PropsFilePropertiesSource.class.getName());
 	
 	/** The configuration properties */
 	private Properties configProps;
@@ -51,8 +51,8 @@ public class PropsConfigPropertiesSource implements ConfigPropertiesSource {
 		int currentConfigHash = this.configProps.hashCode();
 		boolean configChanged = this.propsHashCode != currentConfigHash;
 		
-		if(configChanged && log.isDebugEnabled())
-			log.debug("Changes in configuration properties file detected.");
+		if(configChanged && LOGGER.isDebugEnabled())
+			LOGGER.debug("Changes in configuration properties file detected.");
 			
 		this.propsHashCode = currentConfigHash;
 		

@@ -24,6 +24,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import net.jawr.web.collections.ConcurrentCollectionsFactory;
 import net.jawr.web.config.JawrConfig;
+import net.jawr.web.exception.BundlingProcessException;
 import net.jawr.web.resource.bundle.IOUtils;
 import net.jawr.web.servlet.RendererRequestUtils;
 
@@ -38,7 +39,7 @@ public class ClientSideHandlerScriptRequestHandler {
 	private ResourceBundlesHandler rsHandler;
 	private JawrConfig config;
 	private Map handlerCache;
-	private static final long startTime = System.currentTimeMillis();
+	private static final long START_TIME = System.currentTimeMillis();
 
 	
 	/**
@@ -95,7 +96,7 @@ public class ClientSideHandlerScriptRequestHandler {
 			return;
 		}
 		response.setHeader(HttpConstants.HEADER_ETAG, handler.hash);
-		response.setDateHeader(HttpConstants.HEADER_LAST_MODIFIED,startTime);
+		response.setDateHeader(HttpConstants.HEADER_LAST_MODIFIED,START_TIME);
 		
 		if(RendererRequestUtils.isRequestGzippable(request, this.config)) {			
 			try {
@@ -105,7 +106,7 @@ public class ClientSideHandlerScriptRequestHandler {
 				gzOut.write(data, 0, data.length);
 				gzOut.close();
 			} catch (IOException e) {
-				throw new RuntimeException("Unexpected IOException writing ClientSideHandlerScript",e);
+				throw new BundlingProcessException("Unexpected IOException writing ClientSideHandlerScript",e);
 			}
 		}
 		else {
@@ -114,7 +115,7 @@ public class ClientSideHandlerScriptRequestHandler {
 				Writer writer = response.getWriter();
                 IOUtils.copy(rd, writer, true);
 			} catch (IOException e) {
-				throw new RuntimeException("Unexpected IOException writing ClientSideHandlerScript",e);
+				throw new BundlingProcessException("Unexpected IOException writing ClientSideHandlerScript",e);
 			}
 		}
 	}
@@ -141,10 +142,10 @@ public class ClientSideHandlerScriptRequestHandler {
         	return scriptEtag.equals(eTag);
         }
         else if(null == eTag){
-        	return modifiedHeader <= startTime;
+        	return modifiedHeader <= START_TIME;
         }
         else {
-        	return scriptEtag.equals(eTag) && modifiedHeader <= startTime;
+        	return scriptEtag.equals(eTag) && modifiedHeader <= START_TIME;
         }
     }
 }

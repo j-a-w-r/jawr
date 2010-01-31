@@ -456,9 +456,10 @@ public class JawrConfig implements Serializable {
 	 * 
 	 * @param charsetName the charset name to set
 	 */
-	public void setCharsetName(String charsetName) {
+	public final void setCharsetName(String charsetName) {
 		if (!Charset.isSupported(charsetName))
 			throw new IllegalArgumentException("The specified charset [" + charsetName + "] is not supported by the jvm.");
+		
 		this.charsetName = charsetName;
 	}
 
@@ -732,19 +733,21 @@ public class JawrConfig implements Serializable {
 		return configProperties;
 	}
 
+	
 	/**
 	 * Sets the css link flavor
 	 * 
 	 * @param cssLinkFlavor the cssLinkFlavor to set
 	 */
-	public void setCssLinkFlavor(String cssLinkFlavor) {
+	public final void setCssLinkFlavor(String cssLinkFlavor) {
 		if (CSSHTMLBundleLinkRenderer.FLAVORS_HTML.equalsIgnoreCase(cssLinkFlavor)
 				|| CSSHTMLBundleLinkRenderer.FLAVORS_XHTML.equalsIgnoreCase(cssLinkFlavor)
-				|| CSSHTMLBundleLinkRenderer.FLAVORS_XHTML_EXTENDED.equalsIgnoreCase(cssLinkFlavor))
+				|| CSSHTMLBundleLinkRenderer.FLAVORS_XHTML_EXTENDED.equalsIgnoreCase(cssLinkFlavor)){
 			CSSHTMLBundleLinkRenderer.setClosingTag(cssLinkFlavor);
-		else
+		}else{
 			throw new IllegalArgumentException("The value for the jawr.csslinks.flavor " + "property [" + cssLinkFlavor + "] is invalid. "
 					+ "Please check the docs for valid values ");
+		}
 	}
 
 	/**

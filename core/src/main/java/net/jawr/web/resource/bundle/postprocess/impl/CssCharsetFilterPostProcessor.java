@@ -41,10 +41,10 @@ public class CssCharsetFilterPostProcessor  extends AbstractChainedResourceBundl
 	private static final String CHARSET_DECLARATION_PREFIX = "@charset \"";
 
 	/** The logger */
-	private static Logger log = Logger.getLogger(CssCharsetFilterPostProcessor.class);
+	private static final Logger LOGGER = Logger.getLogger(CssCharsetFilterPostProcessor.class);
 	
 	/** The charset declaration pattern */
-	private static Pattern CHARSET_DECLARATION = Pattern.compile("@charset \"(.+)\";");
+	private static final Pattern CHARSET_DECLARATION = Pattern.compile("@charset \"(.+)\";");
 	
 	/**
 	 * Constructor
@@ -70,11 +70,11 @@ public class CssCharsetFilterPostProcessor  extends AbstractChainedResourceBundl
 			}else{
 				if(currentCharset != null){
 					if(!currentCharset.equalsIgnoreCase(matcher.group(1))){
-						log.warn("The bundle '"+status.getCurrentBundle().getId()+"' contains CSS with different charset declaration.");
+						LOGGER.warn("The bundle '"+status.getCurrentBundle().getId()+"' contains CSS with different charset declaration.");
 					}
 				}else{
 					currentCharset = matcher.group(1);
-					log.warn("For the bundle '"+status.getCurrentBundle().getId()+"', the charset declaration is not defined at the top. The charset which will be set is '"+currentCharset+"'.");
+					LOGGER.warn("For the bundle '"+status.getCurrentBundle().getId()+"', the charset declaration is not defined at the top. The charset which will be set is '"+currentCharset+"'.");
 				}
 				
 				matcher.appendReplacement(sb, "");

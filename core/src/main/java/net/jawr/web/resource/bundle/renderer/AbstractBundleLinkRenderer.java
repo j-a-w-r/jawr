@@ -319,8 +319,8 @@ public abstract class AbstractBundleLinkRenderer implements BundleRenderer {
 	 */
 	protected String createGzipBundleLink(String resourceName, String contextPath, boolean isSslRequest) {
 		// remove '/' from start of name
-		resourceName = resourceName.substring(1, resourceName.length());
-		return createBundleLink(BundleRenderer.GZIP_PATH_PREFIX + resourceName, contextPath, isSslRequest);
+		String resourcePath = resourceName.substring(1, resourceName.length());
+		return createBundleLink(BundleRenderer.GZIP_PATH_PREFIX + resourcePath, contextPath, isSslRequest);
 	}
 
 	/**
@@ -332,11 +332,12 @@ public abstract class AbstractBundleLinkRenderer implements BundleRenderer {
 	 */
 	protected String createBundleLink(String bundleId, String contextPath, boolean isSslRequest) {
 
+		String requestedBundleId = bundleId; 
 		// When debug mode is on and the resource is generated the path must include a parameter
-		if (bundler.getConfig().isDebugModeOn() && bundler.getConfig().getGeneratorRegistry().isPathGenerated(bundleId)) {
-			bundleId = PathNormalizer.createGenerationPath(bundleId, bundler.getConfig().getGeneratorRegistry());
+		if (bundler.getConfig().isDebugModeOn() && bundler.getConfig().getGeneratorRegistry().isPathGenerated(requestedBundleId)) {
+			requestedBundleId = PathNormalizer.createGenerationPath(requestedBundleId, bundler.getConfig().getGeneratorRegistry());
 		}
-		String fullPath = PathNormalizer.joinPaths(bundler.getConfig().getServletMapping(), bundleId);
+		String fullPath = PathNormalizer.joinPaths(bundler.getConfig().getServletMapping(), requestedBundleId);
 
 		fullPath = RendererRequestUtils.getRenderedUrl(fullPath, bundler.getConfig(), contextPath, isSslRequest);
 		

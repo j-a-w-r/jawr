@@ -19,6 +19,7 @@ import java.io.StringReader;
 import java.io.StringWriter;
 
 import net.jawr.web.JawrConstant;
+import net.jawr.web.exception.BundlingProcessException;
 import net.jawr.web.exception.ResourceNotFoundException;
 import net.jawr.web.resource.bundle.IOUtils;
 import net.jawr.web.resource.bundle.JoinableResourceBundle;
@@ -44,7 +45,7 @@ import org.apache.log4j.Logger;
  */
 public class IECssBundleGenerator extends AbstractCSSGenerator {
 
-	private static final Logger log = Logger
+	private static final Logger LOGGER = Logger
 			.getLogger(IECssBundleGenerator.class);
 
 	/*
@@ -113,10 +114,10 @@ public class IECssBundleGenerator extends AbstractCSSGenerator {
 					}
 
 				} catch (ResourceNotFoundException e) {
-					log.debug("The resource '" + resourcePath
+					LOGGER.debug("The resource '" + resourcePath
 							+ "' was not found");
 				} catch (IOException e) {
-					throw new RuntimeException(e);
+					throw new BundlingProcessException(e);
 				}
 			}
 		}
