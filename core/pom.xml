@@ -206,7 +206,7 @@
 	<dependency>
 		<groupId>org.carrot2</groupId>
 		<artifactId>smartsprites</artifactId>
-		<version>0.2.5</version>
+		<version>0.2.6</version>
 		<scope>provided</scope>
 	</dependency>
 	
