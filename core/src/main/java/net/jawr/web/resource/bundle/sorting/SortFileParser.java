@@ -21,7 +21,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import net.jawr.web.exception.BundlingProcessException;
 import net.jawr.web.resource.bundle.factory.util.PathNormalizer;
 
 /**
@@ -69,7 +68,7 @@ public class SortFileParser {
 				}
 			}
 		} catch (IOException e) {
-			throw new BundlingProcessException("Unexpected IOException reading sort file",e);
+			throw new RuntimeException("Unexpected IOException reading sort file",e);
 		}
 		return resources;
 	}

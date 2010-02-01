@@ -191,9 +191,9 @@ public class LocaleUtils {
 	 * @return the bundle name for the resource bundle
 	 * @exception NullPointerException if <code>baseName</code> or <code>locale</code> is <code>null</code>
 	 */
-	public static String toBundleName(String baseBundleName, Locale locale) {
+	public static String toBundleName(String baseName, Locale locale) {
 		
-		String baseName = baseBundleName.replace('.', '/');
+		baseName = baseName.replace('.', '/');
 		if (locale == null) {
 			return baseName;
 		}

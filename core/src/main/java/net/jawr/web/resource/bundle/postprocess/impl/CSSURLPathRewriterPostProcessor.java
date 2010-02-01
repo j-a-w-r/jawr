@@ -46,17 +46,17 @@ import org.apache.log4j.Logger;
 public class CSSURLPathRewriterPostProcessor extends
 		AbstractChainedResourceBundlePostProcessor {
 	
-	/** Logger */
-	private static final Logger LOGGER = Logger.getLogger(CSSURLPathRewriterPostProcessor.class);
-	
 	/** This variable is used to fake the gzip prefix for the full bundle path */
 	private static final String FAKE_BUNDLE_PREFIX = "/prefix/";
 
+	/** Logger */
+	private static Logger log = Logger.getLogger(CSSURLPathRewriterPostProcessor.class);
+	
 	/** The URL separator */
 	private static final String URL_SEPARATOR = "/";
 
 	/** The url pattern */
-	private static final Pattern URL_PATTERN = Pattern.compile(	"url\\(\\s*" // 'url(' and any number of whitespaces 
+	private static final Pattern urlPattern = Pattern.compile(	"url\\(\\s*" // 'url(' and any number of whitespaces 
 																+ "((\\\\\\))|[^)])*" // any sequence of characters, except an unescaped ')'
 																+ "\\s*\\)",  // Any number of whitespaces, then ')'
 																Pattern.CASE_INSENSITIVE); // works with 'URL('
@@ -82,7 +82,7 @@ public class CSSURLPathRewriterPostProcessor extends
 		String bundleName = getFinalFullBundlePath(status, jawrConfig);
 		
 		// Rewrite each css image url path
-		Matcher matcher = URL_PATTERN.matcher(data);
+		Matcher matcher = urlPattern.matcher(data);
 		StringBuffer sb = new StringBuffer();
 		while(matcher.find()) {
 		
@@ -249,7 +249,7 @@ public class CSSURLPathRewriterPostProcessor extends
 		// This following condition should never be true. 
 		// If it does, it means that the image path is wrongly defined.
 		if(imgUrl == null){
-			LOGGER.error("The CSS image path for '"+url+"' defined in '"+currentCss+"' is out of the application context. Please check your CSS file.");
+			log.error("The CSS image path for '"+url+"' defined in '"+currentCss+"' is out of the application context. Please check your CSS file.");
 		}
 		
 		// Add image servlet path in the URL, if it's defined
@@ -297,10 +297,10 @@ public class CSSURLPathRewriterPostProcessor extends
 			try {
 				newUrl = CheckSumUtils.getCacheBustedUrl(url, imgRsHandler.getRsReaderHandler(), imgRsHandler.getJawrConfig());
 			} catch (ResourceNotFoundException e) {
-				LOGGER.info("Impossible to define the checksum for the resource '"+url+"'. ");
+				log.info("Impossible to define the checksum for the resource '"+url+"'. ");
 				return url;
 			} catch (IOException e) {
-				LOGGER.info("Impossible to define the checksum for the resource '"+url+"'.");
+				log.info("Impossible to define the checksum for the resource '"+url+"'.");
 				return url;
 			}
 			

@@ -22,7 +22,6 @@ import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 import java.nio.charset.Charset;
 
-import net.jawr.web.exception.BundlingProcessException;
 import net.jawr.web.minification.JSMin;
 import net.jawr.web.minification.JSMin.JSMinException;
 import net.jawr.web.resource.bundle.IOUtils;
@@ -150,7 +149,7 @@ public class JSMinPostProcessor extends
 		errorMsg.append("_______________________________________________");
 		errorMsg.append("\nIf you can't find the error, try to check the scripts using JSLint (http://www.jslint.com/) to find the conflicting part of the code. ");
 		
-		throw new BundlingProcessException(errorMsg.toString(),e);
+		throw new RuntimeException(errorMsg.toString(),e);
 	}
 
 }

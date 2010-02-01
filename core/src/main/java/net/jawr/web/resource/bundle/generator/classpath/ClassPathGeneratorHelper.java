@@ -19,7 +19,6 @@ import java.io.Reader;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 
-import net.jawr.web.exception.BundlingProcessException;
 import net.jawr.web.resource.bundle.factory.util.ClassLoaderResourceUtils;
 import net.jawr.web.resource.bundle.generator.GeneratorContext;
 
@@ -51,7 +50,7 @@ public class ClassPathGeneratorHelper {
 		try {
 			return ClassLoaderResourceUtils.getResourceAsStream(context.getPath(), this);
 		} catch (FileNotFoundException e) {
-			throw new BundlingProcessException(e);
+			throw new RuntimeException(e);
 		}
 	}
 }

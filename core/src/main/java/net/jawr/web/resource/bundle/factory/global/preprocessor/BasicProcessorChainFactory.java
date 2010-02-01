@@ -110,22 +110,20 @@ public class BasicProcessorChainFactory implements
 
 		AbstractChainedGlobalPreprocessor toAdd;
 
-		if (customPreprocessors.get(key) == null) {
-			toAdd = buildProcessorByKey(key);
-		} else{
+		if (null != customPreprocessors.get(key)) {
 			toAdd = (AbstractChainedGlobalPreprocessor) customPreprocessors
-				.get(key);
-		}
-		
-		AbstractChainedGlobalPreprocessor newChainResult = null;
-		if (chain == null) {
-			newChainResult = toAdd;
-		}else{
+					.get(key);
+		} else
+			toAdd = buildProcessorByKey(key);
+
+		if (null == chain) {
+			chain = toAdd;
+		} else {
+
 			chain.addNextProcessor(toAdd);
-			newChainResult = chain;
 		}
 
-		return newChainResult;
+		return chain;
 	}
 
 	/**

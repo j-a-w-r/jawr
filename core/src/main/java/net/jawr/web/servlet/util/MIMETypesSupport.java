@@ -19,7 +19,6 @@ import java.io.InputStream;
 import java.util.Map;
 import java.util.Properties;
 
-import net.jawr.web.exception.BundlingProcessException;
 import net.jawr.web.resource.bundle.IOUtils;
 import net.jawr.web.resource.bundle.factory.util.ClassLoaderResourceUtils;
 
@@ -53,10 +52,10 @@ public class MIMETypesSupport {
 						supportedMIMETypes = new Properties();
 						supportedMIMETypes.load(is);
 					} catch (FileNotFoundException e) {
-						throw new BundlingProcessException("Error retrieving " + MIME_PROPS_LOCATION 
+						throw new RuntimeException("Error retrieving " + MIME_PROPS_LOCATION 
 													+ ".Please check your classloader settings");
 					} catch (IOException e) {
-						throw new BundlingProcessException("Error retrieving " + MIME_PROPS_LOCATION 
+						throw new RuntimeException("Error retrieving " + MIME_PROPS_LOCATION 
 													+ ".Please check your classloader settings");
 					}finally{
 						IOUtils.close(is);

@@ -25,7 +25,6 @@ import java.nio.channels.Channels;
 import java.nio.channels.FileChannel;
 
 import net.jawr.web.JawrConstant;
-import net.jawr.web.exception.BundlingProcessException;
 import net.jawr.web.resource.FileNameUtils;
 import net.jawr.web.resource.bundle.IOUtils;
 import net.jawr.web.resource.bundle.JoinableResourceBundle;
@@ -107,7 +106,7 @@ public class ClassPathCSSGenerator extends AbstractCSSGenerator implements Worki
 				try {
 					fis = new FileInputStream(new File(workingDir+"/"+TEMP_CSS_CLASSPATH_SUBDIR, context.getPath()));
 				} catch (FileNotFoundException e) {
-					throw new BundlingProcessException("An error occured while creating temporary resource for "+context.getPath(), e);
+					throw new RuntimeException("An error occured while creating temporary resource for "+context.getPath(), e);
 				}
 		        if(fis != null){
 		        	FileChannel inchannel = fis.getChannel();
@@ -161,7 +160,7 @@ public class ClassPathCSSGenerator extends AbstractCSSGenerator implements Worki
 			File tempCssDir = cssTempFile.getParentFile(); 
 			if(!tempCssDir.exists()){
 				if(!tempCssDir.mkdirs()){
-					throw new BundlingProcessException("An error occured while creating temporary resource for "+resourcePath+".\n" +
+					throw new RuntimeException("An error occured while creating temporary resource for "+resourcePath+".\n" +
 							"Enable to create temporary directory '"+tempCssClasspathDir+"'");
 				}
 			}
@@ -169,7 +168,7 @@ public class ClassPathCSSGenerator extends AbstractCSSGenerator implements Worki
 			fWriter = new FileWriter(cssTempFile);
 			IOUtils.copy(new StringReader(resourceData.toString()), fWriter, true);
 		} catch (IOException e) {
-			throw new BundlingProcessException("An error occured while creating temporary resource for "+resourcePath, e);
+			throw new RuntimeException("An error occured while creating temporary resource for "+resourcePath, e);
 		}
 		
 		return result;

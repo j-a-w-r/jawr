@@ -37,7 +37,7 @@ import org.apache.log4j.Logger;
 public abstract class AbstractResourceMapper {
 
 	/** The logger */
-	private static final Logger LOGGER = Logger
+	private static final Logger log = Logger
 			.getLogger(AbstractResourceMapper.class);
 
 	/** The base directory */
@@ -102,7 +102,7 @@ public abstract class AbstractResourceMapper {
 			JoinableResourceBundle bundle = (JoinableResourceBundle) it.next();
 			if (bundleId.equals(bundle.getId())
 					|| this.bundleMapping.containsKey(bundleId)) {
-				LOGGER.fatal("Duplicate bundle id resulted from mapping:"
+				log.fatal("Duplicate bundle id resulted from mapping:"
 						+ bundleId);
 				throw new DuplicateBundlePathException(bundleId);
 			}

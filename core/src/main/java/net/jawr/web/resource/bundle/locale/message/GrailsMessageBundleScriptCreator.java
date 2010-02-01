@@ -12,7 +12,6 @@ import java.util.Properties;
 import java.util.ResourceBundle;
 import java.util.Set;
 
-import net.jawr.web.exception.BundlingProcessException;
 import net.jawr.web.resource.bundle.generator.GeneratorContext;
 import net.jawr.web.resource.bundle.locale.ResourceBundleMessagesGenerator;
 
@@ -36,12 +35,12 @@ public class GrailsMessageBundleScriptCreator extends MessageBundleScriptCreator
 	private static final String PROPERTIES_DIR = "/WEB-INF/grails-app/i18n/";
 	private static final String PROPERTIES_EXT =".properties";
 	
-	private static final Logger LOGGER = Logger.getLogger(GrailsMessageBundleScriptCreator.class);
+	private static final Logger log = Logger.getLogger(GrailsMessageBundleScriptCreator.class);
 	private static final String PROJECT_RESOURCES_DIR = "grails.project.resource.dir"; // Copied from grails, to avoid unneeded dependency
 	public GrailsMessageBundleScriptCreator(GeneratorContext context) {
 		super(context);
-		if(LOGGER.isDebugEnabled())
-			LOGGER.debug("Using Grails i18n messages generator.");
+		if(log.isDebugEnabled())
+			log.debug("Using Grails i18n messages generator.");
 	}
 
 	/* (non-Javadoc)
@@ -61,8 +60,8 @@ public class GrailsMessageBundleScriptCreator extends MessageBundleScriptCreator
 		// for run-app or run-war style of runtimes. 
 		if(warDeployed){
 			allPropertyNames = getPropertyNamesFromWar();
-			if(LOGGER.isDebugEnabled())
-				LOGGER.debug("found a total of " + allPropertyNames.size() + " distinct message keys.");
+			if(log.isDebugEnabled())
+				log.debug("found a total of " + allPropertyNames.size() + " distinct message keys.");
 			messageSource.setResourceLoader(new ServletContextResourceLoader(this.servletContext));
 			messageSource.setBasename(PROPERTIES_DIR + configParam.substring(configParam.lastIndexOf('.')+1));
 		}
@@ -90,8 +89,8 @@ public class GrailsMessageBundleScriptCreator extends MessageBundleScriptCreator
 					props.put(key, msg);
 				} catch (NoSuchMessageException e) {
 					// This is expected, so it's OK to have an empty catch block. 
-					if(LOGGER.isDebugEnabled())
-						LOGGER.debug("Message key [" + key + "] not found.");
+					if(log.isDebugEnabled())
+						log.debug("Message key [" + key + "] not found.");
 				}
 			}
 		}
@@ -113,11 +112,11 @@ public class GrailsMessageBundleScriptCreator extends MessageBundleScriptCreator
 				try {
 					Properties props = new Properties(); 
 					props.load(servletContext.getResourceAsStream(name));
-					if(LOGGER.isDebugEnabled())
-						LOGGER.debug("Found " + props.keySet().size() + " message keys at " + name + ".");
+					if(log.isDebugEnabled())
+						log.debug("Found " + props.keySet().size() + " message keys at " + name + ".");
 					allPropertyNames.addAll(props.keySet());
 				} catch (IOException e) {
-					throw new BundlingProcessException("Unexpected error retrieving i18n grails properties file", e);
+					throw new RuntimeException("Unexpected error retrieving i18n grails properties file", e);
 				}
 			}			
 		}

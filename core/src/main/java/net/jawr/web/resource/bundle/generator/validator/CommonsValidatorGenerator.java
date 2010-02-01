@@ -29,7 +29,6 @@ import java.util.Map;
 import java.util.StringTokenizer;
 
 import net.jawr.web.config.JawrConfig;
-import net.jawr.web.exception.BundlingProcessException;
 import net.jawr.web.resource.bundle.factory.util.ClassLoaderResourceUtils;
 import net.jawr.web.resource.bundle.generator.AbstractJavascriptGenerator;
 import net.jawr.web.resource.bundle.generator.GeneratorContext;
@@ -56,7 +55,7 @@ import org.xml.sax.SAXException;
  *
  */
 public class CommonsValidatorGenerator extends AbstractJavascriptGenerator implements ResourceGenerator {
-	private static final Logger LOGGER = Logger.getLogger(CommonsValidatorGenerator.class.getName());
+	private static final Logger log = Logger.getLogger(CommonsValidatorGenerator.class.getName());
 	private static final String STATIC_JAVASCRIPT_KEY = "_static";
 
 	private Map validatorResourcesMap;
@@ -314,9 +313,9 @@ public class CommonsValidatorGenerator extends AbstractJavascriptGenerator imple
             String depends = (String) iterator.next();
             ValidatorAction va = resources.getValidatorAction(depends);
 
-            // throw nicer Exception for easier debugging
+            // throw nicer NPE for easier debugging
             if (va == null) {
-                throw new IllegalStateException("Depends string \"" + depends
+                throw new NullPointerException("Depends string \"" + depends
                     + "\" was not found in validator-rules.xml.");
             }
 
@@ -328,7 +327,7 @@ public class CommonsValidatorGenerator extends AbstractJavascriptGenerator imple
             }
         }
 
-        Collections.sort(actions, ACTION_COMPARATOR);
+        Collections.sort(actions, actionComparator);
 
         return actions;
     }
@@ -385,8 +384,8 @@ public class CommonsValidatorGenerator extends AbstractJavascriptGenerator imple
             while (st.hasMoreTokens()) {
                 String validatorRules = st.nextToken().trim();
 
-                if (LOGGER.isDebugEnabled()) {
-                    LOGGER.debug("Validation rules file from '"
+                if (log.isDebugEnabled()) {
+                    log.debug("Validation rules file from '"
                         + validatorRules + "'");
                 }
                 InputStream is = null;
@@ -401,14 +400,14 @@ public class CommonsValidatorGenerator extends AbstractJavascriptGenerator imple
             }
             validatorResources = new ValidatorResources(inputStreams);            
         } catch (SAXException ex) {
-            throw new BundlingProcessException(ex);
+            throw new RuntimeException(ex);
         } catch (IOException e) {
-            throw new BundlingProcessException(e);
+            throw new RuntimeException(e);
 		} 
 		validatorResourcesMap.put(path, validatorResources);
 	}
 	
-	private static final Comparator ACTION_COMPARATOR =
+	private static final Comparator actionComparator =
         new Comparator() {
             public int compare(Object o1, Object o2) {
                 ValidatorAction va1 = (ValidatorAction) o1;

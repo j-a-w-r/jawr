@@ -75,19 +75,19 @@ public class GeneratorContext {
 	public GeneratorContext(JawrConfig config, String path) {
 
 		this.config = config;
-		String ctxPath = path;
+
 		// init parameters, if any
-		if (ctxPath.matches(PARENFINDER_REGEXP)) {
-			parenthesesParam = ctxPath.substring(ctxPath.indexOf('(') + 1, ctxPath.indexOf(')'));
+		if (path.matches(PARENFINDER_REGEXP)) {
+			parenthesesParam = path.substring(path.indexOf('(') + 1, path.indexOf(')'));
 
-			ctxPath = ctxPath.substring(0, ctxPath.indexOf('(')) + ctxPath.substring(ctxPath.indexOf(')') + 1);
+			path = path.substring(0, path.indexOf('(')) + path.substring(path.indexOf(')') + 1);
 		}
-		if (ctxPath.matches(BRACKFINDER_REGEXP)) {
-			bracketsParam = ctxPath.substring(ctxPath.indexOf('[') + 1, ctxPath.indexOf(']'));
+		if (path.matches(BRACKFINDER_REGEXP)) {
+			bracketsParam = path.substring(path.indexOf('[') + 1, path.indexOf(']'));
 
-			ctxPath = ctxPath.substring(0, ctxPath.indexOf('[')) + ctxPath.substring(ctxPath.indexOf(']') + 1);
+			path = path.substring(0, path.indexOf('[')) + path.substring(path.indexOf(']') + 1);
 		}
-		this.path = ctxPath;
+		this.path = path;
 	}
 
 	/**

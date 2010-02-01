@@ -60,7 +60,7 @@ public class JawrImageRequestHandler extends JawrRequestHandler {
 	private static final long serialVersionUID = -8342090032443416738L;
 
 	/** The logger */
-	private static final Logger LOGGER = Logger
+	private static final Logger log = Logger
 			.getLogger(JawrImageRequestHandler.class);
 
 	/** The cache buster pattern */
@@ -177,14 +177,14 @@ public class JawrImageRequestHandler extends JawrRequestHandler {
 		servletContext.setAttribute(JawrConstant.IMG_CONTEXT_ATTRIBUTE,
 				imgRsHandler);
 
-		if (LOGGER.isDebugEnabled()) {
-			LOGGER.debug("Configuration read. Current config:");
-			LOGGER.debug(jawrConfig);
+		if (log.isDebugEnabled()) {
+			log.debug("Configuration read. Current config:");
+			log.debug(jawrConfig);
 		}
 
 		// Warn when in debug mode
 		if (jawrConfig.isDebugModeOn()) {
-			LOGGER
+			log
 					.warn("Jawr initialized in DEVELOPMENT MODE. Do NOT use this mode in production or integration servers. ");
 		}
 	}
@@ -238,7 +238,7 @@ public class JawrImageRequestHandler extends JawrRequestHandler {
 					} else if (hasImageFileExtension(pathMapping)) {
 						addImagePath(imgRsHandler, pathMapping);
 					} else
-						LOGGER
+						log
 								.warn("Wrong mapping ["
 										+ pathMapping
 										+ "] for image bundle. Please check configuration. ");
@@ -252,8 +252,8 @@ public class JawrImageRequestHandler extends JawrRequestHandler {
 			rsBundleHandler.storeJawrBundleMapping(bundleMapping);
 		}
 
-		if (LOGGER.isDebugEnabled())
-			LOGGER.debug("Finish creation of map for image bundle");
+		if (log.isDebugEnabled())
+			log.debug("Finish creation of map for image bundle");
 	}
 
 	/**
@@ -275,11 +275,11 @@ public class JawrImageRequestHandler extends JawrRequestHandler {
 			imgRsHandler.addMapping(imgPath, resultPath);
 			bundleMapping.put(imgPath, resultPath);
 		} catch (IOException e) {
-			LOGGER.error(
+			log.error(
 					"An exception occurs while defining the mapping for the file : "
 							+ imgPath, e);
 		} catch (ResourceNotFoundException e) {
-			LOGGER.error("Impossible to define the checksum for the resource '"
+			log.error("Impossible to define the checksum for the resource '"
 					+ imgPath
 					+ "'. Unable to retrieve the content of the file.");
 		}
@@ -319,8 +319,8 @@ public class JawrImageRequestHandler extends JawrRequestHandler {
 			String dirName, boolean addSubDirs) {
 		Set resources = rsReaderHandler.getResourceNames(dirName);
 
-		if (LOGGER.isDebugEnabled()) {
-			LOGGER.debug("Adding " + resources.size() + " resources from path ["
+		if (log.isDebugEnabled()) {
+			log.debug("Adding " + resources.size() + " resources from path ["
 					+ dirName + "] to image bundle");
 		}
 
@@ -334,8 +334,8 @@ public class JawrImageRequestHandler extends JawrRequestHandler {
 			if (hasImageFileExtension(resourceName)) {
 				addImagePath(imgRsHandler, resourcePath);
 
-				if (LOGGER.isDebugEnabled())
-					LOGGER.debug("Added to item path list:"
+				if (log.isDebugEnabled())
+					log.debug("Added to item path list:"
 							+ PathNormalizer.asPath(resourcePath));
 			} else if (addSubDirs) {
 
@@ -344,8 +344,8 @@ public class JawrImageRequestHandler extends JawrRequestHandler {
 						folders.add(resourceName);
 					}
 				} catch (InvalidPathException e) {
-					if (LOGGER.isDebugEnabled())
-						LOGGER
+					if (log.isDebugEnabled())
+						log
 								.debug("Enable to define if the following resource is a directory : "
 										+ PathNormalizer.asPath(resourcePath));
 				}
@@ -386,8 +386,8 @@ public class JawrImageRequestHandler extends JawrRequestHandler {
 			HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
-		if (LOGGER.isDebugEnabled())
-			LOGGER.debug("Request received for path:" + requestedPath);
+		if (log.isDebugEnabled())
+			log.debug("Request received for path:" + requestedPath);
 
 		// Retrieve the file path
 		//String filePath = getFilePath(request);
@@ -412,8 +412,8 @@ public class JawrImageRequestHandler extends JawrRequestHandler {
 			if (null != request.getHeader(IF_MODIFIED_SINCE_HEADER)
 					|| null != request.getHeader(IF_NONE_MATCH_HEADER)) {
 				response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
-				if (LOGGER.isDebugEnabled())
-					LOGGER.debug("Returning 'not modified' header. ");
+				if (log.isDebugEnabled())
+					log.debug("Returning 'not modified' header. ");
 				return;
 			}
 
@@ -428,20 +428,20 @@ public class JawrImageRequestHandler extends JawrRequestHandler {
 			if (isValidRequestedPath(filePath)) {
 				writeContent(response, filePath);
 			} else {
-				LOGGER.error("Unable to load the image for the request URI : "
+				log.error("Unable to load the image for the request URI : "
 						+ request.getRequestURI());
 				response.sendError(HttpServletResponse.SC_NOT_FOUND);
 			}
 
 		} catch (Exception ex) {
 
-			LOGGER.error("Unable to load the image for the request URI : "
+			log.error("Unable to load the image for the request URI : "
 					+ request.getRequestURI(), ex);
 			response.sendError(HttpServletResponse.SC_NOT_FOUND);
 		}
 
-		if (LOGGER.isDebugEnabled())
-			LOGGER.debug("request succesfully attended");
+		if (log.isDebugEnabled())
+			log.debug("request succesfully attended");
 	}
 
 	/**
@@ -460,14 +460,14 @@ public class JawrImageRequestHandler extends JawrRequestHandler {
 		String extension = getExtension(filePath);
 		if (extension == null) {
 
-			LOGGER.error("No extension found for the request URI : " + requestUri);
+			log.error("No extension found for the request URI : " + requestUri);
 			return null;
 		}
 
 		String contentType = (String) imgMimeMap.get(extension);
 		if (contentType == null) {
 
-			LOGGER.error("No image extension match the extension '" + extension
+			log.error("No image extension match the extension '" + extension
 					+ "' for the request URI : " + requestUri);
 			return null;
 		}
@@ -498,18 +498,18 @@ public class JawrImageRequestHandler extends JawrRequestHandler {
 	 * @param response
 	 *            the response
 	 * @param fileName
-	 *            the requested filename
+	 *            the filename
 	 * @throws IOException
 	 *             if an IO exception occurs.
 	 */
-	private void writeContent(HttpServletResponse response, String reqFileName)
+	private void writeContent(HttpServletResponse response, String fileName)
 			throws IOException {
 
 		OutputStream os = response.getOutputStream();
 		InputStream is = null;
-		String fileName = reqFileName;
+
 		if (!jawrConfig.getGeneratorRegistry().isGeneratedImage(fileName)
-				&& fileName.charAt(0) != '/') {
+				&& !fileName.startsWith("/")) {
 			fileName = "/" + fileName;
 		}
 
@@ -521,8 +521,8 @@ public class JawrImageRequestHandler extends JawrRequestHandler {
 
 		if (is == null) {
 			response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-			if (LOGGER.isInfoEnabled())
-				LOGGER
+			if (log.isInfoEnabled())
+				log
 						.info("Received a request for a non existing image resource: "
 								+ fileName);
 			return;
@@ -531,7 +531,7 @@ public class JawrImageRequestHandler extends JawrRequestHandler {
 		try {
 			IOUtils.copy(is, os);
 		} catch (EOFException eofex) {
-			LOGGER.debug("Browser cut off response", eofex);
+			log.debug("Browser cut off response", eofex);
 		}
 		finally{
 			IOUtils.close(is);
@@ -547,11 +547,10 @@ public class JawrImageRequestHandler extends JawrRequestHandler {
 	 */
 	private String getRealFilePath(String fileName) {
 
-		String filePath = fileName;
-		if (filePath.startsWith("/")) {
-			filePath = filePath.substring(1);
+		if (fileName.startsWith("/")) {
+			fileName = fileName.substring(1);
 		}
-		Matcher matcher = cacheBusterPattern.matcher(filePath);
+		Matcher matcher = cacheBusterPattern.matcher(fileName);
 		StringBuffer result = new StringBuffer();
 		if (matcher.find()) {
 			matcher
@@ -563,7 +562,7 @@ public class JawrImageRequestHandler extends JawrRequestHandler {
 			return result.toString();
 		}
 
-		return filePath;
+		return fileName;
 	}
 
 }

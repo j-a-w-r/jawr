@@ -33,7 +33,7 @@ import org.mozilla.javascript.EvaluatorException;
 public class YUIErrorReporter implements ErrorReporter {
 	
 	/** The logger */
-	private static final Logger LOGGER = Logger.getLogger(YUIErrorReporter.class);
+	private static final Logger log = Logger.getLogger(YUIErrorReporter.class);
 	
 	/** The bundle processing status */
 	private BundleProcessingStatus status;
@@ -122,8 +122,8 @@ public class YUIErrorReporter implements ErrorReporter {
 	 * @see org.mozilla.javascript.ErrorReporter#warning(java.lang.String, java.lang.String, int, java.lang.String, int)
 	 */
 	public void warning(String message, String sourceName, int line, String lineSource, int lineOffset) {
-		if(LOGGER.isDebugEnabled())
-			LOGGER.debug(message);
+		if(log.isDebugEnabled())
+			log.debug(message);
 	}
 
 }

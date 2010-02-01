@@ -33,7 +33,7 @@ import org.apache.log4j.Logger;
 public class PropertyUtils {
 
 	/** The logger */
-	private static final Logger LOGGER = Logger.getLogger(PropertyUtils.class);
+	private static final Logger log = Logger.getLogger(PropertyUtils.class);
 
 	/**
      * Return the value of the specified simple property of the specified
@@ -228,7 +228,7 @@ public class PropertyUtils {
         
         } catch (IllegalArgumentException e) {
             
-            LOGGER.error("Method invocation failed.", e);
+            log.error("Method invocation failed.", e);
             throw new IllegalArgumentException(
                 "Cannot invoke " + method.getDeclaringClass().getName() + "." 
                 + method.getName() + " - " + e.getMessage());

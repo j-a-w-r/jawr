@@ -30,33 +30,33 @@ import net.jawr.web.resource.bundle.factory.util.RegexUtil;
 public class CSSMinifier {
 
 	// This regex captures comments
-	private static final String COMMENT_REGEX ="(/\\*[^*]*\\*+([^/][^*]*\\*+)*/)"; 
+	private static final String commentRegex ="(/\\*[^*]*\\*+([^/][^*]*\\*+)*/)"; 
 	
 	// Captures CSS strings
-	private static final String QUOTED_CONTENT_REGEX = "('(\\\\'|[^'])*')|(\"(\\\\\"|[^\"])*\")";
+	private static final String quotedContentRegex = "('(\\\\'|[^'])*')|(\"(\\\\\"|[^\"])*\")";
 	
 	// A placeholder string to replace and restore CSS strings
 	private static final String STRING_PLACEHOLDER = "______'JAWR_STRING'______";
 	
 	// Captured CSS rules (requires replacing CSS strings with a placeholder, or quoted braces will fool it.  
-	private static final String RULES_REGEX = "([^\\{\\}]*)(\\{[^\\{\\}]*})";
+	private static final String rulesRegex = "([^\\{\\}]*)(\\{[^\\{\\}]*})";
 
 	// Captures newlines and tabs
-	private static final String NEW_LINES_TABS_REGEX = "\\r|\\n|\\t|\\f";
+	private static final String newlinesTabsRegex = "\\r|\\n|\\t|\\f";
 	
 	// This regex captures, in order: 
 	//(\\s*\\{\\s*)|(\\s*\\}\\s*)|(\\s*\\(\\s*)|(\\s*;\\s*)|(\\s*\\))
 	// 			brackets, parentheses,colons and semicolons and any spaces around them (except spaces AFTER a parentheses closing symbol), 
 	//and ( +) occurrences of one or more spaces. 
-	private static final String SPACES_REGEX = "(\\s*\\{\\s*)|(\\s*\\}\\s*)|(\\s*\\(\\s*)|(\\s*;\\s*)|(\\s*:\\s*)|(\\s*\\))|( +)";
+	private static final String spacesRegex = "(\\s*\\{\\s*)|(\\s*\\}\\s*)|(\\s*\\(\\s*)|(\\s*;\\s*)|(\\s*:\\s*)|(\\s*\\))|( +)";
 	
-	private static final Pattern COMMENTS_PATTERN = Pattern.compile(COMMENT_REGEX, Pattern.DOTALL);
-	private static final Pattern SPACES_PATTERN = Pattern.compile(SPACES_REGEX, Pattern.DOTALL);
+	private static final Pattern commentsPattern = Pattern.compile(commentRegex, Pattern.DOTALL);
+	private static final Pattern spacesPattern = Pattern.compile(spacesRegex, Pattern.DOTALL);
 	
-	private static final Pattern QUOTED_CONTENT_PATTERN = Pattern.compile(QUOTED_CONTENT_REGEX, Pattern.DOTALL);
-	private static final Pattern RULES_PATTERN = Pattern.compile(RULES_REGEX, Pattern.DOTALL);
-	private static final Pattern NEW_LINES_TABS_PATTERN = Pattern.compile(NEW_LINES_TABS_REGEX, Pattern.DOTALL);
-	private static final Pattern STRING_PLACEHOLDER_PATTERN = Pattern.compile(STRING_PLACEHOLDER, Pattern.DOTALL);
+	private static final Pattern quotedContentPattern = Pattern.compile(quotedContentRegex, Pattern.DOTALL);
+	private static final Pattern rulesPattern = Pattern.compile(rulesRegex, Pattern.DOTALL);
+	private static final Pattern newlinesTabsPattern = Pattern.compile(newlinesTabsRegex, Pattern.DOTALL);
+	private static final Pattern stringPlaceholderPattern = Pattern.compile(STRING_PLACEHOLDER, Pattern.DOTALL);
 	
 	
 	private static final String SPACE = " ";
@@ -90,11 +90,11 @@ public class CSSMinifier {
 	 */
 	public StringBuffer minifyCSS(StringBuffer data) {
 		// Remove comments and carriage returns
-		String compressed = COMMENTS_PATTERN.matcher(data.toString()).replaceAll("");
+		String compressed = commentsPattern.matcher(data.toString()).replaceAll("");
 
 		// Temporarily replace the strings with a placeholder
 		final List strings = new ArrayList();		
-		Matcher stringMatcher = QUOTED_CONTENT_PATTERN.matcher(compressed);
+		Matcher stringMatcher = quotedContentPattern.matcher(compressed);
 		compressed = new MatcherProcessorCallback(){
 			String matchCallback(Matcher matcher) {
 				String match = matcher.group();
@@ -103,19 +103,19 @@ public class CSSMinifier {
 			}}.processWithMatcher(stringMatcher);
 		
 		// Grab all rules and replace whitespace in selectors
-		Matcher rulesmatcher = RULES_PATTERN.matcher(compressed);
+		Matcher rulesmatcher = rulesPattern.matcher(compressed);
 		compressed = new MatcherProcessorCallback(){
 			String matchCallback(Matcher matcher) {
 				String match = matcher.group(1);
-				String spaced = NEW_LINES_TABS_PATTERN.matcher(match.toString()).replaceAll(SPACE).trim();
+				String spaced = newlinesTabsPattern.matcher(match.toString()).replaceAll(SPACE).trim();
 				return spaced + matcher.group(2);	
 			}}.processWithMatcher(rulesmatcher);
 		
 		// Replace all linefeeds and tabs
-		compressed = NEW_LINES_TABS_PATTERN.matcher(compressed).replaceAll("");
+		compressed = newlinesTabsPattern.matcher(compressed).replaceAll("");
 		
 		// Match all empty space we can minify 
-		Matcher matcher = SPACES_PATTERN.matcher(compressed);
+		Matcher matcher = spacesPattern.matcher(compressed);
 		compressed = new MatcherProcessorCallback(){
 			String matchCallback(Matcher matcher) {
 				String replacement = SPACE;
@@ -138,7 +138,7 @@ public class CSSMinifier {
 			}}.processWithMatcher(matcher);
 
 		// Restore all Strings
-		Matcher restoreMatcher = STRING_PLACEHOLDER_PATTERN.matcher(compressed);		
+		Matcher restoreMatcher = stringPlaceholderPattern.matcher(compressed);		
 		final Iterator it = strings.iterator();
 		compressed = new MatcherProcessorCallback(){
 			String matchCallback(Matcher matcher) {

@@ -36,7 +36,7 @@ import org.apache.log4j.Logger;
 public class JawrServlet extends HttpServlet {
 	
 	/** The logger */
-	private static final Logger LOGGER = Logger.getLogger(JawrServlet.class);
+	private static final Logger log = Logger.getLogger(JawrServlet.class);
 
 	/** The serial version UID */ 
 	private static final long serialVersionUID = -4551240917172286444L;
@@ -56,14 +56,14 @@ public class JawrServlet extends HttpServlet {
 				requestHandler = new JawrRequestHandler(getServletContext(),getServletConfig());
 			}
 		}catch (ServletException e) {
-			LOGGER.fatal("Jawr servlet with name " +  getServletConfig().getServletName() +" failed to initialize properly. ");
-			LOGGER.fatal("Cause:");
-			LOGGER.fatal(e.getMessage(),e);
+			log.fatal("Jawr servlet with name " +  getServletConfig().getServletName() +" failed to initialize properly. ");
+			log.fatal("Cause:");
+			log.fatal(e.getMessage(),e);
 			throw e;
 		}catch (RuntimeException e) {
-			LOGGER.fatal("Jawr servlet with name " +  getServletConfig().getServletName() +" failed to initialize properly. ");
-			LOGGER.fatal("Cause: ");
-			LOGGER.fatal(e.getMessage(),e);
+			log.fatal("Jawr servlet with name " +  getServletConfig().getServletName() +" failed to initialize properly. ");
+			log.fatal("Cause: ");
+			log.fatal(e.getMessage(),e);
 			throw new ServletException(e);
 		}
 	}

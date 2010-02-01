@@ -23,7 +23,6 @@ import javax.servlet.http.HttpServletRequest;
 
 import net.jawr.web.JawrConstant;
 import net.jawr.web.config.JawrConfig;
-import net.jawr.web.exception.BundlingProcessException;
 import net.jawr.web.resource.bundle.IOUtils;
 import net.jawr.web.resource.bundle.JoinableResourceBundle;
 import net.jawr.web.resource.bundle.factory.util.ClassLoaderResourceUtils;
@@ -46,7 +45,7 @@ public class ClientSideHandlerGeneratorImpl implements
 		ClientSideHandlerGenerator {
 	
 	/** The logger */
-	private static final Logger LOGGER = Logger.getLogger(ClientSideHandlerGeneratorImpl.class.getName());
+	private static final Logger log = Logger.getLogger(ClientSideHandlerGeneratorImpl.class.getName());
 	
 	/**
 	 * Global bundles, to include in every page
@@ -158,7 +157,7 @@ public class ClientSideHandlerGeneratorImpl implements
 			try {
 				sb = p.minifyStringBuffer(sb,config.getResourceCharset());
 			}catch(Exception e) {
-				throw new BundlingProcessException("Unexpected error creating client side resource handler",e);
+				throw new RuntimeException("Unexpected error creating client side resource handler",e);
 			}
 		}
 		return sb;
@@ -284,8 +283,8 @@ public class ClientSideHandlerGeneratorImpl implements
 			}
 			
 		} catch (IOException e) {
-			LOGGER.fatal("a serious error occurred when initializing ClientSideHandlerGeneratorImpl");
-			throw new BundlingProcessException("Classloading issues prevent loading the loader template to be loaded. ",e);
+			log.fatal("a serious error occurred when initializing ClientSideHandlerGeneratorImpl");
+			throw new RuntimeException("Classloading issues prevent loading the loader template to be loaded. ",e);
 		}finally{
 			IOUtils.close(is);
 		}

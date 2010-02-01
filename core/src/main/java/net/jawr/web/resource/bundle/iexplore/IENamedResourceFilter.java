@@ -30,11 +30,11 @@ import java.util.regex.Pattern;
  */
 public class IENamedResourceFilter {
 	
-	private static final String COMMENTS_REGEX = "^.*_ie(.js|.css)$";
-	private static final String OPERATORS_REGEX = "(_(lt|lte|gt|gte))?(_\\d(\\.(\\d)*)?)?_ie(.js|.css)$";
+	private static final String commentsRegex = "^.*_ie(.js|.css)$";
+	private static final String operatorsRegex = "(_(lt|lte|gt|gte))?(_\\d(\\.(\\d)*)?)?_ie(.js|.css)$";
 	
-	private static final Pattern COMMENTS_PATTERN = Pattern.compile(COMMENTS_REGEX, Pattern.CASE_INSENSITIVE);
-	private static final Pattern OPERATORS_PATTERN = Pattern.compile(OPERATORS_REGEX, Pattern.CASE_INSENSITIVE);
+	private static final Pattern commentsPattern = Pattern.compile(commentsRegex, Pattern.CASE_INSENSITIVE);
+	private static final Pattern operatorsPattern = Pattern.compile(operatorsRegex, Pattern.CASE_INSENSITIVE);
 	
 	
 	/**
@@ -50,9 +50,9 @@ public class IENamedResourceFilter {
 		List toRemove = new ArrayList();
 		for(Iterator it = paths.iterator(); it.hasNext();) {
 			String path = it.next().toString();
-			if( COMMENTS_PATTERN.matcher(path).matches() ){
+			if( commentsPattern.matcher(path).matches() ){
 				
-				Matcher matcher = OPERATORS_PATTERN.matcher(path);
+				Matcher matcher = operatorsPattern.matcher(path);
 				matcher.find();
 				String sufix = matcher.group();
 				sufix = sufix.substring(0,sufix.lastIndexOf("."));

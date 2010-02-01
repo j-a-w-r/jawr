@@ -34,7 +34,7 @@ import org.apache.log4j.Logger;
  */
 public class JawrGrailsServlet extends JawrServlet {
 
-	private static final Logger LOGGER = Logger.getLogger(JawrGrailsServlet.class);
+	private static final Logger log = Logger.getLogger(JawrGrailsServlet.class);
 	
 	private static final long serialVersionUID = -7749799838520309579L;
 	public static final String JAWR_GRAILS_JS_CONFIG  = "net.jawr.grails.js.config";
@@ -68,14 +68,14 @@ public class JawrGrailsServlet extends JawrServlet {
 				this.requestHandler = new JawrRequestHandler(getServletContext() , config, jawrProps );
 			}
 		}catch (ServletException e) {
-			LOGGER.fatal("Jawr servlet with name" +  getServletConfig().getServletName() +" failed to initialize properly. ");
-			LOGGER.fatal("Cause:");
-			LOGGER.fatal(e.getMessage(),e);
+			log.fatal("Jawr servlet with name" +  getServletConfig().getServletName() +" failed to initialize properly. ");
+			log.fatal("Cause:");
+			log.fatal(e.getMessage(),e);
 			throw e;
 		}catch (RuntimeException e) {
-			LOGGER.fatal("Jawr servlet with name" +  getServletConfig().getServletName() +" failed to initialize properly. ");
-			LOGGER.fatal("Cause: ");
-			LOGGER.fatal(e.getMessage(),e);
+			log.fatal("Jawr servlet with name" +  getServletConfig().getServletName() +" failed to initialize properly. ");
+			log.fatal("Cause: ");
+			log.fatal(e.getMessage(),e);
 			throw new ServletException(e);
 		}
 	}

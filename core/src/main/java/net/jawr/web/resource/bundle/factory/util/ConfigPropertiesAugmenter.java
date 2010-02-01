@@ -33,7 +33,7 @@ import org.apache.log4j.Logger;
 public class ConfigPropertiesAugmenter {
 	
 	/** The logger */
-	private static final Logger LOGGER = Logger.getLogger(ConfigPropertiesAugmenter.class);
+	private static final Logger log = Logger.getLogger(ConfigPropertiesAugmenter.class);
 
 	/** The configuration properties*/
 	private final Properties configProperties;
@@ -80,7 +80,7 @@ public class ConfigPropertiesAugmenter {
 			
 			// Skip the property is it is not overridable
 			if(null != privateConfigProperties && privateConfigProperties.contains(configKey)) {
-				LOGGER.warn("The property " + configKey 
+				log.warn("The property " + configKey 
 						+ " can not be overriden. It will remain with a value of " 
 						+ configProperties.get(configKey));
 				continue;

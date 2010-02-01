@@ -38,7 +38,7 @@ import org.apache.log4j.Logger;
  */
 public class ClassLoaderResourceUtils {
 
-	private static Logger LOGGER = Logger.getLogger(ClassLoaderResourceUtils.class);
+	private static Logger log = Logger.getLogger(ClassLoaderResourceUtils.class);
 	
 	/**
 	 * Attempots to load a resource from the classpath, either usinf the caller's class loader or the current thread's 
@@ -85,7 +85,7 @@ public class ClassLoaderResourceUtils {
 							ClassLoader cl = mbs.getClassLoaderFor(name);
 							is = cl.getResourceAsStream(resourcePath);
 						} catch (Exception e) {
-							LOGGER.error("Unable to instanciate the Jawr MBean '"+name.getCanonicalName()+"'", e);
+							log.error("Unable to instanciate the Jawr MBean '"+name.getCanonicalName()+"'", e);
 						}
 					}
 				}

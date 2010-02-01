@@ -30,10 +30,10 @@ public class RegexUtil {
 	 */
 	public static String adaptReplacementToMatcher(String replacement) {
 		// Double the backslashes, so they are left as they are after replacement. 
-		String newReplacement = replacement.replaceAll("\\\\", "\\\\\\\\");
+		replacement = replacement.replaceAll("\\\\", "\\\\\\\\");
 		// Add backslashes after dollar signs 
-		newReplacement = newReplacement.replaceAll("\\$", "\\\\\\$");
-		return newReplacement;
+		replacement = replacement.replaceAll("\\$", "\\\\\\$");
+		return replacement;
 	}
 
 }

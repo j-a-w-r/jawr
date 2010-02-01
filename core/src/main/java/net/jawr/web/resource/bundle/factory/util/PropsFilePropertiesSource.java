@@ -29,7 +29,7 @@ import org.apache.log4j.Logger;
  */
 public class PropsFilePropertiesSource implements ConfigPropertiesSource {
 
-	private static final Logger LOGGER = Logger.getLogger(PropsFilePropertiesSource.class.getName());
+	private static final Logger log = Logger.getLogger(PropsFilePropertiesSource.class.getName());
 	
 	private String configLocation;
 	protected int propsHashCode;
@@ -73,13 +73,13 @@ public class PropsFilePropertiesSource implements ConfigPropertiesSource {
 		InputStream is = null;
 		try {	
 			if(path.startsWith(FILE_PREFIX)) {
-				if(LOGGER.isDebugEnabled() && !checking) 			
-					LOGGER.debug("Using filesystem properties file location at: " + configLocation);
+				if(log.isDebugEnabled() && !checking) 			
+					log.debug("Using filesystem properties file location at: " + configLocation);
 				is = new FileInputStream(new File(path.substring(FILE_PREFIX.length())));
 			}
 			else {
-				if(LOGGER.isDebugEnabled() && !checking) 
-					LOGGER.debug("Reading properties from file at classpath: " + configLocation);				
+				if(log.isDebugEnabled() && !checking) 
+					log.debug("Reading properties from file at classpath: " + configLocation);				
 				is = ClassLoaderResourceUtils.getResourceAsStream(path,this);
 			}
 			// load properties into a Properties object
@@ -112,8 +112,8 @@ public class PropsFilePropertiesSource implements ConfigPropertiesSource {
 		int currentConfigHash = doReadConfig().hashCode();
 		boolean configChanged = this.propsHashCode != currentConfigHash;
 		
-		if(configChanged && LOGGER.isDebugEnabled())
-			LOGGER.debug("Changes in configuration properties file detected.");
+		if(configChanged && log.isDebugEnabled())
+			log.debug("Changes in configuration properties file detected.");
 			
 		this.propsHashCode = currentConfigHash;
 		

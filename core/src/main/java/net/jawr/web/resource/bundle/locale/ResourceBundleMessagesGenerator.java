@@ -38,7 +38,7 @@ import org.apache.log4j.Logger;
 public class ResourceBundleMessagesGenerator extends AbstractJavascriptGenerator implements ResourceGenerator, LocaleAwareResourceGenerator {
 	
 	/** The logger */
-	private static final Logger LOGGER = Logger.getLogger(ResourceBundleMessagesGenerator.class);
+	private static final Logger log = Logger.getLogger(ResourceBundleMessagesGenerator.class);
 	
 	public static final String GRAILS_WAR_DEPLOYED = "jawr.grails.war.deployed";
 	
@@ -51,13 +51,13 @@ public class ResourceBundleMessagesGenerator extends AbstractJavascriptGenerator
 		MessageBundleScriptCreator creator = null;
 		// In grails apps, the generator uses a special implementation
 		if(null == context.getServletContext().getAttribute(ResourceBundleMessagesGenerator.GRAILS_WAR_DEPLOYED)){
-			if(LOGGER.isDebugEnabled())
-				LOGGER.debug("Using standard messages generator. ");
+			if(log.isDebugEnabled())
+				log.debug("Using standard messages generator. ");
 			creator = new MessageBundleScriptCreator(context);
 		}
 		else {
-			if(LOGGER.isDebugEnabled())
-				LOGGER.debug("Using grails messages generator. ");
+			if(log.isDebugEnabled())
+				log.debug("Using grails messages generator. ");
 			// Loading this way prevents unwanted dependencies in non grails applications. 
 			Object[] param = {context};
 			creator = (MessageBundleScriptCreator) ClassLoaderResourceUtils.buildObjectInstance(GRAILS_MESSAGE_CREATOR,param);
@@ -75,9 +75,9 @@ public class ResourceBundleMessagesGenerator extends AbstractJavascriptGenerator
 	/* (non-Javadoc)
 	 * @see net.jawr.web.resource.bundle.generator.ResourceGenerator#getDebugModeBuildTimeGenerationPath(java.lang.String)
 	 */
-	public String getDebugModeBuildTimeGenerationPath(String requestedPath) {
+	public String getDebugModeBuildTimeGenerationPath(String path) {
 		
-		String path = requestedPath.replaceFirst(GeneratorRegistry.PREFIX_SEPARATOR, JawrConstant.URL_SEPARATOR);
+		path = path.replaceFirst(GeneratorRegistry.PREFIX_SEPARATOR, JawrConstant.URL_SEPARATOR);
 		if(path.endsWith("@")){
 			path = path.replaceAll("@", "");
 		}else{

@@ -36,7 +36,7 @@ import org.apache.log4j.Logger;
 public class ResourceBundleDirMapper extends AbstractResourceMapper{
 	
 	/** The logger */
-	private static final Logger LOGGER = Logger.getLogger(ResourceBundleDirMapper.class);
+	private static final Logger log = Logger.getLogger(ResourceBundleDirMapper.class);
 	
 	/** The Set of path to exclude */
 	private Set excludedPaths;
@@ -85,8 +85,8 @@ public class ResourceBundleDirMapper extends AbstractResourceMapper{
 			if( !excludedPaths.contains(path)  && rsHandler.isDirectory(path)) {	
 				String bundleKey =  path + resourceExtension;			
 				addBundleToMap(bundleKey, path + "/**");
-				if(LOGGER.isDebugEnabled())
-					LOGGER.debug("Added [" + bundleKey
+				if(log.isDebugEnabled())
+					log.debug("Added [" + bundleKey
 							+ "] with value [" + path  + "/**] to a generated path list");
 			}
 		}

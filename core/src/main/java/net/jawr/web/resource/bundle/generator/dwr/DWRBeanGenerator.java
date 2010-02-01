@@ -32,7 +32,6 @@ import java.util.regex.Pattern;
 
 import javax.servlet.ServletContext;
 
-import net.jawr.web.exception.BundlingProcessException;
 import net.jawr.web.resource.bundle.IOUtils;
 import net.jawr.web.resource.bundle.factory.util.ClassLoaderResourceUtils;
 import net.jawr.web.resource.bundle.generator.AbstractJavascriptGenerator;
@@ -57,7 +56,7 @@ import org.directwebremoting.impl.DefaultCreatorManager;
  * 
  */
 public class DWRBeanGenerator extends AbstractJavascriptGenerator implements ResourceGenerator {
-	private static final Logger LOGGER = Logger.getLogger(DWRBeanGenerator.class.getName());
+	private static final Logger log = Logger.getLogger(DWRBeanGenerator.class.getName());
 
 	// Mapping keys
 	private static final String ALL_INTERFACES_KEY = "_**";
@@ -75,7 +74,7 @@ public class DWRBeanGenerator extends AbstractJavascriptGenerator implements Res
 	private static final String WEBWORK_PATH = "org/directwebremoting/webwork/DWRActionUtil.js";
 	
 	// Convenience map to avoid many if-elses later
-	private static final Map DWR_LIBRARIES = new HashMap(3);
+	private static final Map dwrLibraries = new HashMap(3);
 	
 	// Script replacement to refer to a javascript var that JAWR creates
 	private static final String JS_PATH_REF = "'+JAWR.jawr_dwr_path+'";
@@ -86,7 +85,7 @@ public class DWRBeanGenerator extends AbstractJavascriptGenerator implements Res
 	private static final String DWR_OVERRIDEPATH_PARAM = "overridePath";
 	
 	// A patter to replace some expressions at the engine javascript
-	private static final Pattern PARAM_PATTERN = Pattern.compile("(\\$\\{allowGetForSafariButMakeForgeryEasier}|"  
+	private static final Pattern paramsPattern = Pattern.compile("(\\$\\{allowGetForSafariButMakeForgeryEasier}|"  
 											 + "\\$\\{pollWithXhr}|"  
 											 + "\\$\\{scriptSessionId}|"  
 											 + "\\$\\{sessionCookieName}|"  
@@ -94,13 +93,13 @@ public class DWRBeanGenerator extends AbstractJavascriptGenerator implements Res
 											 + "\\$\\{defaultPath})");
 	
 	// This is a script portion stored in a static method of DWR. We store it to remove it, so it is not replicated many times.  
-	private static final String ENGINE_INIT;
+	private static String ENGINE_INIT;
 	
 	static {
 		ENGINE_INIT = EnginePrivate.getEngineInitScript();
-		DWR_LIBRARIES.put(UTIL_KEY, UTIL_PATH);
-		DWR_LIBRARIES.put(AUTH_KEY, AUTH_PATH);
-		DWR_LIBRARIES.put(WEBWORK_KEY, WEBWORK_PATH);
+		dwrLibraries.put(UTIL_KEY, UTIL_PATH);
+		dwrLibraries.put(AUTH_KEY, AUTH_PATH);
+		dwrLibraries.put(WEBWORK_KEY, WEBWORK_PATH);
 	}
 	
 	
@@ -120,8 +119,8 @@ public class DWRBeanGenerator extends AbstractJavascriptGenerator implements Res
 		if(ENGINE_KEY.equals(path)) {
 			data = buildEngineScript(readDWRScript(ENGINE_PATH),servletContext);
 		}
-		else if(DWR_LIBRARIES.containsKey(path)){
-			data = readDWRScript((String)DWR_LIBRARIES.get(path));
+		else if(dwrLibraries.containsKey(path)){
+			data = readDWRScript((String)dwrLibraries.get(path));
 		}
 		else if(ALL_INTERFACES_KEY.equals(path)) {
 			data = new StringBuffer(ENGINE_INIT);
@@ -179,7 +178,7 @@ public class DWRBeanGenerator extends AbstractJavascriptGenerator implements Res
 			}		
 		}
 		StringBuffer sb = new StringBuffer();
-		Matcher matcher = PARAM_PATTERN.matcher(engineScript);
+		Matcher matcher = paramsPattern.matcher(engineScript);
 		while(matcher.find()) {
 			String match = matcher.group();
 			if("${allowGetForSafariButMakeForgeryEasier}".equals(match)){
@@ -223,9 +222,9 @@ public class DWRBeanGenerator extends AbstractJavascriptGenerator implements Res
 			sb = sw.getBuffer();
 			
 		} catch (FileNotFoundException e) {
-			throw new BundlingProcessException(e);
+			throw new RuntimeException(e);
 		} catch (IOException e) {
-			throw new BundlingProcessException(e);
+			throw new RuntimeException(e);
 		}
 		
 		return sb;
@@ -258,7 +257,7 @@ public class DWRBeanGenerator extends AbstractJavascriptGenerator implements Res
 					script = removeEngineInit(script);
 					sb.append(script);
 				}
-				catch(SecurityException ex){throw new BundlingProcessException(ex); }
+				catch(SecurityException ex){throw new RuntimeException(ex); }
 			}
 		}
 		if(!found)
@@ -311,7 +310,7 @@ public class DWRBeanGenerator extends AbstractJavascriptGenerator implements Res
 				Collection creators = null;
 				if(!(ctManager instanceof DefaultCreatorManager)) {
 					if(!debugMode)
-						LOGGER.warn("The current creatormanager is a custom implementation [" 
+						log.warn("The current creatormanager is a custom implementation [" 
 								+ ctManager.getClass().getName() 
 								+ "]. Debug mode is off, so the mapping dwr:_** is likely to trigger a SecurityException." +
 								" Attempting to get all published creators..." );

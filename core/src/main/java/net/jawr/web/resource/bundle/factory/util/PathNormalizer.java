@@ -22,7 +22,6 @@ import java.util.Set;
 import java.util.StringTokenizer;
 
 import net.jawr.web.JawrConstant;
-import net.jawr.web.exception.JawrLinkRenderingException;
 import net.jawr.web.resource.bundle.generator.GeneratorRegistry;
 import net.jawr.web.servlet.JawrRequestHandler;
 import net.jawr.web.util.StringUtils;
@@ -45,31 +44,30 @@ public class PathNormalizer {
 	 */
 	public static String removeVariantPrefixFromPath(String path) {
 		// Remove first slash
-		String resultPath = path.substring(1, path.length());
+		path = path.substring(1, path.length());
 
 		// eval the existence of a suffix
-		String prefix = resultPath.substring(0, resultPath.indexOf("/"));
+		String prefix = path.substring(0, path.indexOf("/"));
 
 		// The prefix also contains variant information after a '.'
 		if (prefix.indexOf('.') != -1) {
-			String suffix = '_' + prefix.substring(prefix.indexOf('.') + 1) + resultPath.substring(resultPath.lastIndexOf('.'));
-			resultPath = resultPath.substring(resultPath.indexOf("/"), resultPath.lastIndexOf('.')) + suffix;
+			String suffix = '_' + prefix.substring(prefix.indexOf('.') + 1) + path.substring(path.lastIndexOf('.'));
+			path = path.substring(path.indexOf("/"), path.lastIndexOf('.')) + suffix;
 		} else
-			resultPath = resultPath.substring(resultPath.indexOf("/"), resultPath.length());
-		return resultPath;
+			path = path.substring(path.indexOf("/"), path.length());
+		return path;
 	}
 	
 	/**
 	 * Normalizes a bundle path mapping. If it ends with a wildcard, the wildcard is removed. 
 	 * @param pathMapping
-	 * @return the normalized path mapping
+	 * @return
 	 */
 	public static final String normalizePathMapping(String pathMapping) {
-		
-		String normalizedPathMapping = normalizePath(pathMapping);
-		if(normalizedPathMapping.endsWith("/**"))
-			normalizedPathMapping = normalizedPathMapping.substring(0,normalizedPathMapping.length()-3);
-		return normalizedPathMapping;
+		pathMapping = normalizePath(pathMapping);
+		if(pathMapping.endsWith("/**"))
+			pathMapping = pathMapping.substring(0,pathMapping.length()-3);
+		return pathMapping;
 	}
 	
 	/**
@@ -179,7 +177,7 @@ public class PathNormalizer {
 				+ URLEncoder.encode(path, "UTF-8");
 		} catch (UnsupportedEncodingException neverHappens) {
 			/*URLEncoder:how not to use checked exceptions...*/
-			throw new JawrLinkRenderingException("Something went unexpectedly wrong while encoding a URL for a generator. ",
+			throw new RuntimeException("Something went unexpectedly wrong while encoding a URL for a generator. ",
 										neverHappens);
 		}
 		return path;

@@ -19,7 +19,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import net.jawr.web.exception.JmxConfigException;
 import net.jawr.web.util.PropertyUtils;
 
 /**
@@ -53,10 +52,10 @@ public class JawrApplicationConfigManager implements
 	private static final String USE_BUNDLE_MAPPING = "useBundleMapping";
 
 	/** The message of the property, when the values are not equals for the different configuration manager */
-	private static final String NOT_IDENTICAL_VALUES = "Value for this property are not identical";
+	private static String NOT_IDENTICAL_VALUES = "Value for this property are not identical";
 
 	/** The message when an error occured during the retrieve of the property value */
-	private static final String ERROR_VALUE = "An error occured while retrieving the value for this property";
+	private static String ERROR_VALUE = "An error occured while retrieving the value for this property";
 
 	/** The configuration manager for the Javascript handler */
 	private JawrConfigManagerMBean jsMBean;
@@ -435,11 +434,11 @@ public class JawrApplicationConfigManager implements
 				PropertyUtils.setProperty(imgMBean, property, value);
 			}
 		} catch (IllegalAccessException e) {
-			throw new JmxConfigException("Exception while setting the string value", e);
+			throw new RuntimeException("Exception while setting the string value", e);
 		} catch (InvocationTargetException e) {
-			throw new JmxConfigException("Exception while setting the string value", e);
+			throw new RuntimeException("Exception while setting the string value", e);
 		} catch (NoSuchMethodException e) {
-			throw new JmxConfigException("Exception while setting the string value", e);
+			throw new RuntimeException("Exception while setting the string value", e);
 		}
 	}
 
@@ -461,11 +460,11 @@ public class JawrApplicationConfigManager implements
 				PropertyUtils.setProperty(imgMBean, property, Boolean.valueOf(value));
 			}
 		} catch (IllegalAccessException e) {
-			throw new JmxConfigException("Exception while setting the boolean value", e);
+			throw new RuntimeException("Exception while setting the boolean value", e);
 		} catch (InvocationTargetException e) {
-			throw new JmxConfigException("Exception while setting the boolean value", e);
+			throw new RuntimeException("Exception while setting the boolean value", e);
 		} catch (NoSuchMethodException e) {
-			throw new JmxConfigException("Exception while setting the boolean value", e);
+			throw new RuntimeException("Exception while setting the boolean value", e);
 		}
 	}
 	

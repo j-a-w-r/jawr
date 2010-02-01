@@ -37,7 +37,7 @@ public class CSSImportPostProcessor extends
 		AbstractChainedResourceBundlePostProcessor {
 
 	/** The url pattern */
-	private static final Pattern IMPORT_PATTERN = Pattern.compile(	"@import\\s*url\\(\\s*" // 'url(' and any number of whitespaces 
+	private static final Pattern importPattern = Pattern.compile(	"@import\\s*url\\(\\s*" // 'url(' and any number of whitespaces 
 																+ "[\"']?([^\"']*)[\"']?" // any sequence of characters, except an unescaped ')'
 																+ "\\s*\\);?",  // Any number of whitespaces, then ')'
 																Pattern.CASE_INSENSITIVE); // works with 'URL('
@@ -63,7 +63,7 @@ public class CSSImportPostProcessor extends
 		String data = bundleData.toString();
 		
 		// Rewrite each css image url path
-		Matcher matcher = IMPORT_PATTERN.matcher(data);
+		Matcher matcher = importPattern.matcher(data);
 		StringBuffer sb = new StringBuffer();
 		while(matcher.find()) {
 		

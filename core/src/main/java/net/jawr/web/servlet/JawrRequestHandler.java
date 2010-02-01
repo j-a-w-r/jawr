@@ -79,7 +79,7 @@ public class JawrRequestHandler implements ConfigChangeListener, Serializable {
 	private static final long serialVersionUID = 5762937687546882131L;
 
 	/** The logger */
-	private static final Logger LOGGER = Logger.getLogger(JawrRequestHandler.class);
+	private static final Logger log = Logger.getLogger(JawrRequestHandler.class);
 
 	/** The cache control header parameter name */
 	protected static final String CACHE_CONTROL_HEADER = "Cache-Control";
@@ -182,8 +182,8 @@ public class JawrRequestHandler implements ConfigChangeListener, Serializable {
 		}
 		initParameters.put("handlerName", config.getServletName());
 
-		if (LOGGER.isInfoEnabled())
-			LOGGER.info("Initializing jawr config for servlet named " + config.getServletName());
+		if (log.isInfoEnabled())
+			log.info("Initializing jawr config for servlet named " + config.getServletName());
 		
 		initRequestHandler(context, null);
 
@@ -213,8 +213,8 @@ public class JawrRequestHandler implements ConfigChangeListener, Serializable {
 	private void initRequestHandler(ServletContext context, Properties configProps) throws ServletException {
 		
 		long initialTime = System.currentTimeMillis();
-		if (LOGGER.isInfoEnabled())
-			LOGGER.info("Initializing jawr config for request handler named " + getInitParameter("handlerName"));
+		if (log.isInfoEnabled())
+			log.info("Initializing jawr config for request handler named " + getInitParameter("handlerName"));
 
 		this.imgMimeMap = MIMETypesSupport.getSupportedProperties(this);
 		this.servletContext = context;
@@ -271,7 +271,7 @@ public class JawrRequestHandler implements ConfigChangeListener, Serializable {
 		// Initialize the properties reloading checker daemon if specified
 		if(!ThreadLocalJawrContext.isBundleProcessingAtBuildTime() && null != props.getProperty(CONFIG_RELOAD_INTERVAL)) {
 			int interval = Integer.valueOf(props.getProperty(CONFIG_RELOAD_INTERVAL)).intValue();
-			LOGGER.warn("Jawr started with configuration auto reloading on. "
+			log.warn("Jawr started with configuration auto reloading on. "
 					+ "Be aware that a daemon thread will be checking for changes to configuration every " + interval + " seconds.");
 
 			this.configChangeListenerThread = new ConfigChangeListenerThread(propsSrc, this.overrideProperties, 
@@ -284,9 +284,9 @@ public class JawrRequestHandler implements ConfigChangeListener, Serializable {
 				JmxUtils.initJMXBean(this, servletContext, resourceType, jawrConfig.getConfigProperties());
 		}
 		
-		if (LOGGER.isInfoEnabled()) {
+		if (log.isInfoEnabled()) {
 			long totaltime = System.currentTimeMillis() - initialTime;
-			LOGGER.info("Init method succesful. jawr started in " + (totaltime / 1000) + " seconds....");
+			log.info("Init method succesful. jawr started in " + (totaltime / 1000) + " seconds....");
 		}
 	}
 
@@ -336,15 +336,15 @@ public class JawrRequestHandler implements ConfigChangeListener, Serializable {
 		if (jawrConfig.isCssClasspathImageHandledByClasspathCss() && resourceType.equals("css")) {
 			ImageResourcesHandler imgRsHandler = (ImageResourcesHandler) servletContext.getAttribute(JawrConstant.IMG_CONTEXT_ATTRIBUTE);
 			if (imgRsHandler == null) {
-				LOGGER.error("You are using the CSS classpath image feature, but the JAWR Image servlet is yet initialized.\n"
+				log.error("You are using the CSS classpath image feature, but the JAWR Image servlet is yet initialized.\n"
 						+ "The JAWR Image servlet must be initialized before the JAWR CSS servlet.\n"
 						+ "Please check you web application configuration.");
 			}
 		}
 
-		if (LOGGER.isDebugEnabled()) {
-			LOGGER.debug("Configuration read. Current config:");
-			LOGGER.debug(jawrConfig);
+		if (log.isDebugEnabled()) {
+			log.debug("Configuration read. Current config:");
+			log.debug(jawrConfig);
 		}
 
 		// Create a resource handler to read files from the WAR archive or exploded dir.
@@ -367,13 +367,13 @@ public class JawrRequestHandler implements ConfigChangeListener, Serializable {
 
 		this.clientSideScriptRequestHandler = new ClientSideHandlerScriptRequestHandler(bundlesHandler, jawrConfig);
 
-		if (LOGGER.isDebugEnabled()) {
-			LOGGER.debug("content type set to: " + contentType);
+		if (log.isDebugEnabled()) {
+			log.debug("content type set to: " + contentType);
 		}
 
 		// Warn when in debug mode
 		if (jawrConfig.isDebugModeOn()) {
-			LOGGER.warn("Jawr initialized in DEVELOPMENT MODE. Do NOT use this mode in production or integration servers. ");
+			log.warn("Jawr initialized in DEVELOPMENT MODE. Do NOT use this mode in production or integration servers. ");
 		}
 	}
 
@@ -449,8 +449,8 @@ public class JawrRequestHandler implements ConfigChangeListener, Serializable {
 			
 		} catch (Exception e) {
 			
-			if (LOGGER.isDebugEnabled()){
-				LOGGER.debug("ServletException : ", e);
+			if (log.isDebugEnabled()){
+				log.debug("ServletException : ", e);
 			}
 			
 			throw new ServletException(e);
@@ -472,23 +472,22 @@ public class JawrRequestHandler implements ConfigChangeListener, Serializable {
 	 * <li>If the resource is not found, the response satus is set to 404 and no response is written.</li>
 	 * </ul>
 	 * 
-	 * @param path the requested path
+	 * @param requestedPath the requested path
 	 * @param request the request
 	 * @param response the response
 	 * @throws ServletException if a servlet exception occurs
 	 * @throws IOException if an IO exception occurs
 	 */
-	public void processRequest(String path, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	public void processRequest(String requestedPath, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-		String requestedPath = path;
 		// manual reload request
 		if (this.jawrConfig.getRefreshKey().length() > 0 && null != request.getParameter("refreshKey")
 				&& this.jawrConfig.getRefreshKey().equals(request.getParameter("refreshKey"))) {
 			this.configChanged(propertiesSource.getConfigProperties());
 		}
 
-		if (LOGGER.isDebugEnabled())
-			LOGGER.debug("Request received for path:" + requestedPath);
+		if (log.isDebugEnabled())
+			log.debug("Request received for path:" + requestedPath);
 
 		if (CLIENTSIDE_HANDLER_REQ_PATH.equals(requestedPath)) {
 			this.clientSideScriptRequestHandler.handleClientSideHandlerRequest(request, response);
@@ -502,8 +501,8 @@ public class JawrRequestHandler implements ConfigChangeListener, Serializable {
 				this.imgMimeMap.containsKey(getExtension(requestedPath))) {
 
 			if (null == bundlesHandler.resolveBundleForPath(requestedPath)) {
-				if (LOGGER.isDebugEnabled())
-					LOGGER.debug("Path '" + requestedPath + "' does not belong to a bundle. Forwarding request to the server. ");
+				if (log.isDebugEnabled())
+					log.debug("Path '" + requestedPath + "' does not belong to a bundle. Forwarding request to the server. ");
 				request.getRequestDispatcher(requestedPath).forward(request, response);
 				return;
 			}
@@ -514,8 +513,8 @@ public class JawrRequestHandler implements ConfigChangeListener, Serializable {
 			// If a browser checks for changes, always respond 'no changes'.
 			if (null != request.getHeader(IF_MODIFIED_SINCE_HEADER) || null != request.getHeader(IF_NONE_MATCH_HEADER)) {
 				response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
-				if (LOGGER.isDebugEnabled())
-					LOGGER.debug("Returning 'not modified' header. ");
+				if (log.isDebugEnabled())
+					log.debug("Returning 'not modified' header. ");
 				return;
 			}
 
@@ -582,16 +581,16 @@ public class JawrRequestHandler implements ConfigChangeListener, Serializable {
 				}
 			}
 		} catch (EOFException eofex) {
-			LOGGER.debug("Browser cut off response", eofex);
+			log.debug("Browser cut off response", eofex);
 		} catch (ResourceNotFoundException e) {
 			response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-			if (LOGGER.isInfoEnabled())
-				LOGGER.info("Received a request for a non existing bundle: " + requestedPath);
+			if (log.isInfoEnabled())
+				log.info("Received a request for a non existing bundle: " + requestedPath);
 			return;
 		}
 
-		if (LOGGER.isDebugEnabled())
-			LOGGER.debug("request succesfully attended");
+		if (log.isDebugEnabled())
+			log.debug("request succesfully attended");
 	}
 
 	/**
@@ -693,8 +692,8 @@ public class JawrRequestHandler implements ConfigChangeListener, Serializable {
 	 * @see net.jawr.web.resource.bundle.factory.util.ConfigChangeListener#configChanged(java.util.Properties)
 	 */
 	public synchronized void configChanged(Properties newConfig) {
-		if (LOGGER.isDebugEnabled())
-			LOGGER.debug("Reloading Jawr configuration");
+		if (log.isDebugEnabled())
+			log.debug("Reloading Jawr configuration");
 		try {
 			// Initialize the Thread local for the Jawr context
 			if(isJmxEnabled()){
@@ -710,7 +709,7 @@ public class JawrRequestHandler implements ConfigChangeListener, Serializable {
 			ThreadLocalJawrContext.reset();
 		}
 		
-		if (LOGGER.isDebugEnabled())
-			LOGGER.debug("Jawr configuration succesfully reloaded. ");
+		if (log.isDebugEnabled())
+			log.debug("Jawr configuration succesfully reloaded. ");
 	}
 }
