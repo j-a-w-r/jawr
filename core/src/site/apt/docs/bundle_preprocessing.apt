@@ -103,7 +103,7 @@ Bundle preprocessing
 	 	
 		* <<destDirPath>> the destination directory path, where the result will be stored
 	 	
-	 	* <<springConfigFiles>> the comma separated list of spring configuration files, which will be used to initialize the Jawr spring controller.
+		* <<springConfigFiles>> the comma separated list of spring configuration files, which will be used to initialize the Jawr spring controller. 
 	 	This property accepts any spring resource location definition like classpath:..., file:..., etc
 	 	
 		* <<servletsToInitialize>> the list of comma separated names of servlets to initialize
@@ -164,14 +164,12 @@ Bundle preprocessing
 		<!-- This must match the controller mapping prefix to which the 
 			jawr controllers are bound at the urlMapping bean below -->
 		<property name="controllerMapping" value="/jawrJS/"/>
-      	<property name="configuration">
-      		<props>
-	      		<prop key="jawr.gzip.on">{gzip.resource}</prop> 
+		<property name="configuration">
+			<props>
+				<prop key="jawr.gzip.on">{gzip.resource}</prop>
 			</props>
-      	</property>
-      	<!-- property name="configPropertiesSourceClass" value="net.jawr.spring.MyJawPropertiesSource" / -->
-      	<property name="configLocation" value="/jawr-springMVC.properties" >
-      	</property>
+		</property>
+		<property name="configLocation" value="/jawr-springMVC.properties" />
 	</bean>
 
 +------------------------------------------+

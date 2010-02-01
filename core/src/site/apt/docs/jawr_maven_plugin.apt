@@ -59,6 +59,7 @@ Jawr maven plugin
 +------------------------------------------+	
 	   	
 	For the spring MVC projects, you can use:	
+	
 +------------------------------------------+	
 	<plugin>
 	        <groupId>net.jawr</groupId>
