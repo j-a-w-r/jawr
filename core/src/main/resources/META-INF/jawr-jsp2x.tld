@@ -2,10 +2,10 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
   xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee/web-jsptaglibrary_2_0.xsd" 
   version="2.0">  
-	<tlib-version>3.2</tlib-version>
+	<display-name>JSP jawr Library</display-name>
+	<tlib-version>3.3</tlib-version>
 	<short-name>Jawr</short-name>
 	<uri>http://jawr.net/tags/jsp_2x</uri>
-	<display-name>JSP jawr Library</display-name>
 
 	<tag>
 		<name>script</name>
@@ -44,47 +44,38 @@
 		</attribute>
 	</tag>
 	
-	<function>
-	  <name>img</name>
-	  <function-class>net.jawr.web.taglib.ImageTagUtils</function-class>
-	  <function-signature>java.lang.String getImageUrl(java.lang.String , javax.servlet.jsp.PageContext )</function-signature>
-	</function> 
-		
 	<tag>
-        <name>imagePath</name>
-        <tag-class>net.jawr.web.taglib.ImagePathTag</tag-class>
-        <body-content>empty</body-content>
         <description>
             <![CDATA[
             <p><strong>Render the image URL used by Jawr to reference this image</strong></p>
                 ]]>
         </description>
+        <name>imagePath</name>
+        <tag-class>net.jawr.web.taglib.ImagePathTag</tag-class>
+        <body-content>empty</body-content>
         <attribute>
-            <name>src</name>
-            <required>true</required>
-            <rtexprvalue>true</rtexprvalue>
             <description>
                 <![CDATA[
                   <p>The URL of the image.</p>
                   ]]>
             </description>
+            <name>src</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
-            <name>var</name>
-            <required>false</required>
-            <rtexprvalue>false</rtexprvalue>
             <description>
                 <![CDATA[
                   <p>Name of the var to set in the pageContext asociated to the image source.</p>
                   ]]>
             </description>
+            <name>var</name>
+            <required>false</required>
+            <rtexprvalue>false</rtexprvalue>
         </attribute>
     </tag>
     
 	<tag>
-        <name>img</name>
-        <tag-class>net.jawr.web.taglib.ImgHtmlTag</tag-class>
-        <body-content>empty</body-content>
         <description>
             <![CDATA[
             <p><strong>Render an HTML img tag</strong></p>
@@ -95,10 +86,10 @@
 
                 ]]>
         </description>
+        <name>img</name>
+        <tag-class>net.jawr.web.taglib.ImgHtmlTag</tag-class>
+        <body-content>empty</body-content>
         <attribute>
-            <name>align</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
             <description>
                 <![CDATA[
                   <p>Where the image is aligned to.  Can be one of the
@@ -121,11 +112,11 @@
                   </ul>
                   ]]>
             </description>
-        </attribute>
-        <attribute>
-            <name>alt</name>
+            <name>align</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
             <description>
                 <![CDATA[
                   <p>And alternative text to be displayed in browsers that
@@ -133,31 +124,31 @@
                      context help over images.</p>
                 ]]>
             </description>
-        </attribute>
-        <attribute>
-            <name>border</name>
+            <name>alt</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
             <description>
                 <![CDATA[
                   <p>The width of the border surrounding the image.</p>
                   ]]>
             </description>
-        </attribute>
-        <attribute>
-            <name>dir</name>
+            <name>border</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
             <description>
                 <![CDATA[
                 <p>The direction for weak/neutral text for this element.</p>
                 ]]>
             </description>
-        </attribute>
-        <attribute>
-            <name>height</name>
+            <name>dir</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
             <description>
                 <![CDATA[
                   <p>The height of the image being displayed.  This parameter
@@ -165,11 +156,11 @@
                      to help the browser render the page faster.</p>
                   ]]>
             </description>
-        </attribute>
-        <attribute>
-            <name>hspace</name>
+            <name>height</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
             <description>
                 <![CDATA[
                   <p>The amount of horizontal spacing between the icon and
@@ -177,11 +168,11 @@
                      be wrapped around the image.</p>
                   ]]>
             </description>
-        </attribute>
-        <attribute>
-            <name>name</name>
+            <name>hspace</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
             <description>
                 <![CDATA[
                   <p>The scriptable name to be defined within this page, so
@@ -190,216 +181,216 @@
                   in the generated image tag.</p>
                   ]]>
             </description>
-        </attribute>
-        <attribute>
-            <name>ismap</name>
+            <name>name</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
             <description>
                 <![CDATA[
                   <p>The name of the server-side map that this image belongs
                      to.</p>
                   ]]>
             </description>
-        </attribute>
-        <attribute>
-            <name>lang</name>
+            <name>ismap</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
             <description>
                 <![CDATA[
                 <p>The language code for this element.</p>
                 ]]>
             </description>
-        </attribute>
-       <attribute>
-            <name>onclick</name>
+            <name>lang</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
+        </attribute>
+       <attribute>
             <description>
                 <![CDATA[
                         JavaScript event handler executed when this element receives a
                         mouse click.
                     ]]>
             </description>
-        </attribute>
-        <attribute>
-            <name>ondblclick</name>
+            <name>onclick</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
             <description>
                 <![CDATA[
                         JavaScript event handler executed when this element receives a
                         mouse double click.
                     ]]>
             </description>
-        </attribute>
-        <attribute>
-            <name>onkeydown</name>
+            <name>ondblclick</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
             <description>
                 <![CDATA[
                   <p>JavaScript event handler that is executed when
                   this element receives a key down event.</p>
                   ]]>
             </description>
-        </attribute>
-        <attribute>
-            <name>onkeypress</name>
+            <name>onkeydown</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
             <description>
                 <![CDATA[
                   <p>JavaScript event handler that is executed when
                   this element receives a key press event.</p>
                   ]]>
             </description>
-        </attribute>
-        <attribute>
-            <name>onkeyup</name>
+            <name>onkeypress</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
             <description>
                 <![CDATA[
                   <p>JavaScript event handler that is executed when
                   this element receives a key up event.</p>
                   ]]>
             </description>
-        </attribute>
-        <attribute>
-            <name>onmousedown</name>
+            <name>onkeyup</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
             <description>
                 <![CDATA[
                         JavaScript event handler executed when this element is under the mouse
                         pointer and a mouse button is depressed.
                     ]]>
             </description>
-        </attribute>
-        <attribute>
-            <name>onmousemove</name>
+            <name>onmousedown</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
             <description>
                 <![CDATA[
                         JavaScript event handler executed when this element is under the
                         mouse pointer and the pointer is moved.
                     ]]>
             </description>
-        </attribute>
-        <attribute>
-            <name>onmouseout</name>
+            <name>onmousemove</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
             <description>
                 <![CDATA[
                         JavaScript event handler executed when this element was under the
                         mouse pointer but the pointer was moved outside the element.
                     ]]>
             </description>
-        </attribute>
-        <attribute>
-            <name>onmouseover</name>
+            <name>onmouseout</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
             <description>
                 <![CDATA[
                         JavaScript event handler executed when this element was not under
                         the mouse pointer but the pointer is moved inside the element.
                     ]]>
             </description>
-        </attribute>
-        <attribute>
-            <name>onmouseup</name>
+            <name>onmouseover</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
             <description>
                 <![CDATA[
                         JavaScript event handler executed when this element is under the
                         mouse pointer and a mouse button is released.
                     ]]>
             </description>
-        </attribute>
-        <attribute>
-            <name>src</name>
+            <name>onmouseup</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
             <description>
                 <![CDATA[
                   <p>The URL to which this image will be transferred from.</p>
                   ]]>
             </description>
-        </attribute>
-        <attribute>
-            <name>style</name>
+            <name>src</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
             <description>
                 <![CDATA[
                   <p>CSS styles to be applied to this element.</p>
                   ]]>
             </description>
-        </attribute>
-        <attribute>
-            <name>styleClass</name>
+            <name>style</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
             <description>
                 <![CDATA[
                   CSS stylesheet class to be applied to this HTML element
                   (renders a "class" attribute).
                   ]]>
             </description>
-        </attribute>
-        <attribute>
-            <name>styleId</name>
+            <name>styleClass</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
             <description>
                 <![CDATA[
                 Identifier to be assigned to this HTML element (renders
                 an "id" attribute).
             ]]>
             </description>
-        </attribute>
-        <attribute>
-            <name>title</name>
+            <name>styleId</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
             <description>
                 <![CDATA[
                   <p>The advisory title for this element.</p>
                   ]]>
             </description>
-        </attribute>
-        <attribute>
-            <name>usemap</name>
+            <name>title</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
             <description>
                 <![CDATA[
                   <p>The name of the map as defined within this page for
                      mapping hot-spot areas of this image.</p>
                   ]]>
             </description>
-        </attribute>
-        <attribute>
-            <name>vspace</name>
+            <name>usemap</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
             <description>
                 <![CDATA[
                   <p>The amount of vertical spacing between the icon and
                      the text, above and below.</p>
                   ]]>
             </description>
-        </attribute>
-        <attribute>
-            <name>width</name>
+            <name>vspace</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
             <description>
                 <![CDATA[
                   <p>The width of the image being displayed.  This parameter
@@ -407,11 +398,12 @@
                      to help the browser render the page faster.</p>
                   ]]>
             </description>
+            <name>width</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
         </attribute>
     </tag>
     <tag>
-        <name>image</name>
-        <tag-class>net.jawr.web.taglib.ImageInputTag</tag-class>
         <description>
             <![CDATA[
             <p><strong>
@@ -428,40 +420,39 @@
                
                 ]]>
         </description>
+        <name>image</name>
+        <tag-class>net.jawr.web.taglib.ImageInputTag</tag-class>
         <attribute>
-            <name>align</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
             <description>
                 <![CDATA[
                 <p>The alignment option for this image.</p>
                 ]]>
             </description>
-        </attribute>
-        <attribute>
-            <name>alt</name>
+            <name>align</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
             <description>
                 <![CDATA[
                 <p>The alternate text for this image.</p>
                 ]]>
             </description>
-        </attribute>
-       <attribute>
-            <name>border</name>
+            <name>alt</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
+        </attribute>
+       <attribute>
             <description>
                 <![CDATA[
                 <p>The width (in pixels) of the border around this image.</p>
                 ]]>
             </description>
-        </attribute>
-        <attribute>
-            <name>dir</name>
+            <name>border</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
             <description>
                 <![CDATA[
                 <p>The direction for weak/neutral text for this element.</p>
@@ -469,23 +460,23 @@
                 <dd>Struts 1.3.6</dd></dl>
                 ]]>
             </description>
-        </attribute>
-        <attribute>
-            <name>disabled</name>
+            <name>dir</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
-            <type>boolean</type>
+        </attribute>
+        <attribute>
             <description>
                 <![CDATA[
           Set to <code>true</code> if this input field should be
           disabled.
           ]]>
             </description>
-        </attribute>
-        <attribute>
-            <name>lang</name>
+            <name>disabled</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
+            <type>boolean</type>
+        </attribute>
+        <attribute>
             <description>
                 <![CDATA[
                 <p>The language code for this element.</p>
@@ -493,121 +484,121 @@
                 <dd>Struts 1.3.6</dd></dl>
                 ]]>
             </description>
-        </attribute>
-        <attribute>
-            <name>onblur</name>
+            <name>lang</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
             <description>
                 <![CDATA[
                 JavaScript event handler executed when this element loses input
                 focus.
             ]]>
             </description>
-        </attribute>
-        <attribute>
-            <name>onchange</name>
+            <name>onblur</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
             <description>
                 <![CDATA[
                 JavaScript event handler executed when this element loses input
                 focus and its value has changed.
             ]]>
             </description>
-        </attribute>
-        <attribute>
-            <name>onclick</name>
+            <name>onchange</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
             <description>
                 <![CDATA[
                 JavaScript event handler executed when this element receives a
                 mouse click.
             ]]>
             </description>
-        </attribute>
-        <attribute>
-            <name>ondblclick</name>
+            <name>onclick</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
             <description>
                 <![CDATA[
                 JavaScript event handler executed when this element receives a
                 mouse double click.
             ]]>
             </description>
-        </attribute>
-        <attribute>
-            <name>onfocus</name>
+            <name>ondblclick</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
             <description>
                 <![CDATA[
                 JavaScript event handler executed when this element receives input
                 focus.
             ]]>
             </description>
-        </attribute>
-        <attribute>
-            <name>onkeydown</name>
+            <name>onfocus</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
             <description>
                 <![CDATA[
                 JavaScript event handler executed when this element has focus
                 and a key is depressed.
             ]]>
             </description>
-        </attribute>
-        <attribute>
-            <name>onkeypress</name>
+            <name>onkeydown</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
             <description>
                 <![CDATA[
                 JavaScript event handler executed when this element has focus
                 and a key is depressed and released.
             ]]>
             </description>
-        </attribute>
-        <attribute>
-            <name>onkeyup</name>
+            <name>onkeypress</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
             <description>
                 <![CDATA[
                 JavaScript event handler executed when this element has focus
                 and a key is released.
             ]]>
             </description>
-        </attribute>
-        <attribute>
-            <name>onmousedown</name>
+            <name>onkeyup</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
             <description>
                 <![CDATA[
                 JavaScript event handler executed when this element is under
                 the mouse pointer and a mouse button is depressed.
             ]]>
             </description>
-        </attribute>
-        <attribute>
-            <name>onmousemove</name>
+            <name>onmousedown</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
             <description>
                 <![CDATA[
                 JavaScript event handler executed when this element is under the
                 mouse pointer and the pointer is moved.
             ]]>
             </description>
-        </attribute>
-        <attribute>
-            <name>onmouseout</name>
+            <name>onmousemove</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
             <description>
                 <![CDATA[
                 JavaScript event handler executed when this element was under
@@ -615,11 +606,11 @@
                 element.
             ]]>
             </description>
-        </attribute>
-        <attribute>
-            <name>onmouseover</name>
+            <name>onmouseout</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
             <description>
                 <![CDATA[
                 JavaScript event handler executed when this element was not
@@ -627,92 +618,102 @@
                 element.
             ]]>
             </description>
-        </attribute>
-        <attribute>
-            <name>onmouseup</name>
+            <name>onmouseover</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
             <description>
                 <![CDATA[
                 JavaScript event handler executed when this element is under the
                 mouse pointer and a mouse button is released.
             ]]>
             </description>
-        </attribute>
-        <attribute>
-            <name>src</name>
+            <name>onmouseup</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
             <description>
                 <![CDATA[
                 <p>The source URL of the image for this input tag.</p>
                 ]]>
             </description>
-        </attribute>
-        <attribute>
-            <name>style</name>
+            <name>src</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
             <description>
                 <![CDATA[
                 CSS styles to be applied to this HTML element.
             ]]>
             </description>
-        </attribute>
-        <attribute>
-            <name>styleClass</name>
+            <name>style</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
             <description>
                 <![CDATA[
                 CSS stylesheet class to be applied to this HTML element
                 (renders a "class" attribute).
             ]]>
             </description>
-        </attribute>
-        <attribute>
-            <name>styleId</name>
+            <name>styleClass</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
             <description>
                 <![CDATA[
                 Identifier to be assigned to this HTML element (renders
                 an "id" attribute).
             ]]>
             </description>
-        </attribute>
-        <attribute>
-            <name>tabindex</name>
+            <name>styleId</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
             <description>
                 <![CDATA[
                 The tab order (ascending positive integers) for this element.
             ]]>
             </description>
-        </attribute>
-        <attribute>
-            <name>title</name>
+            <name>tabindex</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
             <description>
                 <![CDATA[
                   <p>The advisory title for this element.</p>
                   ]]>
             </description>
-        </attribute>
-        <attribute>
-            <name>value</name>
+            <name>title</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
             <description>
                 <![CDATA[
               <p>The value that will be submitted if this image button
               is pressed.</p>
             ]]>
             </description>
+            <name>value</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
         </attribute>
     </tag>
   
+  	<function>
+	  <name>img</name>
+	  <function-class>net.jawr.web.taglib.ImageTagUtils</function-class>
+	  <function-signature>java.lang.String getImageUrl(java.lang.String , javax.servlet.jsp.PageContext )</function-signature>
+	</function> 
+		
+
 
 </taglib>
