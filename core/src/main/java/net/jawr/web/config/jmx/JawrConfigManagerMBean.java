@@ -24,187 +24,187 @@ public interface JawrConfigManagerMBean {
 	 * @return
 	 * @see net.jawr.web.config.JawrConfig#getContextPathOverride()
 	 */
-	public String getContextPathOverride();
+	String getContextPathOverride();
 
 
 	/**
-	 * @param contextPathOverride
+	 * @param ctxPathOverride
 	 * @see net.jawr.web.config.JawrConfig#setContextPathOverride(java.lang.String)
 	 */
-	public void setContextPathOverride(String contextPathOverride);
+	void setContextPathOverride(String ctxPathOverride);
 
 	/**
 	 * @return
 	 * @see net.jawr.web.config.JawrConfig#getContextPathOverride()
 	 */
-	public String getContextPathSslOverride();
+	String getContextPathSslOverride();
 
 
 	/**
-	 * @param contextPathOverride
+	 * @param ctxPathOverride
 	 * @see net.jawr.web.config.JawrConfig#setContextPathOverride(java.lang.String)
 	 */
-	public void setContextPathSslOverride(String contextPathOverride);
+	void setContextPathSslOverride(String ctxPathOverride);
 
 	/**
 	 * @param contextPathOverride
 	 * @see net.jawr.web.config.JawrConfig#setUseContextPathOverrideInDebugMode(boolean)
 	 */
-	public void setUseContextPathOverrideInDebugMode(boolean useContextPathOverrideInDebugMode);
+	void setUseContextPathOverrideInDebugMode(boolean useCtxPathOverrideInDebugMode);
 
 	/**
 	 * @param contextPathOverride
 	 * @see net.jawr.web.config.JawrConfig#getUseContextPathOverrideInDebugMode()
 	 */
-	public boolean getUseContextPathOverrideInDebugMode();
+	boolean getUseContextPathOverrideInDebugMode();
 
 	/**
 	 * @return
 	 * @see net.jawr.web.config.JawrConfig#getDebugOverrideKey()
 	 */
-	public String getDebugOverrideKey();
+	String getDebugOverrideKey();
 
 	/**
 	 * @param debugOverrideKey
 	 * @see net.jawr.web.config.JawrConfig#setDebugOverrideKey(java.lang.String)
 	 */
-	public void setDebugOverrideKey(String debugOverrideKey);
+	void setDebugOverrideKey(String debugOverrideKey);
 
 	/**
 	 * @return
 	 * @see net.jawr.web.config.JawrConfig#getDwrMapping()
 	 */
-	public String getDwrMapping();
+	String getDwrMapping();
 
 	/**
 	 * @param dwrMapping
 	 * @see net.jawr.web.config.JawrConfig#setDwrMapping(java.lang.String)
 	 */
-	public void setDwrMapping(String dwrMapping);
+	void setDwrMapping(String dwrMapping);
 
 	/**
 	 * @return
 	 * @see net.jawr.web.config.JawrConfig#getImageResourcesDefinition()
 	 */
-	public String getImageResourcesDefinition();
+	String getImageResourcesDefinition();
 
 	/**
-	 * @param imageResourcesDefinition
+	 * @param imgResourcesDef
 	 * @see net.jawr.web.config.JawrConfig#setImageResourcesDefinition(java.lang.String)
 	 */
-	public void setImageResourcesDefinition(String imageResourcesDefinition);
+	void setImageResourcesDefinition(String imgResourcesDef);
 
 	/**
 	 * @return
 	 * @see net.jawr.web.config.JawrConfig#getImageHashAlgorithm()
 	 */
-	public String getImageHashAlgorithm();
+	String getImageHashAlgorithm();
 
 	/**
-	 * @param imageHashAlgorithm
+	 * @param imgHashAlgorithm
 	 * @see net.jawr.web.config.JawrConfig#setImageHashAlgorithm(java.lang.String)
 	 */
-	public void setImageHashAlgorithm(String imageHashAlgorithm);
+	void setImageHashAlgorithm(String imgHashAlgorithm);
 
 	/**
 	 * @return
 	 * @see net.jawr.web.config.JawrConfig#isDebugModeOn()
 	 */
-	public boolean isDebugModeOn();
+	boolean isDebugModeOn();
 
 	/**
 	 * @param debugMode
 	 * @see net.jawr.web.config.JawrConfig#setDebugModeOn(boolean)
 	 */
-	public void setDebugModeOn(boolean debugMode);
+	void setDebugModeOn(boolean debugMode);
 
 	/**
 	 * @return
 	 * @see net.jawr.web.config.JawrConfig#isGzipResourcesForIESixOn()
 	 */
-	public boolean isGzipResourcesForIESixOn();
+	boolean isGzipResourcesForIESixOn();
 
 	/**
-	 * @param gzipResourcesForIESixOn
+	 * @param gzipForIE6On
 	 * @see net.jawr.web.config.JawrConfig#setGzipResourcesForIESixOn(boolean)
 	 */
-	public void setGzipResourcesForIESixOn(boolean gzipResourcesForIESixOn);
+	void setGzipResourcesForIESixOn(boolean gzipForIE6On);
 
 	/**
 	 * @return
 	 * @see net.jawr.web.config.JawrConfig#isGzipResourcesModeOn()
 	 */
-	public boolean isGzipResourcesModeOn();
+	boolean isGzipResourcesModeOn();
 
 	/**
-	 * @param gzipResourcesModeOn
+	 * @param gzipModeOn
 	 * @see net.jawr.web.config.JawrConfig#setGzipResourcesModeOn(boolean)
 	 */
-	public void setGzipResourcesModeOn(boolean gzipResourcesModeOn);
+	void setGzipResourcesModeOn(boolean gzipModeOn);
 	
 	/**
 	 * @return
 	 * @see net.jawr.web.config.JawrConfig#isCssClasspathImageHandledByClasspathCss()
 	 */
-	public boolean isCssClasspathImageHandledByClasspathCss();
+	boolean isCssClasspathImageHandledByClasspathCss();
 
 	/**
 	 * @param useClasspathCssImgServlet
 	 * @see net.jawr.web.config.JawrConfig#setCssClasspathImageHandledByClasspathCss(boolean)
 	 */
-	public void setCssClasspathImageHandledByClasspathCss(boolean useClasspathCssImgServlet);
+	void setCssClasspathImageHandledByClasspathCss(boolean useClasspathCssImgServlet);
 	
 	/**
 	 * @param charsetName
 	 * @see net.jawr.web.config.JawrConfig#getCharsetName(java.lang.String)
 	 */
-	public String getCharsetName();
+	String getCharsetName();
 
 	/**
 	 * @param charsetName
 	 * @see net.jawr.web.config.JawrConfig#setCharsetName(java.lang.String)
 	 */
-	public void setCharsetName(String charsetName);
+	void setCharsetName(String charsetName);
 
 	/**
 	 * @param cssLinkFlavor
 	 * @see net.jawr.web.config.JawrConfig#setCssLinkFlavor(java.lang.String)
 	 */
-	public String getCssLinkFlavor();
+	String getCssLinkFlavor();
 
 	/**
 	 * @param cssLinkFlavor
 	 * @see net.jawr.web.config.JawrConfig#setCssLinkFlavor(java.lang.String)
 	 */
-	public void setCssLinkFlavor(String cssLinkFlavor);
+	void setCssLinkFlavor(String cssLinkFlavor);
 
 	/**
 	 * Returns the flag which defines if we should process the bundle at server startup. defaults to false.
 	 * @return the flag which defines if we should process the bundle at server startup.
 	 */
-	public boolean isUseBundleMapping();
+	boolean isUseBundleMapping();
 
 	/**
 	 * Sets the flag which defines if we should process the bundle at server startup. 
 	 * @param usBundleMapping the flag to set
 	 */
-	public void setUseBundleMapping(boolean usBundleMapping);
+	void setUseBundleMapping(boolean usBundleMapping);
 
 	/** 
 	 * Returns the jawr working directory path
 	 * @return the jawr working directory path
 	 */
-	public String getJawrWorkingDirectory();
+	String getJawrWorkingDirectory();
 	
 	/** 
 	 * Sets the jawr working directory path
 	 * @param jawrWorkingDirectory the path to set
 	 */
-	public void setJawrWorkingDirectory(String jawrWorkingDirectory);
+	void setJawrWorkingDirectory(String jawrWorkingDirectory);
 	
 	/**
 	 * Refresh the configuration. 
 	 */
-	public void refreshConfig();
+	void refreshConfig();
 	
 }

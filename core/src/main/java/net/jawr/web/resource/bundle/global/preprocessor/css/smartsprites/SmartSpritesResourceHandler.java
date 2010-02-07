@@ -24,6 +24,7 @@ import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 
 import net.jawr.web.JawrConstant;
+import net.jawr.web.exception.BundlingProcessException;
 import net.jawr.web.exception.ResourceNotFoundException;
 import net.jawr.web.resource.FileNameUtils;
 import net.jawr.web.resource.bundle.factory.util.PathNormalizer;
@@ -134,12 +135,14 @@ public class SmartSpritesResourceHandler implements ResourceHandler {
 		String generatedFilePath = resourceName.substring(workingDir.length());
 		if(!FileNameUtils.isExtension(generatedFilePath, JawrConstant.CSS_TYPE) && imgGeneratorRegistry.isGeneratedImage(generatedFilePath)){
 			// for generated image put it  in the generated Image directory
-			resourceName = workingDir+JawrConstant.SPRITE_GENERATED_IMG_DIR+generatedFilePath.replace(":","/");
+			generatedFilePath = workingDir+JawrConstant.SPRITE_GENERATED_IMG_DIR+generatedFilePath.replace(":","/");
 		}else if(rsHandler.isResourceGenerated(generatedFilePath)) { // Rename resource for For generated CSS
-			resourceName = workingDir+JawrConstant.SPRITE_GENERATED_CSS_DIR+generatedFilePath.replace(":","/");
+			generatedFilePath = workingDir+JawrConstant.SPRITE_GENERATED_CSS_DIR+generatedFilePath.replace(":","/");
+		}else{
+			generatedFilePath = resourceName;
 		}
 		
-		final File parentFile = new File(resourceName).getParentFile();
+		final File parentFile = new File(generatedFilePath).getParentFile();
 		if (!parentFile.exists()) {
 			if (!parentFile.mkdirs()) {
 				throw new IOException("Unable to create the directory : "
@@ -147,7 +150,7 @@ public class SmartSpritesResourceHandler implements ResourceHandler {
 			}
 		}
 		
-		File file = new File(resourceName);
+		File file = new File(generatedFilePath);
 		try {
 			file = file.getCanonicalFile();
 		} catch (final IOException e) {
@@ -168,7 +171,7 @@ public class SmartSpritesResourceHandler implements ResourceHandler {
 					charset);
 		} catch (UnsupportedEncodingException e) {
 			// Should not happen as we're checking the charset in constructor
-			throw new RuntimeException(e);
+			throw new BundlingProcessException(e);
 		}
 	}
 }

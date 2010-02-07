@@ -26,6 +26,7 @@ import javax.management.ObjectName;
 import net.jawr.web.JawrConstant;
 import net.jawr.web.config.jmx.JmxUtils;
 import net.jawr.web.context.ThreadLocalJawrContext;
+import net.jawr.web.exception.BundlingProcessException;
 import net.jawr.web.exception.ResourceNotFoundException;
 
 import org.apache.log4j.Logger;
@@ -38,7 +39,7 @@ import org.apache.log4j.Logger;
  */
 public class ClassLoaderResourceUtils {
 
-	private static Logger log = Logger.getLogger(ClassLoaderResourceUtils.class);
+	private static final Logger LOGGER = Logger.getLogger(ClassLoaderResourceUtils.class);
 	
 	/**
 	 * Attempots to load a resource from the classpath, either usinf the caller's class loader or the current thread's 
@@ -85,7 +86,7 @@ public class ClassLoaderResourceUtils {
 							ClassLoader cl = mbs.getClassLoaderFor(name);
 							is = cl.getResourceAsStream(resourcePath);
 						} catch (Exception e) {
-							log.error("Unable to instanciate the Jawr MBean '"+name.getCanonicalName()+"'", e);
+							LOGGER.error("Unable to instanciate the Jawr MBean '"+name.getCanonicalName()+"'", e);
 						}
 					}
 				}
@@ -176,7 +177,7 @@ public class ClassLoaderResourceUtils {
 		try {
 			rets = clazz.newInstance();
 		}catch(Exception e) {
-				throw new RuntimeException(e.getMessage() 
+				throw new BundlingProcessException(e.getMessage() 
 											+ " [The custom class " 
 											+ classname 
 											+ " could not be instantiated, check wether it is available on the classpath and" 
@@ -208,7 +209,7 @@ public class ClassLoaderResourceUtils {
 					try{
 						clazz = Class.forName(classname, true, threadClassLoader);
 					}catch(Exception e){
-						throw new RuntimeException(e.getMessage() 
+						throw new BundlingProcessException(e.getMessage() 
 								+ " [The custom class " 
 								+ classname 
 								+ " could not be instantiated, check wether it is available on the classpath and" 
@@ -216,7 +217,7 @@ public class ClassLoaderResourceUtils {
 								+ " The specific error message is: " + e.getClass().getName() + ":" + e.getMessage(),e);
 					}
 				}else{
-					throw new RuntimeException(classNotFoundEx.getMessage() 
+					throw new BundlingProcessException(classNotFoundEx.getMessage() 
 							+ " [The custom class " 
 							+ classname 
 							+ " could not be instantiated, check wether it is available on the classpath and" 
@@ -247,7 +248,7 @@ public class ClassLoaderResourceUtils {
 			rets = clazz.getConstructor(paramTypes).newInstance(params);
 			
 		} catch (Exception e) {
-			throw new RuntimeException(e.getMessage() 
+			throw new BundlingProcessException(e.getMessage() 
 										+ " [The custom class " 
 										+ classname 
 										+ " could not be instantiated, check wether it is available on the classpath and" 

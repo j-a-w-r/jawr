@@ -145,9 +145,11 @@ public class JawrSpringController implements Controller, ServletContextAware, In
 	 * @param controllerMapping the controllerMapping to set
 	 */
 	public void setControllerMapping(String controllerMapping) {
-		if(controllerMapping.endsWith("/"))
-			controllerMapping = controllerMapping.substring(0,controllerMapping.length()-1);
-		this.controllerMapping = controllerMapping;
+		if(controllerMapping.endsWith("/")){
+			this.controllerMapping = controllerMapping.substring(0,controllerMapping.length()-1);
+		}else{
+			this.controllerMapping = controllerMapping;
+		}
 	}
 	
 	/* (non-Javadoc)

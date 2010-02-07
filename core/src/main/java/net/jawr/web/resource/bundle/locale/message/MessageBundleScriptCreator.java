@@ -24,13 +24,14 @@ import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.MissingResourceException;
 import java.util.Properties;
 import java.util.ResourceBundle;
 import java.util.StringTokenizer;
-import java.util.MissingResourceException;
 
 import javax.servlet.ServletContext;
 
+import net.jawr.web.exception.BundlingProcessException;
 import net.jawr.web.resource.bundle.IOUtils;
 import net.jawr.web.resource.bundle.factory.util.ClassLoaderResourceUtils;
 import net.jawr.web.resource.bundle.factory.util.RegexUtil;
@@ -47,8 +48,8 @@ import org.apache.log4j.Logger;
  */
 public class MessageBundleScriptCreator {
 
+	private static final Logger LOGGER = Logger.getLogger(MessageBundleScriptCreator.class.getName());
 	public static final String DEFAULT_NAMESPACE = "messages";
-	private static final Logger log = Logger.getLogger(MessageBundleScriptCreator.class.getName());
 	private static final String SCRIPT_TEMPLATE = "/net/jawr/web/resource/bundle/message/messages.js";
 	protected static StringBuffer template;
 	protected String configParam;
@@ -96,8 +97,8 @@ public class MessageBundleScriptCreator {
 			is = ClassLoaderResourceUtils.getResourceAsStream(SCRIPT_TEMPLATE,this);
             IOUtils.copy(is, sw);
         } catch (IOException e) {
-			log.fatal("a serious error occurred when initializing MessageBundleScriptCreator");
-			throw new RuntimeException("Classloading issues prevent loading the message template to be loaded. ",e);
+			LOGGER.fatal("a serious error occurred when initializing MessageBundleScriptCreator");
+			throw new BundlingProcessException("Classloading issues prevent loading the message template to be loaded. ",e);
 		}finally{
 			IOUtils.close(is);
 		}

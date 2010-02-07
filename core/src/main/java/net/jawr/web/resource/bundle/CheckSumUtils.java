@@ -25,6 +25,7 @@ import java.util.zip.Checksum;
 
 import net.jawr.web.JawrConstant;
 import net.jawr.web.config.JawrConfig;
+import net.jawr.web.exception.BundlingProcessException;
 import net.jawr.web.exception.ResourceNotFoundException;
 import net.jawr.web.resource.bundle.factory.util.PathNormalizer;
 import net.jawr.web.resource.bundle.generator.GeneratorRegistry;
@@ -115,7 +116,7 @@ public final class CheckSumUtils {
 		}else if(algorithm.equals(MD5_ALGORITHM)){
 			return getMD5Checksum(is);
 		}else{
-			throw new RuntimeException("The checksum algorithm '"+algorithm+"' is not supported.\n" +
+			throw new BundlingProcessException("The checksum algorithm '"+algorithm+"' is not supported.\n" +
 					"The only supported algorithm are 'CRC32' or 'MD5'.");
 		}
 	}
@@ -155,14 +156,14 @@ public final class CheckSumUtils {
 		byte[] digest = null;
 		try {
 			MessageDigest md = MessageDigest.getInstance(MD5_ALGORITHM);
-			is = new DigestInputStream(is, md);
+			InputStream digestIs = new DigestInputStream(is, md);
 			// read stream to EOF as normal...
-			while (is.read() != -1) {
+			while (digestIs.read() != -1) {
 
 			}
 			digest = md.digest();
 		} catch (NoSuchAlgorithmException e) {
-			throw new RuntimeException("MD5 algorithm needs to be installed", e);
+			throw new BundlingProcessException("MD5 algorithm needs to be installed", e);
 		}
 
 		return new BigInteger(1, digest).toString(16);

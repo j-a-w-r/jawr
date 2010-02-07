@@ -36,7 +36,7 @@ import com.yahoo.platform.yui.compressor.JavaScriptCompressor;
 public class YUIJSCompressor extends AbstractChainedResourceBundlePostProcessor {
 	
 	/** The logger */
-	private static final Logger log = Logger.getLogger(YUIJSCompressor.class);
+	private static final Logger LOGGER = Logger.getLogger(YUIJSCompressor.class);
 	
 	/** The flag indicating if the content should be obfuscated or not */
 	private boolean obfuscate;
@@ -71,7 +71,7 @@ public class YUIJSCompressor extends AbstractChainedResourceBundlePostProcessor 
 		 * Params for this call: Writer: the StringWriter. int linebreak: always -1... boolean munge: obfuscated or not. boolean verbose: logging
 		 * level boolean preserveAllSemiColons: leave to false. boolean disableOptimizations: leave to true. *
 		 */
-		compressor.compress(wr, -1, obfuscate, log.isDebugEnabled(), false,
+		compressor.compress(wr, -1, obfuscate, LOGGER.isDebugEnabled(), false,
 				false);
 
 		return wr.getBuffer();

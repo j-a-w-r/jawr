@@ -59,11 +59,11 @@ public class ResourceGeneratorReaderWrapper implements TextResourceReader {
 	 */
 	public Reader getResource(String resourceName, boolean processingBundle) {
 		
-			
 		Locale locale = null;
-		if(resourceName.indexOf('@') != -1){
-			String localeKey = resourceName.substring(resourceName.indexOf('@')+1);
-			resourceName = resourceName.substring(0,resourceName.indexOf('@'));
+		String path = resourceName;
+		if(path.indexOf('@') != -1){
+			String localeKey = path.substring(path.indexOf('@')+1);
+			path = path.substring(0,path.indexOf('@'));
 			
 			// Resourcebundle should be doing this for me...
 			String[] params = localeKey.split("_");			
@@ -78,7 +78,7 @@ public class ResourceGeneratorReaderWrapper implements TextResourceReader {
 					locale = new Locale(localeKey);
 			}
 		}
-		GeneratorContext context = new GeneratorContext(config, resourceName.substring((generator.getMappingPrefix()+GeneratorRegistry.PREFIX_SEPARATOR).length()));
+		GeneratorContext context = new GeneratorContext(config, path.substring((generator.getMappingPrefix()+GeneratorRegistry.PREFIX_SEPARATOR).length()));
 		context.setLocale(locale);
 		context.setResourceReaderHandler(rsHandler);
 		context.setProcessingBundle(processingBundle);

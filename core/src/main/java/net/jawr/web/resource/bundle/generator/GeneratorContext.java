@@ -72,10 +72,10 @@ public class GeneratorContext {
 	 * @param config the Jawr config
 	 * @param path the requested path
 	 */
-	public GeneratorContext(JawrConfig config, String path) {
+	public GeneratorContext(JawrConfig config, String requestedPath) {
 
 		this.config = config;
-
+		this.path = requestedPath;
 		// init parameters, if any
 		if (path.matches(PARENFINDER_REGEXP)) {
 			parenthesesParam = path.substring(path.indexOf('(') + 1, path.indexOf(')'));
@@ -87,7 +87,7 @@ public class GeneratorContext {
 
 			path = path.substring(0, path.indexOf('[')) + path.substring(path.indexOf(']') + 1);
 		}
-		this.path = path;
+		
 	}
 
 	/**

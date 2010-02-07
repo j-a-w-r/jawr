@@ -109,7 +109,7 @@ public class FileUtils {
      */
     public static void copyFileToDirectory(File srcFile, File destDir, boolean preserveFileDate) throws IOException {
         if (destDir == null) {
-            throw new NullPointerException("Destination must not be null");
+            throw new IllegalArgumentException("Destination must not be null");
         }
         if (destDir.exists() && destDir.isDirectory() == false) {
             throw new IllegalArgumentException("Destination '" + destDir + "' is not a directory");
@@ -158,10 +158,10 @@ public class FileUtils {
     public static void copyFile(File srcFile, File destFile,
             boolean preserveFileDate) throws IOException {
         if (srcFile == null) {
-            throw new NullPointerException("Source must not be null");
+            throw new IllegalArgumentException("Source must not be null");
         }
         if (destFile == null) {
-            throw new NullPointerException("Destination must not be null");
+            throw new IllegalArgumentException("Destination must not be null");
         }
         if (srcFile.exists() == false) {
             throw new FileNotFoundException("Source '" + srcFile + "' does not exist");
@@ -344,10 +344,10 @@ public class FileUtils {
     public static void copyDirectory(File srcDir, File destDir,
             FileFilter filter, boolean preserveFileDate) throws IOException {
         if (srcDir == null) {
-            throw new NullPointerException("Source must not be null");
+            throw new IllegalArgumentException("Source must not be null");
         }
         if (destDir == null) {
-            throw new NullPointerException("Destination must not be null");
+            throw new IllegalArgumentException("Destination must not be null");
         }
         if (srcDir.exists() == false) {
             throw new FileNotFoundException("Source '" + srcDir + "' does not exist");

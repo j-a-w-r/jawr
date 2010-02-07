@@ -27,8 +27,10 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.StringTokenizer;
+import java.util.Map.Entry;
 
 import net.jawr.web.config.JawrConfig;
+import net.jawr.web.exception.BundlingProcessException;
 import net.jawr.web.resource.bundle.factory.util.ClassLoaderResourceUtils;
 import net.jawr.web.resource.bundle.generator.AbstractJavascriptGenerator;
 import net.jawr.web.resource.bundle.generator.GeneratorContext;
@@ -55,7 +57,7 @@ import org.xml.sax.SAXException;
  *
  */
 public class CommonsValidatorGenerator extends AbstractJavascriptGenerator implements ResourceGenerator {
-	private static final Logger log = Logger.getLogger(CommonsValidatorGenerator.class.getName());
+	private static final Logger LOGGER = Logger.getLogger(CommonsValidatorGenerator.class.getName());
 	private static final String STATIC_JAVASCRIPT_KEY = "_static";
 
 	private Map validatorResourcesMap;
@@ -199,11 +201,13 @@ public class CommonsValidatorGenerator extends AbstractJavascriptGenerator imple
                 Map vars = field.getVars();
 
                 // Loop through the field's variables.
-                Iterator varsIterator = vars.keySet().iterator();
+                Iterator varsIterator = vars.entrySet().iterator();
 
                 while (varsIterator.hasNext()) {
-                    String varName = (String) varsIterator.next();
-                    Var var = (Var) vars.get(varName);
+                    
+                	Entry varEntry = (Entry) varsIterator.next();
+                	String varName = (String) varEntry.getKey();
+                    Var var = (Var) varEntry.getValue();
                     String varValue = var.getValue();
 
                     // Non-resource variable
@@ -327,7 +331,7 @@ public class CommonsValidatorGenerator extends AbstractJavascriptGenerator imple
             }
         }
 
-        Collections.sort(actions, actionComparator);
+        Collections.sort(actions, ACTION_COMPARATOR);
 
         return actions;
     }
@@ -384,8 +388,8 @@ public class CommonsValidatorGenerator extends AbstractJavascriptGenerator imple
             while (st.hasMoreTokens()) {
                 String validatorRules = st.nextToken().trim();
 
-                if (log.isDebugEnabled()) {
-                    log.debug("Validation rules file from '"
+                if (LOGGER.isDebugEnabled()) {
+                    LOGGER.debug("Validation rules file from '"
                         + validatorRules + "'");
                 }
                 InputStream is = null;
@@ -400,14 +404,14 @@ public class CommonsValidatorGenerator extends AbstractJavascriptGenerator imple
             }
             validatorResources = new ValidatorResources(inputStreams);            
         } catch (SAXException ex) {
-            throw new RuntimeException(ex);
+            throw new BundlingProcessException(ex);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new BundlingProcessException(e);
 		} 
 		validatorResourcesMap.put(path, validatorResources);
 	}
 	
-	private static final Comparator actionComparator =
+	private static final Comparator ACTION_COMPARATOR =
         new Comparator() {
             public int compare(Object o1, Object o2) {
                 ValidatorAction va1 = (ValidatorAction) o1;

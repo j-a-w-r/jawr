@@ -73,21 +73,23 @@ public abstract class AbstractPostProcessorChainFactory implements	PostProcessor
 	private AbstractChainedResourceBundlePostProcessor addOrCreateChain(AbstractChainedResourceBundlePostProcessor chain, String key) {
 		
 		AbstractChainedResourceBundlePostProcessor toAdd;
-		
-		if(null != customPostProcessors.get(key)) {
-			toAdd = (AbstractChainedResourceBundlePostProcessor)customPostProcessors.get(key);
+
+		if (customPostProcessors.get(key) == null) {
+			toAdd = buildProcessorByKey(key);
+		} else{
+			toAdd = (AbstractChainedResourceBundlePostProcessor) customPostProcessors
+				.get(key);
 		}
-		else toAdd = buildProcessorByKey(key);
 		
-		if(null == chain){
-			chain = toAdd;
-		}
-		else{
-			
+		AbstractChainedResourceBundlePostProcessor newChainResult = null;
+		if (chain == null) {
+			newChainResult = toAdd;
+		}else{
 			chain.addNextProcessor(toAdd);
+			newChainResult = chain;
 		}
-		
-		return chain;
+
+		return newChainResult;
 	}
 	
 	/**

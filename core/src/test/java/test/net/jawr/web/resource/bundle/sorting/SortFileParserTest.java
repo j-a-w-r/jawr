@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Set;
 
 import junit.framework.TestCase;
-
 import net.jawr.web.resource.bundle.sorting.SortFileParser;
 
 public class SortFileParserTest extends TestCase {

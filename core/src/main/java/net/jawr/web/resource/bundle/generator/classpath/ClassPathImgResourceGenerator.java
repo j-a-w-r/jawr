@@ -14,7 +14,6 @@
 package net.jawr.web.resource.bundle.generator.classpath;
 
 import java.io.InputStream;
-import java.util.Collection;
 import java.util.Set;
 
 import net.jawr.web.resource.FileNameUtils;

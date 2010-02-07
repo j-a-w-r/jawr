@@ -38,7 +38,7 @@ import org.apache.log4j.Logger;
 public class ResourceBundleMessagesGenerator extends AbstractJavascriptGenerator implements ResourceGenerator, LocaleAwareResourceGenerator {
 	
 	/** The logger */
-	private static final Logger log = Logger.getLogger(ResourceBundleMessagesGenerator.class);
+	private static final Logger LOGGER = Logger.getLogger(ResourceBundleMessagesGenerator.class);
 	
 	public static final String GRAILS_WAR_DEPLOYED = "jawr.grails.war.deployed";
 	
@@ -51,13 +51,13 @@ public class ResourceBundleMessagesGenerator extends AbstractJavascriptGenerator
 		MessageBundleScriptCreator creator = null;
 		// In grails apps, the generator uses a special implementation
 		if(null == context.getServletContext().getAttribute(ResourceBundleMessagesGenerator.GRAILS_WAR_DEPLOYED)){
-			if(log.isDebugEnabled())
-				log.debug("Using standard messages generator. ");
+			if(LOGGER.isDebugEnabled())
+				LOGGER.debug("Using standard messages generator. ");
 			creator = new MessageBundleScriptCreator(context);
 		}
 		else {
-			if(log.isDebugEnabled())
-				log.debug("Using grails messages generator. ");
+			if(LOGGER.isDebugEnabled())
+				LOGGER.debug("Using grails messages generator. ");
 			// Loading this way prevents unwanted dependencies in non grails applications. 
 			Object[] param = {context};
 			creator = (MessageBundleScriptCreator) ClassLoaderResourceUtils.buildObjectInstance(GRAILS_MESSAGE_CREATOR,param);
@@ -77,14 +77,14 @@ public class ResourceBundleMessagesGenerator extends AbstractJavascriptGenerator
 	 */
 	public String getDebugModeBuildTimeGenerationPath(String path) {
 		
-		path = path.replaceFirst(GeneratorRegistry.PREFIX_SEPARATOR, JawrConstant.URL_SEPARATOR);
-		if(path.endsWith("@")){
-			path = path.replaceAll("@", "");
+		String debugPath = path.replaceFirst(GeneratorRegistry.PREFIX_SEPARATOR, JawrConstant.URL_SEPARATOR);
+		if(debugPath.endsWith("@")){
+			debugPath = debugPath.replaceAll("@", "");
 		}else{
-			path = path.replaceAll("@", "_");
-			path = path.replaceAll("\\|", "_");
+			debugPath = debugPath.replaceAll("@", "_");
+			debugPath = debugPath.replaceAll("\\|", "_");
 		}
-		return path+"."+JawrConstant.JS_TYPE;
+		return debugPath+"."+JawrConstant.JS_TYPE;
 	}
 
 	/* (non-Javadoc)

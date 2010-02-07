@@ -17,6 +17,7 @@ import net.jawr.web.JawrConstant;
 import net.jawr.web.resource.bundle.handler.ResourceBundlesHandler;
 import net.jawr.web.resource.bundle.renderer.BundleRenderer;
 import net.jawr.web.resource.bundle.renderer.JavascriptHTMLBundleLinkRenderer;
+
 import org.apache.wicket.markup.ComponentTag;
 import org.apache.wicket.protocol.http.WebApplication;
 import org.apache.wicket.util.value.IValueMap;

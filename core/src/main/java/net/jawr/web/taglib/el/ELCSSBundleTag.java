@@ -17,9 +17,9 @@ package net.jawr.web.taglib.el;
 
 import javax.servlet.jsp.JspException;
 
-import org.apache.taglibs.standard.lang.support.ExpressionEvaluatorManager;
-
 import net.jawr.web.taglib.CSSBundleTag;
+
+import org.apache.taglibs.standard.lang.support.ExpressionEvaluatorManager;
 
 /**
  * This class defines the EL version of Css Bundle tag

@@ -15,6 +15,8 @@ package net.jawr.web.resource.bundle.postprocess;
 
 import java.io.IOException;
 
+import net.jawr.web.exception.BundlingProcessException;
+
 import org.apache.log4j.Logger;
 
 
@@ -29,7 +31,7 @@ public abstract class AbstractChainedResourceBundlePostProcessor implements
 		ChainedResourceBundlePostProcessor {
 	
 	/** The logger */
-	private static final Logger log = Logger.getLogger(AbstractChainedResourceBundlePostProcessor.class);
+	private static final Logger LOGGER = Logger.getLogger(AbstractChainedResourceBundlePostProcessor.class);
 	
 	/** The next post processor */
 	private ChainedResourceBundlePostProcessor nextProcessor;
@@ -64,11 +66,11 @@ public abstract class AbstractChainedResourceBundlePostProcessor implements
 	public StringBuffer postProcessBundle(BundleProcessingStatus status, StringBuffer bundleData) {
 		StringBuffer processedBundle = null;
 		try {
-			if(log.isDebugEnabled())
-				log.debug("postprocessing bundle:" + status.getCurrentBundle().getId());
+			if(LOGGER.isDebugEnabled())
+				LOGGER.debug("postprocessing bundle:" + status.getCurrentBundle().getId());
 			processedBundle = doPostProcessBundle(status,bundleData);
 		} catch (IOException e) {
-			throw new RuntimeException("Unexpected IOException during execution of a postprocessor.",e);
+			throw new BundlingProcessException("Unexpected IOException during execution of a postprocessor.",e);
 		}
 		if(null != nextProcessor) {
 			processedBundle = nextProcessor.postProcessBundle(status,processedBundle);

@@ -22,6 +22,7 @@ import java.util.Set;
 
 import net.jawr.web.JawrConstant;
 import net.jawr.web.config.JawrConfig;
+import net.jawr.web.exception.BundlingProcessException;
 import net.jawr.web.resource.ImageResourcesHandler;
 import net.jawr.web.resource.bundle.JoinableResourceBundle;
 import net.jawr.web.resource.bundle.global.preprocessor.AbstractChainedGlobalPreprocessor;
@@ -51,7 +52,7 @@ public class CssSmartSpritesGlobalPreprocessor extends
 		AbstractChainedGlobalPreprocessor {
 
 	/** The logger */
-	private static Logger log = Logger.getLogger(CssSmartSpritesGlobalPreprocessor.class);
+	private static Logger LOGGER = Logger.getLogger(CssSmartSpritesGlobalPreprocessor.class);
 	
 	/** The error level name */
 	private static final String ERROR_LEVEL = "ERROR";
@@ -113,7 +114,7 @@ public class CssSmartSpritesGlobalPreprocessor extends
 			ResourceReaderHandler cssRsHandler, ImageResourcesHandler imgRsHandler, Set resourcePaths,
 			JawrConfig jawrConfig, Charset charset) {
 		
-		Level logLevel = log.getEffectiveLevel();
+		Level logLevel = LOGGER.getEffectiveLevel();
 		MessageLevel msgLevel = MessageLevel.valueOf(ERROR_LEVEL);
 		if(logLevel != null){
 			if(logLevel.isGreaterOrEqual(Level.DEBUG)){
@@ -136,7 +137,7 @@ public class CssSmartSpritesGlobalPreprocessor extends
 		try {
 			spriteBuilder.buildSprites(resourcePaths);
 		} catch (IOException e) {
-			throw new RuntimeException("Unable to build sprites", e);
+			throw new BundlingProcessException("Unable to build sprites", e);
 		}
 	}
 
@@ -172,11 +173,11 @@ public class CssSmartSpritesGlobalPreprocessor extends
 		 */
 		public void add(Message message) {
 			
-			Level logLevel = log.getEffectiveLevel();
+			Level logLevel = LOGGER.getEffectiveLevel();
 			if(logLevel == null){
 				logLevel = Level.INFO;
 			}
-			log.log(logLevel, message.getFormattedMessage());
+			LOGGER.log(logLevel, message.getFormattedMessage());
 		}
 		
 	}

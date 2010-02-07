@@ -48,7 +48,7 @@ public abstract class AbstractJawrImageReference extends WebMarkupContainer {
 	private static final long serialVersionUID = 8981244472547751100L;
 
 	/** The logger */
-	private static final Logger log = Logger.getLogger(AbstractJawrReference.class);
+	private static final Logger LOGGER = Logger.getLogger(AbstractJawrReference.class);
 
 	/** The image renderer */
 	private ImgRenderer renderer;
@@ -97,7 +97,7 @@ public abstract class AbstractJawrImageReference extends WebMarkupContainer {
     	   								writer);
     		
         } catch (IOException ex) {
-            log.error("onRender() error : ", ex);
+            LOGGER.error("onRender() error : ", ex);
         }
 
         markupStream.skipComponent();

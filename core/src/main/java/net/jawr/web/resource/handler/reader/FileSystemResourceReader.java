@@ -128,8 +128,8 @@ public class FileSystemResourceReader implements TextResourceReader, StreamResou
 	/* (non-Javadoc)
 	 * @see net.jawr.web.resource.handler.reader.ResourceBrowser#isDirectory(java.lang.String)
 	 */
-	public boolean isDirectory(String path) {
-		path = path.replace('/', File.separatorChar);
+	public boolean isDirectory(String dirPath) {
+		String path = dirPath.replace('/', File.separatorChar);
 		return new File(baseDir, path).isDirectory();
 	}
 

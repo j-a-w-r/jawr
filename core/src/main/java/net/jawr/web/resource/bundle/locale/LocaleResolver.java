@@ -27,6 +27,6 @@ public interface LocaleResolver {
 	 * @param request
 	 * @return A string identifying the locale using the standard underscore-separated locale keys (en_US, etc). 
 	 */
-	public abstract String resolveLocaleCode(HttpServletRequest request); 
+	String resolveLocaleCode(HttpServletRequest request); 
 
 }

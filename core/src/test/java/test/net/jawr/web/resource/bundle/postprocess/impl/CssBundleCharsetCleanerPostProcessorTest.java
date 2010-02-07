@@ -6,14 +6,15 @@ package test.net.jawr.web.resource.bundle.postprocess.impl;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.log4j.PropertyConfigurator;
-
 import junit.framework.TestCase;
 import net.jawr.web.resource.bundle.InclusionPattern;
 import net.jawr.web.resource.bundle.JoinableResourceBundle;
 import net.jawr.web.resource.bundle.postprocess.BundleProcessingStatus;
 import net.jawr.web.resource.bundle.postprocess.ResourceBundlePostProcessor;
 import net.jawr.web.resource.bundle.postprocess.impl.CssCharsetFilterPostProcessor;
+
+import org.apache.log4j.PropertyConfigurator;
+
 import test.net.jawr.log.AppenderForTesting;
 import test.net.jawr.web.FileUtils;
 

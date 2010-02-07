@@ -1,7 +1,7 @@
 package test.net.jawr.web.resource.bundle.factory.util;
 
-import net.jawr.web.resource.bundle.factory.util.PathNormalizer;
 import junit.framework.TestCase;
+import net.jawr.web.resource.bundle.factory.util.PathNormalizer;
 
 /**
  * Test case class for PathNormalizer utility class

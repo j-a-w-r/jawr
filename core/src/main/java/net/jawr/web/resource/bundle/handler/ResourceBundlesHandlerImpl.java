@@ -35,6 +35,7 @@ import net.jawr.web.JawrConstant;
 import net.jawr.web.collections.ConcurrentCollectionsFactory;
 import net.jawr.web.config.JawrConfig;
 import net.jawr.web.context.ThreadLocalJawrContext;
+import net.jawr.web.exception.BundlingProcessException;
 import net.jawr.web.exception.ResourceNotFoundException;
 import net.jawr.web.resource.ImageResourcesHandler;
 import net.jawr.web.resource.bundle.CompositeResourceBundle;
@@ -43,8 +44,8 @@ import net.jawr.web.resource.bundle.JoinableResourceBundle;
 import net.jawr.web.resource.bundle.JoinableResourceBundleContent;
 import net.jawr.web.resource.bundle.JoinableResourceBundlePropertySerializer;
 import net.jawr.web.resource.bundle.factory.util.PathNormalizer;
-import net.jawr.web.resource.bundle.global.preprocessor.GlobalPreprocessor;
 import net.jawr.web.resource.bundle.global.preprocessor.GlobalPreprocessingContext;
+import net.jawr.web.resource.bundle.global.preprocessor.GlobalPreprocessor;
 import net.jawr.web.resource.bundle.iterator.ConditionalCommentCallbackHandler;
 import net.jawr.web.resource.bundle.iterator.DebugModePathsIteratorImpl;
 import net.jawr.web.resource.bundle.iterator.PathsIteratorImpl;
@@ -67,7 +68,7 @@ import org.apache.log4j.Logger;
 public class ResourceBundlesHandlerImpl implements ResourceBundlesHandler {
 
 	/** The logger */
-	private static final Logger log = Logger
+	private static final Logger LOGGER = Logger
 			.getLogger(ResourceBundlesHandler.class);
 
 	/**
@@ -377,15 +378,15 @@ public class ResourceBundlesHandlerImpl implements ResourceBundlesHandler {
 			rd = resourceHandler.getResource(bundlePath);
 		} else {
 			// Prefixes are used only in production mode
-			bundlePath = PathNormalizer.removeVariantPrefixFromPath(bundlePath);
-			rd = resourceBundleHandler.getResourceBundleReader(bundlePath);
+			String path = PathNormalizer.removeVariantPrefixFromPath(bundlePath);
+			rd = resourceBundleHandler.getResourceBundleReader(path);
 		}
 
 		try {
 			IOUtils.copy(rd, writer);
 			writer.flush();
 		} catch (IOException e) {
-			throw new RuntimeException("Unexpected IOException writing bundle["
+			throw new BundlingProcessException("Unexpected IOException writing bundle["
 					+ bundlePath + "]", e);
 		}finally{
 			IOUtils.close(rd);
@@ -403,18 +404,18 @@ public class ResourceBundlesHandlerImpl implements ResourceBundlesHandler {
 			throws ResourceNotFoundException {
 
 		// Remove prefix, which are used only in production mode
-		bundlePath = PathNormalizer.removeVariantPrefixFromPath(bundlePath);
+		String path = PathNormalizer.removeVariantPrefixFromPath(bundlePath);
 		ReadableByteChannel data = null;
 		try {
 
 			data = resourceBundleHandler
-					.getResourceBundleChannel(bundlePath);
+					.getResourceBundleChannel(path);
 			WritableByteChannel outChannel = Channels.newChannel(out);
 			IOUtils.copy(data, outChannel);
 
 		} catch (IOException e) {
-			throw new RuntimeException(
-					"Unexpected IOException writing bundle [" + bundlePath
+			throw new BundlingProcessException(
+					"Unexpected IOException writing bundle [" + path
 							+ "]", e);
 		}finally{
 			IOUtils.close(data);
@@ -460,8 +461,8 @@ public class ResourceBundlesHandlerImpl implements ResourceBundlesHandler {
 			boolean processBundle = processBundleFlag;
 			if (!ThreadLocalJawrContext.isBundleProcessingAtBuildTime()
 					&& null != bundle.getAlternateProductionURL()) {
-				if (log.isDebugEnabled()) {
-					log
+				if (LOGGER.isDebugEnabled()) {
+					LOGGER
 							.debug("No bundle generated for '"
 									+ bundle.getId()
 									+ "' because a production URL is defined for this bundle.");
@@ -680,8 +681,8 @@ public class ResourceBundlesHandlerImpl implements ResourceBundlesHandler {
 				BufferedWriter bwriter = new BufferedWriter(writer);
 
 				String path = (String) it.next();
-				if (log.isDebugEnabled())
-					log.debug("Adding file [" + path + "] to bundle "
+				if (LOGGER.isDebugEnabled())
+					LOGGER.debug("Adding file [" + path + "] to bundle "
 							+ bundle.getId());
 
 				// Get a reader on the resource, with appropiate encoding
@@ -692,7 +693,7 @@ public class ResourceBundlesHandlerImpl implements ResourceBundlesHandler {
 				} catch (ResourceNotFoundException e) {
 					// If a mapped file does not exist, a warning is issued and
 					// process continues normally.
-					log.warn("A mapped resource was not found: [" + path
+					LOGGER.warn("A mapped resource was not found: [" + path
 							+ "]. Please check your configuration");
 					continue;
 				}
@@ -720,8 +721,8 @@ public class ResourceBundlesHandlerImpl implements ResourceBundlesHandler {
 
 					bundleData.append(resourceData);
 				} else if (null != this.unitaryPostProcessor) {
-					if (log.isDebugEnabled())
-						log.debug("POSTPROCESSING UNIT:"
+					if (LOGGER.isDebugEnabled())
+						LOGGER.debug("POSTPROCESSING UNIT:"
 								+ status.getLastPathAdded());
 					StringBuffer resourceData = this.unitaryPostProcessor
 							.postProcessBundle(status, writer.getBuffer());
@@ -741,7 +742,7 @@ public class ResourceBundlesHandlerImpl implements ResourceBundlesHandler {
 				store = bundleData;
 
 		} catch (IOException e) {
-			throw new RuntimeException(
+			throw new BundlingProcessException(
 					"Unexpected IOException generating collected file ["
 							+ bundle.getId() + "].", e);
 		}

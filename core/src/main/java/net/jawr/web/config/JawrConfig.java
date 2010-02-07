@@ -239,7 +239,7 @@ public class JawrConfig implements Serializable {
 	/**
 	 * Determines if the servlet, which provide CSS image for CSS define in the classpath should be used or not
 	 */
-	private boolean classpathCssHandleImage;
+	private boolean classpathCssHandleImage = false;
 
 	/**
 	 * Defines the image resources definition.
@@ -256,7 +256,7 @@ public class JawrConfig implements Serializable {
 	/**
 	 * Used to check if a configuration has not been outdated by a new one.
 	 */
-	private boolean isValid = true;
+	private boolean valid = true;
 
 	/**
 	 * Mapping path to the dwr servlet, in case it is integrated with jawr.
@@ -268,7 +268,7 @@ public class JawrConfig implements Serializable {
 	 * 
 	 * @param props the properties
 	 */
-	public JawrConfig(Properties props) {
+	public JawrConfig(final Properties props) {
 		this.configProperties = props;
 		if (null != props.getProperty(JAWR_DEBUG_ON)) {
 			this.debugModeOn = Boolean.valueOf(props.getProperty(JAWR_DEBUG_ON)).booleanValue();
@@ -320,11 +320,12 @@ public class JawrConfig implements Serializable {
 			this.dwrMapping = props.getProperty(JAWR_DWR_MAPPING);
 		}
 
-		if (null != props.getProperty(JAWR_LOCALE_RESOLVER)) {
-			localeResolver = (LocaleResolver) ClassLoaderResourceUtils.buildObjectInstance(props.getProperty(JAWR_LOCALE_RESOLVER));
-		} else
+		if (props.getProperty(JAWR_LOCALE_RESOLVER) == null) {
 			localeResolver = new DefaultLocaleResolver();
-
+		} else{
+			localeResolver = (LocaleResolver) ClassLoaderResourceUtils.buildObjectInstance(props.getProperty(JAWR_LOCALE_RESOLVER));
+		}
+		
 		if (null != props.getProperty(JAWR_CSSLINKS_FLAVOR)) {
 			setCssLinkFlavor(props.getProperty(JAWR_CSSLINKS_FLAVOR).trim());
 		}
@@ -365,7 +366,7 @@ public class JawrConfig implements Serializable {
 	 * 
 	 * @param debugOverrideKey the String to set as the key
 	 */
-	public void setDebugOverrideKey(String debugOverrideKey) {
+	public void setDebugOverrideKey(final String debugOverrideKey) {
 		this.debugOverrideKey = debugOverrideKey;
 	}
 
@@ -387,7 +388,7 @@ public class JawrConfig implements Serializable {
 	 * 
 	 * @param debugModeOn the flag to set
 	 */
-	public void setDebugModeOn(boolean debugMode) {
+	public void setDebugModeOn(final boolean debugMode) {
 		this.debugModeOn = debugMode;
 	}
 
@@ -403,7 +404,7 @@ public class JawrConfig implements Serializable {
 	 * Sets the refresh key
 	 * @param refreshKey the refresh key
 	 */
-	public void setRefreshKey(String refreshKey) {
+	public void setRefreshKey(final String refreshKey) {
 		this.refreshKey = refreshKey;
 	}
 	
@@ -419,7 +420,7 @@ public class JawrConfig implements Serializable {
 	 * Sets the flag indicating if we should process the bundle at startup
 	 * @param dirPath the directory path to set
 	 */
-	public void setJawrWorkingDirectory(String dirPath) {
+	public void setJawrWorkingDirectory(final String dirPath) {
 		this.jawrWorkingDirectory = dirPath;
 	}
 
@@ -456,7 +457,7 @@ public class JawrConfig implements Serializable {
 	 * 
 	 * @param charsetName the charset name to set
 	 */
-	public void setCharsetName(String charsetName) {
+	public final void setCharsetName(String charsetName) {
 		if (!Charset.isSupported(charsetName))
 			throw new IllegalArgumentException("The specified charset [" + charsetName + "] is not supported by the jvm.");
 		this.charsetName = charsetName;
@@ -647,7 +648,7 @@ public class JawrConfig implements Serializable {
 	 * configuration is reloaded.
 	 */
 	public void invalidate() {
-		this.isValid = false;
+		this.valid = false;
 	}
 
 	/**
@@ -656,7 +657,7 @@ public class JawrConfig implements Serializable {
 	 * @return the flag indicating if the configuration has been invalidated.
 	 */
 	public boolean isValid() {
-		return this.isValid;
+		return this.valid;
 	}
 
 	/**
@@ -737,14 +738,15 @@ public class JawrConfig implements Serializable {
 	 * 
 	 * @param cssLinkFlavor the cssLinkFlavor to set
 	 */
-	public void setCssLinkFlavor(String cssLinkFlavor) {
+	public final void setCssLinkFlavor(String cssLinkFlavor) {
 		if (CSSHTMLBundleLinkRenderer.FLAVORS_HTML.equalsIgnoreCase(cssLinkFlavor)
 				|| CSSHTMLBundleLinkRenderer.FLAVORS_XHTML.equalsIgnoreCase(cssLinkFlavor)
 				|| CSSHTMLBundleLinkRenderer.FLAVORS_XHTML_EXTENDED.equalsIgnoreCase(cssLinkFlavor))
 			CSSHTMLBundleLinkRenderer.setClosingTag(cssLinkFlavor);
-		else
+		else{
 			throw new IllegalArgumentException("The value for the jawr.csslinks.flavor " + "property [" + cssLinkFlavor + "] is invalid. "
 					+ "Please check the docs for valid values ");
+		}
 	}
 
 	/**
@@ -772,9 +774,9 @@ public class JawrConfig implements Serializable {
 	 * @see java.lang.Object#toString()
 	 */
 	public String toString() {
-		StringBuffer sb = new StringBuffer();
-		sb.append("[JawrConfig:'").append("charset name:'").append(this.charsetName).append("'\n").append("debugModeOn:'").append(isDebugModeOn())
-				.append("'\n").append("servletMapping:'").append(getServletMapping()).append("' ]");
+		StringBuffer sb = new StringBuffer(65);
+		sb.append("[JawrConfig:'charset name:'").append(this.charsetName).append("'\ndebugModeOn:'").append(isDebugModeOn())
+				.append("'\nservletMapping:'").append(getServletMapping()).append("' ]");
 		return sb.toString();
 	}
 

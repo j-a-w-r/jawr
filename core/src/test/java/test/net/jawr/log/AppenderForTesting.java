@@ -2,6 +2,7 @@ package test.net.jawr.log;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import org.apache.log4j.AppenderSkeleton;
 import org.apache.log4j.spi.LoggingEvent;
 
