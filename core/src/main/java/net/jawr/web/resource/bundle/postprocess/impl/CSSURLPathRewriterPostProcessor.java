@@ -14,16 +14,14 @@
 package net.jawr.web.resource.bundle.postprocess.impl;
 
 import java.io.IOException;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import net.jawr.web.JawrConstant;
 import net.jawr.web.config.JawrConfig;
 import net.jawr.web.exception.ResourceNotFoundException;
 import net.jawr.web.resource.ImageResourcesHandler;
 import net.jawr.web.resource.bundle.CheckSumUtils;
+import net.jawr.web.resource.bundle.css.CssImageUrlRewriter;
 import net.jawr.web.resource.bundle.factory.util.PathNormalizer;
-import net.jawr.web.resource.bundle.factory.util.RegexUtil;
 import net.jawr.web.resource.bundle.generator.GeneratorRegistry;
 import net.jawr.web.resource.bundle.generator.ResourceGenerator;
 import net.jawr.web.resource.bundle.postprocess.AbstractChainedResourceBundlePostProcessor;
@@ -55,12 +53,6 @@ public class CSSURLPathRewriterPostProcessor extends
 	/** The URL separator */
 	private static final String URL_SEPARATOR = "/";
 
-	/** The url pattern */
-	private static final Pattern URL_PATTERN = Pattern.compile(	"url\\(\\s*" // 'url(' and any number of whitespaces 
-																+ "((\\\\\\))|[^)])*" // any sequence of characters, except an unescaped ')'
-																+ "\\s*\\)",  // Any number of whitespaces, then ')'
-																Pattern.CASE_INSENSITIVE); // works with 'URL('
-	
 	/**
 	 * Constructor
 	 */
@@ -74,97 +66,21 @@ public class CSSURLPathRewriterPostProcessor extends
 	protected StringBuffer doPostProcessBundle(BundleProcessingStatus status,
 			StringBuffer bundleData) throws IOException {
 		
-		String data = bundleData.toString();
-		
-		JawrConfig jawrConfig = status.getJawrConfig();
-		
 		// Retrieve the full bundle path, so we will be able to define the relative path for the css images
-		String bundleName = getFinalFullBundlePath(status, jawrConfig);
-		
-		// Rewrite each css image url path
-		Matcher matcher = URL_PATTERN.matcher(data);
-		StringBuffer sb = new StringBuffer();
-		while(matcher.find()) {
-		
-			String url = getUrlPath(matcher.group(), bundleName, status);
-			matcher.appendReplacement(sb, RegexUtil.adaptReplacementToMatcher(url));
-		}
-		matcher.appendTail(sb);
-		return sb;
+		String fullBundlePath = getFinalFullBundlePath(status);
+		PostProcessorCssImageUrlRewriter urlRewriter = new PostProcessorCssImageUrlRewriter(status);
+		return urlRewriter.rewriteUrl(status.getLastPathAdded(), fullBundlePath, bundleData.toString());
 	}
 	
-
-	/**
-	 * Transform a matched url so it points to the proper relative path with respect to the given path.  
-	 * @param match the matched URL
-	 * @param fullBundlePath the full bundle path
-	 * @param status the bundle processing status
-	 * @return the image URL path
-	 * @throws IOException if an IO exception occurs
-	 */
-	private String getUrlPath(String match, String fullBundlePath, BundleProcessingStatus status) throws IOException {
-
-		JawrConfig jawrConfig = status.getJawrConfig();
-				
-		// Retrieve the image servlet mapping
-		ImageResourcesHandler imgRsHandler = (ImageResourcesHandler) jawrConfig.getContext().getAttribute(JawrConstant.IMG_CONTEXT_ATTRIBUTE);
-		String classPathImgServletPath = "";
-		
-		if(imgRsHandler != null){
-			classPathImgServletPath = PathNormalizer.asPath(imgRsHandler.getJawrConfig().getServletMapping());
-		}
-		
-		String url = match.substring(match.indexOf('(')+1,match.lastIndexOf(')'))
-					.trim();
-
-		// To keep quotes as they are, first they are checked and removed. 
-		String quoteStr = "";
-		if( url.startsWith("'") || url.startsWith("\"")) {
-			quoteStr = url.charAt(0)+"";
-			url = url.substring(1,url.length()-1);
-		}
-		
-		// Check if the URL is absolute, if it is return it as is. 
-		int firstSlash = url.indexOf('/');
-		if(0 == firstSlash || (firstSlash != -1 && url.charAt(++firstSlash) == '/')){
-			StringBuffer sb = new StringBuffer("url(");
-			sb.append(quoteStr).append(url).append(quoteStr).append(")");
-			return sb.toString();
-		}
-		
-		// Check if the URL is embedded data (RFC2397), if it is return it as is
-		if(url.trim().toLowerCase().startsWith("data:")) {
-			StringBuffer sb = new StringBuffer("url(");
-			sb.append(quoteStr).append(url).append(quoteStr).append(")");
-			return sb.toString();
-		}
-
-		if(url.startsWith(URL_SEPARATOR))
-			url = url.substring(1,url.length());
-		else if(url.startsWith("./"))
-			url = url.substring(2,url.length());
-		
-		// Here we generate the full path of the CSS image
-		// to be able to define the relative path from the full bundle path
-		String fullImgPath = getFinalFullImagePath(url, classPathImgServletPath, status, imgRsHandler);
-		String imgUrl = PathNormalizer.getRelativeWebPath(PathNormalizer.getParentPath(fullBundlePath), fullImgPath);
-		
-		// Start rendering the result, starting by the initial quote, if any. 
-		StringBuffer urlPrefix = new StringBuffer("url(").append(quoteStr);
-		return PathNormalizer.normalizePath(urlPrefix.append(imgUrl).append(quoteStr).append(")").toString());
-	}
-
-
 	/**
 	 * Returns the full path for the CSS bundle, taking in account the css servlet path if defined, 
 	 * the caching prefix, and the url context path overriden
 	 *   
-	 * @param status the status
-	 * @param jawrConfig the jawr configuration
 	 * @return the full bundle path
 	 */
-	private String getFinalFullBundlePath(BundleProcessingStatus status, JawrConfig jawrConfig) {
+	public String getFinalFullBundlePath(BundleProcessingStatus status) {
 
+		JawrConfig jawrConfig = status.getJawrConfig();
 		String fullBundlePath = null;
 		String bundleName = status.getCurrentBundle().getId();
 		
@@ -188,132 +104,155 @@ public class CSSURLPathRewriterPostProcessor extends
 
 
 	/**
-	 * Returns the full path of the CSS image, taking in account the css servlet path if defined, 
-	 * the caching prefix, and the url context path overriden.
-	 * 
-	 * @param url the image url
-	 * @param imgServletPath the image servlet path
-	 * @param status the status
-	 * @param imgRsHandler the image Resource handler
-	 * @return the full image path from the web application context path
-	 * @throws IOException if an IOException occurs
+	 * This class defines the URL rewriter for the Css post processor
+	 *  
+	 * @author Ibrahim Chaehoi
 	 */
-	private String getFinalFullImagePath(String url, String imgServletPath, BundleProcessingStatus status,
-			ImageResourcesHandler imgRsHandler) throws IOException {
+	private static class PostProcessorCssImageUrlRewriter extends CssImageUrlRewriter {
 		
-		String imgUrl = null;
+		/** The bundle processing status */
+		private BundleProcessingStatus status;
 		
-		// Retrieve the current CSS file from which the CSS image is referenced
-		String currentCss = status.getLastPathAdded();
-		boolean generatedImg = false;
-		if(imgRsHandler != null){
-			GeneratorRegistry imgRsGeneratorRegistry = imgRsHandler.getJawrConfig().getGeneratorRegistry();
-			generatedImg = imgRsGeneratorRegistry.isGeneratedImage(url);
+		/**
+		 * Constructor
+		 * @param status the bundle processing status
+		 */
+		public PostProcessorCssImageUrlRewriter(BundleProcessingStatus status) {
+			this.status = status;
 		}
 		
-		boolean cssGeneratorIsHandleCssImage = isCssGeneratorHandlingCssImage(currentCss, status);
 		
-		String rootPath = currentCss;
-		
-		// If the CSS image is taken from the classpath, add the classpath cache prefix
-		if(generatedImg || cssGeneratorIsHandleCssImage){
+		/* (non-Javadoc)
+		 * @see net.jawr.web.resource.bundle.css.CssImageUrlRewriter#getRewrittenImagePath(java.lang.String, java.lang.String, java.lang.String)
+		 */
+		protected String getRewrittenImagePath(String originalCssPath,
+				String newCssPath, String url) throws IOException {
 			
-			String tempUrl = url;
+			JawrConfig jawrConfig = status.getJawrConfig();
 			
-			// If it's a classpath CSS, the url of the CSS image is defined relatively to it.
-			if(cssGeneratorIsHandleCssImage && !generatedImg){
-				tempUrl = PathNormalizer.concatWebPath(rootPath, url);
-			}
-
-			// generate image cache URL
-			String cacheUrl = addCacheBuster(status, tempUrl, imgRsHandler);
-			imgUrl = cacheUrl;
-		}else{
+			// Retrieve the image servlet mapping
+			ImageResourcesHandler imgRsHandler = (ImageResourcesHandler) jawrConfig.getContext().getAttribute(JawrConstant.IMG_CONTEXT_ATTRIBUTE);
+			String imgServletPath = "";
 			
-			// Generate the image URL from the current CSS path
-			imgUrl = PathNormalizer.concatWebPath(rootPath, url);
-			
-			// If the image is part of the images cached by the Jawr image servlet
-			// use the image cache url
-			// Note : the Jawr image servlet must always be initialized before the CSS one
-			String imgCacheUrl = null;
 			if(imgRsHandler != null){
-				imgCacheUrl = imgRsHandler.getCacheUrl(imgUrl);
-				if(imgCacheUrl == null){
-					imgCacheUrl = addCacheBuster(status, imgUrl, imgRsHandler);
-				}
-				imgUrl = imgCacheUrl;
+				imgServletPath = PathNormalizer.asPath(imgRsHandler.getJawrConfig().getServletMapping());
 			}
+			
+			String imgUrl = null;
+			
+			// Retrieve the current CSS file from which the CSS image is referenced
+			String currentCss = status.getLastPathAdded();
+			boolean generatedImg = false;
+			if(imgRsHandler != null){
+				GeneratorRegistry imgRsGeneratorRegistry = imgRsHandler.getJawrConfig().getGeneratorRegistry();
+				generatedImg = imgRsGeneratorRegistry.isGeneratedImage(url);
+			}
+			
+			boolean cssGeneratorIsHandleCssImage = isCssGeneratorHandlingCssImage(currentCss, status);
+			
+			String rootPath = currentCss;
+			
+			// If the CSS image is taken from the classpath, add the classpath cache prefix
+			if(generatedImg || cssGeneratorIsHandleCssImage){
+				
+				String tempUrl = url;
+				
+				// If it's a classpath CSS, the url of the CSS image is defined relatively to it.
+				if(cssGeneratorIsHandleCssImage && !generatedImg){
+					tempUrl = PathNormalizer.concatWebPath(rootPath, url);
+				}
+
+				// generate image cache URL
+				String cacheUrl = addCacheBuster(status, tempUrl, imgRsHandler);
+				imgUrl = cacheUrl;
+			}else{
+				
+				// Generate the image URL from the current CSS path
+				imgUrl = PathNormalizer.concatWebPath(rootPath, url);
+				
+				// If the image is part of the images cached by the Jawr image servlet
+				// use the image cache url
+				// Note : the Jawr image servlet must always be initialized before the CSS one
+				String imgCacheUrl = null;
+				if(imgRsHandler != null){
+					imgCacheUrl = imgRsHandler.getCacheUrl(imgUrl);
+					if(imgCacheUrl == null){
+						imgCacheUrl = addCacheBuster(status, imgUrl, imgRsHandler);
+					}
+					imgUrl = imgCacheUrl;
+				}
+			}
+			
+			// This following condition should never be true. 
+			// If it does, it means that the image path is wrongly defined.
+			if(imgUrl == null){
+				LOGGER.error("The CSS image path for '"+url+"' defined in '"+currentCss+"' is out of the application context. Please check your CSS file.");
+			}
+			
+			// Add image servlet path in the URL, if it's defined
+			if(StringUtils.isNotEmpty(imgServletPath)){
+				imgUrl = imgServletPath+URL_SEPARATOR+imgUrl;
+			}
+			
+			imgUrl = PathNormalizer.asPath(imgUrl);
+			return PathNormalizer.getRelativeWebPath(PathNormalizer
+					.getParentPath(newCssPath), imgUrl);
 		}
-		
-		// This following condition should never be true. 
-		// If it does, it means that the image path is wrongly defined.
-		if(imgUrl == null){
-			LOGGER.error("The CSS image path for '"+url+"' defined in '"+currentCss+"' is out of the application context. Please check your CSS file.");
-		}
-		
-		// Add image servlet path in the URL, if it's defined
-		if(StringUtils.isNotEmpty(imgServletPath)){
-			imgUrl = imgServletPath+URL_SEPARATOR+imgUrl;
-		}
-		
-		return PathNormalizer.asPath(imgUrl);
-	}
 
 
-	/**
-	 * Checks if the Css generator associated to the Css resource path handle also the Css image resources. 
-	 * @param currentCss the CSS resource path
-	 * @param status the status
-	 * @return true if the Css generator associated to the Css resource path handle also the Css image resources. 
-	 */
-	private boolean isCssGeneratorHandlingCssImage(String currentCss, BundleProcessingStatus status) {
-		return status.getJawrConfig().getGeneratorRegistry().isHandlingCssImage(currentCss);
-	}
-	
-	/**
-	 * Adds the cache buster to the CSS image
-	 * @param status the bundle processing status
-	 * @param url the URL of the image
-	 * @param imgRsHandler the image resource handler
-	 * @return the url of the CSS image with a cache buster
-	 * @throws IOException if an IO exception occurs
-	 */
-	private String addCacheBuster(BundleProcessingStatus status, String url, ImageResourcesHandler imgRsHandler) throws IOException {
-		
-		// Try to retrieve the from the bundle processing cache
-		String newUrl = status.getImageMapping(url);
-		if(newUrl != null){
-			return newUrl;
+		/**
+		 * Checks if the Css generator associated to the Css resource path handle also the Css image resources. 
+		 * @param currentCss the CSS resource path
+		 * @param status the status
+		 * @return true if the Css generator associated to the Css resource path handle also the Css image resources. 
+		 */
+		private boolean isCssGeneratorHandlingCssImage(String currentCss, BundleProcessingStatus status) {
+			return status.getJawrConfig().getGeneratorRegistry().isHandlingCssImage(currentCss);
 		}
 		
-		// Try to retrieve the from the image resource handler cache
-		if(imgRsHandler != null){
-			newUrl = imgRsHandler.getCacheUrl(url);
+		/**
+		 * Adds the cache buster to the CSS image
+		 * @param status the bundle processing status
+		 * @param url the URL of the image
+		 * @param imgRsHandler the image resource handler
+		 * @return the url of the CSS image with a cache buster
+		 * @throws IOException if an IO exception occurs
+		 */
+		private String addCacheBuster(BundleProcessingStatus status, String url, ImageResourcesHandler imgRsHandler) throws IOException {
+			
+			// Try to retrieve the from the bundle processing cache
+			String newUrl = status.getImageMapping(url);
 			if(newUrl != null){
 				return newUrl;
 			}
-			// Retrieve the new URL with the cache prefix
-			try {
-				newUrl = CheckSumUtils.getCacheBustedUrl(url, imgRsHandler.getRsReaderHandler(), imgRsHandler.getJawrConfig());
-			} catch (ResourceNotFoundException e) {
-				LOGGER.info("Impossible to define the checksum for the resource '"+url+"'. ");
-				return url;
-			} catch (IOException e) {
-				LOGGER.info("Impossible to define the checksum for the resource '"+url+"'.");
-				return url;
+			
+			// Try to retrieve the from the image resource handler cache
+			if(imgRsHandler != null){
+				newUrl = imgRsHandler.getCacheUrl(url);
+				if(newUrl != null){
+					return newUrl;
+				}
+				// Retrieve the new URL with the cache prefix
+				try {
+					newUrl = CheckSumUtils.getCacheBustedUrl(url, imgRsHandler.getRsReaderHandler(), imgRsHandler.getJawrConfig());
+				} catch (ResourceNotFoundException e) {
+					LOGGER.info("Impossible to define the checksum for the resource '"+url+"'. ");
+					return url;
+				} catch (IOException e) {
+					LOGGER.info("Impossible to define the checksum for the resource '"+url+"'.");
+					return url;
+				}
+				
+				imgRsHandler.addMapping(url, newUrl);
+				
+			}else{
+				newUrl = url;
 			}
 			
-			imgRsHandler.addMapping(url, newUrl);
+			// Set the result in a cache, so we will not search for it the next time
+			status.setImageMapping(url, newUrl);
 			
-		}else{
-			newUrl = url;
+			return newUrl;
 		}
-		
-		// Set the result in a cache, so we will not search for it the next time
-		status.setImageMapping(url, newUrl);
-		
-		return newUrl;
 	}
-
 }

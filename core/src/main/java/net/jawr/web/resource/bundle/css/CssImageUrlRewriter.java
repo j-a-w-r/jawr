@@ -1,0 +1,148 @@
+/**
+ * Copyright 2010 Ibrahim Chaehoi
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License at
+ * 
+ * 	http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied. See the License for the specific language governing permissions
+ * and limitations under the License.
+ */
+package net.jawr.web.resource.bundle.css;
+
+import java.io.IOException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import net.jawr.web.resource.bundle.factory.util.PathNormalizer;
+import net.jawr.web.resource.bundle.factory.util.RegexUtil;
+
+/**
+ * This class rewrites is used to rewrite CSS URLs according to the new
+ * relative locations of the references, from the original CSS path to a new one. 
+ * Since the path changes, the URLs must be rewritten accordingly. URLs in css files are
+ * expected to be according to the css spec (see
+ * http://www.w3.org/TR/REC-CSS2/syndata.html#value-def-uri). Thus, single
+ * double, or no quotes enclosing the url are allowed (and remain as they are
+ * after rewriting). Escaped parens and quotes are allowed within the url.
+ * 
+ * @author Ibrahim Chaehoi
+ */
+public class CssImageUrlRewriter {
+
+	/** The URL separator */
+	private static final String URL_SEPARATOR = "/";
+
+	/** The url pattern */
+	private static final Pattern URL_PATTERN = Pattern.compile("url\\(\\s*" // 'url('
+																			// and
+																			// any
+																			// number
+																			// of
+																			// whitespaces
+			+ "((\\\\\\))|[^)])*" // any sequence of characters, except an
+									// unescaped ')'
+			+ "\\s*\\)", // Any number of whitespaces, then ')'
+			Pattern.CASE_INSENSITIVE); // works with 'URL('
+
+	/**
+	 * Constructor
+	 */
+	public CssImageUrlRewriter() {
+		
+	}
+
+	public StringBuffer rewriteUrl(String originalCssPath, String newCssPath, String originalCssContent) throws IOException {
+
+		// Rewrite each css image url path
+		Matcher matcher = URL_PATTERN.matcher(originalCssContent);
+		StringBuffer sb = new StringBuffer();
+		while (matcher.find()) {
+
+			String url = getUrlPath(matcher.group(), originalCssPath, newCssPath);
+			matcher.appendReplacement(sb, RegexUtil
+					.adaptReplacementToMatcher(url));
+		}
+		matcher.appendTail(sb);
+		return sb;
+	}
+
+	/**
+	 * Transform a matched url so it points to the proper relative path with
+	 * respect to the given path.
+	 * 
+	 * @param match
+	 *            the matched URL
+	 * @param newCssPath
+	 *            the full bundle path
+	 * @param status
+	 *            the bundle processing status
+	 * @return the image URL path
+	 * @throws IOException
+	 *             if an IO exception occurs
+	 */
+	private String getUrlPath(String match, String originalPath, String newCssPath) throws IOException {
+
+		String url = match.substring(match.indexOf('(') + 1,
+				match.lastIndexOf(')')).trim();
+
+		// To keep quotes as they are, first they are checked and removed.
+		String quoteStr = "";
+		if (url.startsWith("'") || url.startsWith("\"")) {
+			quoteStr = url.charAt(0) + "";
+			url = url.substring(1, url.length() - 1);
+		}
+
+		// Check if the URL is absolute, if it is return it as is.
+		int firstSlash = url.indexOf('/');
+		if (0 == firstSlash
+				|| (firstSlash != -1 && url.charAt(++firstSlash) == '/')) {
+			StringBuffer sb = new StringBuffer("url(");
+			sb.append(quoteStr).append(url).append(quoteStr).append(")");
+			return sb.toString();
+		}
+
+		// Check if the URL is embedded data (RFC2397), if it is return it as is
+		if (url.trim().toLowerCase().startsWith("data:")) {
+			StringBuffer sb = new StringBuffer("url(");
+			sb.append(quoteStr).append(url).append(quoteStr).append(")");
+			return sb.toString();
+		}
+
+		if (url.startsWith(URL_SEPARATOR))
+			url = url.substring(1, url.length());
+		else if (url.startsWith("./"))
+			url = url.substring(2, url.length());
+
+		String imgUrl = getRewrittenImagePath(originalPath, newCssPath, url);
+
+		// Start rendering the result, starting by the initial quote, if any.
+		StringBuffer urlPrefix = new StringBuffer("url(").append(quoteStr);
+		return PathNormalizer.normalizePath(urlPrefix.append(imgUrl).append(
+				quoteStr).append(")").toString());
+	}
+
+	/**
+	 * Returns the rewritten image path
+	 * @param originalCssPath the original Css path
+	 * @param newCssPath the new Css path
+	 * @param url the image URL
+	 * @return the rewritten image path
+	 * @throws IOException if an IOException occurs
+	 */
+	protected String getRewrittenImagePath(String originalCssPath, String newCssPath, String url)
+			throws IOException {
+
+		// Here we generate the full path of the CSS image
+		// to be able to define the relative path from the full bundle path
+		String fullImgPath = PathNormalizer.concatWebPath(originalCssPath, url);
+		
+		String imgUrl = PathNormalizer.getRelativeWebPath(PathNormalizer
+				.getParentPath(newCssPath), fullImgPath);
+		
+		return imgUrl;
+	}
+}

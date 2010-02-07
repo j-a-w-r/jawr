@@ -19,10 +19,15 @@ import java.io.StringWriter;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import net.jawr.web.JawrConstant;
+import net.jawr.web.config.JawrConfig;
 import net.jawr.web.exception.ResourceNotFoundException;
+import net.jawr.web.resource.ImageResourcesHandler;
 import net.jawr.web.resource.bundle.IOUtils;
+import net.jawr.web.resource.bundle.css.CssImageUrlRewriter;
 import net.jawr.web.resource.bundle.factory.util.PathNormalizer;
 import net.jawr.web.resource.bundle.factory.util.RegexUtil;
+import net.jawr.web.resource.bundle.generator.GeneratorRegistry;
 import net.jawr.web.resource.bundle.postprocess.AbstractChainedResourceBundlePostProcessor;
 import net.jawr.web.resource.bundle.postprocess.BundleProcessingStatus;
 import net.jawr.web.resource.bundle.postprocess.PostProcessFactoryConstant;
@@ -62,13 +67,13 @@ public class CSSImportPostProcessor extends
 
 		String data = bundleData.toString();
 		
-		// Rewrite each css image url path
+		// Rewrite each css url path
 		Matcher matcher = IMPORT_PATTERN.matcher(data);
 		StringBuffer sb = new StringBuffer();
 		while(matcher.find()) {
 		
-			String url = getCssPathContent(matcher.group(1), status);
-			matcher.appendReplacement(sb, RegexUtil.adaptReplacementToMatcher(url));
+			String content = getCssPathContent(matcher.group(1), status);
+			matcher.appendReplacement(sb, RegexUtil.adaptReplacementToMatcher(content));
 		}
 		matcher.appendTail(sb);
 		return sb;
@@ -88,7 +93,8 @@ public class CSSImportPostProcessor extends
 		
 		String path = cssPathToImport;
 
-		if(!cssPathToImport.startsWith("/") && !status.getJawrConfig().getGeneratorRegistry().isPathGenerated(path)){ // relative URL
+		JawrConfig jawrConfig = status.getJawrConfig();
+		if(!cssPathToImport.startsWith("/") && !jawrConfig.getGeneratorRegistry().isPathGenerated(path)){ // relative URL
 			path = PathNormalizer.concatWebPath(currentCssPath, cssPathToImport);
 		}
 		
@@ -102,7 +108,54 @@ public class CSSImportPostProcessor extends
 		
 		StringWriter content = new StringWriter();
 		IOUtils.copy(reader, content, true);
-		return content.toString();
+		
+		// Retrieve the image servlet mapping
+		ImageResourcesHandler imgRsHandler = (ImageResourcesHandler) jawrConfig.getContext().getAttribute(JawrConstant.IMG_CONTEXT_ATTRIBUTE);
+		GeneratorRegistry generatorRegistry = jawrConfig.getGeneratorRegistry();
+		if(imgRsHandler != null){
+			generatorRegistry = imgRsHandler.getJawrConfig().getGeneratorRegistry();
+		}
+		// Rewrite image URL
+		CssImportedUrlRewriter urlRewriter = new CssImportedUrlRewriter(generatorRegistry);
+		StringBuffer rewritedContent = urlRewriter.rewriteUrl(path, currentCssPath, content.getBuffer().toString());
+		return rewritedContent.toString();
 	}
 
+	/**
+	 * This class rewrite the image URL for the imported CSS.
+	 * 
+	 * @author Ibrahim Chaehoi
+	 */
+	private static class CssImportedUrlRewriter extends CssImageUrlRewriter {
+		
+		/** The generator registry */
+		private GeneratorRegistry generatorRegistry;
+		
+		/**
+		 * Constructor
+		 * @param generatorRegistry the generator registry
+		 */
+		public CssImportedUrlRewriter(GeneratorRegistry generatorRegistry) {
+
+			this.generatorRegistry = generatorRegistry;
+		}
+
+		
+		/* (non-Javadoc)
+		 * @see net.jawr.web.resource.bundle.css.CssImageUrlRewriter#getRewrittenImagePath(java.lang.String, java.lang.String, java.lang.String)
+		 */
+		protected String getRewrittenImagePath(String originalCssPath,
+				String newCssPath, String url) throws IOException {
+			
+			String currentPath = originalCssPath;
+			
+			String imgPath = PathNormalizer.concatWebPath(currentPath, url);
+			if(!generatorRegistry.isGeneratedImage(imgPath) && !generatorRegistry.isHandlingCssImage(originalCssPath)){
+				imgPath = PathNormalizer.getRelativeWebPath(PathNormalizer
+						.getParentPath(newCssPath), imgPath);
+			}
+			
+			return imgPath;
+		}
+	}
 }

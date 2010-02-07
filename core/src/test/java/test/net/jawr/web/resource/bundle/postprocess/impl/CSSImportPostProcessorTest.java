@@ -16,6 +16,7 @@ import junit.framework.TestCase;
 import net.jawr.web.JawrConstant;
 import net.jawr.web.config.JawrConfig;
 import net.jawr.web.exception.ResourceNotFoundException;
+import net.jawr.web.resource.ImageResourcesHandler;
 import net.jawr.web.resource.bundle.InclusionPattern;
 import net.jawr.web.resource.bundle.JoinableResourceBundle;
 import net.jawr.web.resource.bundle.generator.GeneratorRegistry;
@@ -50,9 +51,18 @@ public class CSSImportPostProcessorTest extends TestCase {
 		config.setContext(servletContext);
 		config.setServletMapping("/js");
 		config.setCharsetName("UTF-8");
+		config.setCssClasspathImageHandledByClasspathCss(true);
 		GeneratorRegistry generatorRegistry = new GeneratorRegistry(JawrConstant.CSS_TYPE);
 		generatorRegistry.setConfig(config);
 		config.setGeneratorRegistry(generatorRegistry);
+		
+		JawrConfig imgConfig = new JawrConfig(new Properties());
+		GeneratorRegistry imgGeneratorRegistry = new GeneratorRegistry(JawrConstant.IMG_TYPE);
+		generatorRegistry.setConfig(imgConfig);
+		imgConfig.setGeneratorRegistry(imgGeneratorRegistry);
+		ImageResourcesHandler imgRsHandler = new ImageResourcesHandler(imgConfig, null, null);
+		servletContext.setAttribute(JawrConstant.IMG_CONTEXT_ATTRIBUTE, imgRsHandler);
+		
 		processor = new CSSImportPostProcessor();
 	}
 
@@ -66,6 +76,7 @@ public class CSSImportPostProcessorTest extends TestCase {
 		String filePath = "/css/folder/subfolder/subfolder/someCSS.css";
 		String expectedContent = ".test { align : left; \n" +
 						"padding : 0 7px; \n" +
+						"background : url('../img/rainbow.png'); \n"+ 
 				"}\n" +
 				".blue { color : #0000FF } ";
 		
@@ -82,6 +93,7 @@ public class CSSImportPostProcessorTest extends TestCase {
 		String filePath = "/css/folder/subfolder/subfolder/someCSS.css";
 		String expectedContent = ".test { align : left; \n" +
 						"padding : 0 7px; \n" +
+						"background : url('../img/rainbow.png'); \n"+ 
 				"}\n" +
 				".blue { color : #0000FF } ";
 		
@@ -98,6 +110,7 @@ public class CSSImportPostProcessorTest extends TestCase {
 		String filePath = "/css/folder/subfolder/subfolder/someCSS.css";
 		String expectedContent = ".test { align : left; \n" +
 						"padding : 0 7px; \n" +
+						"background : url('../img/rainbow.png'); \n"+ 
 				"}\n" +
 				".blue { color : #0000FF } ";
 		
@@ -114,6 +127,7 @@ public class CSSImportPostProcessorTest extends TestCase {
 		String filePath = "/css/folder/subfolder/subfolder/someCSS.css";
 		String expectedContent = ".test { align : left; \n" +
 						"padding : 0 7px; \n" +
+						"background : url('../../../../style/img/rainbow.png'); \n"+ 
 				"}\n" +
 				".blue { color : #0000FF } ";
 		
@@ -130,6 +144,7 @@ public class CSSImportPostProcessorTest extends TestCase {
 		String filePath = "jar:cssimportprocessor/style/myStyle/someCSS.css";
 		String expectedContent = ".test { align : left; \n" +
 						"padding : 0 7px; \n" +
+						"background : url('jar:cssimportprocessor/style/img/rainbow.png'); \n"+ 
 				"}\n" +
 				".blue { color : #0000FF } ";
 		
@@ -146,6 +161,7 @@ public class CSSImportPostProcessorTest extends TestCase {
 		String filePath = "/css/folder/subfolder/subfolder/someCSS.css";
 		String expectedContent = ".test { align : left; \n" +
 						"padding : 0 7px; \n" +
+						"background : url('jar:cssimportprocessor/style/img/rainbow.png'); \n"+ 
 				"}\n" +
 				".blue { color : #0000FF } ";
 		
@@ -157,6 +173,9 @@ public class CSSImportPostProcessorTest extends TestCase {
 	private BundleProcessingStatus getBundleProcessingStatus(String filePath, String expectedCssImportPath) {
 		ResourceReaderHandler rsHandler = getResourceReaderHandler(expectedCssImportPath);
 		config.getGeneratorRegistry().setResourceReaderHandler(rsHandler);
+		
+		ImageResourcesHandler imgRsHandler = (ImageResourcesHandler) config.getContext().getAttribute(JawrConstant.IMG_CONTEXT_ATTRIBUTE);
+		imgRsHandler.getJawrConfig().getGeneratorRegistry().setResourceReaderHandler(rsHandler);
 		BundleProcessingStatus status = new BundleProcessingStatus(bundle, rsHandler, config);
 		status.setLastPathAdded(filePath);
 		return status;
@@ -282,6 +301,7 @@ public class CSSImportPostProcessorTest extends TestCase {
 				}
 				return new StringReader(".test { align : left; \n" +
 						"padding : 0 7px; \n" +
+						"background : url('../img/rainbow.png'); \n"+
 				"}");
 			}
 		
@@ -289,6 +309,7 @@ public class CSSImportPostProcessorTest extends TestCase {
 					boolean processingBundle) throws ResourceNotFoundException {
 				return new StringReader(".test { align : left; \n" +
 						"padding : 0 7px; \n" +
+						"background : url('../img/rainbow.png'); \n"+
 				"}");
 			}
 			
