@@ -1,5 +1,5 @@
 /**
- * Copyright 2007-2009 Jordi Hernández Sellés, Ibrahim Chaehoi
+ * Copyright 2007-2010 Jordi Hernández Sellés, Ibrahim Chaehoi
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -15,9 +15,11 @@
  */
 package net.jawr.web.resource.bundle.factory.util;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
@@ -26,6 +28,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.jawr.web.resource.bundle.factory.PropertiesBundleConstant;
+import net.jawr.web.resource.bundle.generator.variant.VariantSet;
 
 /**
  * Helper class to make properties access less verbose.
@@ -141,6 +144,58 @@ public class PropertiesConfigHelper {
 		while (tk.hasMoreTokens())
 			propertiesSet.add(tk.nextToken().trim());
 		return propertiesSet;
+	}
+	
+	/**
+	 * Returns as a set, the comma separated values of a property 
+	 * @param key the key of the property
+	 * @return a set of the comma separated values of a property 
+	 */
+	public Map getCustomBundlePropertyAsMap(String bundleName, String key) {
+		Map propertiesMap = new HashMap();
+		
+		StringTokenizer tk = new StringTokenizer(getCustomBundleProperty(bundleName, key, ""),
+				";");
+		while (tk.hasMoreTokens()){
+			String[] mapEntry = tk.nextToken().trim().split(":");
+			
+			String mapKey = mapEntry[0];
+			String values = mapEntry[1];
+			StringTokenizer valueTk = new StringTokenizer(values, ",");
+			List valueList = new ArrayList();
+			while (valueTk.hasMoreTokens()){
+				valueList.add(valueTk.nextToken().trim());
+			}
+			propertiesMap.put(mapKey, valueList);
+		}
+		return propertiesMap;
+	}
+	
+	/**
+	 * Returns the map of variantSet for the bundle 
+	 * @param bundleName the bundle name
+	 * @return the map of variantSet for the bundle 
+	 */
+	public Map getCustomBundleVariantSets(String bundleName) {
+		Map variantSets = new HashMap();
+		
+		StringTokenizer tk = new StringTokenizer(getCustomBundleProperty(bundleName, PropertiesBundleConstant.BUNDLE_FACTORY_CUSTOM_VARIANTS, ""),
+				";");
+		while (tk.hasMoreTokens()){
+			String[] mapEntry = tk.nextToken().trim().split(":");
+			
+			String type = mapEntry[0];
+			String defaultVariant = mapEntry[1];
+			String values = mapEntry[2];
+			StringTokenizer valueTk = new StringTokenizer(values, ",");
+			List variants = new ArrayList();
+			while (valueTk.hasMoreTokens()){
+				variants.add(valueTk.nextToken().trim());
+			}
+			VariantSet variantSet = new VariantSet(type, defaultVariant, variants);
+			variantSets.put(type, variantSet);
+		}
+		return variantSets;
 	}
 	
 	/**

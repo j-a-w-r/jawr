@@ -1,5 +1,5 @@
 /**
- * Copyright 2008  Jordi Hernández Sellés, Ibrahim Chaehoi
+ * Copyright 2008-2010  Jordi Hernández Sellés, Ibrahim Chaehoi
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -34,11 +34,12 @@ import org.apache.log4j.Logger;
 /**
  * Utilities to access resources from the classpath
  * 
- * @author Jordi Hernández Sellés, Ibrahim Chaehoi
- *
+ * @author Jordi Hernández Sellés
+ * @author Ibrahim Chaehoi
  */
 public class ClassLoaderResourceUtils {
 
+	/** The logger */
 	private static final Logger LOGGER = Logger.getLogger(ClassLoaderResourceUtils.class);
 	
 	/**
@@ -173,7 +174,7 @@ public class ClassLoaderResourceUtils {
 	 */
 	public static Object buildObjectInstance(String classname) {
 		Object rets = null;
-		Class clazz = locateClass(classname);
+		Class clazz = getClass(classname);
 		try {
 			rets = clazz.newInstance();
 		}catch(Exception e) {
@@ -187,7 +188,12 @@ public class ClassLoaderResourceUtils {
 		return rets;
 	}
 	
-	private static Class locateClass(String classname) {
+	/**
+	 * Returns the class associated to the class name given in parameter
+	 * @param classname the class name
+	 * @return the class
+	 */
+	public static Class getClass(String classname) {
 		Class clazz = null;
 		try {
 			clazz = Class.forName(classname);
@@ -244,7 +250,7 @@ public class ClassLoaderResourceUtils {
 		}
 		
 		try {
-			Class clazz = locateClass(classname);
+			Class clazz = getClass(classname);
 			rets = clazz.getConstructor(paramTypes).newInstance(params);
 			
 		} catch (Exception e) {

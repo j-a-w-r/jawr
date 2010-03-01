@@ -8,6 +8,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
+import test.net.jawr.web.resource.bundle.MockJoinableResourceBundle;
+
 import junit.framework.TestCase;
 import net.jawr.web.resource.bundle.InclusionPattern;
 import net.jawr.web.resource.bundle.JoinableResourceBundle;
@@ -42,87 +44,14 @@ public class GlobalResourceBundleComparatorTest extends TestCase {
 	
 	private JoinableResourceBundle createMockBundle(final String name, final int index) {
 		
-		return new JoinableResourceBundle(){
-
-			public boolean belongsToBundle(String itemPath) {
-				return false;
-			}
+		return new MockJoinableResourceBundle(){
 
 			public InclusionPattern getInclusionPattern() {
 				return new InclusionPattern(true,index);
 			}
 
-			public List getItemPathList() {
-				return null;
-			}
-
-			public Set getLicensesPathList() {
-				return null;
-			}
-
 			public String getId() {
 				return name;
-			}
-
-			public String getURLPrefix(String variantKey) {
-				return null;
-			}
-
-			public ResourceBundlePostProcessor getBundlePostProcessor() {
-				return null;
-			}
-
-			public ResourceBundlePostProcessor getUnitaryPostProcessor() {
-				return null;
-			}
-
-			public void setBundleDataHashCode(String var,int bundleDataHashCode) {
-				
-			}
-
-			public String getExplorerConditionalExpression() {
-				return null;
-			}
-
-			public List getItemPathList(String variantKey) {
-				return null;
-			}
-
-			public List getLocaleVariantKeys() {
-				return null;
-			}
-
-			public String getAlternateProductionURL() {
-				return null;
-			}
-
-			public String getBundleDataHashCode(String variantKey) {
-				return null;
-			}
-
-			public String getName() {
-				return null;
-			}
-
-			public boolean isComposite() {
-				return false;
-			}
-
-			public void setBundleDataHashCode(String variantKey,
-					String bundleDataHashCode) {
-				
-			}
-
-			public void setMappings(List mappings) {
-				
-			}
-			
-			public List getDependencies() {
-				return null;
-			}
-
-			public void setDependencies(List bundleDependencies) {
-				
 			}
 		};
 	}

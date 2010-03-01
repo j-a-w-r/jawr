@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 
+import test.net.jawr.web.resource.bundle.MockJoinableResourceBundle;
+
 import junit.framework.TestCase;
 import net.jawr.web.config.JawrConfig;
 import net.jawr.web.resource.bundle.InclusionPattern;
@@ -39,87 +41,10 @@ public class JSMinPostProcessorTest extends TestCase {
 	}
     
     public JoinableResourceBundle getBundle(final String id){
-    	return new JoinableResourceBundle() {
-			
-			public void setMappings(List mappings) {
-				
-			}
-			
-			public void setDependencies(List bundleDependencies) {
-				
-			}
-			
-			public void setBundleDataHashCode(String variantKey,
-					String bundleDataHashCode) {
-				
-			}
-			
-			public void setBundleDataHashCode(String variantKey, int bundleDataHashCode) {
-				
-			}
-			
-			public boolean isComposite() {
-				return false;
-			}
-			
-			public ResourceBundlePostProcessor getUnitaryPostProcessor() {
-				return null;
-			}
-			
-			public String getURLPrefix(String variantKey) {
-				return null;
-			}
-			
-			public String getName() {
-				return null;
-			}
-			
-			public List getLocaleVariantKeys() {
-				return null;
-			}
-			
-			public Set getLicensesPathList() {
-				return null;
-			}
-			
-			public List getItemPathList(String variantKey) {
-				return null;
-			}
-			
-			public List getItemPathList() {
-				return null;
-			}
-			
-			public InclusionPattern getInclusionPattern() {
-				return null;
-			}
+    	return new MockJoinableResourceBundle() {
 			
 			public String getId() {
 				return id;
-			}
-			
-			public String getExplorerConditionalExpression() {
-				return null;
-			}
-			
-			public List getDependencies() {
-				return null;
-			}
-			
-			public ResourceBundlePostProcessor getBundlePostProcessor() {
-				return null;
-			}
-			
-			public String getBundleDataHashCode(String variantKey) {
-				return null;
-			}
-			
-			public String getAlternateProductionURL() {
-				return null;
-			}
-			
-			public boolean belongsToBundle(String itemPath) {
-				return false;
 			}
 		};
     }

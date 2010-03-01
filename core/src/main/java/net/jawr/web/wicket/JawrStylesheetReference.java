@@ -1,5 +1,5 @@
 /**
- * Copyright 2009 Ibrahim Chaehoi
+ * Copyright 2009-2010 Ibrahim Chaehoi
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -48,9 +48,9 @@ public class JawrStylesheetReference extends AbstractJawrReference {
 	 */
 	protected String getReferencePath(final IValueMap attributes) {
 		
-		String refPath = (String) attributes.get("href");
+		String refPath = (String) attributes.get(JawrConstant.HREF_ATTR);
 		if(StringUtils.isEmpty(refPath)){
-			refPath = (String) attributes.get("src");
+			refPath = (String) attributes.get(JawrConstant.SRC_ATTR);
 		}
 		
 		return refPath;
@@ -68,6 +68,10 @@ public class JawrStylesheetReference extends AbstractJawrReference {
         }
 
         ResourceBundlesHandler rsHandler = (ResourceBundlesHandler) handler;
-        return new CSSHTMLBundleLinkRenderer(rsHandler, this.useRandomParam, attributes.getString("media"));
+        String media = attributes.getString(JawrConstant.MEDIA_ATTR);
+        String title = attributes.getString(JawrConstant.TITLE_ATTR);
+        boolean alternate = attributes.getBoolean(JawrConstant.ALTERNATE_ATTR);
+        boolean displayAlternateStyles = attributes.getBoolean(JawrConstant.DISPLAY_ALTERNATE_ATTR);
+        return new CSSHTMLBundleLinkRenderer(rsHandler, this.useRandomParam, media, alternate, displayAlternateStyles, title);
     }
 }

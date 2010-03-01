@@ -1,5 +1,5 @@
 /**
- * Copyright 2008-2009 Jordi Hernández Sellés, Ibrahim Chaehoi
+ * Copyright 2008-2010 Jordi Hernández Sellés, Ibrahim Chaehoi
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -14,15 +14,18 @@
 package net.jawr.web.resource.bundle.locale;
 
 import java.io.Reader;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import net.jawr.web.JawrConstant;
 import net.jawr.web.resource.bundle.factory.util.ClassLoaderResourceUtils;
 import net.jawr.web.resource.bundle.generator.AbstractJavascriptGenerator;
 import net.jawr.web.resource.bundle.generator.GeneratorContext;
 import net.jawr.web.resource.bundle.generator.GeneratorRegistry;
-import net.jawr.web.resource.bundle.generator.LocaleAwareResourceGenerator;
 import net.jawr.web.resource.bundle.generator.ResourceGenerator;
+import net.jawr.web.resource.bundle.generator.variant.VariantResourceGenerator;
+import net.jawr.web.resource.bundle.generator.variant.VariantSet;
 import net.jawr.web.resource.bundle.locale.message.MessageBundleScriptCreator;
 
 import org.apache.log4j.Logger;
@@ -35,7 +38,7 @@ import org.apache.log4j.Logger;
  * @author Ibrahim Chaehoi
  *
  */
-public class ResourceBundleMessagesGenerator extends AbstractJavascriptGenerator implements ResourceGenerator, LocaleAwareResourceGenerator {
+public class ResourceBundleMessagesGenerator extends AbstractJavascriptGenerator implements ResourceGenerator, VariantResourceGenerator {
 	
 	/** The logger */
 	private static final Logger LOGGER = Logger.getLogger(ResourceBundleMessagesGenerator.class);
@@ -94,4 +97,17 @@ public class ResourceBundleMessagesGenerator extends AbstractJavascriptGenerator
 		
 		return LocaleUtils.getAvailableLocaleSuffixesForBundle(resource);
 	}
+
+	/* (non-Javadoc)
+	 * @see net.jawr.web.resource.bundle.generator.variant.VariantResourceGenerator#getAvailableVariants(java.lang.String)
+	 */
+	public Map getAvailableVariants(String resource) {
+		
+		List localeVariants = LocaleUtils.getAvailableLocaleSuffixesForBundle(resource);
+		Map variants = new HashMap();
+		VariantSet variantSet = new VariantSet(JawrConstant.LOCALE_VARIANT_TYPE, "", localeVariants);
+		variants.put(JawrConstant.LOCALE_VARIANT_TYPE, variantSet);
+		return variants;
+	}
+
 }

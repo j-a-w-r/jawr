@@ -1,5 +1,5 @@
 /**
- * Copyright 2008 Ibrahim Chaehoi
+ * Copyright 2008-2010 Ibrahim Chaehoi
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -46,12 +46,27 @@ public class ELCSSBundleTag extends CSSBundleTag {
 	private String useRandomParamExpr;
 
 	/**
-	 * Instance variable mapped to "meia" tag attribute. (Mapping set in
+	 * Instance variable mapped to "media" tag attribute. (Mapping set in
 	 * associated BeanInfo class.)
 	 */
 	private String mediaExpr;
 
-	/**
+	/** 
+	 * The flag indicating if we must display alternate stylesheets 
+	 */
+    private String displayAlternateExpr;
+    
+    /** 
+	 * The flag indicating if it's an alternate stylesheet 
+	 */
+    private String alternateExpr;
+    
+    /** 
+     * The title 
+     */
+    private String titleExpr;
+    
+    /**
 	 * Returns the srcExpr
 	 * 
 	 * @return the srcExpr
@@ -108,6 +123,54 @@ public class ELCSSBundleTag extends CSSBundleTag {
 		this.mediaExpr = mediaExpr;
 	}
 
+	/**
+	 * Gets the alternate expression
+	 * @return the alternateExpr
+	 */
+	public String getAlternateExpr() {
+		return alternateExpr;
+	}
+
+	/**
+	 * Sets the alternate expression
+	 * @param alternateExpr the alternateExpr to set
+	 */
+	public void setAlternateExpr(String alternateExpr) {
+		this.alternateExpr = alternateExpr;
+	}
+
+	/**
+	 * Gets the alternate expression
+	 * @return the displayAlternateExpr
+	 */
+	public String getDisplayAlternateExpr() {
+		return displayAlternateExpr;
+	}
+
+	/**
+	 * Sets the alternate expression
+	 * @param getDisplayAlternateExpr the getDisplayAlternateExpr to set
+	 */
+	public void setDisplayAlternateExpr(String displayAlternateExpr) {
+		this.displayAlternateExpr = displayAlternateExpr;
+	}
+	
+	/**
+	 * Gets the title expression
+	 * @return the titleExpr
+	 */
+	public String getTitleExpr() {
+		return titleExpr;
+	}
+
+	/**
+	 * Sets the title expression
+	 * @param titleExpr the titleExpr to set
+	 */
+	public void setTitleExpr(String titleExpr) {
+		this.titleExpr = titleExpr;
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -137,6 +200,24 @@ public class ELCSSBundleTag extends CSSBundleTag {
 			setMedia(string);
 		}
 
+		if (titleExpr != null) {
+			string = (String) ExpressionEvaluatorManager.evaluate("titleExpr",
+					titleExpr, String.class, this, pageContext);
+			setTitle(string);
+		}
+
+		if (alternateExpr != null) {
+			bool = (Boolean) ExpressionEvaluatorManager.evaluate("alternateExpr",
+					alternateExpr, Boolean.class, this, pageContext);
+			setAlternate(bool.booleanValue());
+		}
+		
+		if (displayAlternateExpr != null) {
+			bool = (Boolean) ExpressionEvaluatorManager.evaluate("displayAlternateExpr",
+					displayAlternateExpr, Boolean.class, this, pageContext);
+			setAlternate(bool.booleanValue());
+		}
+
 		return super.doStartTag();
 	}
 
@@ -150,5 +231,8 @@ public class ELCSSBundleTag extends CSSBundleTag {
 		setSrcExpr(null);
 		setUseRandomParamExpr(null);
 		setMediaExpr(null);
+		setTitleExpr(null);
+		setAlternateExpr(null);
+		setDisplayAlternateExpr(null);
 	}
 }

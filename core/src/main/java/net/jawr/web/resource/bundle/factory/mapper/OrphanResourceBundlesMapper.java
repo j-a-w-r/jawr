@@ -1,5 +1,5 @@
 /**
- * Copyright 2007-2009 Jordi Hernández Sellés, Ibrahim Chaehoi
+ * Copyright 2007-2010 Jordi Hernández Sellés, Ibrahim Chaehoi
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -24,6 +24,7 @@ import net.jawr.web.resource.bundle.InclusionPattern;
 import net.jawr.web.resource.bundle.JoinableResourceBundle;
 import net.jawr.web.resource.bundle.JoinableResourceBundleImpl;
 import net.jawr.web.resource.bundle.factory.util.PathNormalizer;
+import net.jawr.web.resource.bundle.generator.GeneratorRegistry;
 import net.jawr.web.resource.handler.reader.ResourceReaderHandler;
 
 import org.apache.log4j.Logger;
@@ -47,6 +48,9 @@ public class OrphanResourceBundlesMapper {
 	/** The resource handler */
 	protected ResourceReaderHandler rsHandler;
 	
+	/** The generator registry */
+	protected GeneratorRegistry generatorRegistry;
+	
 	/** The list of current bundles */
 	protected List currentBundles;
 	
@@ -61,17 +65,19 @@ public class OrphanResourceBundlesMapper {
 	 * 
 	 * @param baseDir the base directory of the resource mapper
 	 * @param rsHandler the resource handler
+	 * @param generatorRegistry the generator registry
 	 * @param currentBundles the list of current bundles
 	 * @param resourceExtension the resource file extension
 	 */
 	public OrphanResourceBundlesMapper(String baseDir,
-			ResourceReaderHandler rsHandler, List currentBundles,
+			ResourceReaderHandler rsHandler, GeneratorRegistry generatorRegistry, List currentBundles,
 			String resourceExtension) {
 		if(!"".equals(baseDir) && !"/".equals(baseDir))
 			this.baseDir = "/" + PathNormalizer.normalizePath(baseDir) + "/**";
 		else this.baseDir = "/**";
 		
 		this.rsHandler = rsHandler;
+		this.generatorRegistry = generatorRegistry;
 		this.currentBundles = new ArrayList();
 		if(null != currentBundles)
 			this.currentBundles.addAll(currentBundles);
@@ -91,7 +97,7 @@ public class OrphanResourceBundlesMapper {
 																				this.resourceExtension,
 																				new InclusionPattern(),
 																				Collections.singletonList(this.baseDir),
-																				rsHandler);
+																				rsHandler, generatorRegistry);
 		
 		// Add licenses
 		Set licensesPathList = tempBundle.getLicensesPathList();
@@ -119,12 +125,8 @@ public class OrphanResourceBundlesMapper {
 		for(Iterator it = currentBundles.iterator();it.hasNext(); ) {
 			JoinableResourceBundle bundle = (JoinableResourceBundle) it.next();			
 			List items = bundle.getItemPathList();
-			
 			Set licenses = bundle.getLicensesPathList();
-			/*log.fatal(" LICENSES:" + filePath);
-			for(Iterator it3 = licenses.iterator();it3.hasNext();) {
-				log.fatal(" PATH:" + it3.next());
-			}*/
+			
 			if(items.contains(filePath))
 				return;
 			else if (licenses.contains(filePath))

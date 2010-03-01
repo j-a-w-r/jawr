@@ -1,5 +1,5 @@
 /**
- * Copyright 2009 Ibrahim Chaehoi
+ * Copyright 2009-2010 Ibrahim Chaehoi
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -17,10 +17,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import java.util.Map.Entry;
 
 import net.jawr.web.resource.bundle.factory.PropertiesBundleConstant;
+import net.jawr.web.resource.bundle.generator.variant.VariantSet;
 import net.jawr.web.resource.bundle.postprocess.ChainedResourceBundlePostProcessor;
 import net.jawr.web.util.StringUtils;
 
@@ -40,7 +43,7 @@ public class JoinableResourceBundlePropertySerializer {
 	 * The properties associated to a bundle are the same as the one define in the jawr configuration file.
 	 * Only the following properties are different from the standard configuration file :
 	 *   - The mapping, which will contains path to each resources of the bundle ( no wildcard like : myfolder/** ) 
-	 *   - The locale variants which will be explicitly specified.
+	 *   - The variants which will be explicitly specified.
 	 *   - The bundle hash codes will be define as properties, so we will not have to compute them.
 	 *   For a bundle with local variants, there will be an hash code for each variant + one, which is the hash 
 	 *   code of the default bundle.
@@ -104,20 +107,22 @@ public class JoinableResourceBundlePropertySerializer {
 					getBundlePostProcessorsName((ChainedResourceBundlePostProcessor) bundle
 							.getUnitaryPostProcessor()));
 		}
-		// Add locales and the bundle hashcode
-		List localeVariantKeys = bundle.getLocaleVariantKeys();
-		if (localeVariantKeys != null && !localeVariantKeys.isEmpty()) {
-			String locales = getCommaSeparatedString(localeVariantKeys);
-			if (StringUtils.isNotEmpty(locales)) {
-				props.put(prefix +  PropertiesBundleConstant.BUNDLE_FACTORY_CUSTOM_LOCALE_VARIANTS, locales);
+		
+		// Add variants and the bundle hashcode
+		Map variants = bundle.getVariants();
+		if (variants != null && !variants.isEmpty()) {
+			String serializedVariants = serializeVariantSets(variants);
+			if (StringUtils.isNotEmpty(serializedVariants)) {
+				props.put(prefix +  PropertiesBundleConstant.BUNDLE_FACTORY_CUSTOM_VARIANTS, serializedVariants);
 			}
 
-			for (Iterator iterator = localeVariantKeys.iterator(); iterator
+			List variantKeys = bundle.getVariantKeys();
+			for (Iterator iterator = variantKeys.iterator(); iterator
 					.hasNext();) {
-				String localeVariantKey = (String) iterator.next();
-				if (StringUtils.isNotEmpty(localeVariantKey)) {
-					props.put(prefix + PropertiesBundleConstant.BUNDLE_FACTORY_CUSTOM_HASHCODE_VARIANT + localeVariantKey,
-							bundle.getBundleDataHashCode(localeVariantKey));
+				String variantKey = (String) iterator.next();
+				if (StringUtils.isNotEmpty(variantKey)) {
+					props.put(prefix + PropertiesBundleConstant.BUNDLE_FACTORY_CUSTOM_HASHCODE_VARIANT + variantKey,
+							bundle.getBundleDataHashCode(variantKey));
 				}
 			}
 		} 
@@ -144,6 +149,27 @@ public class JoinableResourceBundlePropertySerializer {
 			props.put(prefix + PropertiesBundleConstant.BUNDLE_FACTORY_CUSTOM_LICENCE_PATH_LIST,
 					getCommaSeparatedString(licensesPathList));
 		}
+	}
+
+	/**
+	 * Serialize the variant sets.
+	 * 
+	 * @param map the map to serialize
+	 * @return the serialized variant sets
+	 */
+	private static String serializeVariantSets(Map map) {
+		StringBuffer result = new StringBuffer();
+		
+		for (Iterator iterator = map.entrySet().iterator(); iterator.hasNext();) {
+			Entry entry = (Entry) iterator.next();
+			result.append(entry.getKey()+":");
+			VariantSet variantSet = (VariantSet) entry.getValue();
+			result.append(variantSet.getDefaultVariant()+":");
+			result.append(getCommaSeparatedString((Collection) variantSet));
+			result.append(";");
+		}
+		
+		return result.toString();
 	}
 
 	/**

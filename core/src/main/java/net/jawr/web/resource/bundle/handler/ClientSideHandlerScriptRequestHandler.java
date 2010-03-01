@@ -1,5 +1,5 @@
 /**
- * Copyright 2008 Jordi Hernández Sellés
+ * Copyright 2008-2010 Jordi Hernández Sellés, Ibrahim Chaehoi
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -26,6 +26,7 @@ import net.jawr.web.collections.ConcurrentCollectionsFactory;
 import net.jawr.web.config.JawrConfig;
 import net.jawr.web.exception.BundlingProcessException;
 import net.jawr.web.resource.bundle.IOUtils;
+import net.jawr.web.resource.bundle.generator.variant.VariantUtils;
 import net.jawr.web.servlet.RendererRequestUtils;
 
 import org.directwebremoting.servlet.HttpConstants;
@@ -34,13 +35,21 @@ import org.directwebremoting.servlet.HttpConstants;
  * Handles requests for the client side script used in non dynamic html pages. 
  * 
  * @author Jordi Hernández Sellés
+ * @author Ibrahim Chaehoi
  */
 public class ClientSideHandlerScriptRequestHandler {
-	private ResourceBundlesHandler rsHandler;
-	private JawrConfig config;
-	private Map handlerCache;
+	
+	/** The start time */
 	private static final long START_TIME = System.currentTimeMillis();
 
+	/** The resource bundle handler */
+	private ResourceBundlesHandler rsHandler;
+	
+	/** The Jawr config */
+	private JawrConfig config;
+	
+	/** The handler cache */
+	private Map handlerCache;
 	
 	/**
 	 * Placeholder for a script stringbuffer and its hashcode, meant to 
@@ -57,6 +66,11 @@ public class ClientSideHandlerScriptRequestHandler {
 		}
 	}
 	
+	/**
+	 * Constructor
+	 * @param rsHandler the resource bundle handler
+	 * @param config the jawr config
+	 */
 	public ClientSideHandlerScriptRequestHandler(
 			ResourceBundlesHandler rsHandler, JawrConfig config) {
 		super();
@@ -72,22 +86,26 @@ public class ClientSideHandlerScriptRequestHandler {
 	 * It also keeps track of eTags and if-modified-since headers to take advantage of 
 	 * client side caching. 
 	 * 
-	 * @param request
-	 * @param response
+	 * @param request the request
+	 * @param response the response
 	 */
 	public void handleClientSideHandlerRequest(HttpServletRequest request, HttpServletResponse response){
 		Handler handler;
-		String locale = config.getLocaleResolver().resolveLocaleCode(request);
-		locale = null == locale ? "_d" : locale;
 		
+		// TODO handle variants
+		// Returns the variant key
+		Map variants = config.getGeneratorRegistry().resolveVariants(request);
+		String variantKey = VariantUtils.getVariantKey(variants);
+		//String locale = config.getLocaleResolver().resolveLocaleCode(request);
+		//locale = null == locale ? "_d" : locale;
 
-		if(handlerCache.containsKey(locale)){
-			handler = (Handler) handlerCache.get(locale);
+		if(handlerCache.containsKey(variantKey)){
+			handler = (Handler) handlerCache.get(variantKey);
 		}
 		else {	
 			StringBuffer sb = rsHandler.getClientSideHandler().getClientSideHandlerScript(request);
 			handler = new Handler(sb, Integer.toString(sb.hashCode()));
-			handlerCache.put(locale, handler);
+			handlerCache.put(variantKey, handler);
 		}
 
 		// Decide wether to set a 304 response		

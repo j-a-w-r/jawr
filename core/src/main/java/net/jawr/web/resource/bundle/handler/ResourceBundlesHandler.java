@@ -1,5 +1,5 @@
 /**
- * Copyright 2007-2009 Jordi Hernández Sellés, Ibrahim Chaehoi
+ * Copyright 2007-2010 Jordi Hernández Sellés, Ibrahim Chaehoi
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -16,6 +16,7 @@ package net.jawr.web.resource.bundle.handler;
 import java.io.OutputStream;
 import java.io.Writer;
 import java.util.List;
+import java.util.Map;
 
 import net.jawr.web.config.JawrConfig;
 import net.jawr.web.exception.ResourceNotFoundException;
@@ -53,28 +54,28 @@ public interface ResourceBundlesHandler {
 	/**
 	 * Returns the global resource bundle path iterator
 	 * @param commentCallbackHandler the comment callback handler
-	 * @param variantKey the variant key
+	 * @param variants the variant map
 	 * @return the global resource bundle path iterator
 	 */
-	public ResourceBundlePathsIterator getGlobalResourceBundlePaths(ConditionalCommentCallbackHandler commentCallbackHandler, String variantKey);
+	public ResourceBundlePathsIterator getGlobalResourceBundlePaths(ConditionalCommentCallbackHandler commentCallbackHandler, Map variants);
 	
 	/**
 	 * Returns the global resource bundle path iterator
 	 * @param debugMode the debug mode
 	 * @param commentCallbackHandler the comment callback handler
-	 * @param variantKey the variant key
+	 * @param variants the variant map
 	 * @return the global resource bundle path iterator
 	 */
-	public ResourceBundlePathsIterator getGlobalResourceBundlePaths(boolean debugMode, ConditionalCommentCallbackHandler commentCallbackHandler, String variantKey);
+	public ResourceBundlePathsIterator getGlobalResourceBundlePaths(boolean debugMode, ConditionalCommentCallbackHandler commentCallbackHandler, Map variants);
 	
 	/**
 	 * Returns the global resource bundle path iterator for one global bundle
 	 * @param commentCallbackHandler the comment callback handler
-	 * @param variantKey the variant key
+	 * @param variants the variant map
 	 * @return the global resource bundle path iterator
 	 */
 	public ResourceBundlePathsIterator getGlobalResourceBundlePaths(String bundlePath,
-			ConditionalCommentCallbackHandler commentCallbackHandler, String variantKey);
+			ConditionalCommentCallbackHandler commentCallbackHandler, Map variants);
 	
 	/**
 	 * Returns an ordered list of the paths to use when accesing a resource bundle. 
@@ -85,12 +86,12 @@ public interface ResourceBundlesHandler {
 	 * @param debugMode the debug mode
 	 * @param bundleId the bundle ID
 	 * @param commentCallbackHandler the comment callback handler
-	 * @param variantKey the variant key
+	 * @param variants the variant map
 	 * @return the iterator of bundle paths
 	 */
 	public ResourceBundlePathsIterator getBundlePaths(String bundleId, 
 														ConditionalCommentCallbackHandler commentCallbackHandler, 
-														String variantKey);
+														Map variants);
 	
 	/**
 	 * Returns an ordered list of the paths to use when accesing a resource bundle. 
@@ -101,12 +102,12 @@ public interface ResourceBundlesHandler {
 	 * @param debugMode the debug mode
 	 * @param bundleId the bundle ID
 	 * @param commentCallbackHandler the comment callback handler
-	 * @param variantKey the variant key
+	 * @param variants the variant map
 	 * @return the iterator of bundle paths
 	 */
 	public ResourceBundlePathsIterator getBundlePaths(boolean debugMode, String bundleId, 
 														ConditionalCommentCallbackHandler commentCallbackHandler, 
-														String variantKey);
+														Map variants);
 	
 	
 	/**

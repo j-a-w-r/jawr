@@ -27,6 +27,8 @@ public abstract class ResourceHandlerBasedTest  extends  TestCase {
     protected static final String TMP_DIR = "tmp/";
 	protected static final String WORK_DIR = "work/";
 	
+	protected JawrConfig config;
+	
 	protected ResourceReaderHandler createResourceReaderHandler(String rootDir,Charset charset) {
 		try {
 		    FileUtils.createDir(rootDir);
@@ -35,8 +37,10 @@ public abstract class ResourceHandlerBasedTest  extends  TestCase {
 		    MockServletContext ctx = new MockServletContext(work, rootDir + TMP_DIR);
 		    
 		    GeneratorRegistry generatorRegistry = new GeneratorRegistry();
-		    JawrConfig config = new JawrConfig(new Properties());
+		    config = new JawrConfig(new Properties());
 		    config.setCharsetName(charset.name());
+		    config.setGeneratorRegistry(generatorRegistry);
+		    generatorRegistry.setConfig(config);
 			return new ServletContextResourceReaderHandler(ctx, config, generatorRegistry);
 		} catch (Exception ex) {
 		     ex.printStackTrace();

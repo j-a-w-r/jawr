@@ -1,5 +1,5 @@
 /**
- * Copyright 2007-2009 Jordi Hernández Sellés, Ibrahim Chaehoi
+ * Copyright 2007-2010 Jordi Hernández Sellés, Ibrahim Chaehoi
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -17,7 +17,6 @@ package net.jawr.web.resource.bundle.factory;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -26,6 +25,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.StringTokenizer;
+import java.util.TreeMap;
 
 import net.jawr.web.JawrConstant;
 import net.jawr.web.config.JawrConfig;
@@ -34,6 +34,7 @@ import net.jawr.web.exception.DuplicateBundlePathException;
 import net.jawr.web.resource.bundle.factory.util.PropertiesConfigHelper;
 import net.jawr.web.resource.bundle.factory.util.ResourceBundleDefinition;
 import net.jawr.web.resource.bundle.generator.GeneratorRegistry;
+import net.jawr.web.resource.bundle.generator.variant.VariantUtils;
 import net.jawr.web.resource.bundle.handler.ResourceBundlesHandler;
 import net.jawr.web.resource.handler.bundle.ResourceBundleHandler;
 import net.jawr.web.resource.handler.reader.ResourceReaderHandler;
@@ -121,6 +122,14 @@ public class PropertiesBasedBundlesHandlerFactory {
 		while (generators.hasNext()) {
 			String generatorClass = (String) generators.next();
 			generatorRegistry.registerGenerator(generatorClass);
+		}
+		
+		// Initialize variant resolvers
+		Iterator resolvers = props.getCommonPropertyAsSet(PropertiesBundleConstant.CUSTOM_RESOLVERS)
+				.iterator();
+		while (resolvers.hasNext()) {
+			String resolverClass = (String) resolvers.next();
+			generatorRegistry.registerVariantResolver(resolverClass);
 		}
 
 		// Initialize custom bundles
@@ -300,17 +309,16 @@ public class PropertiesBasedBundlesHandlerFactory {
 
 			// Add the mappings
 			List mappings = new ArrayList();
-			Set localeKeys = new HashSet();
+			Map variants = new TreeMap();
 			StringTokenizer tk = new StringTokenizer(mappingsProperty, JawrConstant.COMMA_SEPARATOR);
 			while (tk.hasMoreTokens()){
 				String mapping = tk.nextToken().trim();
 				mappings.add(mapping);
 				// Add local variants
-				localeKeys.addAll(generatorRegistry.getAvailableLocales(mapping));
+				variants = VariantUtils.concatVariants(variants, generatorRegistry.getAvailableVariants(mapping));
 			}
 			bundle.setMappings(mappings);
-			bundle.setLocaleVariantKeys(Collections.list(Collections.enumeration(localeKeys)));
-			
+			bundle.setVariants(variants);
 		}
 
 		// dependencies

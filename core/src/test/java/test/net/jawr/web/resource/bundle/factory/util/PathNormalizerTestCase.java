@@ -1,5 +1,7 @@
 package test.net.jawr.web.resource.bundle.factory.util;
 
+import java.util.Arrays;
+
 import junit.framework.TestCase;
 import net.jawr.web.resource.bundle.factory.util.PathNormalizer;
 
@@ -74,4 +76,11 @@ public class PathNormalizerTestCase extends TestCase {
 		assertEquals("a" + SEP + "b" + SEP + "c" + SEP + "d", PathNormalizer.concatWebPath("a/b/", "/c/d"));
 	}
 
+	public void testRemoveVariantPrefixFromPath(){
+		
+		assertEquals("/js/bundle/msg@en_US.js", PathNormalizer.removeVariantPrefixFromPath("/1542603560.en_US/js/bundle/msg.js"));
+		assertEquals("/fwk/core/component@en_US@summer.css", PathNormalizer.removeVariantPrefixFromPath("/1576054120.en_US@summer/fwk/core/component.css"));
+		assertEquals("/js/bundle/msg.js", PathNormalizer.removeVariantPrefixFromPath("/1542603560/js/bundle/msg.js"));
+	}
+	
 }

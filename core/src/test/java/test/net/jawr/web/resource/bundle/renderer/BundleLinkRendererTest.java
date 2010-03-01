@@ -36,18 +36,10 @@ public class BundleLinkRendererTest  extends ResourceHandlerBasedTest{
 	private static final String ROOT_TESTDIR = "/bundleLinkRenderer/";
 	private static final String JS_BASEDIR = "js";
 	private static final String JS_CTX_PATH = "/ctxPathJs";
-	private static final String CSS_BASEDIR = "css/";
-	private static final String CSS_CTX_PATH = "/ctxPathCss";
 	
 	private static final String JS_PRE_TAG = "<script type=\"text/javascript\" src=\"";
     private static final String JS_POST_TAG = "\" ></script>";
 	
-	private static final String CSS_PRE_TAG = "<link rel=\"stylesheet\" type=\"text/css\" media=\"screen\" href=\"";
-	private static final String CSS_PRE_PR_TAG = "<link rel=\"stylesheet\" type=\"text/css\" media=\"print\" href=\"";
-    private static final String CSS_POST_TAG = "\" />";
-	
-	private CSSHTMLBundleLinkRenderer cssRenderer;
-	private CSSHTMLBundleLinkRenderer cssPrintRenderer;
 	private JavascriptHTMLBundleLinkRenderer jsRenderer;
 	private JawrConfig jawrConfig;
 	
@@ -64,18 +56,14 @@ public class BundleLinkRendererTest  extends ResourceHandlerBasedTest{
 	    jawrConfig.setServletMapping("/srvMapping");
 	    jawrConfig.setCssLinkFlavor(CSSHTMLBundleLinkRenderer.FLAVORS_XHTML);
 	    ResourceBundlesHandler jsHandler = null;
-	    ResourceBundlesHandler cssHandler = null;
 	    try {
 	    	jsHandler = PredefinedBundlesHandlerUtil.buildSimpleBundles(rsHandler,rsBundleHandler,JS_BASEDIR,"js", jawrConfig);
-	    	cssHandler = PredefinedBundlesHandlerUtil.buildSimpleBundles(rsHandler,rsBundleHandler,CSS_BASEDIR,"css", jawrConfig);
-		} catch (DuplicateBundlePathException e) {
+	    } catch (DuplicateBundlePathException e) {
 			// 
 			throw new RuntimeException(e);
 		} catch (BundleDependencyException e) {
 			throw new RuntimeException(e);
 		}
-	    cssRenderer = new CSSHTMLBundleLinkRenderer(cssHandler,true,null);
-	    cssPrintRenderer  = new CSSHTMLBundleLinkRenderer(cssHandler,true,"print");
 	    jsRenderer = new JavascriptHTMLBundleLinkRenderer(jsHandler,true);
 	}
 	
@@ -93,77 +81,6 @@ public class BundleLinkRendererTest  extends ResourceHandlerBasedTest{
 		}
 	    return ret;
 	}
-	
-	public void testWriteCSSBundleLinks()
-	{
-		jawrConfig.setDebugModeOn(false);
-		
-		// Test regular link creation
-	    bundleRendererCtx = new BundleRendererContext(CSS_CTX_PATH, null, false, false);
-	    String result = renderToString(cssRenderer,"/css/lib/lib.css", bundleRendererCtx);
-		
-		assertNotSame("No css tag written ", "", result.trim());
-			
-		String libTag1 = CSS_PRE_TAG + "/ctxPathCss/srvMapping/";
-		String libTag2 = "/library.css" + CSS_POST_TAG;
-		String globalTag1 = CSS_PRE_TAG + "/ctxPathCss/srvMapping/";
-		String globalTag2 = "/global.css" + CSS_POST_TAG;
-		String debOffTag1 = CSS_PRE_TAG + "/ctxPathCss/srvMapping/";
-		String debOffTag2 = "/debugOff.css" + CSS_POST_TAG;
-		StringTokenizer tk = new StringTokenizer(result,"\n");
-		String next;
-		
-		assertEquals("Invalid number of tags written. ",3, tk.countTokens());
-		next = tk.nextElement().toString();
-		assertTrue("Unexpected tag added at position 0:" + next, next.startsWith(libTag1));
-		assertTrue("Unexpected tag added at position 0:" + next, next.endsWith(libTag2));
-		
-		next = tk.nextElement().toString();
-		assertTrue("Unexpected tag added at position 1:" + next, next.startsWith(globalTag1));
-		assertTrue("Unexpected tag added at position 1:" + next, next.endsWith(globalTag2));
-		
-		next = tk.nextElement().toString();
-		assertTrue("Unexpected tag added at position 2:" + next, next.startsWith(debOffTag1));
-		assertTrue("Unexpected tag added at position 2:" + next, next.endsWith(debOffTag2));
-		
-		// Reusing the set, we test that no repeats are allowed. 
-		//result = renderToString(cssRenderer,"/css/lib/lib.css", CSS_CTX_PATH, includedBundles, false, false);
-		result = renderToString(cssRenderer,"/css/lib/lib.css", bundleRendererCtx);
-		assertEquals("Tags were repeated","", result.trim());
-		
-		bundleRendererCtx = new BundleRendererContext(CSS_CTX_PATH, null, false, false);
-	    
-		//globalBundleAdded = false;
-		result = renderToString(cssPrintRenderer,"/css/lib/lib.css", bundleRendererCtx);
-
-		assertNotSame("No css tag written ", "", result.trim());
-			
-		String libPrTag1 = CSS_PRE_PR_TAG + "/ctxPathCss/srvMapping/";
-		String libPrTag2 = "library.css" + CSS_POST_TAG;
-		
-		String globaPrlTag1 = CSS_PRE_PR_TAG + "/ctxPathCss/srvMapping/";
-		String globaPrlTag2 = "global.css" + CSS_POST_TAG;
-		
-		String debOffPrTag1 = CSS_PRE_PR_TAG + "/ctxPathCss/srvMapping/";
-		String debOffPrTag2 = "debugOff.css" + CSS_POST_TAG;
-		
-		tk = new StringTokenizer(result,"\n");
-		assertEquals("Invalid number of tags written. ",3, tk.countTokens());
-		
-		next = tk.nextElement().toString();
-		assertTrue("Unexpected tag added at position 0:" + next, next.startsWith(libPrTag1));
-		assertTrue("Unexpected tag added at position 0:" + next, next.endsWith(libPrTag2));
-		
-		next = tk.nextElement().toString();
-		assertTrue("Unexpected tag added at position 1:" + next, next.startsWith(globaPrlTag1));
-		assertTrue("Unexpected tag added at position 1:" + next, next.endsWith(globaPrlTag2));
-		
-		next = tk.nextElement().toString();
-		assertTrue("Unexpected tag added at position 2:" + next, next.startsWith(debOffPrTag1));
-		assertTrue("Unexpected tag added at position 2:" + next, next.endsWith(debOffPrTag2));
-		
-	}
-	
 	
 	public void testWriteJSBundleLinks()
 	{
@@ -496,4 +413,6 @@ public class BundleLinkRendererTest  extends ResourceHandlerBasedTest{
 		assertTrue("Tags were repeated", StringUtils.isEmpty(result));
 
 	}
+	
+	
 }

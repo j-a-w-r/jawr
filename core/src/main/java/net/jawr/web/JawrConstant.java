@@ -116,4 +116,50 @@ public class JawrConstant {
 
 	/** The directory for image created the sprite generator */
 	public static final String SPRITE_GENERATED_IMG_DIR = "/generatedSpriteImg/";
+
+	/** The name of the cookie where the Jawr skin is stored by default */
+	public static final String JAWR_SKIN = "jawrSkin";
+
+	/** The locale variant type */
+	public static final String LOCALE_VARIANT_TYPE = "locale";
+
+	/** The skin variant type */
+	public static final String SKIN_VARIANT_TYPE = "skin";
+
+	/** The property name for the default root directories for Css skin */
+	public static final String SKIN_DEFAULT_ROOT_DIRS = "skin.default.root.dirs";
+
+	/** The default variant finder for CSS skin generator */
+	public static final String DEFAULT_SKIN_VARIANT_FINDER = "net.jawr.web.resource.bundle.generator.variant.css.CssSkinVariantFinder";
+
+	/** The property name for the default root directories for Css skin */
+	public static final String SKIN_TYPE_MAPPING_CONFIG_PARAM = "jawr.css.skin.type.mapping";
+
+	/** The "skin_locale" type for the skin resource mapping */
+	public static final String SKIN_TYPE_MAPPING_SKIN_LOCALE = "skin_locale";
+
+	/** The "locale_skin" type for the skin resource mapping */
+	public static final String SKIN_TYPE_MAPPING_LOCALE_SKIN = "locale_skin";
+
+	/** The variant separator character */
+	public static final char VARIANT_SEPARATOR_CHAR = '@';
+	
+	// Tag
+	/** The name of the media attribute */
+	public static final String MEDIA_ATTR = "media";
+	
+	/** The name of the title attribute */
+	public static final String TITLE_ATTR = "title";
+	
+	/** The name of the alternate attribute */
+	public static final String ALTERNATE_ATTR = "alternate";
+	
+	/** The name of the displayAlternate attribute */
+	public static final String DISPLAY_ALTERNATE_ATTR = "displayAlternate";
+	
+	/** The name of the href attribute */
+	public static final String HREF_ATTR = "href";
+	
+	/** The name of the src attribute */
+	public static final String SRC_ATTR = "src";
 }

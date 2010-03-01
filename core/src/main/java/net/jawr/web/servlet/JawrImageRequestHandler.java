@@ -1,5 +1,5 @@
 /**
- * Copyright 2009  Ibrahim Chaehoi
+ * Copyright 2009-2010  Ibrahim Chaehoi
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -66,7 +66,7 @@ public class JawrImageRequestHandler extends JawrRequestHandler {
 	/** The cache buster pattern */
 	private static Pattern cacheBusterPattern = Pattern.compile("("
 			+ "(([a-zA-Z0-9]+)_)?" + JawrConstant.CACHE_BUSTER_PREFIX
-			+ ")[a-zA-Z0-9]+/(.*)$");
+			+ ")[a-zA-Z0-9]+(/.*)$");
 
 	/** The index of the generated image prefix in the cache buster pattern */
 	private static final int GENERATED_IMAGE_PREFIX_INDEX = 3;

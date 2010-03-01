@@ -1,5 +1,5 @@
 /**
- * Copyright 2007-2009 Jordi Hernández Sellés, Matt Ruby, Ibrahim Chaehoi
+ * Copyright 2007-2010 Jordi Hernández Sellés, Matt Ruby, Ibrahim Chaehoi
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -17,13 +17,12 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
-import net.jawr.web.JawrConstant;
 import net.jawr.web.context.ThreadLocalJawrContext;
 import net.jawr.web.resource.bundle.JoinableResourceBundle;
 import net.jawr.web.resource.bundle.factory.util.PathNormalizer;
-import net.jawr.web.resource.bundle.generator.GeneratorRegistry;
 import net.jawr.web.resource.bundle.generator.dwr.DWRParamWriter;
 import net.jawr.web.resource.bundle.handler.ResourceBundlesHandler;
 import net.jawr.web.resource.bundle.iterator.ResourceBundlePathsIterator;
@@ -38,15 +37,11 @@ import net.jawr.web.servlet.RendererRequestUtils;
  */
 public abstract class AbstractBundleLinkRenderer implements BundleRenderer {
 
-	/** The ID of the DWR script path */
-	private static final String ID_SCRIPT_DWR_PATH = "__dwr_path__";
-
 	/** The resource bundles handler */
 	protected ResourceBundlesHandler bundler;
 
 	/** The flag indicating if we must use the random parameter */
 	private boolean useRandomParam = true;
-
 	
 	/**
 	 * Creates a new instance of AbstractBundleLinkRenderer
@@ -74,7 +69,7 @@ public abstract class AbstractBundleLinkRenderer implements BundleRenderer {
 		
 		boolean debugOn = bundler.getConfig().isDebugModeOn();
 		JoinableResourceBundle bundle = bundler.resolveBundleForPath(requestedPath);
-
+		//bundle.get
 		if (null == bundle)
 			return;
 
@@ -100,28 +95,19 @@ public abstract class AbstractBundleLinkRenderer implements BundleRenderer {
 	/**
 	 * Renders the links for a bundle
 	 * @param bundle the bundle
-	 * @param requestedPath thed requested path
+	 * @param requestedPath the requested path
 	 * @param ctx the renderer context
 	 * @param out the writer
 	 * @param debugOn the debug flag
 	 * @param renderDependencyLinks the flag indicating if we must render the dependency links
 	 * @throws IOException if an IOException occurs
 	 */
-	private void renderBundleLinks(JoinableResourceBundle bundle,
+	protected void renderBundleLinks(JoinableResourceBundle bundle,
 			String requestedPath, BundleRendererContext ctx, Writer out,
 			boolean debugOn, boolean renderDependencyLinks) throws IOException {
 		if (debugOn) {
 			addComment("Start adding members resolved by '" + requestedPath + "'. Bundle id is: '" + bundle.getId() + "'", out);
 		}
-
-//		// If DWR is being used, add a path var to the page
-//		if (null != bundler.getConfig().getDwrMapping() && ctx.getIncludedBundles().add(ID_SCRIPT_DWR_PATH)) {
-//
-//			String contextPath = ctx.getContextPath();
-//			StringBuffer sb = DWRParamWriter.buildRequestSpecificParams(contextPath, PathNormalizer.joinPaths(contextPath, bundler.getConfig()
-//					.getDwrMapping()));
-//			out.write(sb.toString());
-//		}
 
 		// Include the bundle if it has not been included yet
 		if(ctx.getIncludedBundles().add(bundle.getId())){
@@ -131,23 +117,30 @@ public abstract class AbstractBundleLinkRenderer implements BundleRenderer {
 						bundle.getDependencies());
 			}
 			
-			// Retrieve the name or names of bundle(s) that belong to/with the requested path.
-			if(isForcedToRenderIeCssBundleInDebug(ctx, debugOn)){
-	        	
-				ResourceBundlePathsIterator it = bundler.getBundlePaths(false, bundle.getId(), new ConditionalCommentRenderer(out), ctx.getVariantKey());
-		        while(it.hasNext()){
-					String bundlePath = it.nextPath();
-					renderIeCssBundleLink(ctx, out, bundlePath);
-				}
-	        }else{
-	        	ResourceBundlePathsIterator it = bundler.getBundlePaths(bundle.getId(), new ConditionalCommentRenderer(out), ctx.getVariantKey());
-	        	renderBundleLinks(it, ctx, debugOn, out);
-	        }
+			renderBundleLinks(bundle, ctx, ctx.getVariants(), out, debugOn);
+			
 		}else{
 			if (debugOn) {
 				addComment("The bundle '" + bundle.getId() + "' is already included in the page.", out);
 			}
 		}
+	}
+
+	/**
+	 * Renders the bundle links
+	 * @param bundle the bundle
+	 * @param ctx the context
+	 * @param variant the variant
+	 * @param out the writer
+	 * @param debugOn the flag indicating if we are in debug mode
+	 * @throws IOException if an IOException occurs
+	 */
+	protected void renderBundleLinks(JoinableResourceBundle bundle,
+			BundleRendererContext ctx, Map variant, Writer out, boolean debugOn)
+			throws IOException {
+		
+		ResourceBundlePathsIterator it = bundler.getBundlePaths(bundle.getId(), new ConditionalCommentRenderer(out), variant);
+		renderBundleLinks(it, ctx, debugOn, out);
 	}
 
 	/**
@@ -173,23 +166,27 @@ public abstract class AbstractBundleLinkRenderer implements BundleRenderer {
 			out.write(sb.toString());
 		}
 		
-		if(isForcedToRenderIeCssBundleInDebug(ctx, debugOn)){
-			ResourceBundlePathsIterator resourceBundleIterator = bundler.getGlobalResourceBundlePaths(false, new ConditionalCommentRenderer(out), ctx.getVariantKey());
-			while(resourceBundleIterator.hasNext()){
-				String globalBundlePath = resourceBundleIterator.nextPath();
-				renderIeCssBundleLink(ctx, out, globalBundlePath);
-			}
-		}else{
-			
-			ResourceBundlePathsIterator resourceBundleIterator = bundler.getGlobalResourceBundlePaths(new ConditionalCommentRenderer(out), ctx.getVariantKey());
-			renderBundleLinks(resourceBundleIterator,
-					ctx, debugOn, out);
-		}
+		performGlobalBundleLinksRendering(ctx, out, debugOn);
 		
 		ctx.setGlobalBundleAdded(true);
 		if (debugOn) {
 			addComment("Finished adding global members.", out);
 		}
+	}
+
+	/**
+	 * Performs the global bundle rendering
+	 * @param ctx the context
+	 * @param out the writer
+	 * @param debugOn the flag indicating if we are in debug mode or not
+	 * @throws IOException if an IO exception occurs
+	 */
+	protected void performGlobalBundleLinksRendering(BundleRendererContext ctx,
+			Writer out, boolean debugOn) throws IOException {
+		
+		ResourceBundlePathsIterator resourceBundleIterator = bundler.getGlobalResourceBundlePaths(new ConditionalCommentRenderer(out), ctx.getVariants());
+		renderBundleLinks(resourceBundleIterator,
+				ctx, debugOn, out);
 	}
 
 	/**
@@ -221,39 +218,6 @@ public abstract class AbstractBundleLinkRenderer implements BundleRenderer {
 	}
 
 	/**
-	 * Returns true if the renderer must render a CSS bundle link even in debug mode
-	 * @param ctx the context
-	 * @param debugOn the debug flag
-	 * @return true if the renderer must render a CSS bundle link even in debug mode
-	 */
-	private boolean isForcedToRenderIeCssBundleInDebug(BundleRendererContext ctx,
-			boolean debugOn) {
-		
-		return debugOn && getResourceType().equals(JawrConstant.CSS_TYPE) && 
-				bundler.getConfig().isForceCssBundleInDebugForIEOn() && RendererRequestUtils.isIE(ctx.getRequest());
-	}
-
-	/**
-	 * Renders the CSS link to retrieve the CSS bundle for IE in debug mode.
-	 * @param ctx the context
-	 * @param out the writer
-	 * @param bundle the bundle
-	 * @throws IOException if an IOException occurs
-	 */
-	private void renderIeCssBundleLink(BundleRendererContext ctx, Writer out,
-			String bundlePath) throws IOException {
-		Random randomSeed = new Random();
-		int random = randomSeed.nextInt();
-		if (random < 0)
-			random *= -1;
-		String path = GeneratorRegistry.IE_CSS_GENERATOR_PREFIX+GeneratorRegistry.PREFIX_SEPARATOR+bundlePath;
-		path = PathNormalizer.createGenerationPath(path, bundler.getConfig().getGeneratorRegistry())+"&d="+random;
-		out.write(createBundleLink(path, ctx.getContextPath(), ctx.isSslRequest()));
-	}
-
-	
-
-	/**
 	 * Renders the bundle links for the resource iterator passed in parameter
 	 * @param it the iterator on the bundles 
 	 * @param contextPath the context path
@@ -264,7 +228,7 @@ public abstract class AbstractBundleLinkRenderer implements BundleRenderer {
 	 * @param out the output writer
 	 * @throws IOException if an IO exception occurs
 	 */
-	private void renderBundleLinks(ResourceBundlePathsIterator it,
+	protected void renderBundleLinks(ResourceBundlePathsIterator it,
 			BundleRendererContext ctx, boolean debugOn, Writer out) throws IOException {
 	
 		String contextPath = ctx.getContextPath();

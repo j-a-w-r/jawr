@@ -26,6 +26,7 @@ import net.jawr.web.resource.bundle.factory.util.PathNormalizer;
 import net.jawr.web.resource.bundle.generator.GeneratorRegistry;
 import net.jawr.web.resource.bundle.locale.DefaultLocaleResolver;
 import net.jawr.web.resource.bundle.locale.LocaleResolver;
+import net.jawr.web.resource.bundle.locale.LocaleVariantResolverWrapper;
 import net.jawr.web.resource.bundle.renderer.CSSHTMLBundleLinkRenderer;
 import net.jawr.web.util.StringUtils;
 
@@ -132,6 +133,11 @@ public class JawrConfig implements Serializable {
 	 * The property name for the flag indicating if the CSS image for the CSS retrieved from classpath must be also retrieved from classpath
 	 */
 	public static final String JAWR_CSS_CLASSPATH_HANDLE_IMAGE = "jawr.css.classpath.handle.image";
+	
+	/**
+	 * The property name for the flag indicating if the CSS image for the CSS retrieved from classpath must be also retrieved from classpath
+	 */
+	public static final String JAWR_CSS_SKIN_COOKIE = "jawr.css.skin.cookie";
 	
 	/**
 	 * The property name for the image hash algorithm.
@@ -263,6 +269,9 @@ public class JawrConfig implements Serializable {
 	 */
 	private String dwrMapping;
 
+	/** The skin cookie name*/
+	private String skinCookieName = JawrConstant.JAWR_SKIN;
+	
 	/**
 	 * Initialize configuration using params contained in the initialization properties file.
 	 * 
@@ -324,6 +333,10 @@ public class JawrConfig implements Serializable {
 			localeResolver = new DefaultLocaleResolver();
 		} else{
 			localeResolver = (LocaleResolver) ClassLoaderResourceUtils.buildObjectInstance(props.getProperty(JAWR_LOCALE_RESOLVER));
+		}
+		
+		if (null != props.getProperty(JAWR_CSS_SKIN_COOKIE)) {
+			skinCookieName = props.getProperty(JAWR_CSS_SKIN_COOKIE).trim();
 		}
 		
 		if (null != props.getProperty(JAWR_CSSLINKS_FLAVOR)) {
@@ -677,6 +690,14 @@ public class JawrConfig implements Serializable {
 	public void setGeneratorRegistry(GeneratorRegistry generatorRegistry) {
 		this.generatorRegistry = generatorRegistry;
 		this.generatorRegistry.setConfig(this);
+		localeResolver = null;
+		if (configProperties.getProperty(JAWR_LOCALE_RESOLVER) == null) {
+			localeResolver = new DefaultLocaleResolver();
+		} else{
+			localeResolver = (LocaleResolver) ClassLoaderResourceUtils.buildObjectInstance(configProperties.getProperty(JAWR_LOCALE_RESOLVER));
+		}
+
+		this.generatorRegistry.registerVariantResolver(new LocaleVariantResolverWrapper(localeResolver));
 	}
 
 	/**
@@ -768,6 +789,14 @@ public class JawrConfig implements Serializable {
 		return useBundleMapping && StringUtils.isNotEmpty(jawrWorkingDirectory) && !jawrWorkingDirectory.startsWith(JawrConstant.FILE_URI_PREFIX);
 	}
 	
+	/**
+	 * Returns the skin cookie name
+	 * @return the skinCookieName
+	 */
+	public String getSkinCookieName() {
+		return skinCookieName;
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 

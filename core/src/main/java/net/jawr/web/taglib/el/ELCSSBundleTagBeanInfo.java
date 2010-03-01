@@ -1,5 +1,5 @@
 /**
- * Copyright 2008 Ibrahim Chaehoi
+ * Copyright 2008-2010 Ibrahim Chaehoi
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -51,7 +51,22 @@ public class ELCSSBundleTagBeanInfo extends SimpleBeanInfo {
 					null, "setMediaExpr"));
 		} catch (IntrospectionException ex) {
 		}
-
+		try {
+			proplist.add(new PropertyDescriptor("title", ELCSSBundleTag.class,
+					null, "setTitleExpr"));
+		} catch (IntrospectionException ex) {
+		}
+		try {
+			proplist.add(new PropertyDescriptor("alternate", ELCSSBundleTag.class,
+					null, "setAlternateExpr"));
+		} catch (IntrospectionException ex) {
+		}
+		try {
+			proplist.add(new PropertyDescriptor("displayAlternate", ELCSSBundleTag.class,
+					null, "setDisplayAlternateExpr"));
+		} catch (IntrospectionException ex) {
+		}
+		
 		PropertyDescriptor[] result = new PropertyDescriptor[proplist.size()];
 		return ((PropertyDescriptor[]) proplist.toArray(result));
 	}

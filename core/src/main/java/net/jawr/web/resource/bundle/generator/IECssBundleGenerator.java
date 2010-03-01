@@ -1,5 +1,5 @@
 /**
- * Copyright 2009 Ibrahim Chaehoi
+ * Copyright 2009-2010 Ibrahim Chaehoi
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -17,6 +17,10 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 
 import net.jawr.web.JawrConstant;
 import net.jawr.web.exception.BundlingProcessException;
@@ -45,8 +49,20 @@ import org.apache.log4j.Logger;
  */
 public class IECssBundleGenerator extends AbstractCSSGenerator {
 
+	/** The logger */
 	private static final Logger LOGGER = Logger
 			.getLogger(IECssBundleGenerator.class);
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @seenet.jawr.web.resource.bundle.generator.PrefixedResourceGenerator#
+	 * getMappingPrefix()
+	 */
+	public String getMappingPrefix() {
+
+		return GeneratorRegistry.IE_CSS_GENERATOR_PREFIX;
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -57,27 +73,43 @@ public class IECssBundleGenerator extends AbstractCSSGenerator {
 	 */
 	public Reader createResource(GeneratorContext context) {
 
-		StringBuffer result = new StringBuffer();
+		
 
 		ResourceBundlesHandler bundlesHandler = (ResourceBundlesHandler) context
 				.getServletContext().getAttribute(
 						JawrConstant.CSS_CONTEXT_ATTRIBUTE);
 		
-		// TODO Manage skin variant
-		String variantKey = null;
-		String bundlePath = PathNormalizer.removeVariantPrefixFromPath(context
-				.getPath());
-		if (context.getLocale() != null) {
-			variantKey = context.getLocale().getDisplayName();
-		}
+		String contextPath = context.getPath();
+		String bundlePath = getBundlePath(contextPath);
+		
+		Map variants = getVariantMap(bundlesHandler, contextPath, bundlePath);
+		
+		String result = generateContent(context, bundlesHandler, bundlePath, variants);
 
+		return new StringReader(result.toString());
+	}
+
+	/**
+	 * Generates the Css content for the bundle path
+	 * @param context the generator context
+	 * @param bundlesHandler the bundles handler
+	 * @param bundlePath the bundle path
+	 * @param variants the variants
+	 * @return the generated CSS content 
+	 */
+	private String generateContent(GeneratorContext context,
+			ResourceBundlesHandler bundlesHandler, String bundlePath,
+			Map variants) {
+		
+		StringBuffer result =  new StringBuffer();
 		// Here we create a new context where the bundle name is the Jawr
 		// generator CSS path
 		String cssGeneratorBundlePath = PathNormalizer.concatWebPath(context
 				.getConfig().getServletMapping(),
 				ResourceGenerator.CSS_DEBUGPATH);
+		
 		JoinableResourceBundle tempBundle = new JoinableResourceBundleImpl(
-				cssGeneratorBundlePath, null, null, null, null);
+				cssGeneratorBundlePath, null, null, null, null, null);
 
 		BundleProcessingStatus tempStatus = new BundleProcessingStatus(
 				tempBundle, context.getResourceReaderHandler(), context
@@ -89,9 +121,9 @@ public class IECssBundleGenerator extends AbstractCSSGenerator {
 		if (bundlesHandler.isGlobalResourceBundle(bundlePath)) {
 			it = new ListPathsIteratorImpl(bundlePath);
 			it = bundlesHandler.getGlobalResourceBundlePaths(bundlePath, null,
-					variantKey);
+					variants);
 		} else {
-			it = bundlesHandler.getBundlePaths(bundlePath, null, variantKey);
+			it = bundlesHandler.getBundlePaths(bundlePath, null, variants);
 		}
 
 		while (it.hasNext()) {
@@ -121,19 +153,82 @@ public class IECssBundleGenerator extends AbstractCSSGenerator {
 				}
 			}
 		}
-
-		return new StringReader(result.toString());
+		
+		return result.toString();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @seenet.jawr.web.resource.bundle.generator.PrefixedResourceGenerator#
-	 * getMappingPrefix()
+	/**
+	 * Returns the variant map from the context path
+	 * @param bundlesHandler the bundles handler
+	 * @param contextPath the context path
+	 * @param bundlePath the bundle path
+	 * @return the variant map for the current context
 	 */
-	public String getMappingPrefix() {
-
-		return GeneratorRegistry.IE_CSS_GENERATOR_PREFIX;
+	private Map getVariantMap(ResourceBundlesHandler bundlesHandler,
+			String contextPath, String bundlePath) {
+		
+		
+		JoinableResourceBundle bundle = bundlesHandler.resolveBundleForPath(bundlePath);
+		Set variantTypes = bundle.getVariants().keySet();
+		
+		String variantKey = getVariantKey(contextPath);
+		String[] variantValues = new String[0];
+		if(variantKey.trim().length() > 0){
+			variantValues = variantKey.split(String.valueOf(JawrConstant.VARIANT_SEPARATOR_CHAR)); 
+		}
+		
+		Map variants = new HashMap();
+		if(variantTypes.size() != variantValues.length){
+			throw new BundlingProcessException("For the resource '"+contextPath+"', the number variant types for the bundle don't match the variant values.");
+		}
+		int i = 0;
+		for (Iterator iterator = variantTypes.iterator(); iterator.hasNext();) {
+			String variantType = (String) iterator.next();
+			variants.put(variantType, variantValues[i++]);
+		}
+		return variants;
 	}
 
+	/**
+	 * Returns the IE Css bundle path from the context path
+	 * @param contextPath the context path
+	 * @return the IE Css bundle path
+	 */
+	private String getBundlePath(String contextPath) {
+		String bundlePath = contextPath;
+		int idx = -1;
+		if(bundlePath.startsWith(JawrConstant.URL_SEPARATOR)){
+			idx = bundlePath.indexOf(JawrConstant.URL_SEPARATOR, 1);
+		}else{
+			idx = bundlePath.indexOf(JawrConstant.URL_SEPARATOR, 1);
+		}
+		
+		if(idx != -1){
+			bundlePath = bundlePath.substring(idx);
+		}
+		return bundlePath;
+	}
+
+	/**
+	 * Returns the variant key from the context path.
+	 * 
+	 * @param contextPath the path
+	 * @return the variant key
+	 */
+	private String getVariantKey(String contextPath) {
+		
+		// Remove first slash
+		String resultPath = contextPath.substring(1);
+		String variantKey = "";
+		// eval the existence of a suffix
+		String prefix = resultPath.substring(0, resultPath.indexOf(JawrConstant.URL_SEPARATOR));
+
+		// The prefix also contains variant information after a '.'
+		if (prefix.indexOf('.') != -1) {
+			variantKey = prefix.substring(prefix.indexOf('.') + 1);
+		} 
+		
+		return variantKey;
+	}
+	
 }

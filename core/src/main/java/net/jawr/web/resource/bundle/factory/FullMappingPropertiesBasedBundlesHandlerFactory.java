@@ -1,5 +1,5 @@
 /**
- * Copyright 2009 Ibrahim Chaehoi
+ * Copyright 2009-2010 Ibrahim Chaehoi
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -17,10 +17,10 @@ package net.jawr.web.resource.bundle.factory;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.StringTokenizer;
@@ -31,6 +31,7 @@ import net.jawr.web.resource.bundle.JoinableResourceBundle;
 import net.jawr.web.resource.bundle.JoinableResourceBundleImpl;
 import net.jawr.web.resource.bundle.factory.postprocessor.PostProcessorChainFactory;
 import net.jawr.web.resource.bundle.factory.util.PropertiesConfigHelper;
+import net.jawr.web.resource.bundle.generator.GeneratorRegistry;
 import net.jawr.web.resource.handler.reader.ResourceReaderHandler;
 import net.jawr.web.util.StringUtils;
 
@@ -52,6 +53,9 @@ public class FullMappingPropertiesBasedBundlesHandlerFactory {
 	/** The resource handler */
 	private ResourceReaderHandler rsReaderHandler;
 	
+	/** The generator registry */
+	private GeneratorRegistry generatorRegistry;
+	
 	/**
 	 * Create a PropertiesBasedBundlesHandlerFactory using the specified properties.
 	 * 
@@ -61,12 +65,13 @@ public class FullMappingPropertiesBasedBundlesHandlerFactory {
 	 * @param chainFactory the post processor chain factory
 	 */
 	public FullMappingPropertiesBasedBundlesHandlerFactory(String resourceType, 
-			ResourceReaderHandler rsHandler,
+			ResourceReaderHandler rsHandler, GeneratorRegistry generatorRegistry,
 			PostProcessorChainFactory chainFactory) {
 
 		this.resourceType = resourceType;
 		this.chainFactory = chainFactory;
 		this.rsReaderHandler = rsHandler;
+		this.generatorRegistry = generatorRegistry;
 	}
 
 	/**
@@ -179,8 +184,8 @@ public class FullMappingPropertiesBasedBundlesHandlerFactory {
 		InclusionPattern inclusionPattern = getInclusionPattern(props, bundleName);
 		JoinableResourceBundleImpl bundle = new JoinableResourceBundleImpl(
 				bundleId, bundleName, fileExtension, inclusionPattern,
-				rsHandler);
-
+				rsHandler, generatorRegistry);
+		
 		// Override bundle postprocessor
 		String bundlePostProcessors = props.getCustomBundleProperty(bundleName,
 				PropertiesBundleConstant.BUNDLE_FACTORY_CUSTOM_POSTPROCESSOR);
@@ -245,19 +250,15 @@ public class FullMappingPropertiesBasedBundlesHandlerFactory {
 		bundle.setMappings(Arrays.asList(tokens));
 		
 		Set localeKeys = new HashSet();
-		Set tmpLocales = props.getCustomBundlePropertyAsSet(bundleName, PropertiesBundleConstant.BUNDLE_FACTORY_CUSTOM_LOCALE_VARIANTS);
-		for (Iterator iterator = tmpLocales.iterator(); iterator.hasNext();) {
-			String localVariantKey = (String) iterator.next();
-			if(StringUtils.isNotEmpty(localVariantKey)){
-				localeKeys.add(localVariantKey);
-				String hashcode = props.getCustomBundleProperty(bundleName, PropertiesBundleConstant.BUNDLE_FACTORY_CUSTOM_HASHCODE_VARIANT+localVariantKey);
-				bundle.setBundleDataHashCode(localVariantKey, hashcode);
+		Map variants = props.getCustomBundleVariantSets(bundleName);
+		bundle.setVariantSets(variants);
+		for (Iterator iterator = bundle.getVariantKeys().iterator(); iterator.hasNext();) {
+			String variantKey = (String) iterator.next();
+			if(StringUtils.isNotEmpty(variantKey)){
+				localeKeys.add(variantKey);
+				String hashcode = props.getCustomBundleProperty(bundleName, PropertiesBundleConstant.BUNDLE_FACTORY_CUSTOM_HASHCODE_VARIANT+variantKey);
+				bundle.setBundleDataHashCode(variantKey, hashcode);
 			}
-		}
-		
-		if(!localeKeys.isEmpty()){
-			bundle.setLocaleVariantKeys(Collections.list(Collections
-					.enumeration(localeKeys)));
 		}
 		
 		String hashcode = props.getCustomBundleProperty(bundleName, PropertiesBundleConstant.BUNDLE_FACTORY_CUSTOM_HASHCODE);

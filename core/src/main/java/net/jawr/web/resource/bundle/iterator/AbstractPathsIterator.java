@@ -1,5 +1,5 @@
 /**
- * Copyright 2008 Jordi Hernández Sellés
+ * Copyright 2008-2010 Jordi Hernández Sellés, Ibrahim Chaehoi
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -13,6 +13,8 @@
  */
 package net.jawr.web.resource.bundle.iterator;
 
+import java.util.Map;
+
 /**
  * Abstract implementation of ResourceBundlePathsIterator that holds a 
  * reference to a ConditionalCommentCallbackHandler to signal the need 
@@ -20,22 +22,26 @@ package net.jawr.web.resource.bundle.iterator;
  * explorer.  
  * 
  * @author Jordi Hernández Sellés
+ * @author Ibrahim Chaehoi
  */
 public abstract class AbstractPathsIterator implements
 		ResourceBundlePathsIterator {
 
+	/** The comment callback handler */
 	protected ConditionalCommentCallbackHandler commentCallbackHandler;
-	protected String variantKey;
+	
+	/** The current variants */
+	protected Map variants;
 
 
 	/**
 	 * Creates the iterator passing the reference to the ConditionalCommentCallbackHandler. 
 	 * @param handler
 	 */
-	public AbstractPathsIterator(ConditionalCommentCallbackHandler handler,String variantKey) {
+	public AbstractPathsIterator(ConditionalCommentCallbackHandler handler,Map variants) {
 		super();
 		commentCallbackHandler = handler;
-		this.variantKey = variantKey;
+		this.variants = variants;
 	}
 
 	/**
@@ -46,13 +52,11 @@ public abstract class AbstractPathsIterator implements
 		throw new UnsupportedOperationException();
 	}
 
-
 	/* (non-Javadoc)
 	 * @see java.util.Iterator#next()
 	 */
 	public Object next() {
 		return nextPath();
 	}
-	
 
 }

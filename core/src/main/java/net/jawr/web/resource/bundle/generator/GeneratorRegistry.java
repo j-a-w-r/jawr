@@ -13,10 +13,16 @@
  */
 package net.jawr.web.resource.bundle.generator;
 
-import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.Map.Entry;
+
+import javax.servlet.http.HttpServletRequest;
 
 import net.jawr.web.JawrConstant;
 import net.jawr.web.collections.ConcurrentCollectionsFactory;
@@ -28,10 +34,16 @@ import net.jawr.web.resource.bundle.generator.classpath.ClasspathJSGenerator;
 import net.jawr.web.resource.bundle.generator.dwr.DWRGeneratorFactory;
 import net.jawr.web.resource.bundle.generator.img.SpriteGenerator;
 import net.jawr.web.resource.bundle.generator.validator.CommonsValidatorGenerator;
+import net.jawr.web.resource.bundle.generator.variant.VariantResolver;
+import net.jawr.web.resource.bundle.generator.variant.VariantResourceGenerator;
+import net.jawr.web.resource.bundle.generator.variant.VariantSet;
+import net.jawr.web.resource.bundle.generator.variant.css.CssSkinGenerator;
 import net.jawr.web.resource.bundle.locale.ResourceBundleMessagesGenerator;
 import net.jawr.web.resource.handler.reader.ResourceReader;
 import net.jawr.web.resource.handler.reader.ResourceReaderHandler;
 import net.jawr.web.servlet.JawrRequestHandler;
+
+import org.apache.commons.lang.StringUtils;
 
 /**
  * Registry for resource generators, which create scripts or CSS data dynamically, 
@@ -65,14 +77,14 @@ public class GeneratorRegistry {
 	/** The sprite generator prefix */
 	public static final String SPRITE_GENERATOR_PREFIX = "sprite";
 
+	/** The sprite generator prefix */
+	public static final String SKIN_GENERATOR_PREFIX = "skin";
+
 	/** The generator prefix separator */
 	public static final String PREFIX_SEPARATOR = ":";
 	
 	/** The generator prefix registry */
 	private final List prefixRegistry = ConcurrentCollectionsFactory.buildCopyOnWriteArrayList();
-	
-	/** The locale aware resource prefix registry */
-	private final List localeAwareResourceGeneratorPrefixRegistry = ConcurrentCollectionsFactory.buildCopyOnWriteArrayList();
 	
 	/** The CSS image resource prefix registry */
 	private final List cssImageResourceGeneratorPrefixRegistry = ConcurrentCollectionsFactory.buildCopyOnWriteArrayList();
@@ -91,6 +103,9 @@ public class GeneratorRegistry {
 	
 	/** The resource handler */
 	private ResourceReaderHandler rsHandler;
+	
+	/** The map of variant resolvers */
+	private final Map variantResolvers = ConcurrentCollectionsFactory.buildConcurrentHashMap();
 	
 	/**
 	 * Use only for testing purposes.
@@ -111,6 +126,8 @@ public class GeneratorRegistry {
 		prefixRegistry.add(MESSAGE_BUNDLE_PREFIX + PREFIX_SEPARATOR);
 		prefixRegistry.add(IE_CSS_GENERATOR_PREFIX + PREFIX_SEPARATOR);
 		prefixRegistry.add(SPRITE_GENERATOR_PREFIX + PREFIX_SEPARATOR);
+		prefixRegistry.add(SKIN_GENERATOR_PREFIX + PREFIX_SEPARATOR);
+		
 	}
 	
 	/**
@@ -159,6 +176,8 @@ public class GeneratorRegistry {
 		}else if((resourceType.equals(JawrConstant.CSS_TYPE) ||
 				resourceType.equals(JawrConstant.IMG_TYPE)) && (SPRITE_GENERATOR_PREFIX+PREFIX_SEPARATOR).equals(generatorKey)){
 			generator = new SpriteGenerator(rsHandler, config);
+		}else if(resourceType.equals(JawrConstant.CSS_TYPE) && (SKIN_GENERATOR_PREFIX+PREFIX_SEPARATOR).equals(generatorKey)){
+			generator = new CssSkinGenerator(rsHandler, config);
 		}
 		
 		if(generator != null){
@@ -176,9 +195,7 @@ public class GeneratorRegistry {
 	private void updateRegistries(PrefixedResourceGenerator generator, String generatorKey) {
 		
 		registry.put(generatorKey, generator);
-		if(generator instanceof LocaleAwareResourceGenerator){
-			localeAwareResourceGeneratorPrefixRegistry.add(generatorKey);
-		}
+
 		if(generator instanceof StreamResourceGenerator){
 			imageResourceGeneratorPrefixRegistry.add(generatorKey);
 		}
@@ -187,6 +204,35 @@ public class GeneratorRegistry {
 				cssImageResourceGeneratorPrefixRegistry.add(generatorKey);
 			}
 		}
+	}
+	
+	/**
+	 * Register a variant resolver
+	 * @param clazz the class of the variant resolver
+	 */
+	public void registerVariantResolver(String clazz){
+		
+		VariantResolver resolver = (VariantResolver) ClassLoaderResourceUtils.buildObjectInstance(clazz);
+		registerVariantResolver(resolver);
+	}
+	
+	/**
+	 * Register a variant resolver
+	 * @param resolver the variant resolver
+	 */
+	public void registerVariantResolver(VariantResolver resolver){
+		
+		for (Iterator itResolver = variantResolvers.values().iterator(); itResolver.hasNext();) {
+			VariantResolver variantResolver = (VariantResolver) itResolver.next();
+			if(StringUtils.isEmpty(resolver.getVariantType())){
+				throw new IllegalStateException("The getVariantType() method must return something at " + resolver.getClass());
+			}
+			
+			if(resolver.getVariantType().equals(variantResolver.getVariantType())){
+				throw new IllegalStateException("There are 2 resolvers defined for the variant type '"+resolver.getVariantType()+"' : "+variantResolver.getClass()+";" + resolver.getClass());
+			}
+		}
+		variantResolvers.put(resolver.getVariantType(), resolver);
 	}
 	
 	/**
@@ -314,26 +360,59 @@ public class GeneratorRegistry {
 	}
 	
 	/**
-	 * Returns the available locales for a bundle
-	 * @param bundle the message
-	 * @return the available locales for a bundle
+	 * Returns the available variant for a bundle
+	 * @param bundle the bundle
+	 * @return the available variant for a bundle
 	 */
-	public List getAvailableLocales(String bundle) {
+	public Map getAvailableVariants(String bundle) {
 		
-		List availableLocales = new ArrayList();
+		Map availableVariants = new TreeMap();
 		String generatorKey = matchPath(bundle);
 		if(generatorKey != null){
 			ResourceGenerator generator = (ResourceGenerator) registry.get(generatorKey);
-			if(generator instanceof LocaleAwareResourceGenerator){
+			if(generator instanceof VariantResourceGenerator){
 				
-				List tempResult = ((LocaleAwareResourceGenerator)generator).getAvailableLocales(bundle.substring(generatorKey.length()));
+				Map tempResult = ((VariantResourceGenerator)generator).getAvailableVariants(bundle.substring(generatorKey.length()));
 				if(tempResult != null){
-					availableLocales = tempResult;
+					availableVariants = tempResult;
+				}
+			}else if(generator instanceof LocaleAwareResourceGenerator){
+				List availableLocales = ((LocaleAwareResourceGenerator)generator).getAvailableLocales(bundle.substring(generatorKey.length()));
+				if(availableLocales != null){
+					availableVariants = new HashMap();
+					VariantSet variantSet = new VariantSet(JawrConstant.LOCALE_VARIANT_TYPE, "", availableLocales);
+					availableVariants.put(JawrConstant.LOCALE_VARIANT_TYPE, variantSet);
 				}
 			}
 		}
 		
-		return availableLocales;
+		return availableVariants;
+	}
+	
+	/**
+	 * Returns the variant types for a generated resource
+	 * @param path the path
+	 * @return he variant types for a generated resource
+	 */
+	public Set getGeneratedResourceVariantTypes(String path) {
+		
+		Set variantTypes = new HashSet();
+		String generatorKey = matchPath(path);
+		if(generatorKey != null){
+			ResourceGenerator generator = (ResourceGenerator) registry.get(generatorKey);
+			if(generator instanceof VariantResourceGenerator){
+				
+				Set tempResult = ((VariantResourceGenerator)generator).getAvailableVariants(path.substring(generatorKey.length())).keySet();
+				if(tempResult != null){
+					variantTypes = tempResult;
+				}
+			}else if(generator instanceof LocaleAwareResourceGenerator){
+				variantTypes = new HashSet();
+				variantTypes.add(JawrConstant.LOCALE_VARIANT_TYPE);
+			}
+		}
+		
+		return variantTypes;
 	}
 	
 	/**
@@ -369,4 +448,51 @@ public class GeneratorRegistry {
 		
 		return isGeneratedImage;
 	}
+	
+	/**
+	 * Resolve the variants for the request passed in parameter
+	 * @param request the request
+	 * @return the map of variants defined in the request
+	 */
+	public Map resolveVariants(HttpServletRequest request){
+		
+		Map variants = new TreeMap();
+		for (Iterator itVariantResolver = variantResolvers.values().iterator(); itVariantResolver.hasNext();) {
+			VariantResolver resolver = (VariantResolver) itVariantResolver.next();
+			String value = resolver.resolveVariant(request);
+			if(value != null){
+				variants.put(resolver.getVariantType(), value);
+			}
+		}
+		
+		return variants;
+	}
+
+	/**
+	 * Returns the available variants.
+	 * @param variants the current bundle variants
+	 * @param curVariants the current variant
+	 * @return the available variants
+	 */
+	public Map getAvailableVariantMap(Map variants, Map curVariants){
+		
+		Map availableVariantMap = new HashMap();
+		for (Iterator iterator = curVariants.entrySet().iterator(); iterator.hasNext();) {
+			Entry entry = (Entry) iterator.next();
+			String variantType = (String) entry.getKey();
+			String variant = (String) entry.getValue();
+			
+			if(variants.containsKey(variantType)){
+				VariantResolver resolver = (VariantResolver) variantResolvers.get(variantType);
+				if(resolver != null){
+					variant = resolver.getAvailableVariant(variant, (VariantSet) variants.get(variantType));
+				}
+				
+				availableVariantMap.put(variantType, variant);
+			}
+		}
+		return availableVariantMap;
+	}
+
+	
 }

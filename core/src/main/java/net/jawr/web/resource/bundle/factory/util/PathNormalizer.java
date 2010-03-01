@@ -1,5 +1,5 @@
 /**
- * Copyright 2007-2009 Jordi Hernández Sellés, Matt Ruby, Ibrahim Chaehoi
+ * Copyright 2007-2010 Jordi Hernández Sellés, Matt Ruby, Ibrahim Chaehoi
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -54,13 +54,13 @@ public final class PathNormalizer {
 		
 		// Remove first slash
 		String resultPath = path.substring(1);
-		
 		// eval the existence of a suffix
 		String prefix = resultPath.substring(0, resultPath.indexOf("/"));
 
 		// The prefix also contains variant information after a '.'
 		if (prefix.indexOf('.') != -1) {
-			String suffix = '_' + prefix.substring(prefix.indexOf('.') + 1) + resultPath.substring(resultPath.lastIndexOf('.'));
+			String variantPrefix = prefix.substring(prefix.indexOf('.') + 1);
+			String suffix = '@' + variantPrefix + resultPath.substring(resultPath.lastIndexOf('.'));
 			resultPath = resultPath.substring(resultPath.indexOf("/"), resultPath.lastIndexOf('.')) + suffix;
 		} else
 			resultPath = resultPath.substring(resultPath.indexOf("/"), resultPath.length());
@@ -280,7 +280,7 @@ public final class PathNormalizer {
      * </pre>
      * 
      * @param path the path
-     * @return the parent path.
+     * @return the path name.
      */
     public static String getPathName(String path){
     
@@ -290,7 +290,7 @@ public final class PathNormalizer {
     	}else{
     		pathName = path;
     		if(pathName.length() > 1 && pathName.endsWith(JawrConstant.URL_SEPARATOR)){
-    			pathName = pathName.substring(0, pathName.length()-2);
+    			pathName = pathName.substring(0, pathName.length()-1);
         	}
         	int index = pathName.lastIndexOf(JawrConstant.URL_SEPARATOR);
         	if(index > 0){

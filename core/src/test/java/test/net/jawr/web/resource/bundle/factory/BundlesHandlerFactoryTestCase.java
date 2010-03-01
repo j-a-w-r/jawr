@@ -9,9 +9,11 @@ import java.io.Reader;
 import java.nio.channels.ReadableByteChannel;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
@@ -110,8 +112,25 @@ public class BundlesHandlerFactoryTestCase extends TestCase {
 		props.load(BundlesHandlerFactoryTestCase.class.getResourceAsStream(configPath));
 		JawrConfig config = new JawrConfig(props);
 		GeneratorRegistry generatorRegistry = new GeneratorRegistry(){
-			public List getAvailableLocales(String mapping){
-				return new ArrayList();
+			/* (non-Javadoc)
+			 * @see net.jawr.web.resource.bundle.generator.GeneratorRegistry#getAvailableVariantMap(java.util.Map, java.util.Map)
+			 */
+			public Map getAvailableVariantMap(Map variants, Map curVariants) {
+				return new HashMap();
+			}
+
+			/* (non-Javadoc)
+			 * @see net.jawr.web.resource.bundle.generator.GeneratorRegistry#getAvailableVariants(java.lang.String)
+			 */
+			public Map getAvailableVariants(String bundle) {
+				return new HashMap();
+			}
+
+			/* (non-Javadoc)
+			 * @see net.jawr.web.resource.bundle.generator.GeneratorRegistry#isPathGenerated(java.lang.String)
+			 */
+			public boolean isPathGenerated(String path) {
+				return false;
 			}
 		};
 		generatorRegistry.setConfig(config);
@@ -146,10 +165,6 @@ public class BundlesHandlerFactoryTestCase extends TestCase {
 			
 			public void setWorkingDirectory(String workingDir) {
 				
-			}
-			
-			public boolean isResourceGenerated(String path) {
-				return false;
 			}
 			
 			public boolean isDirectory(String resourcePath) {

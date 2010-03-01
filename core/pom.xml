@@ -45,6 +45,9 @@
     <developerConnection>scm:svn:https://jawr.dev.java.net/svn/jawr/</developerConnection>
     <url>https://jawr.dev.java.net/source/browse/jawr/</url>
   </scm>
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
   <build>
     <extensions>
       <extension>
@@ -101,7 +104,6 @@
       <name>Smartsprites Maven Repository</name>
       <url>http://download.csssprites.org/maven2/</url>
     </repository>
-    
   </repositories>
   <dependencies>
     <dependency>

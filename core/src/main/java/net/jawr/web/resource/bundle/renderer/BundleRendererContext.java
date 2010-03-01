@@ -1,5 +1,5 @@
 /**
- * Copyright 2009 Ibrahim Chaehoi
+ * Copyright 2009-2010 Ibrahim Chaehoi
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -14,6 +14,7 @@
 package net.jawr.web.resource.bundle.renderer;
 
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
@@ -25,15 +26,14 @@ import net.jawr.web.servlet.RendererRequestUtils;
  * This class defines the Bundle renderer context
  * 
  * @author Ibrahim Chaehoi
- *
  */
 public class BundleRendererContext {
 
 	/** The context path */
 	private String contextPath;
 	
-	/** The variant key */
-	private String variantKey;
+	/** The variants */
+	private Map variants;
 	
 	/** The included bundles */
 	private Set includedBundles;
@@ -49,7 +49,7 @@ public class BundleRendererContext {
 	
 	/** The flag indicating if it's an SSL request or not */
 	private boolean isSslRequest;
-
+	
 	/** The servlet request */
 	private HttpServletRequest request;
 	
@@ -60,11 +60,11 @@ public class BundleRendererContext {
 	 * @param useGzip the flag indicating if we are using Gzip or not
 	 * @param isSslRequest the flag indicating if it's an SSL request or not
 	 */
-	public BundleRendererContext(String contextPath, String variantKey,
+	public BundleRendererContext(String contextPath, Map variants,
 			boolean useGzip, boolean isSslRequest) {
 		super();
 		this.contextPath = contextPath;
-		this.variantKey = variantKey;
+		this.variants = variants;
 		this.includedBundles = new HashSet();
 		this.includedResources = new HashSet();
 		this.useGzip = useGzip;
@@ -82,7 +82,8 @@ public class BundleRendererContext {
 		super();
 		this.request = request;
 		this.contextPath = request.getContextPath();
-		this.variantKey = jawrConfig.getLocaleResolver().resolveLocaleCode(request);
+		
+		this.variants = jawrConfig.getGeneratorRegistry().resolveVariants(request);
 		this.useGzip = RendererRequestUtils.isRequestGzippable(request,jawrConfig);
 		this.isSslRequest = RendererRequestUtils.isSslRequest(request);
 		
@@ -96,6 +97,14 @@ public class BundleRendererContext {
 	 */
 	public String getContextPath() {
 		return contextPath;
+	}
+
+	/**
+	 * Sets the request
+	 * @param request the request to set
+	 */
+	public void setRequest(HttpServletRequest request) {
+		this.request = request;
 	}
 
 	/**
@@ -115,19 +124,19 @@ public class BundleRendererContext {
 	}
 
 	/**
-	 * Returns the variant key
-	 * @return the variantKey
+	 * Returns the variant map
+	 * @return the variants
 	 */
-	public String getVariantKey() {
-		return variantKey;
+	public Map getVariants() {
+		return variants;
 	}
 
 	/**
-	 * Sets the variant key
-	 * @param variantKey the variantKey to set
+	 * Sets  the variant map
+	 * @param variants the variants to set
 	 */
-	public void setVariantKey(String variantKey) {
-		this.variantKey = variantKey;
+	public void setVariants(Map variants) {
+		this.variants = variants;
 	}
 
 	/**

@@ -39,8 +39,8 @@ public class CompositeResourceBundleTest extends ResourceHandlerBasedTest {
 		InclusionPattern onDebug = new InclusionPattern(false,0,true,false);
 		InclusionPattern excludedOnDebug = new InclusionPattern(false,0,false,true);
 		
-		JoinableResourceBundleImpl bundleA = new JoinableResourceBundleImpl(COMPOSITE_ID,"composite", ".js", onDebug,mappingA,rsHandler);
-		JoinableResourceBundleImpl bundleB = new JoinableResourceBundleImpl(COMPOSITE_ID,"composite", ".js", excludedOnDebug,mappingB,rsHandler);
+		JoinableResourceBundleImpl bundleA = new JoinableResourceBundleImpl(COMPOSITE_ID,"composite", ".js", onDebug,mappingA,rsHandler,  config.getGeneratorRegistry());
+		JoinableResourceBundleImpl bundleB = new JoinableResourceBundleImpl(COMPOSITE_ID,"composite", ".js", excludedOnDebug,mappingB,rsHandler, config.getGeneratorRegistry());
 		List bundles = new ArrayList();
 		bundles.add(bundleA);
 		bundles.add(bundleB);

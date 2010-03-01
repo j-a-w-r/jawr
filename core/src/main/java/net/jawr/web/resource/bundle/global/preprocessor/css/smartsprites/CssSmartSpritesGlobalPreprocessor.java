@@ -1,5 +1,5 @@
 /**
- * Copyright 2009 Ibrahim Chaehoi
+ * Copyright 2009-2010 Ibrahim Chaehoi
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -127,7 +127,7 @@ public class CssSmartSpritesGlobalPreprocessor extends
 		MessageLog messageLog = new MessageLog(new MessageSink[]{new LogMessageSink()});
 		
 		SmartSpritesResourceHandler smartSpriteRsHandler = new SmartSpritesResourceHandler(cssRsHandler, imgRsHandler.getRsReaderHandler(), 
-				imgRsHandler.getJawrConfig().getGeneratorRegistry(), charset.toString(), messageLog);
+				jawrConfig.getGeneratorRegistry(), imgRsHandler.getJawrConfig().getGeneratorRegistry(), charset.toString(), messageLog);
 		String outDir = cssRsHandler.getWorkingDirectory()+JawrConstant.CSS_SMARTSPRITES_TMP_DIR;
 		
 		SmartSpritesParameters params = new SmartSpritesParameters("/", null, outDir, null, msgLevel, "", PngDepth.valueOf("AUTO"),

@@ -1,5 +1,5 @@
 /**
- * Copyright 2008 Jordi Hernández Sellés
+ * Copyright 2008-2010 Jordi Hernández Sellés
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -23,6 +23,7 @@ import javax.servlet.http.HttpServletRequest;
  * Uses request.getLocale() to determine the user's Locale. 
  * 
  * @author Jordi Hernández Sellés
+ * @author Ibrahim Chaehoi
  */
 public class DefaultLocaleResolver implements LocaleResolver, Serializable {
 
@@ -41,5 +42,4 @@ public class DefaultLocaleResolver implements LocaleResolver, Serializable {
 		
 		return localCode;
 	}
-
 }

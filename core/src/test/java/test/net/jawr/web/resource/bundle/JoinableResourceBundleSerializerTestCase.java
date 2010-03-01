@@ -7,18 +7,23 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
 import junit.framework.TestCase;
+import net.jawr.web.JawrConstant;
 import net.jawr.web.exception.ResourceNotFoundException;
 import net.jawr.web.resource.bundle.InclusionPattern;
 import net.jawr.web.resource.bundle.JoinableResourceBundleImpl;
 import net.jawr.web.resource.bundle.JoinableResourceBundlePropertySerializer;
 import net.jawr.web.resource.bundle.factory.PropertiesBundleConstant;
 import net.jawr.web.resource.bundle.factory.util.PropertiesConfigHelper;
+import net.jawr.web.resource.bundle.generator.GeneratorRegistry;
+import net.jawr.web.resource.bundle.generator.variant.VariantSet;
 import net.jawr.web.resource.bundle.postprocess.AbstractChainedResourceBundlePostProcessor;
 import net.jawr.web.resource.bundle.postprocess.BundleProcessingStatus;
 import net.jawr.web.resource.bundle.postprocess.ResourceBundlePostProcessor;
@@ -39,8 +44,9 @@ public class JoinableResourceBundleSerializerTestCase extends TestCase {
 		List mappings = Arrays.asList(new String[]{"/bundle/content/**", "/bundle/myScript.js"});
 		
 		ResourceReaderHandler handler = new TestResourceHandler();
+		GeneratorRegistry generatorRegistry = new GeneratorRegistry();
 		InclusionPattern inclusionPattern = new InclusionPattern(true, 0);
-		JoinableResourceBundleImpl bundle = new JoinableResourceBundleImpl("/bundle/myBundle.js", bundleName, ".js", inclusionPattern, handler);
+		JoinableResourceBundleImpl bundle = new JoinableResourceBundleImpl("/bundle/myBundle.js", bundleName, ".js", inclusionPattern, handler, generatorRegistry);
 		bundle.setMappings(mappings);
 		bundle.setBundleDataHashCode(null, 123456);
 		
@@ -67,13 +73,17 @@ public class JoinableResourceBundleSerializerTestCase extends TestCase {
 		List mappings = Arrays.asList(new String[]{"/bundle/content/**", "/bundle/myScript.js"});
 		
 		ResourceReaderHandler handler = new TestResourceHandler();
+		GeneratorRegistry generatorRegistry = new GeneratorRegistry();
+		
 		InclusionPattern inclusionPattern = new InclusionPattern(false, 3, true, false);
-		JoinableResourceBundleImpl bundle = new JoinableResourceBundleImpl("/bundle/myBundle.js", bundleName, ".js", inclusionPattern, handler);
+		JoinableResourceBundleImpl bundle = new JoinableResourceBundleImpl("/bundle/myBundle.js", bundleName, ".js", inclusionPattern, handler, generatorRegistry);
 		bundle.setMappings(mappings);
 		bundle.setAlternateProductionURL("http://hostname/scripts/myBundle.js");
 		bundle.setExplorerConditionalExpression("if lt IE 6");
 		
-		bundle.setLocaleVariantKeys(Arrays.asList(new String[]{"fr", "en_US"}));
+		Map variants = new HashMap();
+		variants.put(JawrConstant.LOCALE_VARIANT_TYPE, new VariantSet(JawrConstant.LOCALE_VARIANT_TYPE, "fr", Arrays.asList(new String[]{"fr", "en_US"})));
+		bundle.setVariantSets(variants);
 		bundle.setBundleDataHashCode(null, -123456);
 		bundle.setBundleDataHashCode("fr", 123456);
 		bundle.setBundleDataHashCode("en_US", 789);
@@ -117,8 +127,10 @@ public class JoinableResourceBundleSerializerTestCase extends TestCase {
 		assertEquals("myFilePostProcessor1,myFilePostProcessor2", helper.getCustomBundleProperty(bundleName, PropertiesBundleConstant.BUNDLE_FACTORY_CUSTOM_FILE_POSTPROCESSOR));
 		assertEquals("N123456", helper.getCustomBundleProperty(bundleName, PropertiesBundleConstant.BUNDLE_FACTORY_CUSTOM_HASHCODE));
 		
-		Set expectedLocales = new HashSet(Arrays.asList(new String[]{"fr", "en_US"}));
-		assertEquals(expectedLocales, helper.getCustomBundlePropertyAsSet(bundleName, PropertiesBundleConstant.BUNDLE_FACTORY_CUSTOM_LOCALE_VARIANTS));
+		Map expectedVariants = new HashMap();
+		expectedVariants.put(JawrConstant.LOCALE_VARIANT_TYPE, new VariantSet(JawrConstant.LOCALE_VARIANT_TYPE, "fr", Arrays.asList(new String[]{"fr", "en_US"})));
+		Map variantSets = helper.getCustomBundleVariantSets(bundleName);
+		assertEquals(expectedVariants, variantSets);
 		
 		assertEquals("N123456", helper.getCustomBundleProperty(bundleName, PropertiesBundleConstant.BUNDLE_FACTORY_CUSTOM_HASHCODE));
 		assertEquals("123456", helper.getCustomBundleProperty(bundleName, PropertiesBundleConstant.BUNDLE_FACTORY_CUSTOM_HASHCODE_VARIANT+"fr"));
@@ -169,10 +181,6 @@ public class JoinableResourceBundleSerializerTestCase extends TestCase {
 
 		public String getWorkingDirectory() {
 			return null;
-		}
-
-		public boolean isResourceGenerated(String path) {
-			return false;
 		}
 
 		public void setWorkingDirectory(String workingDir) {

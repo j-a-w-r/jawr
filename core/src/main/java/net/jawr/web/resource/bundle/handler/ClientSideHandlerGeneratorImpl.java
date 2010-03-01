@@ -1,5 +1,5 @@
 /**
- * Copyright 2008-2009 Jordi Hernández Sellés, Ibrahim Chaehoi
+ * Copyright 2008-2010 Jordi Hernández Sellés, Ibrahim Chaehoi
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -18,6 +18,7 @@ import java.io.InputStream;
 import java.io.StringWriter;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -95,7 +96,7 @@ public class ClientSideHandlerGeneratorImpl implements
 		
 		boolean useGzip = RendererRequestUtils.isRequestGzippable(request, this.config);
 		StringBuffer sb = new StringBuffer(mainScriptTemplate.toString());
-		String locale = this.config.getLocaleResolver().resolveLocaleCode(request);
+		Map variants = this.config.getGeneratorRegistry().resolveVariants(request);
 		sb.append("JAWR.app_context_path='").append(request.getContextPath()).append("';\n");
 		
 		if(null != this.config.getDwrMapping()){
@@ -112,7 +113,7 @@ public class ClientSideHandlerGeneratorImpl implements
 		sb.append("function r(n, p, i,ie,aU){return new JAWR.ResourceBundle(n, p, i,ie,aU);}\n");
 		
 		sb.append("JAWR.loader.jsbundles = [");
-		sb.append(getClientSideBundles(locale, useGzip));
+		sb.append(getClientSideBundles(variants, useGzip));
 		sb.append("]\n");
 		
 		// Retrieve the resourcehandler for CSS if there is one. 
@@ -126,7 +127,7 @@ public class ClientSideHandlerGeneratorImpl implements
 			// so we add CSS bundles to the script
 			if(this != generator){
 				sb.append(";JAWR.loader.cssbundles = [");
-				sb.append(generator.getClientSideBundles(locale, useGzip));
+				sb.append(generator.getClientSideBundles(variants, useGzip));
 				sb.append("];\n");
 			}
 			else isCSSHandler = true;
@@ -167,13 +168,13 @@ public class ClientSideHandlerGeneratorImpl implements
 	/* (non-Javadoc)
 	 * @see net.jawr.web.resource.bundle.handler.ClientSideHandlerGenerator#getClientSideBundles(java.lang.String, boolean)
 	 */
-	public StringBuffer getClientSideBundles(String locale, boolean useGzip){
+	public StringBuffer getClientSideBundles(Map variants, boolean useGzip){
 		StringBuffer sb = new StringBuffer();
-		addAllBundles(globalBundles,locale,sb,useGzip);
+		addAllBundles(globalBundles,variants,sb,useGzip);
 		if(!globalBundles.isEmpty() && !contextBundles.isEmpty()){
 			sb.append(",");
 		}
-		addAllBundles(contextBundles,locale,sb,useGzip);
+		addAllBundles(contextBundles,variants,sb,useGzip);
 		
 		return sb;
 	}
@@ -199,14 +200,14 @@ public class ClientSideHandlerGeneratorImpl implements
 	 * Adds a javascript Resourcebundle representation for each member of a
 	 * List containing JoinableResourceBundles
 	 * @param bundles the bundles
-	 * @param variantKey the variant key
+	 * @param variants the variant map
 	 * @param buf the buffer
 	 * @param useGzip the flag indicating if we use gzip compression or not.
 	 */
-	private void addAllBundles(List bundles, String variantKey, StringBuffer buf,boolean useGzip){
+	private void addAllBundles(List bundles, Map variants, StringBuffer buf,boolean useGzip){
 		for(Iterator it = bundles.iterator();it.hasNext();){
 			JoinableResourceBundle bundle = (JoinableResourceBundle) it.next();
-			appendBundle(bundle,variantKey,buf,useGzip);
+			appendBundle(bundle,variants,buf,useGzip);
 			
 			if(it.hasNext())
 				buf.append(",");
@@ -216,20 +217,20 @@ public class ClientSideHandlerGeneratorImpl implements
 	/**
 	 * Creates a javascript objet that represents a bundle
 	 * @param bundle the bundle
-	 * @param variantKey the vairant key
+	 * @param variants the variant map
 	 * @param buf the buffer
 	 * @param useGzip the flag indicating if we use gzip compression or not.
 	 */
-	private void appendBundle(JoinableResourceBundle bundle,String variantKey, StringBuffer buf,boolean useGzip){
+	private void appendBundle(JoinableResourceBundle bundle,Map variants, StringBuffer buf,boolean useGzip){
 		buf.append("r(")
 			.append(JavascriptStringUtil.quote(bundle.getId()))
 			.append(",");
 		if(useGzip){
-			String path = bundle.getURLPrefix(variantKey);
+			String path = bundle.getURLPrefix(variants);
 			path = path.substring(1); // remove leading '/'
 			buf.append(JavascriptStringUtil.quote(BundleRenderer.GZIP_PATH_PREFIX + path ));
 		}
-		else buf.append(JavascriptStringUtil.quote(bundle.getURLPrefix(variantKey)));
+		else buf.append(JavascriptStringUtil.quote(bundle.getURLPrefix(variants)));
 		
 		boolean skipItems = false;
 		if(bundle.getItemPathList().size() == 1 && null == bundle.getExplorerConditionalExpression()){
@@ -238,7 +239,7 @@ public class ClientSideHandlerGeneratorImpl implements
 		
 		if(!skipItems) {
 			buf.append(",[");
-			for(Iterator it = bundle.getItemPathList(variantKey).iterator();it.hasNext();){
+			for(Iterator it = bundle.getItemPathList(variants).iterator();it.hasNext();){
 				String path = (String) it.next();
 				if(this.config.getGeneratorRegistry().isPathGenerated(path)) {
 					path = PathNormalizer.createGenerationPath(path,this.config.getGeneratorRegistry());

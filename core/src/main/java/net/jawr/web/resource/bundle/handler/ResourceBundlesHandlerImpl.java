@@ -1,5 +1,5 @@
 /**
- * Copyright 2007-2009 Jordi Hernández Sellés, Ibrahim Chaehoi
+ * Copyright 2007-2010 Jordi Hernández Sellés, Ibrahim Chaehoi
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -25,11 +25,11 @@ import java.nio.channels.ReadableByteChannel;
 import java.nio.channels.WritableByteChannel;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
-import java.util.Set;
 
 import net.jawr.web.JawrConstant;
 import net.jawr.web.collections.ConcurrentCollectionsFactory;
@@ -44,13 +44,13 @@ import net.jawr.web.resource.bundle.JoinableResourceBundle;
 import net.jawr.web.resource.bundle.JoinableResourceBundleContent;
 import net.jawr.web.resource.bundle.JoinableResourceBundlePropertySerializer;
 import net.jawr.web.resource.bundle.factory.util.PathNormalizer;
+import net.jawr.web.resource.bundle.generator.variant.VariantUtils;
 import net.jawr.web.resource.bundle.global.preprocessor.GlobalPreprocessingContext;
 import net.jawr.web.resource.bundle.global.preprocessor.GlobalPreprocessor;
 import net.jawr.web.resource.bundle.iterator.ConditionalCommentCallbackHandler;
 import net.jawr.web.resource.bundle.iterator.DebugModePathsIteratorImpl;
 import net.jawr.web.resource.bundle.iterator.PathsIteratorImpl;
 import net.jawr.web.resource.bundle.iterator.ResourceBundlePathsIterator;
-import net.jawr.web.resource.bundle.locale.LocaleUtils;
 import net.jawr.web.resource.bundle.postprocess.BundleProcessingStatus;
 import net.jawr.web.resource.bundle.postprocess.ResourceBundlePostProcessor;
 import net.jawr.web.resource.bundle.sorting.GlobalResourceBundleComparator;
@@ -239,10 +239,10 @@ public class ResourceBundlesHandlerImpl implements ResourceBundlesHandler {
 	public ResourceBundlePathsIterator getGlobalResourceBundlePaths(
 			boolean debugMode,
 			ConditionalCommentCallbackHandler commentCallbackHandler,
-			String variantKey) {
+			Map variants) {
 
 		return getBundleIterator(debugMode, globalBundles,
-				commentCallbackHandler, variantKey);
+				commentCallbackHandler, variants);
 	}
 
 	/*
@@ -255,10 +255,10 @@ public class ResourceBundlesHandlerImpl implements ResourceBundlesHandler {
 	 */
 	public ResourceBundlePathsIterator getGlobalResourceBundlePaths(
 			ConditionalCommentCallbackHandler commentCallbackHandler,
-			String variantKey) {
+			Map variants) {
 
 		return getBundleIterator(getConfig().isDebugModeOn(), globalBundles,
-				commentCallbackHandler, variantKey);
+				commentCallbackHandler, variants);
 	}
 
 	/*
@@ -272,7 +272,7 @@ public class ResourceBundlesHandlerImpl implements ResourceBundlesHandler {
 	public ResourceBundlePathsIterator getGlobalResourceBundlePaths(
 			String bundleId,
 			ConditionalCommentCallbackHandler commentCallbackHandler,
-			String variantKey) {
+			Map variants) {
 
 		List bundles = new ArrayList();
 		for (Iterator it = globalBundles.iterator(); it.hasNext();) {
@@ -283,7 +283,7 @@ public class ResourceBundlesHandlerImpl implements ResourceBundlesHandler {
 			}
 		}
 		return getBundleIterator(getConfig().isDebugModeOn(), bundles,
-				commentCallbackHandler, variantKey);
+				commentCallbackHandler, variants);
 	}
 
 	/*
@@ -295,10 +295,10 @@ public class ResourceBundlesHandlerImpl implements ResourceBundlesHandler {
 	 */
 	public ResourceBundlePathsIterator getBundlePaths(String bundleId,
 			ConditionalCommentCallbackHandler commentCallbackHandler,
-			String variantKey) {
+			Map variants) {
 
 		return getBundlePaths(getConfig().isDebugModeOn(), bundleId,
-				commentCallbackHandler, variantKey);
+				commentCallbackHandler, variants);
 	}
 
 	/*
@@ -313,7 +313,7 @@ public class ResourceBundlesHandlerImpl implements ResourceBundlesHandler {
 	public ResourceBundlePathsIterator getBundlePaths(boolean debugMode,
 			String bundleId,
 			ConditionalCommentCallbackHandler commentCallbackHandler,
-			String variantKey) {
+			Map variants) {
 
 		List bundles = new ArrayList();
 
@@ -332,7 +332,7 @@ public class ResourceBundlesHandlerImpl implements ResourceBundlesHandler {
 		}
 
 		return getBundleIterator(debugMode, bundles, commentCallbackHandler,
-				variantKey);
+				variants);
 	}
 
 	/**
@@ -342,21 +342,21 @@ public class ResourceBundlesHandlerImpl implements ResourceBundlesHandler {
 	 *            the flag indicating if we are in debug mode or not
 	 * @param commentCallbackHandler
 	 *            the comment callback handler
-	 * @param variantKey
-	 *            the variant key
+	 * @param variants
+	 *            the variant map
 	 * @return the bundle iterator
 	 */
 	private ResourceBundlePathsIterator getBundleIterator(boolean debugMode,
 			List bundles,
 			ConditionalCommentCallbackHandler commentCallbackHandler,
-			String variantKey) {
+			Map variants) {
 		ResourceBundlePathsIterator bundlesIterator;
 		if (debugMode) {
 			bundlesIterator = new DebugModePathsIteratorImpl(bundles,
-					commentCallbackHandler, variantKey);
+					commentCallbackHandler, variants);
 		} else
 			bundlesIterator = new PathsIteratorImpl(bundles,
-					commentCallbackHandler, variantKey);
+					commentCallbackHandler, variants);
 		return bundlesIterator;
 	}
 
@@ -533,32 +533,35 @@ public class ResourceBundlesHandlerImpl implements ResourceBundlesHandler {
 		JoinableResourceBundleContent store = null;
 
 		// Collect all variant names from child bundles
-		Set variants = new HashSet();
+		Map variants = new HashMap();
 		for (Iterator it = composite.getChildBundles().iterator(); it.hasNext();) {
 			JoinableResourceBundle childbundle = (JoinableResourceBundle) it
 					.next();
-			if (null != childbundle.getLocaleVariantKeys())
-				variants.addAll(childbundle.getLocaleVariantKeys());
+			if (null != childbundle.getVariants())
+				variants.putAll(childbundle.getVariants());
 		}
 
+		List allVariants = VariantUtils.getAllVariants(variants);
 		// Process all variants
-		for (Iterator vars = variants.iterator(); vars.hasNext();) {
+		for (Iterator vars = allVariants.iterator(); vars.hasNext();) {
 
-			String variant = (String) vars.next();
+			variants = (Map) vars.next();
 			store = new JoinableResourceBundleContent();
 			for (Iterator it = composite.getChildBundles().iterator(); it
 					.hasNext();) {
 				JoinableResourceBundle childbundle = (JoinableResourceBundle) it
 						.next();
-				store.append(joinandPostprocessBundle(childbundle, variant,
+				store.append(joinandPostprocessBundle(childbundle, variants,
 						processBundle));
 			}
 
 			if (processBundle) {
-				String name = LocaleUtils.getLocalizedBundleName(composite
-						.getId(), variant);
+				
+				String variantKey = VariantUtils.getVariantKey(variants);
+				String name = VariantUtils.getVariantBundleName(composite
+						.getId(), variantKey);
 				resourceBundleHandler.storeBundle(name, store);
-				initBundleDataHashcode(composite, store, variant);
+				initBundleDataHashcode(composite, store, variantKey);
 			}
 		}
 
@@ -593,11 +596,13 @@ public class ResourceBundlesHandlerImpl implements ResourceBundlesHandler {
 	 *            the data to store
 	 */
 	private void initBundleDataHashcode(JoinableResourceBundle bundle,
-			JoinableResourceBundleContent store, String localeVariant) {
+			JoinableResourceBundleContent store, String variant) {
 		int bundleHashcode = store.toString().hashCode();
-		bundle.setBundleDataHashCode(localeVariant, bundleHashcode);
+		bundle.setBundleDataHashCode(variant, bundleHashcode);
 	}
 
+	
+	
 	/**
 	 * Joins the members of a bundle and stores it
 	 * 
@@ -613,13 +618,15 @@ public class ResourceBundlesHandlerImpl implements ResourceBundlesHandler {
 			
 			JoinableResourceBundleContent store = null;
 			// Process the locale specific variants
-			if (null != bundle.getLocaleVariantKeys()) {
-				for (Iterator it = bundle.getLocaleVariantKeys().iterator(); it
+			if (null != bundle.getVariants()) {
+				List allVariants = VariantUtils.getAllVariants(bundle.getVariants()); 
+				for (Iterator it = allVariants.iterator(); it
 						.hasNext();) {
-					String variantKey = (String) it.next();
-					String name = LocaleUtils.getLocalizedBundleName(bundle
+					Map variantMap = (Map) it.next();
+					String variantKey = VariantUtils.getVariantKey(variantMap);
+					String name = VariantUtils.getVariantBundleName(bundle
 							.getId(), variantKey);
-					store = joinandPostprocessBundle(bundle, variantKey,
+					store = joinandPostprocessBundle(bundle, variantMap,
 							processBundle);
 					resourceBundleHandler.storeBundle(name, store);
 					initBundleDataHashcode(bundle, store, variantKey);
@@ -643,15 +650,15 @@ public class ResourceBundlesHandlerImpl implements ResourceBundlesHandler {
 	 * 
 	 * @param bundle
 	 *            the bundle
-	 * @param variantKey
-	 *            the variant key
+	 * @param variants
+	 *            the variant map
 	 * @param the
 	 *            flag indicating if we should process the bundle or not
 	 * @return the resource bundle content, where all postprocessors have been
 	 *         executed
 	 */
 	private JoinableResourceBundleContent joinandPostprocessBundle(
-			JoinableResourceBundle bundle, String variantKey,
+			JoinableResourceBundle bundle, Map variants,
 			boolean processBundle) {
 
 		JoinableResourceBundleContent bundleContent = new JoinableResourceBundleContent();
@@ -673,7 +680,7 @@ public class ResourceBundlesHandlerImpl implements ResourceBundlesHandler {
 
 		try {
 			// Run through all the files belonging to the bundle
-			for (Iterator it = bundle.getItemPathList(variantKey).iterator(); it
+			for (Iterator it = bundle.getItemPathList(variants).iterator(); it
 					.hasNext();) {
 
 				// File is first created in memory using a stringwriter.
@@ -780,4 +787,5 @@ public class ResourceBundlesHandlerImpl implements ResourceBundlesHandler {
 		return this.clientSideHandlerGenerator;
 	}
 
+	
 }

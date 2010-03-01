@@ -13,6 +13,9 @@ package net.jawr.web.resource;
 
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.Set;
+
+import net.jawr.web.servlet.util.MIMETypesSupport;
 
 /**
  * This utility class is a slightly modified copy of FilenameUtils of commons-io
@@ -40,7 +43,10 @@ import java.util.Iterator;
  */
 public class FileNameUtils {
 
-    /**
+	/** The image extensions */
+	private static Set IMG_EXTENSIONS = MIMETypesSupport.getSupportedProperties(FileNameUtils.class).keySet();
+	
+	/**
      * The extension separator character.
      * @since Commons IO 1.4
      */
@@ -289,6 +295,21 @@ public class FileNameUtils {
             }
         }
         return false;
+    }
+    
+    /**
+     * Checks whether the extension of the filename is an image extension.
+     * <p>
+     * This method obtains the extension as the textual part of the filename
+     * after the last dot. There must be no directory separator after the dot.
+     * The extension check is case-sensitive on all platforms.
+     *
+     * @param filename  the filename to query, null returns false
+      * @return true if the filename is an image extension.
+     */
+    public static boolean hasImageExtension(String filename) {
+        
+    	return isExtension(filename, IMG_EXTENSIONS);
     }
 
 }

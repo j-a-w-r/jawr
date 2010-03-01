@@ -11,8 +11,10 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
@@ -35,6 +37,7 @@ import net.jawr.web.resource.bundle.iterator.ResourceBundlePathsIterator;
 import net.jawr.web.resource.handler.reader.ResourceReader;
 import net.jawr.web.resource.handler.reader.ResourceReaderHandler;
 import test.net.jawr.web.FileUtils;
+import test.net.jawr.web.resource.bundle.MockJoinableResourceBundle;
 import test.net.jawr.web.servlet.mock.MockServletContext;
 
 /**
@@ -118,7 +121,18 @@ public class IECssBundleGeneratorTestCase extends TestCase {
 			}
 			
 			public JoinableResourceBundle resolveBundleForPath(String path) {
-				return null;
+				
+				JoinableResourceBundle bundle = new MockJoinableResourceBundle(){
+
+					/* (non-Javadoc)
+					 * @see test.net.jawr.web.resource.bundle.MockJoinableResourceBundle#getVariants()
+					 */
+					public Map getVariants() {
+						return new HashMap();
+					}
+				};
+				
+				return bundle;
 			}
 			
 			public boolean isGlobalResourceBundle(String resourceBundleId) {
@@ -131,7 +145,7 @@ public class IECssBundleGeneratorTestCase extends TestCase {
 			
 			public ResourceBundlePathsIterator getGlobalResourceBundlePaths(
 					ConditionalCommentCallbackHandler commentCallbackHandler,
-					String variantKey) {
+					Map variants) {
 				
 				return null;
 			}
@@ -150,7 +164,7 @@ public class IECssBundleGeneratorTestCase extends TestCase {
 			
 			public ResourceBundlePathsIterator getBundlePaths(String bundleId,
 					ConditionalCommentCallbackHandler commentCallbackHandler,
-					String variantKey) {
+					Map variants) {
 				
 				
 				return new ResourceBundlePathsIterator() {
@@ -178,23 +192,24 @@ public class IECssBundleGeneratorTestCase extends TestCase {
 			public ResourceBundlePathsIterator getBundlePaths(
 					boolean debugMode, String bundleId,
 					ConditionalCommentCallbackHandler commentCallbackHandler,
-					String variantKey) {
+					Map variants) {
 				return null;
 			}
 
 			public ResourceBundlePathsIterator getGlobalResourceBundlePaths(
 					boolean debugMode,
 					ConditionalCommentCallbackHandler commentCallbackHandler,
-					String variantKey) {
+					Map variants) {
 				return null;
 			}
 
 			public ResourceBundlePathsIterator getGlobalResourceBundlePaths(
 					String bundlePath,
 					ConditionalCommentCallbackHandler commentCallbackHandler,
-					String variantKey) {
+					Map variants) {
 				return null;
 			}
+			
 		};
 		return bundlesHandler;
 	}
@@ -205,10 +220,6 @@ public class IECssBundleGeneratorTestCase extends TestCase {
 			
 			public void setWorkingDirectory(String workingDir) {
 				
-			}
-			
-			public boolean isResourceGenerated(String path) {
-				return false;
 			}
 			
 			public boolean isDirectory(String resourcePath) {

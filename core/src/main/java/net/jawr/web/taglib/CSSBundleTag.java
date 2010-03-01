@@ -1,5 +1,5 @@
 /**
- * Copyright 2007 Jordi Hernández Sellés
+ * Copyright 2007-2010 Jordi Hernández Sellés, Ibrahim Chaehoi
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -13,21 +13,93 @@
  */
 package net.jawr.web.taglib;
 
+import java.io.IOException;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.jsp.JspException;
+
 import net.jawr.web.JawrConstant;
 import net.jawr.web.resource.bundle.handler.ResourceBundlesHandler;
 import net.jawr.web.resource.bundle.renderer.BundleRenderer;
+import net.jawr.web.resource.bundle.renderer.BundleRendererContext;
 import net.jawr.web.resource.bundle.renderer.CSSHTMLBundleLinkRenderer;
+import net.jawr.web.servlet.RendererRequestUtils;
+import net.jawr.web.util.StringUtils;
+
+import org.apache.log4j.Logger;
 
 /**
  * JSP taglib which uses a CSSHTMLBundleLinkRenderer to render links for CSS bundles. 
  * 
  * @author Jordi Hernández Sellés
+ * @author Ibrahim Chaehoi
  */
 public class CSSBundleTag  extends AbstractResourceBundleTag {
     
-        private String media;
+	/** The serial version UID */
+	private static final long serialVersionUID = 5087323727715427592L;
 
-	/* (non-Javadoc)
+	/** The logger */
+	private static final Logger LOGGER = Logger
+			.getLogger(CSSBundleTag.class);
+	
+    /** The media */
+    private String media;
+
+    /** The flag indicating if it's an alternate stylesheet */
+    private boolean alternate;
+    
+    /** The flag indicating if they must display the alternate styles */
+    private boolean displayAlternate;
+    
+    /** The title */
+    private String title;
+    
+    /*
+	 * (non-Javadoc)
+	 * 
+	 * @see javax.servlet.jsp.tagext.TagSupport#doStartTag()
+	 */
+	public int doStartTag() throws JspException {
+
+		// Renderer istance which takes care of generating the response
+		this.renderer = createRenderer();
+
+		HttpServletRequest request = (HttpServletRequest) pageContext
+				.getRequest();
+
+		// set the debug override
+		RendererRequestUtils.setRequestDebuggable(request, renderer
+				.getBundler().getConfig());
+
+		try {
+			BundleRendererContext ctx = RendererRequestUtils
+					.getBundleRendererContext(request, renderer);
+			
+			if(alternate && StringUtils.isNotEmpty(title)){
+				
+				if(LOGGER.isInfoEnabled()){
+					LOGGER.info("Force CSS to alternate skin '"+title+"'");
+				}
+				
+				// force alternate variant
+				Map variants = ctx.getVariants();
+				variants.put(JawrConstant.SKIN_VARIANT_TYPE, title);
+			}
+			
+			renderer.renderBundleLinks(src, ctx, pageContext.getOut());
+			
+		} catch (IOException ex) {
+			throw new JspException(
+					"Unexpected IOException when writing script tags for path "
+							+ src, ex);
+		}
+
+		return SKIP_BODY;
+	}
+	
+    /* (non-Javadoc)
 	 * @see net.jawr.web.taglib.AbstractResourceBundleTag#createRenderer()
 	 */
 	protected BundleRenderer createRenderer() {
@@ -35,17 +107,50 @@ public class CSSBundleTag  extends AbstractResourceBundleTag {
 			throw new IllegalStateException("ResourceBundlesHandler not present in servlet context. Initialization of Jawr either failed or never occurred.");
 
 		ResourceBundlesHandler rsHandler = (ResourceBundlesHandler) pageContext.getServletContext().getAttribute(JawrConstant.CSS_CONTEXT_ATTRIBUTE);
-		return  new CSSHTMLBundleLinkRenderer(rsHandler, this.useRandomParam, this.media);
+		return  new CSSHTMLBundleLinkRenderer(rsHandler, this.useRandomParam, this.media, this.alternate, this.displayAlternate, this.title);
 	}
 
-	private static final long serialVersionUID = 5087323727715427592L;
-
-    /**
+	/**
      * Set the media type to use in the css tag
      * @param media 
      */
     public void setMedia(String media) {
         this.media = media;
     }
+    
+    /**
+     * Sets the alternate flag
+	 * @param alternate the alternate to set
+	 */
+	public void setAlternate(boolean alternate) {
+		this.alternate = alternate;
+	}
+
+	/**
+	 * Sets the flag indicating if the styles must display the alternate styles
+	 * @param displayAlternate the falg indicating if we must display alternate skin styles or not
+	 */
+	public void setDisplayAlternate(boolean displayAlternate) {
+		this.displayAlternate = displayAlternate;
+	}
+	
+	/**
+	 * Sets the title
+	 * @param title the title to set
+	 */
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+	/* (non-Javadoc)
+	 * @see javax.servlet.jsp.tagext.TagSupport#release()
+	 */
+	public void release() {
+		super.release();
+		alternate = false;
+		displayAlternate = false;
+		title = null;
+		media = null;
+	}
 
 }

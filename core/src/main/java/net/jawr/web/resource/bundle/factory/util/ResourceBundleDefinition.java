@@ -1,5 +1,5 @@
 /**
- * Copyright 2007-2009 Jordi Hernández Sellés, Ibrahim Chaehoi
+ * Copyright 2007-2010 Jordi Hernández Sellés, Ibrahim Chaehoi
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -14,6 +14,7 @@
 package net.jawr.web.resource.bundle.factory.util;
 
 import java.util.List;
+import java.util.Map;
 
 import net.jawr.web.servlet.JawrRequestHandler;
 
@@ -65,28 +66,28 @@ public class ResourceBundleDefinition {
 	/** The list of children for composite bundle */
 	private List children;
 	
-	/** The locale variant keys for the bundle  */
-	private List localeVariantKeys;
+	/** The variant map */
+	private Map variants;
 
 	/** The list of dependencies */
 	private List dependencies;
 	
 	/**
-	 * Returns the locale variant keys for the bundle 
-	 * @return the locale variant keys for the bundle 
+	 * Returns the variant map
+	 * @param variants the variant map
 	 */
-	public List getLocaleVariantKeys() {
-		return localeVariantKeys;
+	public Map getVariants() {
+		return this.variants;
 	}
-
+	
 	/**
-	 * Sets the locale variant keys for the bundle 
-	 * @param localeVariantKeys the keys to set
+	 * Returns the variant map
+	 * @param variants the variant map
 	 */
-	public void setLocaleVariantKeys(List localeVariantKeys) {
-		this.localeVariantKeys = localeVariantKeys;
+	public void setVariants(Map variants) {
+		this.variants = variants;
 	}
-
+	
 	/**
 	 * Returns the list of children for composite bundle
 	 * @return the list of children for composite bundle

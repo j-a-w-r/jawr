@@ -1,5 +1,5 @@
 /**
- * Copyright 2007-2009 Jordi Hernández Sellés, Ibrahim Chaehoi
+ * Copyright 2007-2010 Jordi Hernández Sellés, Ibrahim Chaehoi
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -218,7 +218,7 @@ public class BundlesHandlerFactory {
 		}
 		Properties mappingProperties = resourceBundleHandler.getJawrBundleMapping();
 		FullMappingPropertiesBasedBundlesHandlerFactory factory = new FullMappingPropertiesBasedBundlesHandlerFactory(resourceType, 
-				resourceReaderHandler, chainFactory);
+				resourceReaderHandler, jawrConfig.getGeneratorRegistry(), chainFactory);
 		
 		resourceBundles.addAll(factory.getResourceBundles(mappingProperties));
 	}
@@ -277,7 +277,8 @@ public class BundlesHandlerFactory {
 		if (this.scanForOrphans) {
 			// Add all orphan bundles
 			OrphanResourceBundlesMapper orphanFactory = new OrphanResourceBundlesMapper(
-					baseDir, resourceReaderHandler, resourceBundles, fileExtension);
+					baseDir, resourceReaderHandler, jawrConfig.getGeneratorRegistry(),
+					resourceBundles, fileExtension);
 			List orphans = orphanFactory.getOrphansList();
 
 			// Orphans may be added separately or as one single resource bundle.
@@ -381,6 +382,10 @@ public class BundlesHandlerFactory {
 			composite.setAlternateProductionURL(definition
 					.getAlternateProductionURL());
 		
+		if (null != definition.getVariants())
+			composite.setVariantSets(definition
+					.getVariants());
+		
 		if (null != definition.getDependencies() && !definition.getDependencies().isEmpty())
 			bundleDefinitionsWithDependencies.add(definition);
 
@@ -406,7 +411,7 @@ public class BundlesHandlerFactory {
 		JoinableResourceBundleImpl newBundle = new JoinableResourceBundleImpl(
 				definition.getBundleId(), definition.getBundleName(), 
 				fileExtension, include, definition.getMappings(),
-				resourceReaderHandler);
+				resourceReaderHandler, jawrConfig.getGeneratorRegistry());
 		if (null != definition.getBundlePostProcessorKeys())
 			newBundle.setBundlePostProcessor(chainFactory
 					.buildPostProcessorChain(definition
@@ -421,9 +426,10 @@ public class BundlesHandlerFactory {
 			newBundle.setExplorerConditionalExpression(definition
 					.getIeConditionalExpression());
 
-		if (null != definition.getLocaleVariantKeys())
-			newBundle.setLocaleVariantKeys(definition.getLocaleVariantKeys());
-
+		if (null != definition.getVariants())
+			newBundle.setVariantSets(definition
+					.getVariants());
+		
 		if (null != definition.getAlternateProductionURL())
 			newBundle.setAlternateProductionURL(definition
 					.getAlternateProductionURL());
@@ -531,7 +537,7 @@ public class BundlesHandlerFactory {
 		List path = Collections.singletonList(pathMapping);
 		JoinableResourceBundle newBundle = new JoinableResourceBundleImpl(
 				bundleId, generateBundleNameFromBundleId(bundleId),
-				fileExtension, new InclusionPattern(), path, resourceReaderHandler);
+				fileExtension, new InclusionPattern(), path, resourceReaderHandler, jawrConfig.getGeneratorRegistry());
 		return newBundle;
 	}
 
@@ -566,7 +572,7 @@ public class BundlesHandlerFactory {
 		JoinableResourceBundle newBundle = new JoinableResourceBundleImpl(
 				bundleId, generateBundleNameFromBundleId(bundleId), 
 				fileExtension, new InclusionPattern(), orphanPaths,
-				resourceReaderHandler);
+				resourceReaderHandler, jawrConfig.getGeneratorRegistry());
 		return newBundle;
 	}
 
@@ -582,7 +588,8 @@ public class BundlesHandlerFactory {
 		List paths = Collections.singletonList(mapping);
 		JoinableResourceBundle newBundle = new JoinableResourceBundleImpl(
 				orphanPath, generateBundleNameFromBundleId(orphanPath), 
-				fileExtension, new InclusionPattern(), paths, resourceReaderHandler);
+				fileExtension, new InclusionPattern(), paths, resourceReaderHandler, 
+				jawrConfig.getGeneratorRegistry());
 		return newBundle;
 	}
 

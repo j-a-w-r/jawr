@@ -1,5 +1,5 @@
 /**
- * Copyright 2008-2009 Jordi Hernández Sellés, Ibrahim Chaehoi
+ * Copyright 2008-2010 Jordi Hernández Sellés, Ibrahim Chaehoi
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -15,6 +15,7 @@ package net.jawr.web.resource.bundle.generator;
 
 import java.nio.charset.Charset;
 import java.util.Locale;
+import java.util.Map;
 
 import javax.servlet.ServletContext;
 
@@ -41,6 +42,12 @@ public class GeneratorContext {
 	/** The current Jawr config */
 	private JawrConfig config;
 
+	/** The variant map */
+	private Map variantMap;
+	
+	/** The variant sets for the current path */
+	private Map variantSets;
+	
 	/** The variant */
 	private String variant;
 	
@@ -87,7 +94,6 @@ public class GeneratorContext {
 
 			path = path.substring(0, path.indexOf('[')) + path.substring(path.indexOf(']') + 1);
 		}
-		
 	}
 
 	/**
@@ -106,6 +112,40 @@ public class GeneratorContext {
 	 */
 	public void setLocale(Locale locale) {
 		this.locale = locale;
+	}
+
+	/**
+	 * Returns the variant map
+	 * @return the variant map
+	 */
+	public Map getVariantMap(){
+		
+		return variantMap;
+	}
+	
+	/**
+	 * Returns the variant map
+	 * @return the variant map
+	 */
+	public void setVariantMap(Map variantMap){
+		
+		this.variantMap = variantMap;
+	}
+	
+	/**
+	 * Returns the variant sets for the current path
+	 * @return the variantSets
+	 */
+	public Map getVariantSets() {
+		return variantSets;
+	}
+
+	/**
+	 * Sets the variant sets for the current path
+	 * @param variantSets the variantSets to set
+	 */
+	public void setVariantSets(Map variantSets) {
+		this.variantSets = variantSets;
 	}
 
 	/**

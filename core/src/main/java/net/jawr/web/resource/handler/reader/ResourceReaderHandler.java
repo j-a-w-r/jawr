@@ -1,5 +1,5 @@
 /**
- * Copyright 2009 Ibrahim Chaehoi
+ * Copyright 2009-2010 Ibrahim Chaehoi
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -15,7 +15,6 @@ package net.jawr.web.resource.handler.reader;
 
 import java.io.InputStream;
 import java.io.Reader;
-import java.util.Set;
 
 import net.jawr.web.exception.ResourceNotFoundException;
 
@@ -26,7 +25,7 @@ import net.jawr.web.exception.ResourceNotFoundException;
  * @author Ibrahim Chaehoi
  *
  */
-public interface ResourceReaderHandler extends WorkingDirectoryLocationAware {
+public interface ResourceReaderHandler extends WorkingDirectoryLocationAware, ResourceBrowser {
 
 	
 	/**
@@ -47,27 +46,6 @@ public interface ResourceReaderHandler extends WorkingDirectoryLocationAware {
 	 */
 	String getWorkingDirectory();
 
-	/**
-	 * Returns true if the path is a path of a generated resource.
-	 * @param path the resource path
-	 * @return true if the path is a path of a generated resource
-	 */
-	boolean isResourceGenerated(String path);
-	
-	/**
-	 * Returns the set of resources available under a directory
-	 * @param dirPath the directory path
-	 * @return the set of resources available under a directory
-	 */
-	Set getResourceNames(String dirPath);
-	
-	/**
-	 * Returns true if the resource path is the path of a directory.
-	 * @param resourcePath the resource path to check
-	 * @return true if the resource path is the path of a directory.
-	 */
-	boolean isDirectory(String resourcePath);
-	
 	/**
 	 * Retrieves a single resource. 
 	 * @param resourceName String Name of the resource.  
@@ -101,5 +79,5 @@ public interface ResourceReaderHandler extends WorkingDirectoryLocationAware {
 	 * @throws ResourceNotFoundException if the resource is not found
 	 */
 	public InputStream getResourceAsStream(String resourceName, boolean processingBundle) throws ResourceNotFoundException;
-	
+
 }

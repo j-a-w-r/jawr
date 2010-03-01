@@ -1,5 +1,5 @@
 /**
- * Copyright 2007-2009 Jordi Hernández Sellés, Ibrahim Chaehoi
+ * Copyright 2007-2010 Jordi Hernández Sellés, Ibrahim Chaehoi
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -20,11 +20,14 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 
 import net.jawr.web.collections.ConcurrentCollectionsFactory;
 import net.jawr.web.exception.BundlingProcessException;
 import net.jawr.web.exception.ResourceNotFoundException;
 import net.jawr.web.resource.bundle.factory.util.PathNormalizer;
+import net.jawr.web.resource.bundle.generator.GeneratorRegistry;
+import net.jawr.web.resource.bundle.generator.variant.VariantUtils;
 import net.jawr.web.resource.bundle.postprocess.ResourceBundlePostProcessor;
 import net.jawr.web.resource.bundle.sorting.SortFileParser;
 import net.jawr.web.resource.handler.reader.ResourceReaderHandler;
@@ -41,6 +44,7 @@ import org.apache.log4j.Logger;
  */
 public class JoinableResourceBundleImpl implements JoinableResourceBundle {
 
+	/** The logger */
 	private static final Logger LOGGER = Logger
 			.getLogger(JoinableResourceBundleImpl.class);
 
@@ -56,11 +60,14 @@ public class JoinableResourceBundleImpl implements JoinableResourceBundle {
 	/** The list of path mappings. It could contains directory mapping like 'myPath/**' */
 	private List pathMappings;
 
-	/** The final item path list containing all the resource linked to this bundl */
+	/** The final item path list containing all the resource linked to this bundle */
 	protected List itemPathList;
 
 	/** The resource reader handle */
 	private ResourceReaderHandler resourceReaderHandler;
+	
+	/** The generator Registry */
+	private GeneratorRegistry generatorRegistry;
 
 	/** The licence path list */
 	protected Set licensesPathList;
@@ -80,8 +87,11 @@ public class JoinableResourceBundleImpl implements JoinableResourceBundle {
 	/** The prefix mapping for locale variant version */
 	private Map prefixMap;
 
-	/** The list of locale variant keys */
-	protected List localeVariantKeys;
+	/** The map of variants */
+	protected Map variants;
+	
+	/** The list of variant keys */
+	protected List variantKeys;
 	
 	/** The list of bundle dependencies */
 	protected List dependencies;
@@ -100,11 +110,11 @@ public class JoinableResourceBundleImpl implements JoinableResourceBundle {
 	 * @param fileExtension String File extensions for this bundle.
 	 * @param inclusionPattern InclusionPattern Strategy for including this bundle.
 	 * @param resourceReaderHandler ResourceHandler Used to access the files and folders.
-	 * @param urlPrefix The prefix to include in URLs whenever this bundle is included in a link.
+	 * @param generatorRegistry The generator registry.
 	 */
 	public JoinableResourceBundleImpl(String id, String name,
 			String fileExtension, InclusionPattern inclusionPattern,
-			ResourceReaderHandler resourceReaderHandler) {
+			ResourceReaderHandler resourceReaderHandler, GeneratorRegistry generatorRegistry) {
 		super();
 
 		this.inclusionPattern = inclusionPattern;
@@ -112,6 +122,7 @@ public class JoinableResourceBundleImpl implements JoinableResourceBundle {
 		this.id = PathNormalizer.asPath(id);
 		this.name = name;
 		this.resourceReaderHandler = resourceReaderHandler;
+		this.generatorRegistry = generatorRegistry;
 		this.itemPathList = ConcurrentCollectionsFactory
 				.buildCopyOnWriteArrayList();
 		this.licensesPathList = new HashSet();
@@ -129,12 +140,12 @@ public class JoinableResourceBundleImpl implements JoinableResourceBundle {
 	 * @param inclusionPattern Strategy for including this bundle.
 	 * @param pathMappings Set Strings representing the folders or files to include, possibly with wildcards.
 	 * @param resourceReaderHandler Used to access the files and folders.
-	 * @param urlPrefix The prefix to include in URLs whenever this bundle is included in a link.
+	 * @param generatorRegistry the generator registry
 	 */
 	public JoinableResourceBundleImpl(String id, String name,
 			String fileExtension, InclusionPattern inclusionPattern,
-			List pathMappings, ResourceReaderHandler resourceReaderHandler) {
-		this(id, name, fileExtension, inclusionPattern, resourceReaderHandler);
+			List pathMappings, ResourceReaderHandler resourceReaderHandler, GeneratorRegistry generatorRegistry) {
+		this(id, name, fileExtension, inclusionPattern, resourceReaderHandler, generatorRegistry);
 
 		if (LOGGER.isDebugEnabled()){
 			LOGGER.debug("Adding mapped files for bundle " + id);
@@ -160,7 +171,7 @@ public class JoinableResourceBundleImpl implements JoinableResourceBundle {
 		
 		for (Iterator it = pathMappings.iterator(); it.hasNext();) {
 			String pathMapping = (String) it.next();
-			boolean isGeneratedPath = resourceReaderHandler.isResourceGenerated(pathMapping);
+			boolean isGeneratedPath = generatorRegistry.isPathGenerated(pathMapping);
 			// Handle generated resources
 			// path ends in /, the folder is included without subfolders
 			if (pathMapping.endsWith("/")) {
@@ -172,7 +183,7 @@ public class JoinableResourceBundleImpl implements JoinableResourceBundle {
 						.lastIndexOf("**")), true);
 			} else if (pathMapping.endsWith(fileExtension)) {
 				itemPathList.add(asPath(pathMapping, isGeneratedPath));
-			} else if (resourceReaderHandler.isResourceGenerated(pathMapping)) {
+			} else if (generatorRegistry.isPathGenerated(pathMapping)) {
 				itemPathList.add(pathMapping);
 			}else if (pathMapping.endsWith(LICENSES_FILENAME)) {
 				licensesPathList.add(asPath(pathMapping, isGeneratedPath));
@@ -193,7 +204,7 @@ public class JoinableResourceBundleImpl implements JoinableResourceBundle {
 	 */
 	private void addItemsFromDir(String dirName, boolean addSubDirs) {
 		Set resources = resourceReaderHandler.getResourceNames(dirName);
-		boolean isGeneratedPath = resourceReaderHandler.isResourceGenerated(dirName);
+		boolean isGeneratedPath = generatorRegistry.isPathGenerated(dirName);
 		if (LOGGER.isDebugEnabled()) {
 			LOGGER.debug("Adding " + resources.size() + " resources from path ["
 					+ dirName + "] to bundle " + getId());
@@ -386,12 +397,24 @@ public class JoinableResourceBundleImpl implements JoinableResourceBundle {
 	}
 
 	/**
-	 * Set the list of variants for localized resources
+	 * Set the list of variants for variant resources
 	 * 
-	 * @param localeVariantKeys
+	 * @param variantSets
 	 */
-	public void setLocaleVariantKeys(List localeVariantKeys) {
-		this.localeVariantKeys = localeVariantKeys;
+	public void setVariantSets(Map variantSets) {
+		
+		if(variantSets != null){
+			this.variants = new TreeMap(variantSets);
+			variantKeys = VariantUtils.getAllVariantKeys(this.variants);	
+		}
+	}
+	
+	/* (non-Javadoc)
+	 * @see net.jawr.web.resource.bundle.JoinableResourceBundle#getVariants()
+	 */
+	public Map getVariants() {
+		
+		return variants;
 	}
 
 	/*
@@ -399,8 +422,9 @@ public class JoinableResourceBundleImpl implements JoinableResourceBundle {
 	 * 
 	 * @see net.jawr.web.resource.bundle.JoinableResourceBundle#getLocaleVariantKeys()
 	 */
-	public List getLocaleVariantKeys() {
-		return this.localeVariantKeys;
+	public List getVariantKeys() {
+		
+		return variantKeys;
 	}
 
 	/*
@@ -464,17 +488,25 @@ public class JoinableResourceBundleImpl implements JoinableResourceBundle {
 	 * 
 	 * @see net.jawr.web.resource.bundle.JoinableResourceBundle#getItemPathList(java.lang.String)
 	 */
-	public List getItemPathList(String variantKey) {
-		if (StringUtils.isEmpty(variantKey))
+	public List getItemPathList(Map variants) {
+		if (variants == null || variants.isEmpty())
 			return itemPathList;
 
 		List rets = new ArrayList();
+		
 		for (Iterator it = itemPathList.iterator(); it.hasNext();) {
 			String path = (String) it.next();
-			if (resourceReaderHandler.isResourceGenerated(path)) {
-				rets.add(path + '@' + variantKey);
-			} else
+			if (generatorRegistry.isPathGenerated(path)) {
+				Set variantTypes = generatorRegistry.getGeneratedResourceVariantTypes(path);
+				String variantKey = VariantUtils.getVariantKey(variants, variantTypes);
+				if(StringUtils.isNotEmpty(variantKey)){
+					rets.add(VariantUtils.getVariantBundleName(path, variantKey));
+				}else{
+					rets.add(path);
+				}
+			} else{
 				rets.add(path);
+			}
 		}
 		return rets;
 	}
@@ -512,22 +544,20 @@ public class JoinableResourceBundleImpl implements JoinableResourceBundle {
 		this.licensesPathList = licencePathList;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see net.jawr.web.resource.bundle.JoinableResourceBundle#getURLPrefix()
+	/* (non-Javadoc)
+	 * @see net.jawr.web.resource.bundle.JoinableResourceBundle#getURLPrefix(java.util.Map)
 	 */
-	public String getURLPrefix(String variantKey) {
+	public String getURLPrefix(Map variants) {
+		
 		if (null == this.urlPrefix)
 			throw new IllegalStateException(
 					"The bundleDataHashCode must be set before accessing the url prefix.");
 
-		// Resolves the locale key like resourcebundle does
-		if (StringUtils.isNotEmpty(variantKey)
-				&& null != this.localeVariantKeys) {
-			String key = getAvailableLocaleVariant(variantKey);
-			if (null != key)
+		if (variants != null && !variants.isEmpty()) {
+			String key = getAvailableVariant(variants);
+			if (StringUtils.isNotEmpty(key)){
 				return prefixMap.get(key) + "." + key + "/";
+			}
 		}
 		return this.urlPrefix + "/";
 	}
@@ -579,25 +609,20 @@ public class JoinableResourceBundleImpl implements JoinableResourceBundle {
 	}
 
 	/**
-	 * Resolves a registered path from a locale key, using the same algorithm used to locate ResourceBundles.
+	 * Resolves a registered path from a variant key.
 	 * 
 	 * @param variantKey the requested variant key
 	 * @return the variant key to use
 	 */
-	private String getAvailableLocaleVariant(String variantKey) {
-		String key = null;
-		if (this.localeVariantKeys.contains(variantKey)) {
-			key = variantKey;
-		} else {
-			String subVar = variantKey;
-			while (subVar.indexOf('_') != -1) {
-				subVar = subVar.substring(0, subVar.lastIndexOf('_'));
-				if (this.localeVariantKeys.contains(subVar)) {
-					key = subVar;
-				}
-			}
+	private String getAvailableVariant(Map curVariants) {
+		
+		String variantKey = null;
+		if(variants != null){
+			Map availableVariants = generatorRegistry.getAvailableVariantMap(variants, curVariants);
+			variantKey = VariantUtils.getVariantKey(availableVariants);
 		}
-		return key;
+		
+		return variantKey;
 	}
-
+	
 }

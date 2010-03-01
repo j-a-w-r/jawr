@@ -201,7 +201,7 @@ public class MockServletContext implements ServletContext {
 		try {
 			is = new FileInputStream(new File(baseDir, path));
 		} catch (FileNotFoundException e) {
-			logger.info("File for path : '" + path + "' not found", e);
+			logger.info("File for path : '" + path + "' not found");
 		}
 
 		return is;
@@ -217,7 +217,8 @@ public class MockServletContext implements ServletContext {
 		path = path.replace('/', File.separatorChar);
 		File resource = new File(baseDir, path);
 		if(!resource.exists()){
-			throw new InvalidPathException(baseDir + File.separator + path);
+			//throw new InvalidPathException(baseDir + File.separator + path);
+			return null;
 		}
 		
 		// If the path is not valid throw an exception

@@ -1,5 +1,5 @@
 /**
- * Copyright 2009 Ibrahim Chaehoi
+ * Copyright 2009-2010 Ibrahim Chaehoi
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -14,13 +14,11 @@
 package net.jawr.web.resource.bundle.generator.classpath;
 
 import java.io.InputStream;
-import java.util.Set;
 
 import net.jawr.web.resource.FileNameUtils;
 import net.jawr.web.resource.bundle.generator.GeneratorContext;
 import net.jawr.web.resource.bundle.generator.GeneratorRegistry;
 import net.jawr.web.resource.bundle.generator.StreamResourceGenerator;
-import net.jawr.web.servlet.util.MIMETypesSupport;
 
 /**
  * This class defines the resource generator which loads image resources from the classpath.
@@ -30,9 +28,6 @@ import net.jawr.web.servlet.util.MIMETypesSupport;
  */
 public class ClassPathImgResourceGenerator implements StreamResourceGenerator {
 
-	/** The image extensions */
-	private Set imageExtensions;
-	
 	/** The classpath generator helper */
 	private ClassPathGeneratorHelper helper;
 	
@@ -41,7 +36,6 @@ public class ClassPathImgResourceGenerator implements StreamResourceGenerator {
 	 */
 	public ClassPathImgResourceGenerator() {
 		helper = new ClassPathGeneratorHelper();
-		imageExtensions = MIMETypesSupport.getSupportedProperties(this).keySet();
 	}
 	
 	/* (non-Javadoc)
@@ -50,7 +44,7 @@ public class ClassPathImgResourceGenerator implements StreamResourceGenerator {
 	public InputStream createResourceAsStream(GeneratorContext context) {
 		
 		InputStream is = null;
-		if(FileNameUtils.isExtension(context.getPath(), imageExtensions)){
+		if(FileNameUtils.hasImageExtension(context.getPath())){
 			is = helper.createStreamResource(context);
 		}
 		

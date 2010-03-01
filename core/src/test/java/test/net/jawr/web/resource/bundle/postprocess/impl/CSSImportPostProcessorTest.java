@@ -3,12 +3,10 @@
  */
 package test.net.jawr.web.resource.bundle.postprocess.impl;
 
-import java.io.InputStream;
 import java.io.Reader;
 import java.io.StringReader;
-import java.util.List;
+import java.util.Map;
 import java.util.Properties;
-import java.util.Set;
 
 import javax.servlet.ServletContext;
 
@@ -17,14 +15,13 @@ import net.jawr.web.JawrConstant;
 import net.jawr.web.config.JawrConfig;
 import net.jawr.web.exception.ResourceNotFoundException;
 import net.jawr.web.resource.ImageResourcesHandler;
-import net.jawr.web.resource.bundle.InclusionPattern;
 import net.jawr.web.resource.bundle.JoinableResourceBundle;
 import net.jawr.web.resource.bundle.generator.GeneratorRegistry;
 import net.jawr.web.resource.bundle.postprocess.BundleProcessingStatus;
-import net.jawr.web.resource.bundle.postprocess.ResourceBundlePostProcessor;
 import net.jawr.web.resource.bundle.postprocess.impl.CSSImportPostProcessor;
-import net.jawr.web.resource.handler.reader.ResourceReader;
 import net.jawr.web.resource.handler.reader.ResourceReaderHandler;
+import test.net.jawr.web.resource.bundle.MockJoinableResourceBundle;
+import test.net.jawr.web.resource.bundle.handler.MockResourceReaderHandler;
 import test.net.jawr.web.servlet.mock.MockServletContext;
 
 /**
@@ -184,86 +181,14 @@ public class CSSImportPostProcessorTest extends TestCase {
 	private JoinableResourceBundle buildFakeBundle(final String id,
 			final String urlPrefix) {
 
-		return new JoinableResourceBundle() {
-			public boolean belongsToBundle(String itemPath) {
-				return false;
-			}
-
-			public InclusionPattern getInclusionPattern() {
-				return null;
-			}
-
-			public List getItemPathList() {
-				return null;
-			}
-
-			public Set getLicensesPathList() {
-				return null;
-			}
-
+		return new MockJoinableResourceBundle() {
+			
 			public String getId() {
 				return id;
 			}
 
-			public String getURLPrefix(String variantKey) {
+			public String getURLPrefix(Map variants) {
 				return urlPrefix;
-			}
-
-			public ResourceBundlePostProcessor getBundlePostProcessor() {
-				return null;
-			}
-
-			public ResourceBundlePostProcessor getUnitaryPostProcessor() {
-				return null;
-			}
-
-			public void setBundleDataHashCode(String var, int bundleDataHashCode) {
-
-			}
-
-			public String getExplorerConditionalExpression() {
-				return null;
-			}
-
-			public List getItemPathList(String variantKey) {
-				return null;
-			}
-
-			public List getLocaleVariantKeys() {
-				return null;
-			}
-
-			public String getAlternateProductionURL() {
-				return null;
-			}
-
-			public String getBundleDataHashCode(String variantKey) {
-				return null;
-			}
-
-			public String getName() {
-				return null;
-			}
-
-			public boolean isComposite() {
-				return false;
-			}
-
-			public void setBundleDataHashCode(String variantKey,
-					String bundleDataHashCode) {
-
-			}
-
-			public void setMappings(List mappings) {
-
-			}
-			
-			public List getDependencies() {
-				return null;
-			}
-
-			public void setDependencies(List bundleDependencies) {
-				
 			}
 		};
 
@@ -271,27 +196,7 @@ public class CSSImportPostProcessorTest extends TestCase {
 	
 	private ResourceReaderHandler getResourceReaderHandler(final String expectedResourcePath) {
 		
-		return new ResourceReaderHandler() {
-			
-			public void setWorkingDirectory(String workingDir) {
-				
-			}
-			
-			public boolean isResourceGenerated(String path) {
-				return false;
-			}
-			
-			public boolean isDirectory(String resourcePath) {
-				return false;
-			}
-			
-			public String getWorkingDirectory() {
-				return null;
-			}
-			
-			public Set getResourceNames(String dirPath) {
-				return null;
-			}
+		return new MockResourceReaderHandler() {
 			
 			public Reader getResource(String resourceName)
 					throws ResourceNotFoundException {
@@ -311,24 +216,6 @@ public class CSSImportPostProcessorTest extends TestCase {
 						"padding : 0 7px; \n" +
 						"background : url('../img/rainbow.png'); \n"+
 				"}");
-			}
-			
-			public InputStream getResourceAsStream(String resourceName,
-					boolean processingBundle) throws ResourceNotFoundException {
-				return null;
-			}
-			
-			public InputStream getResourceAsStream(String resourceName)
-					throws ResourceNotFoundException {
-				return null;
-			}
-			
-			public void addResourceReaderToStart(ResourceReader rd) {
-				
-			}
-			
-			public void addResourceReaderToEnd(ResourceReader rd) {
-				
 			}
 		};
 	}

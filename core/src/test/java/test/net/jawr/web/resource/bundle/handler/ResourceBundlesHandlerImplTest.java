@@ -6,6 +6,7 @@ import java.util.Properties;
 
 import net.jawr.web.config.JawrConfig;
 import net.jawr.web.exception.ResourceNotFoundException;
+import net.jawr.web.resource.bundle.generator.GeneratorRegistry;
 import net.jawr.web.resource.bundle.handler.ResourceBundlesHandler;
 import net.jawr.web.resource.bundle.iterator.ResourceBundlePathsIterator;
 import net.jawr.web.resource.handler.bundle.ResourceBundleHandler;
@@ -40,11 +41,16 @@ public class ResourceBundlesHandlerImplTest  extends  ResourceHandlerBasedTest {
 			config.setDebugModeOn(false);
 			config.setGzipResourcesModeOn(false);
 			//config.setURLPrefix(RESOURCES_PREFIX);
-			
+			GeneratorRegistry generatorRegistry = new GeneratorRegistry();
+			config.setGeneratorRegistry(generatorRegistry);
+			generatorRegistry.setConfig(config);
 			
 			JawrConfig configDebug = new JawrConfig(new Properties());
 			configDebug.setCharsetName("UTF-8");
 			configDebug.setDebugModeOn(true);
+			GeneratorRegistry debugGeneratorRegistry = new GeneratorRegistry();
+			configDebug.setGeneratorRegistry(debugGeneratorRegistry);
+			debugGeneratorRegistry.setConfig(configDebug);
 			//configDebug.setURLPrefix(RESOURCES_PREFIX);
 			
 			defaultHandler = PredefinedBundlesHandlerUtil.buildSingleBundleHandler(handler, bundleHandler, config);

@@ -1,5 +1,5 @@
 /**
- * Copyright 2009 Ibrahim Chaehoi
+ * Copyright 2009-2010 Ibrahim Chaehoi
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -47,6 +47,9 @@ public class SmartSpritesResourceHandler implements ResourceHandler {
 	/** The resource handler for image resources */
 	private ResourceReaderHandler imgRsHandler;
 	
+	/** The Css generator registry */
+	private GeneratorRegistry cssGeneratorRegistry;
+	
 	/** The image generator registry */
 	private GeneratorRegistry imgGeneratorRegistry;
 	
@@ -68,10 +71,12 @@ public class SmartSpritesResourceHandler implements ResourceHandler {
 	public SmartSpritesResourceHandler(
 			ResourceReaderHandler rsHandler,
 			ResourceReaderHandler imgRsHandler, 
+			GeneratorRegistry cssGeneratorRegistry,
 			GeneratorRegistry imgGeneratorRegistry,
 			String charset, MessageLog messageLog) {
 		this.rsHandler = rsHandler;
 		this.imgRsHandler = imgRsHandler;
+		this.cssGeneratorRegistry = cssGeneratorRegistry;
 		this.imgGeneratorRegistry = imgGeneratorRegistry;
 		this.charset = charset;
 		this.workingDir = rsHandler.getWorkingDirectory()+JawrConstant.CSS_SMARTSPRITES_TMP_DIR;
@@ -136,7 +141,7 @@ public class SmartSpritesResourceHandler implements ResourceHandler {
 		if(!FileNameUtils.isExtension(generatedFilePath, JawrConstant.CSS_TYPE) && imgGeneratorRegistry.isGeneratedImage(generatedFilePath)){
 			// for generated image put it  in the generated Image directory
 			generatedFilePath = workingDir+JawrConstant.SPRITE_GENERATED_IMG_DIR+generatedFilePath.replace(":","/");
-		}else if(rsHandler.isResourceGenerated(generatedFilePath)) { // Rename resource for For generated CSS
+		}else if(cssGeneratorRegistry.isPathGenerated(generatedFilePath)) { // Rename resource for For generated CSS
 			generatedFilePath = workingDir+JawrConstant.SPRITE_GENERATED_CSS_DIR+generatedFilePath.replace(":","/");
 		}else{
 			generatedFilePath = resourceName;

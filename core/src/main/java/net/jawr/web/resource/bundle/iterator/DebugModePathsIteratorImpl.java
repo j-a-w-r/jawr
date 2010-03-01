@@ -1,5 +1,5 @@
 /**
- * Copyright 2008 Jordi Hernández Sellés
+ * Copyright 2008-2010 Jordi Hernández Sellés, Ibrahim Chaehoi
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -15,6 +15,7 @@ package net.jawr.web.resource.bundle.iterator;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import net.jawr.web.resource.bundle.JoinableResourceBundle;
 
@@ -24,17 +25,28 @@ import net.jawr.web.resource.bundle.JoinableResourceBundle;
  * members of the bundle. 
  * 
  * @author Jordi Hernández Sellés
+ * @author Ibrahim Chaehoi
  */
 public class DebugModePathsIteratorImpl extends AbstractPathsIterator implements ResourceBundlePathsIterator {
 
+	/** The bundle iterator */
 	private Iterator bundlesIterator;
+	
+	/** The path iterator */
 	private Iterator pathsIterator;
+	
+	/** The current bundle */
 	private JoinableResourceBundle currentBundle;
 	
-	public DebugModePathsIteratorImpl(List bundles,ConditionalCommentCallbackHandler callbackHandler,String variantKey) {
-		super(callbackHandler,variantKey);
+	/**
+	 * Constructor
+	 * @param bundles the list of bundle
+	 * @param callbackHandler the comment callback handler
+	 * @param variants the variants
+	 */
+	public DebugModePathsIteratorImpl(List bundles,ConditionalCommentCallbackHandler callbackHandler,Map variants) {
+		super(callbackHandler,variants);
 		this.bundlesIterator = bundles.iterator();
-		
 	}
 	
 
@@ -50,7 +62,7 @@ public class DebugModePathsIteratorImpl extends AbstractPathsIterator implements
 			if(null != currentBundle.getExplorerConditionalExpression())
 				commentCallbackHandler.openConditionalComment(currentBundle.getExplorerConditionalExpression());
 
-			pathsIterator = currentBundle.getItemPathList(variantKey).iterator();
+			pathsIterator = currentBundle.getItemPathList(variants).iterator();
 		}
 		
 		
@@ -80,6 +92,5 @@ public class DebugModePathsIteratorImpl extends AbstractPathsIterator implements
 			
 		return rets;
 	}
-
 
 }

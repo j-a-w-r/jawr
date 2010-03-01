@@ -1,5 +1,5 @@
 /**
- * Copyright 2009 Ibrahim Chaehoi
+ * Copyright 2009-2010 Ibrahim Chaehoi
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -220,7 +220,7 @@ public class ServletContextResourceReaderHandler implements ResourceReaderHandle
 	}
 
 	/* (non-Javadoc)
-	 * @see net.jawr.web.resource.handler.ResourceReaderHandler#getResourceNames(java.lang.String)
+	 * @see net.jawr.web.resource.handler.reader.ResourceBrowser#getResourceNames(java.lang.String)
 	 */
 	public Set getResourceNames(String dirName) {
 		Set resourceNames = new HashSet();
@@ -229,7 +229,8 @@ public class ServletContextResourceReaderHandler implements ResourceReaderHandle
 			if(generatorRegistry.isPathGenerated(dirName)){
 				if (rsBrowser instanceof PrefixedResourceGenerator) {
 					PrefixedResourceGenerator rsGeneratorBrowser = (PrefixedResourceGenerator) rsBrowser;
-					if(dirName.startsWith(rsGeneratorBrowser.getMappingPrefix()+GeneratorRegistry.PREFIX_SEPARATOR)){
+					String prefix = rsGeneratorBrowser.getMappingPrefix()+GeneratorRegistry.PREFIX_SEPARATOR;
+					if(dirName.startsWith(prefix)){
 						resourceNames = rsBrowser.getResourceNames(dirName);
 						break;
 					}
@@ -245,7 +246,7 @@ public class ServletContextResourceReaderHandler implements ResourceReaderHandle
 	}
 
 	/* (non-Javadoc)
-	 * @see net.jawr.web.resource.handler.reader.ResourceReaderHandler#isDirectory(java.lang.String)
+	 * @see net.jawr.web.resource.handler.reader.ResourceBrowser#isDirectory(java.lang.String)
 	 */
 	public boolean isDirectory(String resourceName) {
 		boolean result = false;
@@ -254,7 +255,8 @@ public class ServletContextResourceReaderHandler implements ResourceReaderHandle
 			if(generatorRegistry.isPathGenerated(resourceName)){
 				if (rsBrowser instanceof PrefixedResourceGenerator) {
 					PrefixedResourceGenerator rsGeneratorBrowser = (PrefixedResourceGenerator) rsBrowser;
-					if(resourceName.startsWith(rsGeneratorBrowser.getMappingPrefix()+GeneratorRegistry.PREFIX_SEPARATOR)){
+					String prefix = rsGeneratorBrowser.getMappingPrefix()+GeneratorRegistry.PREFIX_SEPARATOR;
+					if(resourceName.startsWith(prefix)){
 						result = rsBrowser.isDirectory(resourceName);
 					}
 				}
@@ -265,14 +267,6 @@ public class ServletContextResourceReaderHandler implements ResourceReaderHandle
 			}
 		}
 		return result;
-	}
-
-	/* (non-Javadoc)
-	 * @see net.jawr.web.resource.handler.reader.ResourceReaderHandler#isResourceGenerated(java.lang.String)
-	 */
-	public boolean isResourceGenerated(String pathMapping) {
-		
-		return generatorRegistry.isPathGenerated(pathMapping);
 	}
 	
 }
