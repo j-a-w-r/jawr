@@ -57,7 +57,7 @@ public class MainPageSmartSpritesDebugTest extends MainPageSmartSpritesTest {
 				script.getSrcAttribute());
 		script = (HtmlScript) scripts.get(1);
 		assertEquals(
-				CONTEXT_PATH+"/jawr_generator.js?generationConfigParam=testJs%3AgeneratedContent.js%40en_US",
+				CONTEXT_PATH+"/jawr_generator.js?generationConfigParam=testJs%3AgeneratedContent.js",
 				script.getSrcAttribute());
 	}
 
@@ -81,7 +81,7 @@ public class MainPageSmartSpritesDebugTest extends MainPageSmartSpritesTest {
 		assertEquals(2, styleSheets.size());
 		HtmlLink css = (HtmlLink) styleSheets.get(0);
 		Utils.assertGeneratedLinkEquals(
-				CONTEXT_PATH+"/jawr_generator.css?generationConfigParam=jar%3Afwk%2Fcss%2FtempCssWithSprite.css%40en_US",
+				CONTEXT_PATH+"/jawr_generator.css?generationConfigParam=jar%3Afwk%2Fcss%2FtempCssWithSprite.css",
 				css.getHrefAttribute());
 		
 		css = (HtmlLink) styleSheets.get(1);

@@ -8,7 +8,7 @@
 <script type="text/javascript">/* Finished adding global members. */</script>
 <script type="text/javascript">/* Start adding members resolved by '/bundles/compositeStyleBundle.css'. Bundle id is: '/bundles/compositeStyleBundle.css' */</script>
 <link rel="stylesheet" type="text/css" media="all" href="/jawr-integration-test/css/one.css?d=11111" >
-<link rel="stylesheet" type="text/css" media="all" href="/jawr-integration-test/jawr_generator.css?generationConfigParam=testCss%3AgeneratedContent.css%40en_US" >
+<link rel="stylesheet" type="text/css" media="all" href="/jawr-integration-test/jawr_generator.css?generationConfigParam=testCss%3AgeneratedContent.css" >
 <script type="text/javascript">/* Finished adding members resolved by /bundles/compositeStyleBundle.css */</script>
 
  <script type="text/javascript">/* Start adding members resolved by '/bundles/debugStyleBundle.css'. Bundle id is: '/bundles/debugStyleBundle.css' */</script>
@@ -30,7 +30,7 @@
 <script type="text/javascript">/* Finished adding global members. */</script>
 <script type="text/javascript">/* Start adding members resolved by '/bundles/compositeBundle.js'. Bundle id is: '/bundles/compositeBundle.js' */</script>
 <script type="text/javascript" src="/jawr-integration-test/js/index/index.js?d=11111" ></script>
-<script type="text/javascript" src="/jawr-integration-test/jawr_generator.js?generationConfigParam=testJs%3AgeneratedContent.js%40en_US" ></script>
+<script type="text/javascript" src="/jawr-integration-test/jawr_generator.js?generationConfigParam=testJs%3AgeneratedContent.js" ></script>
 <script type="text/javascript">/* Finished adding members resolved by /bundles/compositeBundle.js */</script>
 
  <script type="text/javascript">/* Start adding members resolved by '/bundles/debugBundle.js'. Bundle id is: '/bundles/debugBundle.js' */</script>

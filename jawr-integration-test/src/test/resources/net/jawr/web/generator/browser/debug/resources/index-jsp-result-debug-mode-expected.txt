@@ -5,19 +5,19 @@
  <script type="text/javascript">/* Start adding global members. */</script>
 <script type="text/javascript">/* Finished adding global members. */</script>
 <script type="text/javascript">/* Start adding members resolved by '/fwk/core/component.css'. Bundle id is: '/fwk/core/component.css' */</script>
-<link rel="stylesheet" type="text/css" media="all" href="/jawr-integration-test/jawr_generator.css?generationConfigParam=jar%3Afwk%2Fcss%2Ftemp.css%40en_US" >
+<link rel="stylesheet" type="text/css" media="all" href="/jawr-integration-test/jawr_generator.css?generationConfigParam=jar%3Afwk%2Fcss%2Ftemp.css" >
 <link rel="stylesheet" type="text/css" media="all" href="/jawr-integration-test/css/generator/one.css?d=11111" >
 <script type="text/javascript">/* Finished adding members resolved by /fwk/core/component.css */</script>
 
  <script type="text/javascript">/* Start adding global members. */</script>
 <script type="text/javascript">/* Finished adding global members. */</script>
 <script type="text/javascript">/* Start adding members resolved by '/js/bundle/tabAndTreeView.js'. Bundle id is: '/js/bundle/tabAndTreeView.js' */</script>
-<script type="text/javascript" src="/jawr-integration-test/jawr_generator.js?generationConfigParam=browse%3A%2Fjs%2FtabView%2FtabView1.js%40en_US" ></script>
-<script type="text/javascript" src="/jawr-integration-test/jawr_generator.js?generationConfigParam=browse%3A%2Fjs%2FtabView%2FtabView2.js%40en_US" ></script>
-<script type="text/javascript" src="/jawr-integration-test/jawr_generator.js?generationConfigParam=browse%3A%2Fjs%2FtabView%2FsubTabView%2FsubTabView1.js%40en_US" ></script>
-<script type="text/javascript" src="/jawr-integration-test/jawr_generator.js?generationConfigParam=browse%3A%2Fjs%2FtabView%2FsubTabView%2FsubTabView2.js%40en_US" ></script>
-<script type="text/javascript" src="/jawr-integration-test/jawr_generator.js?generationConfigParam=browse%3A%2Fjs%2FtreeView%2FtreeView1.js%40en_US" ></script>
-<script type="text/javascript" src="/jawr-integration-test/jawr_generator.js?generationConfigParam=browse%3A%2Fjs%2FtreeView%2FtreeView2.js%40en_US" ></script>
+<script type="text/javascript" src="/jawr-integration-test/jawr_generator.js?generationConfigParam=browse%3A%2Fjs%2FtabView%2FtabView1.js" ></script>
+<script type="text/javascript" src="/jawr-integration-test/jawr_generator.js?generationConfigParam=browse%3A%2Fjs%2FtabView%2FtabView2.js" ></script>
+<script type="text/javascript" src="/jawr-integration-test/jawr_generator.js?generationConfigParam=browse%3A%2Fjs%2FtabView%2FsubTabView%2FsubTabView1.js" ></script>
+<script type="text/javascript" src="/jawr-integration-test/jawr_generator.js?generationConfigParam=browse%3A%2Fjs%2FtabView%2FsubTabView%2FsubTabView2.js" ></script>
+<script type="text/javascript" src="/jawr-integration-test/jawr_generator.js?generationConfigParam=browse%3A%2Fjs%2FtreeView%2FtreeView1.js" ></script>
+<script type="text/javascript" src="/jawr-integration-test/jawr_generator.js?generationConfigParam=browse%3A%2Fjs%2FtreeView%2FtreeView2.js" ></script>
 <script type="text/javascript">/* Finished adding members resolved by /js/bundle/tabAndTreeView.js */</script>
 
 </head>

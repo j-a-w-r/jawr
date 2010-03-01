@@ -56,7 +56,7 @@ public class MainPageIECssBundleDebugTest extends MainPageIECssBundleTest {
 				script.getSrcAttribute());
 		script = (HtmlScript) scripts.get(1);
 		assertEquals(
-				CONTEXT_PATH+"/jawr_generator.js?generationConfigParam=testJs%3AgeneratedContent.js%40en_US",
+				CONTEXT_PATH+"/jawr_generator.js?generationConfigParam=testJs%3AgeneratedContent.js",
 				script.getSrcAttribute());
 	}
 

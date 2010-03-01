@@ -10,6 +10,7 @@ import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import net.jawr.web.test.utils.Utils;
 
@@ -97,6 +98,8 @@ public abstract class AbstractPageTest {
 		String webAppRootDir = new File(WEBAPP_DIR).getCanonicalFile().getAbsolutePath();
 		WEB_APP_WEB_XML_PATH =  webAppRootDir+"/WEB-INF/web.xml";
 		WEB_APP_JAWR_CONFIG_PATH = webAppRootDir+"/WEB-INF/classes/jawr.properties";
+		// Set default locale to en_US
+		Locale.setDefault(new Locale("en","US"));
 	}
 	
 	@Before
@@ -211,6 +214,11 @@ public abstract class AbstractPageTest {
 		// Stop the web application context at the end of the tests associated to the current class.
 		LOGGER.info("Stop jetty webApp context....");
 		WEB_APP_CONTEXT.stop();
+		WEB_APP_CONTEXT.destroy();
+		SERVER.stop();
+		SERVER.destroy();
+		WEB_APP_CONTEXT = null;
+		SERVER = null;
 	}
 	
 	/**

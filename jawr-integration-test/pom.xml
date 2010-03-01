@@ -19,7 +19,7 @@
     <dependency>
       <groupId>net.jawr</groupId>
       <artifactId>jawr</artifactId>
-      <version>3.2.1</version>
+      <version>3.3</version>
     </dependency>
     <dependency>
 		<groupId>org.carrot2</groupId>
@@ -112,6 +112,7 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
           <skip>true</skip>
+          <argLine>-XX:MaxPermSize=512m -verbose:gc -XX:+PrintClassHistogram</argLine>
         </configuration>
         <executions>
           <execution>
@@ -138,7 +139,10 @@
                 <property>
                   <name>com.sun.management.jmxremote</name>
                 </property>
-                
+                <property>
+                  <name>com.sun.management.jmxremote</name>
+                </property>
+                -XX:PermSize=1024m -XX:MaxPermSize=1024m
              </systemProperties>
               
             </configuration>

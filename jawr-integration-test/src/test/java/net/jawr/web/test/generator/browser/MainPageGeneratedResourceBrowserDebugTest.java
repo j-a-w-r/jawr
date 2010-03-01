@@ -56,29 +56,28 @@ public class MainPageGeneratedResourceBrowserDebugTest extends AbstractPageTest 
 		assertEquals(6, scripts.size());
 		HtmlScript script = scripts.get(0);
 		assertEquals(
-				CONTEXT_PATH+"/jawr_generator.js?generationConfigParam=browse%3A%2Fjs%2FtabView%2FtabView1.js%40en_US",
+				CONTEXT_PATH+"/jawr_generator.js?generationConfigParam=browse%3A%2Fjs%2FtabView%2FtabView1.js",
 				script.getSrcAttribute());
 		script = scripts.get(1);
 		assertEquals(
-				CONTEXT_PATH+"/jawr_generator.js?generationConfigParam=browse%3A%2Fjs%2FtabView%2FtabView2.js%40en_US",
+				CONTEXT_PATH+"/jawr_generator.js?generationConfigParam=browse%3A%2Fjs%2FtabView%2FtabView2.js",
 				script.getSrcAttribute());
 		script = scripts.get(2);
 		assertEquals(
-				CONTEXT_PATH+"/jawr_generator.js?generationConfigParam=browse%3A%2Fjs%2FtabView%2FsubTabView%2FsubTabView1.js%40en_US",
+				CONTEXT_PATH+"/jawr_generator.js?generationConfigParam=browse%3A%2Fjs%2FtabView%2FsubTabView%2FsubTabView1.js",
 				script.getSrcAttribute());
 		script = scripts.get(3);
 		assertEquals(
-				CONTEXT_PATH+"/jawr_generator.js?generationConfigParam=browse%3A%2Fjs%2FtabView%2FsubTabView%2FsubTabView2.js%40en_US",
+				CONTEXT_PATH+"/jawr_generator.js?generationConfigParam=browse%3A%2Fjs%2FtabView%2FsubTabView%2FsubTabView2.js",
 				script.getSrcAttribute());
 		script = scripts.get(4);
 		assertEquals(
-				CONTEXT_PATH+"/jawr_generator.js?generationConfigParam=browse%3A%2Fjs%2FtreeView%2FtreeView1.js%40en_US",
+				CONTEXT_PATH+"/jawr_generator.js?generationConfigParam=browse%3A%2Fjs%2FtreeView%2FtreeView1.js",
 				script.getSrcAttribute());
 		script = scripts.get(5);
 		assertEquals(
-				CONTEXT_PATH+"/jawr_generator.js?generationConfigParam=browse%3A%2Fjs%2FtreeView%2FtreeView2.js%40en_US",
+				CONTEXT_PATH+"/jawr_generator.js?generationConfigParam=browse%3A%2Fjs%2FtreeView%2FtreeView2.js",
 				script.getSrcAttribute());
-		
 		
 	}
 
@@ -118,7 +117,7 @@ public class MainPageGeneratedResourceBrowserDebugTest extends AbstractPageTest 
 		assertEquals(2, styleSheets.size());
 		HtmlLink css = (HtmlLink) styleSheets.get(0);
 		Utils.assertGeneratedLinkEquals(
-				CONTEXT_PATH+"/jawr_generator.css?generationConfigParam=jar%3Afwk%2Fcss%2Ftemp.css%40en_US",
+				CONTEXT_PATH+"/jawr_generator.css?generationConfigParam=jar%3Afwk%2Fcss%2Ftemp.css",
 				css.getHrefAttribute());
 		
 		css = (HtmlLink) styleSheets.get(1);
