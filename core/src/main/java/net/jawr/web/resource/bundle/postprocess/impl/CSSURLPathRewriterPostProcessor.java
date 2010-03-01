@@ -167,6 +167,10 @@ public class CSSURLPathRewriterPostProcessor extends
 				imgUrl = cacheUrl;
 			}else{
 				
+				if(jawrConfig.getGeneratorRegistry().isPathGenerated(rootPath)){
+					rootPath = rootPath.substring(rootPath.indexOf(GeneratorRegistry.PREFIX_SEPARATOR)+1);
+				}
+					
 				// Generate the image URL from the current CSS path
 				imgUrl = PathNormalizer.concatWebPath(rootPath, url);
 				
