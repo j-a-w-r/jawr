@@ -54,7 +54,6 @@ import net.jawr.web.resource.bundle.factory.util.PathNormalizer;
 import net.jawr.web.resource.bundle.factory.util.PropsFilePropertiesSource;
 import net.jawr.web.resource.bundle.factory.util.ServletContextAware;
 import net.jawr.web.resource.bundle.generator.GeneratorRegistry;
-import net.jawr.web.resource.bundle.generator.ResourceGenerator;
 import net.jawr.web.resource.bundle.handler.ClientSideHandlerScriptRequestHandler;
 import net.jawr.web.resource.bundle.handler.ResourceBundlesHandler;
 import net.jawr.web.resource.bundle.renderer.BundleRenderer;
@@ -662,15 +661,13 @@ public class JawrRequestHandler implements ConfigChangeListener, Serializable {
 	 */
 	private String getRootRelativeCssUrlPath(HttpServletRequest request, String url) {
 
-		String finalUrl = url;
-		String servletPath = "".equals(jawrConfig.getServletMapping()) ? "" : request.getServletPath();
-		String originalRequestPath = "".equals(jawrConfig.getServletMapping()) ? request.getServletPath() : request.getPathInfo();
-		// Deals with Jawr generated resource path containing /jawr_generator.css
-		if(originalRequestPath.startsWith(ResourceGenerator.CSS_DEBUGPATH)){
-			finalUrl = ResourceGenerator.CSS_DEBUGPATH;
+		String finalUrl = null;
+		String servletPath = request.getServletPath();
+		if("".equals(jawrConfig.getServletMapping())){
+			finalUrl = PathNormalizer.asPath(servletPath);
+		}else{
+			finalUrl = PathNormalizer.asPath(servletPath + request.getPathInfo());
 		}
-
-		finalUrl = PathNormalizer.asPath(servletPath + finalUrl);
 		
 		Matcher matcher = URL_SEPARATOR_PATTERN.matcher(finalUrl);
 		StringBuffer result = new StringBuffer();

@@ -30,6 +30,7 @@ import net.jawr.web.resource.FileNameUtils;
 import net.jawr.web.resource.bundle.IOUtils;
 import net.jawr.web.resource.bundle.JoinableResourceBundle;
 import net.jawr.web.resource.bundle.JoinableResourceBundleImpl;
+import net.jawr.web.resource.bundle.css.CssImageUrlRewriter;
 import net.jawr.web.resource.bundle.factory.util.PathNormalizer;
 import net.jawr.web.resource.bundle.generator.AbstractCSSGenerator;
 import net.jawr.web.resource.bundle.generator.GeneratorContext;
@@ -142,10 +143,7 @@ public class ClassPathCSSGenerator extends AbstractCSSGenerator implements Worki
 		
 		// Here we create a new context where the bundle name is the Jawr generator CSS path
 		// The version of the CSS classpath for debug mode will be different compare to the standard one
-		
-		// TODO use Css rewriter
-		String bundlePath = PathNormalizer.concatWebPath(generatorContext.getConfig().getServletMapping(), ResourceGenerator.CSS_DEBUGPATH);
-		JoinableResourceBundle tempBundle = new JoinableResourceBundleImpl(bundlePath, null, null, null, null, null);
+		JoinableResourceBundle tempBundle = new JoinableResourceBundleImpl(ResourceGenerator.CSS_DEBUGPATH, null, null, null, null, null);
 		BundleProcessingStatus tempStatus = new BundleProcessingStatus(tempBundle, generatorContext.getResourceReaderHandler(), generatorContext.getConfig());
 		
 		CSSURLPathRewriterPostProcessor postProcessor = new CSSURLPathRewriterPostProcessor();

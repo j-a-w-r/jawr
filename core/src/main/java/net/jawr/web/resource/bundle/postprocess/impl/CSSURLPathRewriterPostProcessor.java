@@ -141,7 +141,7 @@ public class CSSURLPathRewriterPostProcessor extends
 			String imgUrl = null;
 			
 			// Retrieve the current CSS file from which the CSS image is referenced
-			String currentCss = status.getLastPathAdded();
+			String currentCss = originalCssPath;
 			boolean generatedImg = false;
 			if(imgRsHandler != null){
 				GeneratorRegistry imgRsGeneratorRegistry = imgRsHandler.getJawrConfig().getGeneratorRegistry();
