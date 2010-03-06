@@ -303,4 +303,12 @@ public final class JmxUtils {
 		
 		return mBeanName;
 	}
+
+	/**
+	 * Returns true if JMX is enabled for the application
+	 * @return true if JMX is enabled for the application
+	 */
+	public static boolean isJmxEnabled() {
+		return System.getProperty(JawrConstant.JMX_ENABLE_FLAG_SYSTEL_PROPERTY) != null;
+	}
 }
