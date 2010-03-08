@@ -603,7 +603,7 @@ public class JawrRequestHandler implements ConfigChangeListener, Serializable {
 		}
 
 		// Define the replacement pattern for the generated image (like jar:img/myImg.png)
-		String relativeRootUrlPath = getRootRelativeCssUrlPath(request, requestedPath);
+		String relativeRootUrlPath = getRootRelativeCssUrlPath(getRequestPath(request));
 		String replacementPattern = PathNormalizer.normalizePath("$1" + relativeRootUrlPath + imageServletMapping + "/$4_cbDebug/$7$8");
 		
 		Matcher matcher = GENERATED_IMG_PATTERN.matcher(content);
@@ -655,21 +655,12 @@ public class JawrRequestHandler implements ConfigChangeListener, Serializable {
 	 * Returns the relative path of an url to go back to the root.
 	 * For example : if the url path is defined as "/cssServletPath/css/myStyle.css" -> "../../"
 	 * 
-	 * @param request the request
 	 * @param url the requested url
 	 * @return the relative path of an url to go back to the root.
 	 */
-	private String getRootRelativeCssUrlPath(HttpServletRequest request, String url) {
+	private String getRootRelativeCssUrlPath(String url) {
 
-		String finalUrl = null;
-		String servletPath = request.getServletPath();
-		if("".equals(jawrConfig.getServletMapping())){
-			finalUrl = PathNormalizer.asPath(servletPath);
-		}else{
-			finalUrl = PathNormalizer.asPath(servletPath + request.getPathInfo());
-		}
-		
-		Matcher matcher = URL_SEPARATOR_PATTERN.matcher(finalUrl);
+		Matcher matcher = URL_SEPARATOR_PATTERN.matcher(url);
 		StringBuffer result = new StringBuffer();
 		boolean first = true;
 		while (matcher.find()) {
@@ -683,6 +674,23 @@ public class JawrRequestHandler implements ConfigChangeListener, Serializable {
 		}
 
 		return result.toString();
+	}
+
+	/**
+	 * Returns the request path
+	 * @param request the request
+	 * @return the request path
+	 */
+	private String getRequestPath(HttpServletRequest request) {
+		
+		String finalUrl = null;
+		String servletPath = request.getServletPath();
+		if("".equals(jawrConfig.getServletMapping())){
+			finalUrl = PathNormalizer.asPath(servletPath);
+		}else{
+			finalUrl = PathNormalizer.asPath(servletPath + request.getPathInfo());
+		}
+		return finalUrl;
 	}
 
 	/**
