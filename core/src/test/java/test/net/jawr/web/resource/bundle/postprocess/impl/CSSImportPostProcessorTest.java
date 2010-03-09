@@ -167,6 +167,25 @@ public class CSSImportPostProcessorTest extends TestCase {
 		assertEquals("Content was not rewritten properly",expectedContent, result);
 	}
 
+	public void testBasicRelativeURLWithMediaImport() {
+		// basic test
+		StringBuffer data = new StringBuffer("@import url(temp.css) screen;\n" +
+				".blue { color : #0000FF } ");
+		
+		String filePath = "/css/folder/subfolder/subfolder/someCSS.css";
+		String expectedContent = "@media screen {\n" +
+				".test { align : left; \n" +
+						"padding : 0 7px; \n" +
+						"background : url('../img/rainbow.png'); \n"+ 
+				"}\n" +
+				"}\n\n"+
+				".blue { color : #0000FF } ";
+		
+		status = getBundleProcessingStatus(filePath, "/css/folder/subfolder/subfolder/temp.css");
+		String result = processor.postProcessBundle(status, data).toString();		
+		assertEquals("Content was not rewritten properly",expectedContent, result);
+	}
+	
 	private BundleProcessingStatus getBundleProcessingStatus(String filePath, String expectedCssImportPath) {
 		ResourceReaderHandler rsHandler = getResourceReaderHandler(expectedCssImportPath);
 		config.getGeneratorRegistry().setResourceReaderHandler(rsHandler);

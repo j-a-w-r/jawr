@@ -31,6 +31,7 @@ import net.jawr.web.resource.bundle.generator.GeneratorRegistry;
 import net.jawr.web.resource.bundle.postprocess.AbstractChainedResourceBundlePostProcessor;
 import net.jawr.web.resource.bundle.postprocess.BundleProcessingStatus;
 import net.jawr.web.resource.bundle.postprocess.PostProcessFactoryConstant;
+import net.jawr.web.util.StringUtils;
 
 /**
  * This class defines the Post processor which handle the inclusion of the CSS define with @import statement
@@ -44,7 +45,7 @@ public class CSSImportPostProcessor extends
 	/** The url pattern */
 	private static final Pattern IMPORT_PATTERN = Pattern.compile(	"@import\\s*url\\(\\s*" // 'url(' and any number of whitespaces 
 																+ "[\"']?([^\"']*)[\"']?" // any sequence of characters, except an unescaped ')'
-																+ "\\s*\\);?",  // Any number of whitespaces, then ')'
+																+ "\\s*\\)\\s*(\\w+)?\\s*;?",  // Any number of whitespaces, then ')'
 																Pattern.CASE_INSENSITIVE); // works with 'URL('
 	
 	/**
@@ -72,7 +73,7 @@ public class CSSImportPostProcessor extends
 		StringBuffer sb = new StringBuffer();
 		while(matcher.find()) {
 		
-			String content = getCssPathContent(matcher.group(1), status);
+			String content = getCssPathContent(matcher.group(1), matcher.group(2), status);
 			matcher.appendReplacement(sb, RegexUtil.adaptReplacementToMatcher(content));
 		}
 		matcher.appendTail(sb);
@@ -83,11 +84,12 @@ public class CSSImportPostProcessor extends
 	/**
 	 * Retrieve the content of the css to import
 	 * @param cssPathToImport the path of the css to import
+	 * @param media the media
 	 * @param status the bundle processing status
 	 * @return the content of the css to import
 	 * @throws IOException if an IOException occurs
 	 */
-	private String getCssPathContent(String cssPathToImport, BundleProcessingStatus status) throws IOException {
+	private String getCssPathContent(String cssPathToImport, String media, BundleProcessingStatus status) throws IOException {
 		
 		String currentCssPath = status.getLastPathAdded();
 		
@@ -117,8 +119,16 @@ public class CSSImportPostProcessor extends
 		}
 		// Rewrite image URL
 		CssImportedUrlRewriter urlRewriter = new CssImportedUrlRewriter(generatorRegistry);
-		StringBuffer rewritedContent = urlRewriter.rewriteUrl(path, currentCssPath, content.getBuffer().toString());
-		return rewritedContent.toString();
+		StringBuffer result = new StringBuffer();
+		boolean isMediaAttributeSet = StringUtils.isNotEmpty(media);
+		if(isMediaAttributeSet){
+			result.append("@media "+media+" {\n");
+		}
+		result.append(urlRewriter.rewriteUrl(path, currentCssPath, content.getBuffer().toString()));
+		if(isMediaAttributeSet){
+			result.append("\n}\n");
+		}
+		return result.toString();
 	}
 
 	/**
