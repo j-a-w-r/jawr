@@ -150,11 +150,6 @@ public class JawrConfig implements Serializable {
 	public static final String JAWR_IMAGE_RESOURCES = "jawr.image.resources";
 
 	/**
-	 * The property name for the flag which sort the resources alphabetically.
-	 */
-	public static final String JAWR_SORTING_RESOURCES_ALPHABETICALLY = "jawr.resources.sort.alphabetically";
-	
-	/**
 	 * The generator registry
 	 */
 	private GeneratorRegistry generatorRegistry;
@@ -345,10 +340,6 @@ public class JawrConfig implements Serializable {
 		
 		if (null != props.getProperty(JAWR_CSS_SKIN_COOKIE)) {
 			skinCookieName = props.getProperty(JAWR_CSS_SKIN_COOKIE).trim();
-		}
-		
-		if (null != props.getProperty(JAWR_SORTING_RESOURCES_ALPHABETICALLY)) {
-			sortingResourcesAlphabetically = Boolean.valueOf(props.getProperty(JAWR_SORTING_RESOURCES_ALPHABETICALLY)).booleanValue();
 		}
 		
 		if (null != props.getProperty(JAWR_CSSLINKS_FLAVOR)) {
@@ -807,23 +798,6 @@ public class JawrConfig implements Serializable {
 	 */
 	public String getSkinCookieName() {
 		return skinCookieName;
-	}
-
-	/**
-	 * Returns the flag indicating if we want to sort the resources mapping defined in a folder alohabetically or not
-	 * @return the flag indicating if we want to sort the resources mapping defined in a folder alohabetically or not
-	 */
-	public boolean isSortingResourcesAlphabetically() {
-		return sortingResourcesAlphabetically;
-	}
-
-	/**
-	 * Sets the flag indicating if we want to sort the resources mapping defined in a folder alohabetically or not.
-	 * @param sortingResourcesAlphabetically the flag to set
-	 */
-	public void setSortingResourcesAlphabetically(
-			boolean sortingResourcesAlphabetically) {
-		this.sortingResourcesAlphabetically = sortingResourcesAlphabetically;
 	}
 
 	/*

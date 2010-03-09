@@ -18,7 +18,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -58,9 +57,6 @@ public class ServletContextResourceReaderHandler implements ResourceReaderHandle
 	/** The list of resource info providers */
 	private List resourceInfoProviders = new ArrayList();
 	
-	/** The flag indicating if the resource name retrieve from a directory should be sorted alphabetically */
-	private boolean sortingResourceAlphabetically;
-	
 	/**
 	 * Constructor
 	 * @param servletContext the servlet context
@@ -79,7 +75,6 @@ public class ServletContextResourceReaderHandler implements ResourceReaderHandle
 		this.servletContext = servletContext;
 		this.generatorRegistry = generatorRegistry;
 		this.generatorRegistry.setResourceReaderHandler(this);
-		this.sortingResourceAlphabetically = jawrConfig.isSortingResourcesAlphabetically();
 		if (tempWorkingDirectory.startsWith(JawrConstant.FILE_URI_PREFIX)) {
 			tempWorkingDirectory = tempWorkingDirectory.substring(JawrConstant.FILE_URI_PREFIX.length());
 		} 
@@ -227,12 +222,7 @@ public class ServletContextResourceReaderHandler implements ResourceReaderHandle
 	 * @see net.jawr.web.resource.handler.reader.ResourceBrowser#getResourceNames(java.lang.String)
 	 */
 	public Set getResourceNames(String dirName) {
-		Set resourceNames = null;
-		if(sortingResourceAlphabetically){
-			resourceNames = new TreeSet();
-		}else{
-			resourceNames = new HashSet();
-		}
+		Set resourceNames = new TreeSet();
 		for (Iterator iterator = resourceInfoProviders.iterator(); iterator.hasNext();) {
 			ResourceBrowser rsBrowser = (ResourceBrowser) iterator.next();
 			if(generatorRegistry.isPathGenerated(dirName)){
