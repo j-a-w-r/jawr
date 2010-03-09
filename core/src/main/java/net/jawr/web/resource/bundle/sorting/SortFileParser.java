@@ -1,5 +1,5 @@
 /**
- * Copyright 2007 Jordi Hernández Sellés
+ * Copyright 2007-2010 Jordi Hernández Sellés, Ibrahim Chaehoi
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -17,9 +17,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 import net.jawr.web.exception.BundlingProcessException;
 import net.jawr.web.resource.bundle.factory.util.PathNormalizer;
@@ -28,13 +28,26 @@ import net.jawr.web.resource.bundle.factory.util.PathNormalizer;
  * Reads a sorting file and generates a List containing the sorted members of a bundle
  * 
  * @author Jordi Hernández Sellés
- *
+ * @author Ibrahim Chaehoi
  */
 public class SortFileParser {
+	
+	/** The reader  */
 	private Reader reader;
-	private Set availableResources;
+	
+	/** The available resources */
+	private Collection availableResources;
+	
+	/** The directory name */
 	private String dirName;
-	public SortFileParser(Reader reader,Set availableResources,String dirName) {
+	
+	/**
+	 * Constructor
+	 * @param reader the reader
+	 * @param availableResources the available resources
+	 * @param dirName the directory name
+	 */
+	public SortFileParser(Reader reader,Collection availableResources,String dirName) {
 		super();
 		this.reader = reader;
 		this.availableResources = availableResources;
@@ -44,7 +57,7 @@ public class SortFileParser {
 	/**
 	 * Creates a list with the ordered resource names and returns it. 
 	 * If a resource is not in the resources dir, it is ignored. 
-	 * @return
+	 * @return the list of ordered resource names
 	 */
 	public List getSortedResources()
 	{

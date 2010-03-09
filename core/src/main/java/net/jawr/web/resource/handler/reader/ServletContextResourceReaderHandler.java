@@ -22,6 +22,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 
 import javax.servlet.ServletContext;
 
@@ -57,6 +58,9 @@ public class ServletContextResourceReaderHandler implements ResourceReaderHandle
 	/** The list of resource info providers */
 	private List resourceInfoProviders = new ArrayList();
 	
+	/** The flag indicating if the resource name retrieve from a directory should be sorted alphabetically */
+	private boolean sortingResourceAlphabetically;
+	
 	/**
 	 * Constructor
 	 * @param servletContext the servlet context
@@ -75,7 +79,7 @@ public class ServletContextResourceReaderHandler implements ResourceReaderHandle
 		this.servletContext = servletContext;
 		this.generatorRegistry = generatorRegistry;
 		this.generatorRegistry.setResourceReaderHandler(this);
-		
+		this.sortingResourceAlphabetically = jawrConfig.isSortingResourcesAlphabetically();
 		if (tempWorkingDirectory.startsWith(JawrConstant.FILE_URI_PREFIX)) {
 			tempWorkingDirectory = tempWorkingDirectory.substring(JawrConstant.FILE_URI_PREFIX.length());
 		} 
@@ -223,7 +227,12 @@ public class ServletContextResourceReaderHandler implements ResourceReaderHandle
 	 * @see net.jawr.web.resource.handler.reader.ResourceBrowser#getResourceNames(java.lang.String)
 	 */
 	public Set getResourceNames(String dirName) {
-		Set resourceNames = new HashSet();
+		Set resourceNames = null;
+		if(sortingResourceAlphabetically){
+			resourceNames = new TreeSet();
+		}else{
+			resourceNames = new HashSet();
+		}
 		for (Iterator iterator = resourceInfoProviders.iterator(); iterator.hasNext();) {
 			ResourceBrowser rsBrowser = (ResourceBrowser) iterator.next();
 			if(generatorRegistry.isPathGenerated(dirName)){
@@ -231,17 +240,18 @@ public class ServletContextResourceReaderHandler implements ResourceReaderHandle
 					PrefixedResourceGenerator rsGeneratorBrowser = (PrefixedResourceGenerator) rsBrowser;
 					String prefix = rsGeneratorBrowser.getMappingPrefix()+GeneratorRegistry.PREFIX_SEPARATOR;
 					if(dirName.startsWith(prefix)){
-						resourceNames = rsBrowser.getResourceNames(dirName);
+						resourceNames.addAll(rsBrowser.getResourceNames(dirName));
 						break;
 					}
 				}
 			}else{
 				if (!(rsBrowser instanceof PrefixedResourceGenerator)) {
-						resourceNames = rsBrowser.getResourceNames(dirName);
+					resourceNames.addAll(rsBrowser.getResourceNames(dirName));
 						break;
 				}
 			}
 		}
+		
 		return resourceNames;
 	}
 

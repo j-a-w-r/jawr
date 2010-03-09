@@ -15,6 +15,8 @@ package net.jawr.web.resource.bundle;
 
 import java.io.Reader;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -203,13 +205,18 @@ public class JoinableResourceBundleImpl implements JoinableResourceBundle {
 	 * @param addSubDirs boolean If subfolders will be included. In such case, every folder below the path is included.
 	 */
 	private void addItemsFromDir(String dirName, boolean addSubDirs) {
-		Set resources = resourceReaderHandler.getResourceNames(dirName);
+		Collection resources = resourceReaderHandler.getResourceNames(dirName);
 		boolean isGeneratedPath = generatorRegistry.isPathGenerated(dirName);
 		if (LOGGER.isDebugEnabled()) {
 			LOGGER.debug("Adding " + resources.size() + " resources from path ["
 					+ dirName + "] to bundle " + getId());
 		}
 
+		boolean isSortingResourcesAlphabetically = false;
+		if(isSortingResourcesAlphabetically){
+			Collections.sort(new ArrayList(resources));
+		}
+		
 		// If the directory contains a sorting file, it is used to order the resources.
 		if (resources.contains(SORT_FILE_NAME)
 				|| resources.contains("/" + SORT_FILE_NAME)) {
