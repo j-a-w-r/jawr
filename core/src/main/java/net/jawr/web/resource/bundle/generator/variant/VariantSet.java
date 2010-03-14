@@ -13,6 +13,7 @@
  */
 package net.jawr.web.resource.bundle.generator.variant;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -36,6 +37,17 @@ public class VariantSet implements Set {
 	
 	/** The variant set */
 	private Set variants;
+	
+	/**
+	 * Constructor
+	 * @param type the variant type
+	 * @param defaultVariant the default variant
+	 * @param variants the variant set
+	 */
+	public VariantSet(String type, String defaultVariant, String[] variants){
+		
+		this(type, defaultVariant, Arrays.asList(variants));
+	}
 	
 	/**
 	 * Constructor
