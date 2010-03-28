@@ -39,6 +39,9 @@ public abstract class AbstractChainedResourceBundlePostProcessor implements
 	/** The ID of the chained bundle post processor */
 	private String id;
 	
+	/** The flag indicating if the chain contains a composite bundle post processor */
+	protected boolean containsCompositeBundlePostProcessor;
+	
 	/**
 	 * Constructor
 	 * @param id the id of the post processor
@@ -88,8 +91,17 @@ public abstract class AbstractChainedResourceBundlePostProcessor implements
 		}else{
 			this.nextProcessor.addNextProcessor(nextProcessor);
 		}
+		
+		containsCompositeBundlePostProcessor |= nextProcessor.containsCompositeBundleProcessor();
 	}
 	
+	/* (non-Javadoc)
+	 * @see net.jawr.web.resource.bundle.postprocess.ChainedResourceBundlePostProcessor#containsCompositeBundleProcessor()
+	 */
+	public boolean containsCompositeBundleProcessor() {
+		return containsCompositeBundlePostProcessor;
+	}
+
 	/**
 	 * Postprocess a bundle of resources in the context of this chain of processors. 
 	 * @param bundleData the bundle data

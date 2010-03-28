@@ -21,6 +21,7 @@ import net.jawr.web.resource.bundle.postprocess.impl.CSSImportPostProcessor;
 import net.jawr.web.resource.bundle.postprocess.impl.CSSMinPostProcessor;
 import net.jawr.web.resource.bundle.postprocess.impl.CSSURLPathRewriterPostProcessor;
 import net.jawr.web.resource.bundle.postprocess.impl.CssCharsetFilterPostProcessor;
+import net.jawr.web.resource.bundle.postprocess.impl.css.base64.Base64ImageEncoderPostProcessor;
 import net.jawr.web.resource.bundle.postprocess.impl.yui.YUICSSCompressor;
 
 /**
@@ -69,6 +70,8 @@ public class CSSPostProcessorChainFactory extends
 			return new CssCharsetFilterPostProcessor();
 		else if (PostProcessFactoryConstant.URL_PATH_REWRITER.equals(processorKey))
 			return new CSSURLPathRewriterPostProcessor();
+		else if (PostProcessFactoryConstant.BASE64_IMAGE_ENCODER.equals(processorKey))
+			return new Base64ImageEncoderPostProcessor();
 		else if (PostProcessFactoryConstant.YUI_COMPRESSOR.equals(processorKey))
 			return new YUICSSCompressor();
 		

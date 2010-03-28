@@ -33,5 +33,11 @@ public interface ChainedResourceBundlePostProcessor extends ResourceBundlePostPr
 	 * @param nextProcessor the next post processor
 	 */
 	public void addNextProcessor(ChainedResourceBundlePostProcessor nextProcessor);
+
+	/**
+	 * Returns true if the chain contains a CompositeBundle postprocessor
+	 * @return true if the chain contains a CompositeBundle postprocessor
+	 */
+	public boolean containsCompositeBundleProcessor();
 	
 }

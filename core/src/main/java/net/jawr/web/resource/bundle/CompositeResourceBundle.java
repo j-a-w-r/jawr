@@ -100,4 +100,10 @@ public class CompositeResourceBundle extends JoinableResourceBundleImpl {
 		return childBundles;
 	}
 
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	public String toString() {
+		return "CompositeResourceBundleImpl [id=" + getId() + ", name=" + getName() + "]";
+	}
 }

@@ -383,7 +383,7 @@ public class BundlesHandlerFactory {
 					.getAlternateProductionURL());
 		
 		if (null != definition.getVariants())
-			composite.setVariantSets(definition
+			composite.setVariants(definition
 					.getVariants());
 		
 		if (null != definition.getDependencies() && !definition.getDependencies().isEmpty())
@@ -427,7 +427,7 @@ public class BundlesHandlerFactory {
 					.getIeConditionalExpression());
 
 		if (null != definition.getVariants())
-			newBundle.setVariantSets(definition
+			newBundle.setVariants(definition
 					.getVariants());
 		
 		if (null != definition.getAlternateProductionURL())

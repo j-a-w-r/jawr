@@ -23,8 +23,8 @@ import java.util.Set;
 import java.util.Map.Entry;
 
 import net.jawr.web.resource.bundle.factory.PropertiesBundleConstant;
-import net.jawr.web.resource.bundle.generator.variant.VariantSet;
 import net.jawr.web.resource.bundle.postprocess.ChainedResourceBundlePostProcessor;
+import net.jawr.web.resource.bundle.variant.VariantSet;
 import net.jawr.web.util.StringUtils;
 
 /**

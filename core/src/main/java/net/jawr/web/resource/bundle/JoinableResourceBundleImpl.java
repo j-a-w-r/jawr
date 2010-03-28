@@ -29,9 +29,9 @@ import net.jawr.web.exception.BundlingProcessException;
 import net.jawr.web.exception.ResourceNotFoundException;
 import net.jawr.web.resource.bundle.factory.util.PathNormalizer;
 import net.jawr.web.resource.bundle.generator.GeneratorRegistry;
-import net.jawr.web.resource.bundle.generator.variant.VariantUtils;
 import net.jawr.web.resource.bundle.postprocess.ResourceBundlePostProcessor;
 import net.jawr.web.resource.bundle.sorting.SortFileParser;
+import net.jawr.web.resource.bundle.variant.VariantUtils;
 import net.jawr.web.resource.handler.reader.ResourceReaderHandler;
 import net.jawr.web.util.StringUtils;
 
@@ -408,7 +408,7 @@ public class JoinableResourceBundleImpl implements JoinableResourceBundle {
 	 * 
 	 * @param variantSets
 	 */
-	public void setVariantSets(Map variantSets) {
+	public void setVariants(Map variantSets) {
 		
 		if(variantSets != null){
 			this.variants = new TreeMap(variantSets);
@@ -608,7 +608,7 @@ public class JoinableResourceBundleImpl implements JoinableResourceBundle {
 
 		String prefix = bundleDataHashCode;
 
-		if (null == variantKey) {
+		if (StringUtils.isEmpty(variantKey)) {
 			this.urlPrefix = prefix;
 		} else {
 			prefixMap.put(variantKey, prefix);
@@ -630,6 +630,13 @@ public class JoinableResourceBundleImpl implements JoinableResourceBundle {
 		}
 		
 		return variantKey;
+	}
+	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	public String toString() {
+		return "JoinableResourceBundleImpl [id=" + id + ", name=" + name + "]";
 	}
 	
 }

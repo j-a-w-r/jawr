@@ -25,9 +25,9 @@ import net.jawr.web.exception.JawrLinkRenderingException;
 import net.jawr.web.resource.bundle.JoinableResourceBundle;
 import net.jawr.web.resource.bundle.factory.util.PathNormalizer;
 import net.jawr.web.resource.bundle.generator.GeneratorRegistry;
-import net.jawr.web.resource.bundle.generator.variant.VariantUtils;
 import net.jawr.web.resource.bundle.handler.ResourceBundlesHandler;
 import net.jawr.web.resource.bundle.iterator.ResourceBundlePathsIterator;
+import net.jawr.web.resource.bundle.variant.VariantUtils;
 import net.jawr.web.servlet.RendererRequestUtils;
 import net.jawr.web.util.StringUtils;
 

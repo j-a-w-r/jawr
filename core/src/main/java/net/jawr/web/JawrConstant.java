@@ -60,8 +60,14 @@ public class JawrConstant {
 	/** The image servlet context attribute name */
 	public static final String IMG_CONTEXT_ATTRIBUTE = "net.jawr.web.resource.bundle.IMG_CONTEXT_ATTRIBUTE";
 
+	/** The http scheme */
+	public static final String HTTP = "http";
+	
 	/** The https scheme */
 	public static final String HTTPS = "https";
+	
+	/** The ssl protocole name */
+	public static final String SSL = "ssl";
 	
 	/** The https url prefix */
 	public static final String HTTPS_URL_PREFIX = "https://";
@@ -126,6 +132,9 @@ public class JawrConstant {
 	/** The skin variant type */
 	public static final String SKIN_VARIANT_TYPE = "skin";
 
+	/** The browser variant type */
+	public static final String BROWSER_VARIANT_TYPE = "browser";
+
 	/** The property name for the default root directories for Css skin */
 	public static final String SKIN_DEFAULT_ROOT_DIRS = "skin.default.root.dirs";
 
@@ -162,4 +171,26 @@ public class JawrConstant {
 	
 	/** The name of the src attribute */
 	public static final String SRC_ATTR = "src";
+
+	// Base 64 postprocessor
+	/** Max file size jawr property name */
+	public static final String BASE64_MAX_IMG_FILE_SIZE = 
+		"jawr.css.postprocessor.base64ImageEncoder.maxFileLength";
+
+	public static final String POST_PROCESSING_CTX_JAWR_IMAGE_MAPPING = "jawrImageMapping";
+
+	public static final String BASE64_ENCODED_RESOURCES = "BASE64_ENCODED_RESOURCES";
+
+	public static final String BROWSER_IE7 = "ie7";
+
+	public static final String BROWSER_IE6 = "ie6";
+
+	public static final String CONNECTION_TYPE_VARIANT_TYPE = "connectionType";
+
+	public static final String URL_SCHEME_VARIANT_TYPE = "urlScheme";
+
+	public static final String JAWR_BUNDLE_PATH_PLACEHOLDER = "{JAWR_BUNDLE_PATH}";
+
+	public static final String JAWR_BUNDLE_PATH_PLACEHOLDER_PATTERN = "\\{JAWR_BUNDLE_PATH\\}";
+	
 }

@@ -466,6 +466,8 @@ public class JawrRequestHandler implements ConfigChangeListener, Serializable {
 				ThreadLocalJawrContext.setJawrConfigMgrObjectName(JmxUtils.getMBeanObjectName(request.getContextPath(), resourceType));
 			}
 			
+			ThreadLocalJawrContext.setRequest(request);
+			
 			RendererRequestUtils.setRequestDebuggable(request, jawrConfig);
 			
 			// manual reload request

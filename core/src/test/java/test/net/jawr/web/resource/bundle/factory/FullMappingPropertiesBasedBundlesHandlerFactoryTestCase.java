@@ -23,10 +23,10 @@ import net.jawr.web.resource.bundle.JoinableResourceBundlePropertySerializer;
 import net.jawr.web.resource.bundle.factory.FullMappingPropertiesBasedBundlesHandlerFactory;
 import net.jawr.web.resource.bundle.factory.postprocessor.PostProcessorChainFactory;
 import net.jawr.web.resource.bundle.generator.GeneratorRegistry;
-import net.jawr.web.resource.bundle.generator.variant.VariantSet;
 import net.jawr.web.resource.bundle.postprocess.AbstractChainedResourceBundlePostProcessor;
 import net.jawr.web.resource.bundle.postprocess.BundleProcessingStatus;
 import net.jawr.web.resource.bundle.postprocess.ResourceBundlePostProcessor;
+import net.jawr.web.resource.bundle.variant.VariantSet;
 import net.jawr.web.resource.handler.reader.ResourceReader;
 import net.jawr.web.resource.handler.reader.ResourceReaderHandler;
 
@@ -228,7 +228,7 @@ public class FullMappingPropertiesBasedBundlesHandlerFactoryTestCase extends
 		
 		Map variants = new HashMap();
 		variants.put(JawrConstant.LOCALE_VARIANT_TYPE, new VariantSet(JawrConstant.LOCALE_VARIANT_TYPE, "fr", Arrays.asList(new String[]{"fr", "en_US"})));
-		bundle.setVariantSets(variants);
+		bundle.setVariants(variants);
 		bundle.setBundleDataHashCode(null, -123456);
 		bundle.setBundleDataHashCode("fr", 123456);
 		bundle.setBundleDataHashCode("en_US", 789);
@@ -286,7 +286,7 @@ public class FullMappingPropertiesBasedBundlesHandlerFactoryTestCase extends
 		Map variants = new HashMap();
 		variants.put(JawrConstant.SKIN_VARIANT_TYPE, new VariantSet(JawrConstant.SKIN_VARIANT_TYPE, "summer", Arrays.asList(new String[]{"summer", "winter"})));
 		variants.put(JawrConstant.LOCALE_VARIANT_TYPE, new VariantSet(JawrConstant.LOCALE_VARIANT_TYPE, "fr", Arrays.asList(new String[]{"fr", "en_US"})));
-		bundle.setVariantSets(variants);
+		bundle.setVariants(variants);
 		bundle.setBundleDataHashCode(null, -123456);
 		bundle.setBundleDataHashCode("fr@summer", 123456);
 		bundle.setBundleDataHashCode("en_US@summer", 789);

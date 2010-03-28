@@ -26,7 +26,7 @@ import net.jawr.web.collections.ConcurrentCollectionsFactory;
 import net.jawr.web.config.JawrConfig;
 import net.jawr.web.exception.BundlingProcessException;
 import net.jawr.web.resource.bundle.IOUtils;
-import net.jawr.web.resource.bundle.generator.variant.VariantUtils;
+import net.jawr.web.resource.bundle.variant.VariantUtils;
 import net.jawr.web.servlet.RendererRequestUtils;
 
 import org.directwebremoting.servlet.HttpConstants;

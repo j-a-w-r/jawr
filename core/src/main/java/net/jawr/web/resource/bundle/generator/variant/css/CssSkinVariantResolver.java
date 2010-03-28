@@ -18,8 +18,8 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
 import net.jawr.web.JawrConstant;
-import net.jawr.web.resource.bundle.generator.variant.VariantResolver;
-import net.jawr.web.resource.bundle.generator.variant.VariantSet;
+import net.jawr.web.resource.bundle.variant.VariantResolver;
+import net.jawr.web.resource.bundle.variant.VariantSet;
 
 /**
  * The skin variant resolver is used to determine the current skin from the cookie

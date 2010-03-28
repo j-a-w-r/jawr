@@ -251,7 +251,7 @@ public class FullMappingPropertiesBasedBundlesHandlerFactory {
 		
 		Set localeKeys = new HashSet();
 		Map variants = props.getCustomBundleVariantSets(bundleName);
-		bundle.setVariantSets(variants);
+		bundle.setVariants(variants);
 		for (Iterator iterator = bundle.getVariantKeys().iterator(); iterator.hasNext();) {
 			String variantKey = (String) iterator.next();
 			if(StringUtils.isNotEmpty(variantKey)){

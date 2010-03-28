@@ -14,8 +14,8 @@ import net.jawr.web.exception.DuplicateBundlePathException;
 import net.jawr.web.resource.bundle.factory.BundlesHandlerFactory;
 import net.jawr.web.resource.bundle.factory.util.ResourceBundleDefinition;
 import net.jawr.web.resource.bundle.generator.GeneratorRegistry;
-import net.jawr.web.resource.bundle.generator.variant.VariantSet;
 import net.jawr.web.resource.bundle.handler.ResourceBundlesHandler;
+import net.jawr.web.resource.bundle.variant.VariantSet;
 import net.jawr.web.resource.handler.bundle.ResourceBundleHandler;
 import net.jawr.web.resource.handler.reader.ResourceReaderHandler;
 

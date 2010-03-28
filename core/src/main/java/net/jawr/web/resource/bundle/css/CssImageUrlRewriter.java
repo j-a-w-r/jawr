@@ -36,16 +36,19 @@ public class CssImageUrlRewriter {
 	/** The URL separator */
 	private static final String URL_SEPARATOR = "/";
 
+	public static String URL_REGEXP = "url\\(\\s*" // 'url('
+		// and any number of whitespaces
+		+ "(?!(\"|')?(data|mhtml|cid):)(((\\\\\\))|[^)])*)" // any sequence of
+		// characters not
+		// starting with
+		// 'data:',
+		// 'mhtml:', or
+		// 'cid:', except an
+		// unescaped ')'
+		+ "\\s*\\)"; // Any number of whitespaces, then ')'
+
 	/** The url pattern */
-	private static final Pattern URL_PATTERN = Pattern.compile("url\\(\\s*" // 'url('
-																			// and
-																			// any
-																			// number
-																			// of
-																			// whitespaces
-			+ "((\\\\\\))|[^)])*" // any sequence of characters, except an
-									// unescaped ')'
-			+ "\\s*\\)", // Any number of whitespaces, then ')'
+	public static final Pattern URL_PATTERN = Pattern.compile(URL_REGEXP, // Any number of whitespaces, then ')'
 			Pattern.CASE_INSENSITIVE); // works with 'URL('
 
 	/**
@@ -55,8 +58,16 @@ public class CssImageUrlRewriter {
 		
 	}
 
+	/**
+	 * Rewrites the image URL
+	 * @param originalCssPath the original CSS path
+	 * @param newCssPath the new CSS path
+	 * @param originalCssContent the original CSS content
+	 * @return the new CSS content with image path rewritten
+	 * @throws IOException
+	 */
 	public StringBuffer rewriteUrl(String originalCssPath, String newCssPath, String originalCssContent) throws IOException {
-
+		
 		// Rewrite each css image url path
 		Matcher matcher = URL_PATTERN.matcher(originalCssContent);
 		StringBuffer sb = new StringBuffer();
@@ -84,7 +95,7 @@ public class CssImageUrlRewriter {
 	 * @throws IOException
 	 *             if an IO exception occurs
 	 */
-	private String getUrlPath(String match, String originalPath, String newCssPath) throws IOException {
+	protected String getUrlPath(String match, String originalPath, String newCssPath) throws IOException {
 
 		String url = match.substring(match.indexOf('(') + 1,
 				match.lastIndexOf(')')).trim();
@@ -105,13 +116,6 @@ public class CssImageUrlRewriter {
 			return sb.toString();
 		}
 
-		// Check if the URL is embedded data (RFC2397), if it is return it as is
-		if (url.trim().toLowerCase().startsWith("data:")) {
-			StringBuffer sb = new StringBuffer("url(");
-			sb.append(quoteStr).append(url).append(quoteStr).append(")");
-			return sb.toString();
-		}
-
 		if (url.startsWith(URL_SEPARATOR))
 			url = url.substring(1, url.length());
 		else if (url.startsWith("./"))
@@ -120,9 +124,12 @@ public class CssImageUrlRewriter {
 		String imgUrl = getRewrittenImagePath(originalPath, newCssPath, url);
 
 		// Start rendering the result, starting by the initial quote, if any.
-		StringBuffer urlPrefix = new StringBuffer("url(").append(quoteStr);
-		return PathNormalizer.normalizePath(urlPrefix.append(imgUrl).append(
-				quoteStr).append(")").toString());
+		String finalUrl = "url("+quoteStr+imgUrl+quoteStr+")";
+		Matcher urlMatcher = URL_PATTERN.matcher(finalUrl);
+		if(urlMatcher.find()){ // Normalize only if a real URL
+			finalUrl = PathNormalizer.normalizePath(finalUrl);
+		}
+		return finalUrl;
 	}
 
 	/**

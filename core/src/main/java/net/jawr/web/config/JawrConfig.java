@@ -28,6 +28,9 @@ import net.jawr.web.resource.bundle.locale.DefaultLocaleResolver;
 import net.jawr.web.resource.bundle.locale.LocaleResolver;
 import net.jawr.web.resource.bundle.locale.LocaleVariantResolverWrapper;
 import net.jawr.web.resource.bundle.renderer.CSSHTMLBundleLinkRenderer;
+import net.jawr.web.resource.bundle.variant.VariantResolver;
+import net.jawr.web.resource.bundle.variant.resolver.BrowserResolver;
+import net.jawr.web.resource.bundle.variant.resolver.ConnectionTypeResolver;
 import net.jawr.web.util.StringUtils;
 
 /**
@@ -51,6 +54,21 @@ public class JawrConfig implements Serializable {
 	 * The property name for the locale resolver
 	 */
 	public static final String JAWR_LOCALE_RESOLVER = "jawr.locale.resolver";
+
+	/**
+	 * The property name for the browser resolver
+	 */
+	public static final String JAWR_BROWSER_RESOLVER = "jawr.browser.resolver";
+	
+	/**
+	 * The property name for the URL scheme resolver
+	 */
+	public static final String JAWR_URL_SCHEME_RESOLVER = "jawr.url.scheme.resolver";
+	
+	/**
+	 * The property name for the connection type resolver
+	 */
+	public static final String JAWR_CONNECTION_TYPE_SCHEME_RESOLVER = "jawr.url.connection.type.resolver";
 
 	/**
 	 * The property name for the dwr mapping
@@ -271,9 +289,6 @@ public class JawrConfig implements Serializable {
 
 	/** The skin cookie name*/
 	private String skinCookieName = JawrConstant.JAWR_SKIN;
-	
-	/** The flag indicating if the resource should be sort alphabetically */
-	private boolean sortingResourcesAlphabetically; 
 	
 	/**
 	 * Initialize configuration using params contained in the initialization properties file.
@@ -701,6 +716,28 @@ public class JawrConfig implements Serializable {
 		}
 
 		this.generatorRegistry.registerVariantResolver(new LocaleVariantResolverWrapper(localeResolver));
+		
+		registerResolver(new BrowserResolver(), JAWR_BROWSER_RESOLVER);
+		registerResolver(new ConnectionTypeResolver(), JAWR_CONNECTION_TYPE_SCHEME_RESOLVER);
+		
+	}
+
+	/**
+	 * Register a resolver in the generator registry
+	 * @param defaultResolver the default resolver
+	 * @param configPropertyName the configuration property whose the value define the resolver class
+	 * @return
+	 */
+	private VariantResolver registerResolver(VariantResolver defaultResolver, String configPropertyName ) {
+		VariantResolver resolver = null;
+		if (configProperties.getProperty(configPropertyName) == null) {
+			resolver = defaultResolver;
+		} else{
+			resolver = (VariantResolver) ClassLoaderResourceUtils.buildObjectInstance(configProperties.getProperty(configPropertyName));
+		}
+		
+		this.generatorRegistry.registerVariantResolver(resolver);
+		return resolver;
 	}
 
 	/**

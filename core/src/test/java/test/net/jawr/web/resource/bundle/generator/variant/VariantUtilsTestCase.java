@@ -22,8 +22,8 @@ import java.util.Set;
 
 import junit.framework.TestCase;
 import net.jawr.web.JawrConstant;
-import net.jawr.web.resource.bundle.generator.variant.VariantSet;
-import net.jawr.web.resource.bundle.generator.variant.VariantUtils;
+import net.jawr.web.resource.bundle.variant.VariantSet;
+import net.jawr.web.resource.bundle.variant.VariantUtils;
 
 /**
  * @author Ibrahim Chaehoi

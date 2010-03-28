@@ -14,6 +14,9 @@
 package net.jawr.web.context;
 
 import javax.management.ObjectName;
+import javax.servlet.http.HttpServletRequest;
+
+import net.jawr.web.config.JawrConfig;
 
 /**
  * This class defines the Jawr context.
@@ -32,6 +35,9 @@ public class JawrContext {
 	
 	/** The flag indicating that we are using making a bundle processing at build time */
 	private boolean bundleProcessingAtBuildTime;
+	
+	/** The current request */
+	private HttpServletRequest request;
 	
 	/**
 	 * Constructor. 
@@ -90,6 +96,22 @@ public class JawrContext {
 	}
 
 	/**
+	 * Returns the current request
+	 * @return the current request
+	 */
+	public HttpServletRequest getRequest() {
+		return request;
+	}
+
+	/**
+	 * Sets the current request
+	 * @param request the request to set
+	 */
+	public void setRequest(HttpServletRequest request) {
+		this.request = request;
+	}
+
+	/**
 	 * Reset the context. 
 	 */
 	public void reset(){
@@ -97,6 +119,7 @@ public class JawrContext {
 		this.jawrConfigMgrObjectName = null;
 		this.debugOverriden = false;
 		this.bundleProcessingAtBuildTime = false;
+		this.request = null;
 	}
 
 }

@@ -21,8 +21,8 @@ import java.util.Map;
 
 import net.jawr.web.JawrConstant;
 import net.jawr.web.resource.bundle.generator.GeneratorContext;
-import net.jawr.web.resource.bundle.generator.variant.VariantResourceReaderStrategy;
-import net.jawr.web.resource.bundle.generator.variant.VariantSet;
+import net.jawr.web.resource.bundle.variant.VariantResourceReaderStrategy;
+import net.jawr.web.resource.bundle.variant.VariantSet;
 
 /**
  * This class defines the resource provider strategy for Css skin

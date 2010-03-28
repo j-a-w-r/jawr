@@ -148,6 +148,12 @@ public interface JoinableResourceBundle {
     public Map getVariants();
     
     /**
+     * Sets the map of variants by type for this bundle. 
+     * @param the map of variants by type for this bundle. 
+     */
+    public void setVariants(Map variants);
+    
+    /**
      * Returns the list of variant keys. 
      * @return the list of variant keys. 
      */

@@ -17,10 +17,11 @@ import java.io.IOException;
 
 import net.jawr.web.resource.bundle.postprocess.AbstractChainedResourceBundlePostProcessor;
 import net.jawr.web.resource.bundle.postprocess.BundleProcessingStatus;
+import net.jawr.web.resource.bundle.postprocess.CompositeResourceBundlePostProcessor;
 import net.jawr.web.resource.bundle.postprocess.ResourceBundlePostProcessor;
 
 /**
- * Wrapper class for custom user made postprocessors. I adds chaining funcionality to the 
+ * Wrapper class for custom user made postprocessors. Adds chaining functionality to the 
  * custom postprocessor. 
  * 
  * @author Jordi Hernández Sellés
@@ -49,4 +50,12 @@ public class CustomPostProcessorChainWrapper extends AbstractChainedResourceBund
 		return customPostProcessor.postProcessBundle(status, bundleData);
 	}
 
+	/* (non-Javadoc)
+	 * @see net.jawr.web.resource.bundle.postprocess.AbstractChainedResourceBundlePostProcessor#containsCompositeBundleProcessor()
+	 */
+	public boolean containsCompositeBundleProcessor() {
+		return customPostProcessor instanceof CompositeResourceBundlePostProcessor;
+	}
+
+	
 }

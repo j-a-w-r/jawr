@@ -25,8 +25,8 @@ import net.jawr.web.resource.bundle.generator.GeneratorContext;
 import net.jawr.web.resource.bundle.generator.GeneratorRegistry;
 import net.jawr.web.resource.bundle.generator.ResourceGenerator;
 import net.jawr.web.resource.bundle.generator.variant.VariantResourceGenerator;
-import net.jawr.web.resource.bundle.generator.variant.VariantSet;
 import net.jawr.web.resource.bundle.locale.message.MessageBundleScriptCreator;
+import net.jawr.web.resource.bundle.variant.VariantSet;
 
 import org.apache.log4j.Logger;
 

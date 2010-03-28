@@ -427,6 +427,7 @@ public abstract class AbstractResourceBundleHandler implements ResourceBundleHan
 		storeBundle(bundleName, bundleContent, true, gzipDirPath);
 
 		// Store Css classpath debug files
+		// TODO check if it still necessary
 		Map cssClasspathDebugContentMap = bundleResourcesContent
 				.getCssClasspathDebugContentMap();
 		Iterator entryIterator = cssClasspathDebugContentMap.entrySet().iterator();

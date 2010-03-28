@@ -26,6 +26,9 @@ public class PostProcessFactoryConstant {
 	/** The ID of the CSS path rewriter post processor */
 	public static final String URL_PATH_REWRITER = "csspathrewriter";
 	
+	/** The ID of the base 64 image encoder */
+	public static final String BASE64_IMAGE_ENCODER = "base64ImageEncoder";
+	
 	/** The ID of the CSS charset filter post processor */
 	public static final String CSS_CHARSET_FILTER = "csscharset";
 	

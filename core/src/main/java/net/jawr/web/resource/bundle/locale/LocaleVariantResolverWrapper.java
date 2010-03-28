@@ -16,8 +16,8 @@ package net.jawr.web.resource.bundle.locale;
 import javax.servlet.http.HttpServletRequest;
 
 import net.jawr.web.JawrConstant;
-import net.jawr.web.resource.bundle.generator.variant.VariantResolver;
-import net.jawr.web.resource.bundle.generator.variant.VariantSet;
+import net.jawr.web.resource.bundle.variant.VariantResolver;
+import net.jawr.web.resource.bundle.variant.VariantSet;
 
 /**
  * This class defines the variant resolver wrapper for locale resolver
@@ -25,7 +25,7 @@ import net.jawr.web.resource.bundle.generator.variant.VariantSet;
  * @author Ibrahim Chaehoi
  *
  */
-public class LocaleVariantResolverWrapper implements VariantResolver  {
+public class LocaleVariantResolverWrapper implements VariantResolver , LocaleResolver {
 
 	/** The locale resolver */
 	private final LocaleResolver localeResolver;
@@ -50,6 +50,15 @@ public class LocaleVariantResolverWrapper implements VariantResolver  {
 	 */
 	public String resolveVariant(final HttpServletRequest request) {
 	
+		return localeResolver.resolveLocaleCode(request);
+	}
+
+	/**
+	 * @param request
+	 * @return
+	 * @see net.jawr.web.resource.bundle.locale.LocaleResolver#resolveLocaleCode(javax.servlet.http.HttpServletRequest)
+	 */
+	public String resolveLocaleCode(HttpServletRequest request) {
 		return localeResolver.resolveLocaleCode(request);
 	}
 

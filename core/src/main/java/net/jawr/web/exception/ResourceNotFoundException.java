@@ -21,22 +21,25 @@ package net.jawr.web.exception;
  */
 public class ResourceNotFoundException extends Exception {
 	
-	private String requestedPath;
-	
-
-	/**
-	 * 
-	 */
+	/** The serial version UID */
 	private static final long serialVersionUID = -8792768175785512913L;
 
-
-
+	/** The requested path */
+	private String requestedPath;
+	
+	/**
+	 * Constructor
+	 * @param requestedPath the requested path
+	 */
 	public ResourceNotFoundException(String requestedPath) {
 		super();
 		this.requestedPath = requestedPath;
 	}
 
-
+	/**
+	 * Returns the requested path
+	 * @return teh requested path
+	 */
 	public String getRequestedPath() {
 		return requestedPath;
 	}

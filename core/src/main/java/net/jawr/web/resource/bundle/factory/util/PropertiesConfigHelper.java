@@ -28,7 +28,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.jawr.web.resource.bundle.factory.PropertiesBundleConstant;
-import net.jawr.web.resource.bundle.generator.variant.VariantSet;
+import net.jawr.web.resource.bundle.variant.VariantSet;
 
 /**
  * Helper class to make properties access less verbose.

@@ -14,6 +14,7 @@
 package net.jawr.web.context;
 
 import javax.management.ObjectName;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * This class defines the context for Jawr, it holds the context in a ThreadLocal object.
@@ -91,10 +92,26 @@ public final class ThreadLocalJawrContext {
 
 	/**
 	 * Sets the flag indicating that we are using making a bundle processing at build time
-	 * @param bundleProcessingAtBuildTime the flqg to set
+	 * @param bundleProcessingAtBuildTime the flag to set
 	 */
 	public static void setBundleProcessingAtBuildTime(boolean bundleProcessingAtBuildTime) {
 		((JawrContext) jawrContext.get()).setBundleProcessingAtBuildTime(bundleProcessingAtBuildTime);
+	}
+	
+	/**
+	 * Returns the current request
+	 * @return the request
+	 */
+	public static HttpServletRequest getRequest() {
+		return ((JawrContext) jawrContext.get()).getRequest();
+	}
+
+	/**
+	 * Sets the request
+	 * @param request the request to set
+	 */
+	public static void setRequest(HttpServletRequest request) {
+		((JawrContext) jawrContext.get()).setRequest(request);
 	}
 	
 	/**

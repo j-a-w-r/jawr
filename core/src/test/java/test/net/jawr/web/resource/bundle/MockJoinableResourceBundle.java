@@ -175,4 +175,8 @@ public class MockJoinableResourceBundle implements JoinableResourceBundle {
 	
 	}
 
+	public void setVariants(Map variants) {
+		
+	}
+
 }

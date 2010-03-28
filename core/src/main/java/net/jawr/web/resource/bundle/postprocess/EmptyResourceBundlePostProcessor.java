@@ -1,5 +1,5 @@
 /**
- * Copyright 2007-2009 Jordi Hernández Sellés
+ * Copyright 2007-2010 Jordi Hernández Sellés, Ibrahim Chaehoi
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -49,6 +49,13 @@ public class EmptyResourceBundlePostProcessor extends
 	 */
 	public void addNextProcessor(ChainedResourceBundlePostProcessor nextProcessor) {
 		throw new UnsupportedOperationException("The empty resource bundle processor can't have a next post processord");
+	}
+
+	/* (non-Javadoc)
+	 * @see net.jawr.web.resource.bundle.postprocess.ChainedResourceBundlePostProcessor#containsCompositeBundleProcessor()
+	 */
+	public boolean containsCompositeBundleProcessor() {
+		return false;
 	}
 
 }
