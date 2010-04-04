@@ -42,9 +42,6 @@ public class Base64ImageEncoderPostProcessor extends
 	protected static final Logger LOGGER = 
 		Logger.getLogger(Base64ImageEncoderPostProcessor.class);
 
-	/** Line separator */
-	protected static final String LINE_SEPARATOR = System.getProperty("line.separator");
-	
 	/** Tab */
 	protected static final String TAB = "\t";
 
@@ -130,21 +127,22 @@ public class Base64ImageEncoderPostProcessor extends
 	protected void prependBase64EncodedResources(StringBuffer sb, Map encodedImages) {
 		Iterator it = encodedImages.entrySet().iterator();
 		StringBuffer mhtml = new StringBuffer();
-		mhtml.append("/*" + LINE_SEPARATOR);
-		mhtml.append("Content-Type: multipart/related; boundary=\"" + BOUNDARY_SEPARATOR + "\"" + LINE_SEPARATOR + LINE_SEPARATOR);
+		String lineSeparator = net.jawr.web.util.StringUtils.LINE_SEPARATOR;
+		mhtml.append("/*" + lineSeparator);
+		mhtml.append("Content-Type: multipart/related; boundary=\"" + BOUNDARY_SEPARATOR + "\"" + lineSeparator + lineSeparator);
 		
 		while (it.hasNext()) {
 	        Map.Entry pair = (Map.Entry)it.next();
 	        Base64EncodedResource encodedResource = (Base64EncodedResource) pair.getValue();
-	        mhtml.append(BOUNDARY_SEPARATOR_PREFIX + BOUNDARY_SEPARATOR + LINE_SEPARATOR);
-	        mhtml.append("Content-Type:" + encodedResource.getType() + LINE_SEPARATOR);
-	        mhtml.append("Content-Location:" + encodedResource.getId() + LINE_SEPARATOR);
-	        mhtml.append("Content-Transfer-Encoding:base64" + LINE_SEPARATOR + LINE_SEPARATOR);
-	        mhtml.append(encodedResource.getBase64Encoding() + LINE_SEPARATOR + LINE_SEPARATOR);
+	        mhtml.append(BOUNDARY_SEPARATOR_PREFIX + BOUNDARY_SEPARATOR + lineSeparator);
+	        mhtml.append("Content-Type:" + encodedResource.getType() + lineSeparator);
+	        mhtml.append("Content-Location:" + encodedResource.getId() + lineSeparator);
+	        mhtml.append("Content-Transfer-Encoding:base64" + lineSeparator + lineSeparator);
+	        mhtml.append(encodedResource.getBase64Encoding() + lineSeparator + lineSeparator);
 	    }		
 		
-		mhtml.append(BOUNDARY_SEPARATOR_PREFIX + BOUNDARY_SEPARATOR + BOUNDARY_SEPARATOR_PREFIX + LINE_SEPARATOR);
-		mhtml.append("*/" + LINE_SEPARATOR + LINE_SEPARATOR);
+		mhtml.append(BOUNDARY_SEPARATOR_PREFIX + BOUNDARY_SEPARATOR + BOUNDARY_SEPARATOR_PREFIX + lineSeparator);
+		mhtml.append("*/" + lineSeparator + lineSeparator);
         sb.insert(0, mhtml);
 
         LOGGER.debug(MHTML_PREFIX + mhtml);

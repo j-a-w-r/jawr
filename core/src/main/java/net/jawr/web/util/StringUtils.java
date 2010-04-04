@@ -42,6 +42,9 @@ package net.jawr.web.util;
  */
 public class StringUtils {
 
+	/** The new line separator */
+	public static final String LINE_SEPARATOR = System.getProperty("line.separator");
+	
 	/**
 	 * <code>\u000a</code> linefeed LF ('\n').
 	 * 

@@ -7,6 +7,7 @@ import java.io.IOException;
 
 import net.jawr.web.resource.bundle.postprocess.AbstractChainedResourceBundlePostProcessor;
 import net.jawr.web.resource.bundle.postprocess.BundleProcessingStatus;
+import net.jawr.web.util.StringUtils;
 
 import org.apache.log4j.Logger;
 
@@ -47,7 +48,7 @@ public class CSSCombineMediaStylesPostProcessor extends
 	 */
 	protected StringBuffer doPostProcessBundle(BundleProcessingStatus status, StringBuffer bundleData) throws IOException {
 		LOGGER.info("Post processing file '" + status.getLastPathAdded() + "'");
-		String newline = System.getProperty("line.separator");
+		
 		String bundleMediaTypePropertyName = "jawr.css.bundle." + status.getCurrentBundle().getName() + ".media";
 		String bundleMediaType = (String)status.getJawrConfig().getProperty(bundleMediaTypePropertyName);
 		if (bundleMediaType == null) {
@@ -57,9 +58,9 @@ public class CSSCombineMediaStylesPostProcessor extends
 
 		LOGGER.info("bundle media type: " + bundleMediaType);
 		
-		StringBuffer sb = new StringBuffer(CSS_MEDIA_RULE + " " + bundleMediaType + " " + CSS_MEDIA_RULE_OPEN + newline);
+		StringBuffer sb = new StringBuffer(CSS_MEDIA_RULE + " " + bundleMediaType + " " + CSS_MEDIA_RULE_OPEN + StringUtils.LINE_SEPARATOR);
 		sb.append(bundleData);
-		sb.append(CSS_MEDIA_RULE_CLOSE + newline + newline);
+		sb.append(CSS_MEDIA_RULE_CLOSE + StringUtils.LINE_SEPARATOR + StringUtils.LINE_SEPARATOR);
 		
 		LOGGER.info("Postprocessing finished");
 		return sb;

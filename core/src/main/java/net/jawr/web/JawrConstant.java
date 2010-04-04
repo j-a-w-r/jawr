@@ -172,7 +172,6 @@ public class JawrConstant {
 	/** The name of the src attribute */
 	public static final String SRC_ATTR = "src";
 
-	// Base 64 postprocessor
 	/** Max file size jawr property name */
 	public static final String BASE64_MAX_IMG_FILE_SIZE = 
 		"jawr.css.postprocessor.base64ImageEncoder.maxFileLength";

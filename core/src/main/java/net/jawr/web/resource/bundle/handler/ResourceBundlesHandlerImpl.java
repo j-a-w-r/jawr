@@ -62,6 +62,7 @@ import net.jawr.web.resource.bundle.sorting.GlobalResourceBundleComparator;
 import net.jawr.web.resource.bundle.variant.VariantUtils;
 import net.jawr.web.resource.handler.bundle.ResourceBundleHandler;
 import net.jawr.web.resource.handler.reader.ResourceReaderHandler;
+import net.jawr.web.util.StringUtils;
 
 import org.apache.log4j.Logger;
 
@@ -883,6 +884,11 @@ public class ResourceBundlesHandlerImpl implements ResourceBundlesHandler {
 
 				// Copy the content
 				IOUtils.copy(rd, bwriter, true);
+				
+				// Add new line at the end if it doesn't exist
+				if(!writer.getBuffer().toString().endsWith(StringUtils.LINE_SEPARATOR)){
+					writer.getBuffer().append(StringUtils.LINE_SEPARATOR);
+				}
 				
 				// Do unitary postprocessing.
 				bundleData.append(executeUnitaryPostProcessing(bundle, status, writer.getBuffer()));
