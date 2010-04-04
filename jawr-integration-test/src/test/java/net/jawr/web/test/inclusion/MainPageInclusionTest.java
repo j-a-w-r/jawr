@@ -1,6 +1,8 @@
 package net.jawr.web.test.inclusion;
 
 import static org.junit.Assert.assertEquals;
+import static net.jawr.web.test.JawrIntegrationServer.SERVER_URL;
+import static net.jawr.web.test.JawrIntegrationServer.CONTEXT_PATH;
 
 import java.util.List;
 
@@ -53,7 +55,7 @@ public class MainPageInclusionTest extends AbstractPageTest {
 		assertEquals(5, scripts.size());
 		HtmlScript script = (HtmlScript) scripts.get(0);
 		assertEquals(
-				CONTEXT_PATH+"/1473833880/bundles/globalBundle.js",
+				CONTEXT_PATH+"/N1930202847/bundles/globalBundle.js",
 				script.getSrcAttribute());
 		script = (HtmlScript) scripts.get(1);
 		assertEquals(

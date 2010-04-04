@@ -37,7 +37,12 @@ public class SampleLocaleAwareResourceGenerator extends AbstractJavascriptGenera
 	public Reader createResource(GeneratorContext context) {
 		
 		MessageBundleScriptCreator creator = new MessageBundleScriptCreator(context);
-		ResourceBundle bundle = ResourceBundle.getBundle(context.getPath(), new XmlResourceBundleControl());
+		ResourceBundle bundle = null;
+		if(context.getLocale() == null){
+			bundle = ResourceBundle.getBundle(context.getPath(), new XmlResourceBundleControl());
+		}else{
+			bundle = ResourceBundle.getBundle(context.getPath(), context.getLocale(), new XmlResourceBundleControl());
+		}
 		return creator.createScript(context.getCharset(), bundle);
 	}
 

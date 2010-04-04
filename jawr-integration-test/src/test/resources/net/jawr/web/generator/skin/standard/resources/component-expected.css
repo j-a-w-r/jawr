@@ -34,13 +34,13 @@ div {
 	padding-left : 20px;
 	background-image: url("../../../jar_cbf1cabcee8d06aecc2dd8a9dd5b43549e/net/jawr/img/clock.png");
 }
-div {
-
-	color : blue;		
-}
 .header {
 	background-image: url("../../../cb9830d041c87b6158788b4c52a8f336bd/img/logo_us.png");
 	background-repeat: no-repeat;
 	height : 74px;
 }
 
+div {
+
+	color : blue;		
+}

@@ -3,6 +3,8 @@
  */
 package net.jawr.web.test.generator.skin;
 
+import static net.jawr.web.test.JawrIntegrationServer.CONTEXT_PATH;
+import static net.jawr.web.test.JawrIntegrationServer.SERVER_URL;
 import static org.junit.Assert.assertEquals;
 
 import java.util.Collections;
@@ -95,7 +97,7 @@ public class MainPageGeneratedResourceUknownSkinTest extends AbstractPageTest {
 		assertEquals(1, styleSheets.size());
 		final HtmlLink css = styleSheets.get(0);
 		assertEquals(
-				CONTEXT_PATH+"/1576054120.en_US@summer/fwk/core/component.css",
+				CONTEXT_PATH+"/882537595.en_US@summer/fwk/core/component.css",
 				css.getHrefAttribute());
 
 	}

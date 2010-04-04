@@ -3,6 +3,7 @@
  */
 package net.jawr.web.test.generator.skin;
 
+import static net.jawr.web.test.JawrIntegrationServer.CONTEXT_PATH;
 import static org.junit.Assert.assertEquals;
 
 import java.util.Collections;
@@ -69,7 +70,7 @@ public class MainPageGeneratedResourceSkinLocaleFrTest extends MainPageGenerated
 		assertEquals(1, styleSheets.size());
 		final HtmlLink css = styleSheets.get(0);
 		assertEquals(
-				CONTEXT_PATH+"/820728628.fr_FR@summer/fwk/core/component.css",
+				CONTEXT_PATH+"/1864072266.fr_FR@summer/fwk/core/component.css",
 				css.getHrefAttribute());
 
 	}

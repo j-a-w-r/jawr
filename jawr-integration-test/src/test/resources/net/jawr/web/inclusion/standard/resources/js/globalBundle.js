@@ -1,3 +1,3 @@
 
-window.jawr={};function globalFunc1(){}
-function globalFunc(){}
+window.jawr={};function globalFunc(){}
+function globalFunc1(){}

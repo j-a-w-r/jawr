@@ -29,6 +29,7 @@
 	border : thin solid rgb(250,0,255);
 }
 
+
 .header {
   background-image: url('../../../cb4e204bd45def37379b77f9b9090d953a/img/mysprite.png');
   background-position: left -0px;
@@ -69,3 +70,4 @@ div {
 	padding-left : 20px;
 	background-image: url("../../../css/img/cog.png"); /** sprite-ref: mysprite; sprite-margin-top: 10px */ 
 }
+

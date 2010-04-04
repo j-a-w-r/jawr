@@ -1,5 +1,7 @@
 package net.jawr.web.test.generator.skin;
 
+import static net.jawr.web.test.JawrIntegrationServer.CONTEXT_PATH;
+import static net.jawr.web.test.JawrIntegrationServer.SERVER_URL;
 import static org.junit.Assert.assertEquals;
 
 import java.util.List;
@@ -93,11 +95,12 @@ public class MainPageGeneratedResourceSkinDebugTest extends AbstractPageTest {
 		
 		css = (HtmlLink) styleSheets.get(2);
 		Utils.assertGeneratedLinkEquals(
-				CONTEXT_PATH+"/jawr_generator.css?generationConfigParam=skin%3A%2Fcss%2Fgenerator%2Fskin%2Fsummer%2Fen_US%2Ftheme1%40en_US%40summer.css",css.getHrefAttribute());
+				CONTEXT_PATH+"/jawr_generator.css?generationConfigParam=skin%3A%2Fcss%2Fgenerator%2Fskin%2Fsummer%2Fen_US%2Ftheme%40en_US%40summer.css",css.getHrefAttribute());
 		
 		css = (HtmlLink) styleSheets.get(3);
 		Utils.assertGeneratedLinkEquals(
-				CONTEXT_PATH+"/jawr_generator.css?generationConfigParam=skin%3A%2Fcss%2Fgenerator%2Fskin%2Fsummer%2Fen_US%2Ftheme%40en_US%40summer.css",css.getHrefAttribute());
+				CONTEXT_PATH+"/jawr_generator.css?generationConfigParam=skin%3A%2Fcss%2Fgenerator%2Fskin%2Fsummer%2Fen_US%2Ftheme1%40en_US%40summer.css",css.getHrefAttribute());
+		
 		
 	}
 
@@ -115,11 +118,11 @@ public class MainPageGeneratedResourceSkinDebugTest extends AbstractPageTest {
 		
 		css = (HtmlLink) styleSheets.get(2);
 		page = getCssPage(css);
-		assertContentEquals("/net/jawr/web/generator/skin/debug/resources/theme1_summer_us.css", page);
+		assertContentEquals("/net/jawr/web/generator/skin/debug/resources/theme_summer_us.css", page);
 		
 		css = (HtmlLink) styleSheets.get(3);
 		page = getCssPage(css);
-		assertContentEquals("/net/jawr/web/generator/skin/debug/resources/theme_summer_us.css", page);
+		assertContentEquals("/net/jawr/web/generator/skin/debug/resources/theme1_summer_us.css", page);
 		
 	}
 

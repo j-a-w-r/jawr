@@ -1,5 +1,7 @@
 package net.jawr.web.test.generator.skin;
 
+import static net.jawr.web.test.JawrIntegrationServer.CONTEXT_PATH;
+import static net.jawr.web.test.JawrIntegrationServer.SERVER_URL;
 import static org.junit.Assert.assertEquals;
 
 import java.util.Calendar;
@@ -96,7 +98,7 @@ public class MainPageGeneratedResourceSkinDebugIECssBundleTest extends AbstractP
 		assertEquals(1, styleSheets.size());
 		HtmlLink css = (HtmlLink) styleSheets.get(0);
 		Utils.assertGeneratedLinkEquals(
-				CONTEXT_PATH+"/jawr_generator.css?generationConfigParam=ieCssGen%3A%2F1576054120.en_US%40summer%2Ffwk%2Fcore%2Fcomponent.css",
+				CONTEXT_PATH+"/jawr_generator.css?generationConfigParam=ieCssGen%3A%2F882537595.en_US%40summer%2Ffwk%2Fcore%2Fcomponent.css",
 				css.getHrefAttribute());
 	}
 

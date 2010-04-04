@@ -25,8 +25,8 @@
 
  <script type="text/javascript">/* Start adding global members. */</script>
 <script type="text/javascript" src="/jawr-integration-test/js/global/jawr.js?d=11111" ></script>
-<script type="text/javascript" src="/jawr-integration-test/js/inclusion/global/global_1.js?d=11111" ></script>
 <script type="text/javascript" src="/jawr-integration-test/js/inclusion/global/global.js?d=11111" ></script>
+<script type="text/javascript" src="/jawr-integration-test/js/inclusion/global/global_1.js?d=11111" ></script>
 <script type="text/javascript">/* Finished adding global members. */</script>
 <script type="text/javascript">/* Start adding members resolved by '/bundles/compositeBundle.js'. Bundle id is: '/bundles/compositeBundle.js' */</script>
 <script type="text/javascript" src="/jawr-integration-test/js/index/index.js?d=11111" ></script>

@@ -3,6 +3,8 @@
  */
 package net.jawr.web.test;
 
+import static net.jawr.web.test.JawrIntegrationServer.CONTEXT_PATH;
+import static net.jawr.web.test.JawrIntegrationServer.SERVER_URL;
 import static org.junit.Assert.assertEquals;
 
 import java.util.Collections;

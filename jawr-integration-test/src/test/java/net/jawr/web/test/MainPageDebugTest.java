@@ -1,6 +1,8 @@
 package net.jawr.web.test;
 
 import static org.junit.Assert.assertEquals;
+import static net.jawr.web.test.JawrIntegrationServer.CONTEXT_PATH;
+import static net.jawr.web.test.JawrIntegrationServer.SERVER_URL;
 
 import java.util.Collections;
 import java.util.List;

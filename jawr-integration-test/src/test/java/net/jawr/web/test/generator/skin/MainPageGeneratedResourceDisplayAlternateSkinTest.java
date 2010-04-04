@@ -3,6 +3,8 @@
  */
 package net.jawr.web.test.generator.skin;
 
+import static net.jawr.web.test.JawrIntegrationServer.CONTEXT_PATH;
+import static net.jawr.web.test.JawrIntegrationServer.SERVER_URL;
 import static org.junit.Assert.assertEquals;
 
 import java.util.Collections;
@@ -74,12 +76,12 @@ public class MainPageGeneratedResourceDisplayAlternateSkinTest extends AbstractP
 		assertEquals(2, styleSheets.size());
 		HtmlLink css = styleSheets.get(0);
 		assertEquals(
-				CONTEXT_PATH+"/1576054120.en_US@summer/fwk/core/component.css",
+				CONTEXT_PATH+"/882537595.en_US@summer/fwk/core/component.css",
 				css.getHrefAttribute());
 		
 		css = styleSheets.get(1);
 		assertEquals(
-				CONTEXT_PATH+"/N417234966.en_US@winter/fwk/core/component.css",
+				CONTEXT_PATH+"/N317123667.en_US@winter/fwk/core/component.css",
 				css.getHrefAttribute());
 		
 		checkAlternateStyle(css, "winter");

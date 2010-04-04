@@ -1,5 +1,6 @@
 package net.jawr.web.test.generator.skin;
 
+import static net.jawr.web.test.JawrIntegrationServer.CONTEXT_PATH;
 import static org.junit.Assert.assertEquals;
 
 import java.util.List;
@@ -49,12 +50,12 @@ public class MainPageGeneratedResourceDisplayAlternateSkinDebugIECssBundleTest e
 		assertEquals(2, styleSheets.size());
 		HtmlLink css = (HtmlLink) styleSheets.get(0);
 		Utils.assertGeneratedLinkEquals(
-				CONTEXT_PATH+"/jawr_generator.css?generationConfigParam=ieCssGen%3A%2F1576054120.en_US%40summer%2Ffwk%2Fcore%2Fcomponent.css",
+				CONTEXT_PATH+"/jawr_generator.css?generationConfigParam=ieCssGen%3A%2F882537595.en_US%40summer%2Ffwk%2Fcore%2Fcomponent.css",
 				css.getHrefAttribute());
 		
 		css = (HtmlLink) styleSheets.get(1);
 		Utils.assertGeneratedLinkEquals(
-				CONTEXT_PATH+"/jawr_generator.css?generationConfigParam=ieCssGen%3A%2FN417234966.en_US%40winter%2Ffwk%2Fcore%2Fcomponent.css",css.getHrefAttribute());
+				CONTEXT_PATH+"/jawr_generator.css?generationConfigParam=ieCssGen%3A%2FN317123667.en_US%40winter%2Ffwk%2Fcore%2Fcomponent.css",css.getHrefAttribute());
 		checkAlternateStyle(css, "winter");
 	}
 

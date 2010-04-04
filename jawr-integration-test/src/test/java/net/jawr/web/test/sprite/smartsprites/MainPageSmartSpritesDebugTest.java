@@ -1,6 +1,8 @@
 package net.jawr.web.test.sprite.smartsprites;
 
 import static org.junit.Assert.assertEquals;
+import static net.jawr.web.test.JawrIntegrationServer.SERVER_URL;
+import static net.jawr.web.test.JawrIntegrationServer.CONTEXT_PATH;
 
 import java.util.List;
 

@@ -11,7 +11,7 @@
  <link rel="stylesheet" type="text/css" media="all" href="http://mycompany.com/css/production.css" >
 
 
- <script type="text/javascript" src="/jawr-integration-test/1473833880/bundles/globalBundle.js" ></script>
+ <script type="text/javascript" src="/jawr-integration-test/N1930202847/bundles/globalBundle.js" ></script>
 <script type="text/javascript" src="/jawr-integration-test/1160783475/bundles/compositeBundle.js" ></script>
 
  

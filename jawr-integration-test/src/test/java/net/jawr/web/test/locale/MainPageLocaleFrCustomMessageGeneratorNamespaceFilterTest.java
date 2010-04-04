@@ -4,6 +4,8 @@
 package net.jawr.web.test.locale;
 
 import static org.junit.Assert.assertEquals;
+import static net.jawr.web.test.JawrIntegrationServer.SERVER_URL;
+import static net.jawr.web.test.JawrIntegrationServer.CONTEXT_PATH;
 
 import java.util.Collections;
 import java.util.List;
@@ -45,8 +47,8 @@ public class MainPageLocaleFrCustomMessageGeneratorNamespaceFilterTest extends M
 		final List<String> expectedAlerts = Collections
 				.singletonList("A little message retrieved from the message bundle : Bonjour $ le monde!");
 		assertEquals(expectedAlerts, collectedAlerts);
-
-	    assertContentEquals("/net/jawr/web/locale/resources/index-jsp-result-fr-namespace-filter-expected.txt", page);
+		
+		assertContentEquals("/net/jawr/web/locale/resources/index-jsp-result-fr-namespace-filter-expected.txt", page);
 	}
 	
 	@Test

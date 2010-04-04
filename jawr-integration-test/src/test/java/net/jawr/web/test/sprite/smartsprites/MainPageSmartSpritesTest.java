@@ -1,6 +1,8 @@
 package net.jawr.web.test.sprite.smartsprites;
 
 import static org.junit.Assert.assertEquals;
+import static net.jawr.web.test.JawrIntegrationServer.SERVER_URL;
+import static net.jawr.web.test.JawrIntegrationServer.CONTEXT_PATH;
 
 import java.util.List;
 
@@ -76,7 +78,7 @@ public class MainPageSmartSpritesTest extends AbstractPageTest {
 		assertEquals(1, styleSheets.size());
 		final HtmlLink css = styleSheets.get(0);
 		assertEquals(
-				CONTEXT_PATH+"/N480481749/fwk/core/component.css",
+				CONTEXT_PATH+"/N2053425495/fwk/core/component.css",
 				css.getHrefAttribute());
 
 	}
