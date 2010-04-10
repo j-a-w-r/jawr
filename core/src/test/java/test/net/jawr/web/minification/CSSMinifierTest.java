@@ -4,6 +4,7 @@ import java.io.File;
 
 import junit.framework.TestCase;
 import net.jawr.web.minification.CSSMinifier;
+import net.jawr.web.resource.bundle.postprocess.impl.yui.YUICSSCompressor;
 import test.net.jawr.web.FileUtils;
 
 public class CSSMinifierTest extends TestCase {
@@ -22,6 +23,18 @@ public class CSSMinifierTest extends TestCase {
 		assertEquals("Error in minifier",expected.toString(), actual.toString());
 	}
 	
-	
+	public void testMinifyCSSMultiLine() {
+		CSSMinifier minifier = new CSSMinifier();
+		//YUICSSCompressor compressor = new YUICSSCompressor();
+		StringBuffer data = new StringBuffer(".some-class { \n" +
+				"  background: transparent\n" +
+				"url(image/path);\n" +
+				"}");
+		StringBuffer actual = minifier.minifyCSS(data);
+		//StringBuffer actual = compressor.postProcessBundle(null, data);
+		StringBuffer result = new StringBuffer(".some-class{background:transparent url(image/path);}");
+		
+		assertEquals("Error in minifier",result.toString(), actual.toString());
+	}
 	
 }

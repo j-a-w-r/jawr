@@ -112,7 +112,7 @@ public class CSSMinifier {
 			}}.processWithMatcher(rulesmatcher);
 		
 		// Replace all linefeeds and tabs
-		compressed = NEW_LINES_TAB_PATTERN.matcher(compressed).replaceAll("");
+		compressed = NEW_LINES_TAB_PATTERN.matcher(compressed).replaceAll(" ");
 		
 		// Match all empty space we can minify 
 		Matcher matcher = SPACES_PATTERN.matcher(compressed);
