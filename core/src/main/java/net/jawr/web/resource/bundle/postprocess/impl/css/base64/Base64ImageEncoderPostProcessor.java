@@ -147,7 +147,4 @@ public class Base64ImageEncoderPostProcessor extends
 
         LOGGER.debug(MHTML_PREFIX + mhtml);
 	}
-	
-	
-	
 }

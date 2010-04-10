@@ -171,11 +171,8 @@ public class Base64PostProcessorCssImageUrlRewriter extends
 		String imgUrl = url;
 		String browser = status.getVariant(JawrConstant.BROWSER_VARIANT_TYPE);
 
-		// Skip base64 encoding if a annotation has been set or if
-		// the browser is IE7. There is an issue with IE7 and MHTML on Vista and 7
-		// Take a look at http://www.phpied.com/data-uris-mhtml-ie7-win7-vista-blues/#vista
-		// for more info
-		if (skipBase64Encoding || JawrConstant.BROWSER_IE7.equals(browser)) {
+		// Skip base64 encoding if a annotation has been set
+		if (skipBase64Encoding) {
 			imgUrl = super.rewriteURL(status, imgUrl, imgServletPath,
 					newCssPath, imgRsHandler);
 		} else {
@@ -208,10 +205,11 @@ public class Base64PostProcessorCssImageUrlRewriter extends
 
 					encodedResources.put(encodedImage.getId(), encodedImage);
 
-					if (JawrConstant.BROWSER_IE6.equals(browser)) {
+					// For IE under IE8, use MHTML
+					if (JawrConstant.BROWSER_IE6.equals(browser) || JawrConstant.BROWSER_IE7.equals(browser)) {
 
 						/**
-						 * For Internet Explorer 6 the url must be mhtml: followed
+						 * For Internet Explorer 6 and 7, the url must be mhtml: followed
 						 * by an absolute url. However, this URL is not known at
 						 * post process time. So we make add a place holder which will
 						 * be resolved at runtime.
@@ -245,5 +243,4 @@ public class Base64PostProcessorCssImageUrlRewriter extends
 	private String encodeInBase64(byte[] data) {
 		return new String(Base64Encoder.encode(data));
 	}
-
 }
