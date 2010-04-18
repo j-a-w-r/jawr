@@ -418,11 +418,15 @@ public class ResourceBundlesHandlerImpl implements ResourceBundlesHandler {
 	private StringReader processInLive(Reader reader)
 			throws IOException {
 		
-		HttpServletRequest request = ThreadLocalJawrContext.getRequest();
-		String requestURL = request.getRequestURL().toString();
+		String requestURL = ThreadLocalJawrContext.getRequestURL();
 		StringWriter swriter = new StringWriter(); 
 		IOUtils.copy(reader, swriter, true);
-		return new StringReader(swriter.getBuffer().toString().replaceAll(JawrConstant.JAWR_BUNDLE_PATH_PLACEHOLDER_PATTERN, requestURL));
+		String updatedContent = swriter.getBuffer().toString();
+		if(requestURL != null){
+			
+			updatedContent = updatedContent.replaceAll(JawrConstant.JAWR_BUNDLE_PATH_PLACEHOLDER_PATTERN, requestURL);
+		}
+		return new StringReader(updatedContent);
 	}
 
 	/*

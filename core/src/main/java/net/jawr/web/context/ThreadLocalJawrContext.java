@@ -14,7 +14,6 @@
 package net.jawr.web.context;
 
 import javax.management.ObjectName;
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * This class defines the context for Jawr, it holds the context in a ThreadLocal object.
@@ -102,16 +101,16 @@ public final class ThreadLocalJawrContext {
 	 * Returns the current request
 	 * @return the request
 	 */
-	public static HttpServletRequest getRequest() {
-		return ((JawrContext) jawrContext.get()).getRequest();
+	public static String getRequestURL() {
+		return ((JawrContext) jawrContext.get()).getRequestURL();
 	}
 
 	/**
 	 * Sets the request
 	 * @param request the request to set
 	 */
-	public static void setRequest(HttpServletRequest request) {
-		((JawrContext) jawrContext.get()).setRequest(request);
+	public static void setRequest(String requestURL) {
+		((JawrContext) jawrContext.get()).setRequestURL(requestURL);
 	}
 	
 	/**
