@@ -45,8 +45,11 @@ public class MockServletRequest implements HttpServletRequest {
 	/** The requested path */
 	private String requestPath;
 
-	/** The requested path */
+	/** The requested URI */
 	private String requestURI;
+
+	/** The requested URL */
+	private String requestURL;
 
 	/** The servlet path */
 	private String servletPath;
@@ -273,7 +276,12 @@ public class MockServletRequest implements HttpServletRequest {
 	 */
 	public StringBuffer getRequestURL() {
 
-		return null;
+		StringBuffer result = null;
+		if(requestURL != null){
+			result = new StringBuffer(requestURL);
+		}
+		
+		return result;
 	}
 
 	/* (non-Javadoc)
@@ -543,6 +551,10 @@ public class MockServletRequest implements HttpServletRequest {
 	 */
 	public void setCharacterEncoding(String arg0) throws UnsupportedEncodingException {
 
+	}
+
+	public void setRequestUrl(String url) {
+		requestURL = url;
 	}
 
 }

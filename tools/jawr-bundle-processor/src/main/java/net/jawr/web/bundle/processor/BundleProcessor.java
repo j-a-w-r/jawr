@@ -44,13 +44,13 @@ import net.jawr.web.bundle.processor.renderer.RenderedLink;
 import net.jawr.web.bundle.processor.spring.SpringControllerBundleProcessor;
 import net.jawr.web.config.JawrConfig;
 import net.jawr.web.context.ThreadLocalJawrContext;
-import net.jawr.web.resource.FileNameUtils;
 import net.jawr.web.resource.ImageResourcesHandler;
 import net.jawr.web.resource.bundle.IOUtils;
 import net.jawr.web.resource.bundle.JoinableResourceBundle;
 import net.jawr.web.resource.bundle.factory.util.PathNormalizer;
 import net.jawr.web.resource.bundle.handler.ResourceBundlesHandler;
 import net.jawr.web.resource.bundle.renderer.BundleRendererContext;
+import net.jawr.web.resource.bundle.variant.VariantUtils;
 import net.jawr.web.servlet.JawrRequestHandler;
 import net.jawr.web.servlet.JawrServlet;
 import net.jawr.web.servlet.mock.MockServletConfig;
@@ -153,6 +153,8 @@ public class BundleProcessor {
 	/** The root directory which will contains the resource on the CDN */
 	private static final String APP_ROOT_DIR_PATTERN = "<app\\.root\\.dir>";
 
+	private static final String DEFAULT_WEBAPP_URL = "{WEBAPP_URL}";
+	
 	/**
 	 * Launch the bundle processing
 	 * 
@@ -164,7 +166,7 @@ public class BundleProcessor {
 	 */
 	public void process(String baseDirPath, String tmpDirPath, String destDirPath, boolean generateCdnFiles) throws Exception {
 
-		process(baseDirPath, tmpDirPath, destDirPath, null, new ArrayList(),generateCdnFiles);
+		process(baseDirPath, tmpDirPath, destDirPath, null, new ArrayList(),generateCdnFiles, false);
 	}
 
 	/**
@@ -177,9 +179,10 @@ public class BundleProcessor {
 	 * @param propertyPlaceHolderFile the path to the property place holder file
 	 * @param servletNames the list of the name of servlets to initialized
 	 * @param generateCdnFiles the flag indicating if we should generate the CDN files or not
+	 * @param keepUrlMapping the flag indicating if we should keep the URL mapping or not.
 	 * @throws Exception if an exception occurs
 	 */
-	public void process(String baseDirPath, String tmpDirPath, String destDirPath, String springConfigFiles, List servletsToInitialize, boolean generateCdnFiles) throws Exception {
+	public void process(String baseDirPath, String tmpDirPath, String destDirPath, String springConfigFiles, List servletsToInitialize, boolean generateCdnFiles, boolean keepUrlMapping) throws Exception {
 
 		// Creates the web app class loader
 		URL webAppClasses = new File(baseDirPath+WEB_INF_CLASSES_DIR_PATH).toURI().toURL();
@@ -222,7 +225,7 @@ public class BundleProcessor {
 		
 		if(generateCdnFiles){
 			// Process the Jawr servlet to generate the bundles
-			processJawrServlets(destDirPath, jawrServletDefinitions);
+			processJawrServlets(destDirPath, jawrServletDefinitions, keepUrlMapping);
 		}
 		
 	}
@@ -393,7 +396,7 @@ public class BundleProcessor {
 	 * @param jawrServletDefinitions the destination directory
 	 * @throws Exception if an exception occurs.
 	 */
-	private void processJawrServlets(String destDirPath, List jawrServletDefinitions) throws Exception {
+	private void processJawrServlets(String destDirPath, List jawrServletDefinitions, boolean keepUrlMapping) throws Exception {
 
 		String appRootDir = "";
 		String jsServletMapping = "";
@@ -453,9 +456,9 @@ public class BundleProcessor {
 			}
 
 			if (bundleHandler != null) {
-				createBundles(servletDef.getServlet(), bundleHandler, cdnDestDirPath, servletMapping);
+				createBundles(servletDef.getServlet(), bundleHandler, cdnDestDirPath, servletMapping, keepUrlMapping);
 			} else if (imgRsHandler != null) {
-				createImageBundle(servletDef.getServlet(), imgRsHandler, cdnDestDirPath, servletConfig);
+				createImageBundle(servletDef.getServlet(), imgRsHandler, cdnDestDirPath, servletConfig, keepUrlMapping);
 			}
 		}
 		
@@ -531,10 +534,12 @@ public class BundleProcessor {
 	 * @param bundleHandler the bundles handler
 	 * @param destDirPath the destination directory path
 	 * @param servletMapping the mapping of the servlet
+	 * @param keepUrlMapping the flag indicating if we must keep the URL mapping
 	 * @throws IOException if an IO exception occurs
 	 * @throws ServletException if a servlet exception occurs
 	 */
-	private void createBundles(HttpServlet servlet, ResourceBundlesHandler bundleHandler, String destDirPath, String servletMapping) throws IOException,
+	private void createBundles(HttpServlet servlet, ResourceBundlesHandler bundleHandler, String destDirPath, String servletMapping,
+			boolean keepUrlMapping) throws IOException,
 			ServletException {
 
 		List bundles = bundleHandler.getContextBundles();
@@ -562,19 +567,20 @@ public class BundleProcessor {
 				
 			}
 			
-			List localVariantKeys = bundle.getLocaleVariantKeys();
-			if(localVariantKeys == null){
-				localVariantKeys = new ArrayList();
-			}
-			if(localVariantKeys.isEmpty()){
-				localVariantKeys.add("");
+			List allVariants = VariantUtils.getAllVariants(bundle.getVariants()); 
+				
+			if(allVariants == null){
+				allVariants = new ArrayList();
 			}
 			
+			if(allVariants.isEmpty()){
+				allVariants.add(new HashMap());
+			}
 			// Creates the bundle file for each local variant 
-			for (Iterator iterator = localVariantKeys.iterator(); iterator.hasNext();) {
-				String localVariantKey = (String) iterator.next();
-				
-				List linksToBundle = createLinkToBundle(bundleHandler, bundle.getId(), resourceType, localVariantKey);
+			for (Iterator it = allVariants.iterator(); it.hasNext();) {
+				Map variantMap = (Map) it.next();
+	
+				List linksToBundle = createLinkToBundle(bundleHandler, bundle.getId(), resourceType, variantMap);
 				for (Iterator iteratorLinks = linksToBundle.iterator(); iteratorLinks.hasNext();) {
 					RenderedLink renderedLink = (RenderedLink) iteratorLinks.next();
 					String path = (String) renderedLink.getLink();
@@ -583,12 +589,53 @@ public class BundleProcessor {
 					JawrConfig config = bundleHandler.getConfig();
 					config.setDebugModeOn(renderedLink.isDebugMode());
 					
-					String finalBundlePath = getFinalBundlePath(path, config, localVariantKey);
-					File bundleFile = new File(destDirPath, finalBundlePath);
-					createBundleFile(servlet, response, request, path, bundleFile, servletMapping);	
+					String finalBundlePath = null;
+					if(keepUrlMapping){
+						finalBundlePath = path;
+					}else{
+						finalBundlePath = getFinalBundlePath(path, config, variantMap);
+					}
+					
+					// Sets the request URL
+					setRequestUrl(request, variantMap, path, config);
+					
+					// We can't use path for generated resources because it's not a valid file path ( /jawr_generator.js?xxx.... ) 
+					if(!path.contains("?") || !keepUrlMapping){
+						File bundleFile = new File(destDirPath, finalBundlePath);
+						createBundleFile(servlet, response, request, path, bundleFile, servletMapping);
+					}
 				}
 			}
 		}
+	}
+
+	/**
+	 * Set the request URL
+	 * @param request the request
+	 * @param variantMap the variantMap
+	 * @param path the path
+	 * @param config the Jawr config
+	 */
+	private void setRequestUrl(MockServletRequest request, Map variantMap,
+			String path, JawrConfig config) {
+		
+		String domainURL = JawrConstant.HTTP_URL_PREFIX+DEFAULT_WEBAPP_URL;
+		
+		if(JawrConstant.SSL.equals(variantMap.get(JawrConstant.CONNECTION_TYPE_VARIANT_TYPE))){
+			if(StringUtils.isNotEmpty(config.getContextPathSslOverride())){
+				domainURL = config.getContextPathSslOverride();
+			}else{
+				domainURL = JawrConstant.HTTPS_URL_PREFIX+DEFAULT_WEBAPP_URL;
+			}
+		}else{
+			if(StringUtils.isNotEmpty(config.getContextPathOverride())){
+				domainURL = config.getContextPathOverride();
+			}else{
+				domainURL = JawrConstant.HTTP_URL_PREFIX+DEFAULT_WEBAPP_URL;
+			}
+		}
+		
+		request.setRequestUrl(PathNormalizer.joinDomainToPath(domainURL, path));
 	}
 
 	/**
@@ -606,7 +653,7 @@ public class BundleProcessor {
 	 * @param localVariantKey The local variant key
 	 * @return the final path
 	 */
-	public String getFinalBundlePath(String path, JawrConfig jawrConfig, String localVariantKey) {
+	public String getFinalBundlePath(String path, JawrConfig jawrConfig, Map variantMap) {
 
 		String finalPath = path;
 		int jawrGenerationParamIdx = finalPath.indexOf(JawrRequestHandler.GENERATION_PARAM);
@@ -643,12 +690,7 @@ public class BundleProcessor {
 			// For localized bundle add the local info in the file name
 			// For example, with local variant = 'en'
 			// /bundle/myBundle.js -> /bundle/myBundle_en.js 
-			if(StringUtils.isNotEmpty(localVariantKey)){
-				int extensionIndex = FileNameUtils.indexOfExtension(finalPath);
-				if(extensionIndex != -1){
-					finalPath = finalPath.substring(0, extensionIndex)+"_"+localVariantKey+finalPath.substring(extensionIndex);
-				}
-			}
+			finalPath = VariantUtils.getVariantBundleName(finalPath, variantMap);
 		}
 		
 		return finalPath;
@@ -703,10 +745,12 @@ public class BundleProcessor {
 	 * @param imgRsHandler the image resource handler
 	 * @param destDirPath the destination directory path
 	 * @param servletMapping the mapping
+	 * @param keepUrlMapping = the flag indicating if we must keep the url mapping
 	 * @throws IOException if an IOExceptin occurs
 	 * @throws ServletException if an exception occurs
 	 */
-	private void createImageBundle(HttpServlet servlet, ImageResourcesHandler imgRsHandler, String destDirPath, ServletConfig servletConfig) throws IOException,
+	private void createImageBundle(HttpServlet servlet, ImageResourcesHandler imgRsHandler, String destDirPath, ServletConfig servletConfig, 
+			boolean keepUrlMapping) throws IOException,
 			ServletException {
 		Map bundleImgMap = imgRsHandler.getImageMap();
 
@@ -715,17 +759,27 @@ public class BundleProcessor {
 		MockServletRequest request = new MockServletRequest();
 
 		String jawrServletMapping  = servletConfig.getInitParameter(JawrConstant.SERVLET_MAPPING_PROPERTY_NAME);
+		if(jawrServletMapping == null){
+			jawrServletMapping = "";
+		}
+		
 		String servletMapping = servletConfig.getInitParameter(JawrConstant.SPRING_SERVLET_MAPPING_PROPERTY_NAME);
 		if(servletMapping == null){
 			servletMapping = jawrServletMapping;
 		}
-		//String pathPrefix = jawrServletMapping.substring(servletMapping.length());
 		
 		// For the list of bundle defines, create the file associated
 		while (bundleIterator.hasNext()) {
 			String path = (String) bundleIterator.next();
 			
-			String imageFinalPath = getImageFinalPath(path, imgRsHandler.getJawrConfig());
+			String imageFinalPath = null;
+			
+			if(keepUrlMapping){
+				imageFinalPath = path;
+			}else{
+				imageFinalPath = getImageFinalPath(path, imgRsHandler.getJawrConfig());
+			}
+			
 			File destFile = new File(destDirPath, imageFinalPath);
 			
 			// Update the bundle mapping
@@ -782,7 +836,7 @@ public class BundleProcessor {
 	 * @return the link to the bundle
 	 * @throws IOException if an IO exception occurs
 	 */
-	private List createLinkToBundle(ResourceBundlesHandler handler, String path, String resourceType, String variantKey) throws IOException {
+	private List createLinkToBundle(ResourceBundlesHandler handler, String path, String resourceType, Map variantMap) throws IOException {
 
 		List linksToBundle = new ArrayList();
 		
@@ -800,12 +854,12 @@ public class BundleProcessor {
 		handler.getConfig().setDebugModeOn(false);
 		handler.getConfig().setGzipResourcesModeOn(useGzip);
 		
-		BundleRendererContext ctx = new BundleRendererContext("", variantKey, useGzip, isSslRequest);
+		BundleRendererContext ctx = new BundleRendererContext("", variantMap, useGzip, isSslRequest);
 		bundleRenderer.renderBundleLinks(path, ctx, sw);
 		
 		// Then take in account the debug mode
 		handler.getConfig().setDebugModeOn(true);
-		ctx = new BundleRendererContext("", variantKey, useGzip, isSslRequest);
+		ctx = new BundleRendererContext("", variantMap, useGzip, isSslRequest);
 		bundleRenderer.renderBundleLinks(path, ctx, sw);
 		
 		List renderedLinks = bundleRenderer.getRenderedLinks();
