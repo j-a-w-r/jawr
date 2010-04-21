@@ -66,6 +66,11 @@ public class BundleTask extends Task {
 	private boolean generateCDNFiles = true;
 	
 	/**
+	 * The flag indicating if we want to keep the jawr URL mapping or if we rewrite it to remove resource hashcode.  
+	 */
+	private boolean keepUrlMapping = false;
+	
+	/**
 	 * Sets the root directory path
 	 * @param rootPath the path to set
 	 */
@@ -112,6 +117,14 @@ public class BundleTask extends Task {
 	 */
 	public void setGenerateCDNFiles(boolean generateCDNFiles) {
 		this.generateCDNFiles = generateCDNFiles;
+	}
+
+	/**
+	 * Sets the flag indicating if we keep or not the URL mapping
+	 * @param keepUrlMapping the keepUrlMapping to set
+	 */
+	public void setKeepUrlMapping(boolean keepUrlMapping) {
+		this.keepUrlMapping = keepUrlMapping;
 	}
 
 	/*
@@ -163,7 +176,7 @@ public class BundleTask extends Task {
 		}
 		
 		BundleProcessor bundleProcessor = new BundleProcessor();
-		bundleProcessor.process(rootPath, tempDirPath, destDirPath, springConfigFiles, servlets, generateCDNFiles);
+		bundleProcessor.process(rootPath, tempDirPath, destDirPath, springConfigFiles, servlets, generateCDNFiles, keepUrlMapping);
 	}
 
 	/**
