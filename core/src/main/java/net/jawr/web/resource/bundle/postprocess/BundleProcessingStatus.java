@@ -43,7 +43,10 @@ public class BundleProcessingStatus {
 	/** The last path added */
 	private String lastPathAdded;
 	
-	/** The flag indicating if we are processing a child composite bundle */
+	/** The flag indicating if we are processing a composite bundle */
+	private boolean compositeBundle;
+	
+	/** The flag indicating if we are processing the child of a composite bundle */
 	private boolean childCompositeBundle;
 	
 	/** The flag indicating if the post processor must search for post process variants or not */
@@ -112,6 +115,22 @@ public class BundleProcessingStatus {
 		return jawrConfig;
 	}
 	
+	/**
+	 * Returns true if it's a composite bundle
+	 * @return true if it's a composite bundle
+	 */
+	public boolean isCompositeBundle() {
+		return compositeBundle;
+	}
+
+	/**
+	 * Sets the flag indicating that we are processing a composite bundle
+	 * @param compositeBundle the flag to set
+	 */
+	public void setCompositeBundle(boolean compositeBundle) {
+		this.compositeBundle = compositeBundle;
+	}
+
 	/**
 	 * Returns true if we are processing a child composite bundle
 	 * @return true if we are processing a child composite bundle

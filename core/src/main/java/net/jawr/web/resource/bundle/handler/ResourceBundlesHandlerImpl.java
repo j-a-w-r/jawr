@@ -34,8 +34,6 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.zip.GZIPOutputStream;
 
-import javax.servlet.http.HttpServletRequest;
-
 import net.jawr.web.JawrConstant;
 import net.jawr.web.collections.ConcurrentCollectionsFactory;
 import net.jawr.web.config.JawrConfig;
@@ -638,6 +636,7 @@ public class ResourceBundlesHandlerImpl implements ResourceBundlesHandler {
 					.hasNext();) {
 				JoinableResourceBundle childbundle = (JoinableResourceBundle) it
 						.next();
+				status.setCompositeBundle(true);
 				status.setChildCompositeBundle(true);
 				store.append(joinAndPostprocessBundle(childbundle, variants,
 						status, processBundle));
@@ -695,6 +694,7 @@ public class ResourceBundlesHandlerImpl implements ResourceBundlesHandler {
 		if (null != bundlePostProcessor && 
 				((ChainedResourceBundlePostProcessor)bundlePostProcessor).containsCompositeBundleProcessor()){
 			
+			status.setCompositeBundle(true);
 			status.setChildCompositeBundle(false);
 			processedContent = bundlePostProcessor.postProcessBundle(
 					status, content);

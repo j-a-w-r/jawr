@@ -92,7 +92,10 @@ public class Base64ImageEncoderPostProcessor extends
 			status.putData(JawrConstant.BASE64_ENCODED_RESOURCES, encodedResources);
 		}
 		
-		StringBuffer sb = super.doPostProcessBundle(status, bundleData);
+		StringBuffer sb = bundleData;
+		if(!status.isCompositeBundle() || status.isChildCompositeBundle()){
+			sb = super.doPostProcessBundle(status, bundleData);
+		}
 		
 		if(!encodedResources.isEmpty() && status.isSearchingPostProcessorVariants()){
 			VariantSet variantSet = new VariantSet(JawrConstant.BROWSER_VARIANT_TYPE, "", new String[]{"", JawrConstant.BROWSER_IE6,JawrConstant.BROWSER_IE7});
