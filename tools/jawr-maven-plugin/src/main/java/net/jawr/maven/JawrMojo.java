@@ -83,6 +83,14 @@ public class JawrMojo extends AbstractMojo {
 	private boolean generateCDNFiles;
 	
 	/**
+	 * The flag indicating if we want to keep the jawr URL mapping or if we rewrite it to remove resource hashcode.
+	 * 
+	 * @parameter default-value="false"
+	 */
+	private boolean keepUrlMapping;
+	
+	
+	/**
 	 * Sets the list of servlet to initialize
 	 * @param servletsToInitialize the servletsToInitialize to set
 	 */
@@ -103,6 +111,14 @@ public class JawrMojo extends AbstractMojo {
 	 */
 	public void setGenerateCDNFiles(boolean generateCDNFiles) {
 		this.generateCDNFiles = generateCDNFiles;
+	}
+
+	/**
+	 * Sets the flag indicating if we keep or not the URL mapping
+	 * @param keepUrlMapping the keepUrlMapping to set
+	 */
+	public void setKeepUrlMapping(boolean keepUrlMapping) {
+		this.keepUrlMapping = keepUrlMapping;
 	}
 
 	/**
@@ -195,7 +211,7 @@ public class JawrMojo extends AbstractMojo {
 		}
 		
 		BundleProcessor bundleProcessor = new BundleProcessor();
-		bundleProcessor.process(rootPath, tempDirPath, destDirPath, springConfigFiles, servlets, generateCDNFiles);
+		bundleProcessor.process(rootPath, tempDirPath, destDirPath, springConfigFiles, servlets, generateCDNFiles, keepUrlMapping);
 	}
 
 }
