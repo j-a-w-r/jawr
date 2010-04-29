@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 import net.jawr.web.JawrConstant;
+import net.jawr.web.exception.BundlingProcessException;
 import net.jawr.web.resource.bundle.factory.util.ClassLoaderResourceUtils;
 import net.jawr.web.resource.bundle.generator.AbstractJavascriptGenerator;
 import net.jawr.web.resource.bundle.generator.GeneratorContext;
@@ -104,6 +105,9 @@ public class ResourceBundleMessagesGenerator extends AbstractJavascriptGenerator
 	public Map getAvailableVariants(String resource) {
 		
 		List localeVariants = LocaleUtils.getAvailableLocaleSuffixesForBundle(resource);
+		if(localeVariants.isEmpty()){
+			throw new BundlingProcessException("Enable to find the resource bundle : "+resource);
+		}
 		Map variants = new HashMap();
 		VariantSet variantSet = new VariantSet(JawrConstant.LOCALE_VARIANT_TYPE, "", localeVariants);
 		variants.put(JawrConstant.LOCALE_VARIANT_TYPE, variantSet);
