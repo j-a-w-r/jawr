@@ -164,6 +164,9 @@ public class JawrRequestHandler implements ConfigChangeListener, Serializable {
 	/** The image MIME map, associating the image extension to their MIME type */
 	protected Map imgMimeMap;
 	
+	/** The handler for the illegal bundle request */
+	protected IllegalBundleRequestHandler illegalBundleRequestHandler;
+	
 	/**
 	 * Reads the properties file and initializes all configuration using the ServletConfig object. If applicable, a ConfigChangeListenerThread will be
 	 * started to listen to changes in the properties configuration.
@@ -338,6 +341,9 @@ public class JawrRequestHandler implements ConfigChangeListener, Serializable {
 			LOGGER.debug(jawrConfig);
 		}
 
+		// Initialize the IllegalBundleRequest handler
+		initIllegalBundleRequestHandler();
+		
 		// Create a resource handler to read files from the WAR archive or exploded dir.
 		rsReaderHandler = initResourceReaderHandler();
 		ResourceBundleHandler rsBundleHandler = initResourceBundleHandler();
@@ -365,6 +371,18 @@ public class JawrRequestHandler implements ConfigChangeListener, Serializable {
 		// Warn when in debug mode
 		if (jawrConfig.isDebugModeOn()) {
 			LOGGER.warn("Jawr initialized in DEVELOPMENT MODE. Do NOT use this mode in production or integration servers. ");
+		}
+	}
+
+	/**
+	 * Initialize the illegal bundle request handler  
+	 */
+	protected void initIllegalBundleRequestHandler() {
+		String illegalBundleRequestandlerClassName = jawrConfig.getProperty(JawrConstant.ILLEGAL_BUNDLE_REQUEST_HANDLER);
+		if(illegalBundleRequestandlerClassName != null){
+			illegalBundleRequestHandler = (IllegalBundleRequestHandler) ClassLoaderResourceUtils.buildObjectInstance(illegalBundleRequestandlerClassName);
+		}else{
+			illegalBundleRequestHandler = new IllegalBundleRequestHandlerImpl();
 		}
 	}
 
@@ -479,60 +497,161 @@ public class JawrRequestHandler implements ConfigChangeListener, Serializable {
 			if (LOGGER.isDebugEnabled())
 				LOGGER.debug("Request received for path:" + requestedPath);
 	
-			if (CLIENTSIDE_HANDLER_REQ_PATH.equals(requestedPath)) {
-				this.clientSideScriptRequestHandler.handleClientSideHandlerRequest(request, response);
-				return;
-			}
-	
-			// CSS images would be requested through this handler in case servletMapping is used
-			// if( this.jawrConfig.isDebugModeOn() && !("".equals(this.jawrConfig.getServletMapping())) && null == request.getParameter(GENERATION_PARAM)) {
-			if (JawrConstant.CSS_TYPE.equals(resourceType) && 
-					!JawrConstant.CSS_TYPE.equals(getExtension(requestedPath)) &&
-					this.imgMimeMap.containsKey(getExtension(requestedPath))) {
-	
-				if (null == bundlesHandler.resolveBundleForPath(requestedPath)) {
-					if (LOGGER.isDebugEnabled())
-						LOGGER.debug("Path '" + requestedPath + "' does not belong to a bundle. Forwarding request to the server. ");
-					request.getRequestDispatcher(requestedPath).forward(request, response);
-					return;
-				}
-			}
-	
-			// If debug mode is off, check for If-Modified-Since and If-none-match headers and set response caching headers.
-			if (!this.jawrConfig.isDebugModeOn()) {
-				// If a browser checks for changes, always respond 'no changes'.
-				if (null != request.getHeader(IF_MODIFIED_SINCE_HEADER) || null != request.getHeader(IF_NONE_MATCH_HEADER)) {
-					response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
-					if (LOGGER.isDebugEnabled())
-						LOGGER.debug("Returning 'not modified' header. ");
-					return;
-				}
-	
-				// Add caching headers
-				setResponseHeaders(response);
-			} else if (null != request.getParameter(GENERATION_PARAM))
-				requestedPath = request.getParameter(GENERATION_PARAM);
-	
-			// By setting content type, the response writer will use appropiate encoding
-			response.setContentType(contentType);
-			try {
-				writeContent(requestedPath, request, response);
-			} catch (EOFException eofex) {
-				LOGGER.debug("Browser cut off response", eofex);
-			} catch (ResourceNotFoundException e) {
-				response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-				if (LOGGER.isInfoEnabled())
-					LOGGER.info("Received a request for a non existing bundle: " + requestedPath);
-				return;
-			}
+			String contentType = getContentType(requestedPath, request);
 			
-			if (LOGGER.isDebugEnabled())
-				LOGGER.debug("request succesfully attended");
+			if(handleSpecificRequest(requestedPath, contentType, request, response)){
+				return;
+			}
+	
+			// Handle the strict mode
+			boolean validBundle = isValidBundle(requestedPath);
+			processRequest(requestedPath, request, response, contentType, validBundle);
 		}finally{
 			
 			// Reset the Thread local for the Jawr context
 			ThreadLocalJawrContext.reset();
 		}
+	}
+
+	/**
+	 * Handle the specific requests 
+	 * @param requestedPath the requested path
+	 * @param contentType the content type
+	 * @param request the request
+	 * @param response the response
+	 * @return true if the request has been processed
+	 * @throws ServletException if a servlet exception occurs 
+	 * @throws IOException if a IO exception occurs 
+	 */
+	protected boolean handleSpecificRequest(String requestedPath, String contentType,
+			HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		
+		boolean processed = false;
+		if (CLIENTSIDE_HANDLER_REQ_PATH.equals(requestedPath)) {
+			this.clientSideScriptRequestHandler.handleClientSideHandlerRequest(request, response);
+			processed = true;
+		}else{
+			
+			// CSS images would be requested through this handler in case servletMapping is used
+			// if( this.jawrConfig.isDebugModeOn() && !("".equals(this.jawrConfig.getServletMapping())) && null == request.getParameter(GENERATION_PARAM)) {
+			if (JawrConstant.CSS_TYPE.equals(resourceType) && 
+					!JawrConstant.CSS_TYPE.equals(getExtension(requestedPath)) &&
+					this.imgMimeMap.containsKey(getExtension(requestedPath))) {
+
+				if (null == bundlesHandler.resolveBundleForPath(requestedPath)) {
+					if (LOGGER.isDebugEnabled())
+						LOGGER.debug("Path '" + requestedPath + "' does not belong to a bundle. Forwarding request to the server. ");
+					request.getRequestDispatcher(requestedPath).forward(request, response);
+					processed = true;
+				}
+			}
+		}
+
+		return processed;
+	}
+
+	/**
+	 * Returns true if the bundle is a valid bundle
+	 * @param requestedPath the requested path
+	 * @return true if the bundle is a valid bundle
+	 */
+	protected boolean isValidBundle(String requestedPath) {
+		boolean validBundle = true;
+		if(jawrConfig.isStrictMode()){
+			validBundle = bundlesHandler.containsValidBundleHashcode(requestedPath);
+		}
+		return validBundle;
+	}
+
+	/**
+	 * Process the request
+	 * @param requestedPath the requested path
+	 * @param request the request
+	 * @param response the response
+	 * @param validBundle the flag indicating if the requested bundle is a valid bundle
+	 * @throws IOException if an IOException occurs
+	 */
+	protected void processRequest(String requestedPath,
+			HttpServletRequest request, HttpServletResponse response,
+			String contentType, boolean validBundle) throws IOException {
+		
+		if(handleResponseHeader(request, response, validBundle)){
+			return; 
+		}
+		
+		if (this.jawrConfig.isDebugModeOn() && null != request.getParameter(GENERATION_PARAM))
+			requestedPath = request.getParameter(GENERATION_PARAM);
+
+		// By setting content type, the response writer will use appropiate encoding
+		response.setContentType(contentType);
+		
+		try {
+			if(validBundle || illegalBundleRequestHandler.canWriteContent()){
+				writeContent(requestedPath, request, response);
+				if (LOGGER.isDebugEnabled())
+					LOGGER.debug("request succesfully attended");
+			}else{
+				logBundleNotFound(requestedPath);
+				response.sendError(HttpServletResponse.SC_NOT_FOUND);
+			}
+		} catch (EOFException eofex) {
+			LOGGER.debug("Browser cut off response", eofex);
+		} catch (ResourceNotFoundException e) {
+			logBundleNotFound(requestedPath);
+			response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+			return;
+		}
+	}
+
+	/**
+	 * Handle the response header
+	 * @param request the request
+	 * @param response the response
+	 * @param validBundle the flag indicating if the bundle is a valid one or not
+	 * @return true if the request has been fully processed
+	 */
+	protected boolean handleResponseHeader(HttpServletRequest request,
+			HttpServletResponse response, boolean validBundle) {
+
+		boolean requestFullyProcessed = false;
+		// If debug mode is off, check for If-Modified-Since and If-none-match headers and set response caching headers.
+		if (!this.jawrConfig.isDebugModeOn()) {
+			// If a browser checks for changes, always respond 'no changes'.
+			if (validBundle && (null != request.getHeader(IF_MODIFIED_SINCE_HEADER) || null != request.getHeader(IF_NONE_MATCH_HEADER))) {
+				response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
+				if (LOGGER.isDebugEnabled())
+					LOGGER.debug("Returning 'not modified' header. ");
+				requestFullyProcessed = true;
+			}
+
+			if(validBundle || (!illegalBundleRequestHandler.writeResponseHeader(response)
+					&& illegalBundleRequestHandler.canWriteContent())){
+				// Add caching headers
+				setResponseHeaders(response);
+			}
+		}
+		
+		return requestFullyProcessed;
+	}
+
+	/**
+	 * Logs that the requested bundle was not found
+	 * @param requestedPath
+	 */
+	private void logBundleNotFound(String requestedPath) {
+		if (LOGGER.isInfoEnabled())
+			LOGGER.info("Received a request for a non existing bundle: " + requestedPath);
+	}
+
+	/**
+	 * Returns the content type of the requested path
+	 * @param requestedPath the requested path
+	 * @param request the request
+	 * @return the content type of the requested path
+	 */
+	protected String getContentType(String requestedPath, HttpServletRequest request) {
+		return contentType;
 	}
 
 	/**
@@ -543,7 +662,7 @@ public class JawrRequestHandler implements ConfigChangeListener, Serializable {
 	 * @throws IOException if an IOException occurs
 	 * @throws ResourceNotFoundException if the resource is not found
 	 */
-	private void writeContent(String requestedPath, HttpServletRequest request,
+	protected void writeContent(String requestedPath, HttpServletRequest request,
 			HttpServletResponse response) throws IOException, ResourceNotFoundException {
 		
 		// Send gzipped resource if user agent supports it.

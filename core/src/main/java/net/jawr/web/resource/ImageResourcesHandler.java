@@ -122,5 +122,14 @@ public class ImageResourcesHandler {
 	
 		imageMap.clear();
 	}
+
+	/**
+	 * Checks if the requested image is a valid one or not
+	 * @param requestedPath the requested path
+	 * @return true if the requested image is a valid one or not
+	 */
+	public boolean containsValidBundleHashcode(String requestedPath) {
+		return imageMap.containsValue(requestedPath);
+	}
 	
 }

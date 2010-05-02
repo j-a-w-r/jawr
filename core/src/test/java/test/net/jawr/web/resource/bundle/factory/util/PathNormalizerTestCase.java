@@ -1,9 +1,11 @@
 package test.net.jawr.web.resource.bundle.factory.util;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 import junit.framework.TestCase;
 import net.jawr.web.resource.bundle.factory.util.PathNormalizer;
+import net.jawr.web.resource.bundle.renderer.BundleRenderer;
 
 /**
  * Test case class for PathNormalizer utility class
@@ -81,6 +83,23 @@ public class PathNormalizerTestCase extends TestCase {
 		assertEquals("/js/bundle/msg@en_US.js", PathNormalizer.removeVariantPrefixFromPath("/1542603560.en_US/js/bundle/msg.js"));
 		assertEquals("/fwk/core/component@en_US@summer.css", PathNormalizer.removeVariantPrefixFromPath("/1576054120.en_US@summer/fwk/core/component.css"));
 		assertEquals("/js/bundle/msg.js", PathNormalizer.removeVariantPrefixFromPath("/1542603560/js/bundle/msg.js"));
+	}
+	
+	public void testExtractBundleInfoFromPath(){
+		
+		String[] pathInfos = PathNormalizer.extractBundleInfoFromPath("/1542603560.en_US/js/bundle/msg.js");
+		assertEquals(Arrays.asList(new String[]{"/js/bundle/msg.js","en_US", "1542603560"}), Arrays.asList(pathInfos));
+		pathInfos = PathNormalizer.extractBundleInfoFromPath("/1576054120.en_US@summer/fwk/core/component.css");
+		assertEquals(Arrays.asList(new String[]{"/fwk/core/component.css","en_US@summer", "1576054120"}), Arrays.asList(pathInfos));
+		pathInfos = PathNormalizer.extractBundleInfoFromPath("/1542603560/js/bundle/msg.js");
+		assertEquals(Arrays.asList(new String[]{"/js/bundle/msg.js",null, "1542603560"}), Arrays.asList(pathInfos));
+		
+		pathInfos = PathNormalizer.extractBundleInfoFromPath(BundleRenderer.GZIP_PATH_PREFIX+"1542603560/js/bundle/msg.js");
+		assertEquals(Arrays.asList(new String[]{"/js/bundle/msg.js",null, "1542603560"}), Arrays.asList(pathInfos));
+		
+		pathInfos = PathNormalizer.extractBundleInfoFromPath(BundleRenderer.GZIP_PATH_PREFIX+"1576054120.en_US@summer/fwk/core/component.css");
+		assertEquals(Arrays.asList(new String[]{"/fwk/core/component.css","en_US@summer", "1576054120"}), Arrays.asList(pathInfos));
+		
 	}
 	
 }

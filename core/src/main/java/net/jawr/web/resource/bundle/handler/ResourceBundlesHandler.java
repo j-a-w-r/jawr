@@ -148,5 +148,13 @@ public interface ResourceBundlesHandler {
 	 * @return the client side handler generator
 	 */
 	public ClientSideHandlerGenerator getClientSideHandler();
+
+	/**
+	 * Returns true if the requested path contains a valid bundle hashcode for the
+	 * requested path
+	 * @param requestedPath the requested path
+	 * @return true if the requested path contains a valid bundle hashcode
+	 */
+	public boolean containsValidBundleHashcode(String requestedPath);
 	
 }

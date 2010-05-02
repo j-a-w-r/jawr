@@ -654,27 +654,6 @@ public class ResourceBundlesHandlerImpl implements ResourceBundlesHandler {
 				initBundleDataHashcode(composite, store, variantKey);
 			}
 		}
-		
-//		store = new JoinableResourceBundleContent();
-//		for (Iterator it = composite.getChildBundles().iterator(); it.hasNext();) {
-//			JoinableResourceBundle childbundle = (JoinableResourceBundle) it
-//					.next();
-//			status.setChildCompositeBundle(true);
-//			store.append(joinAndPostprocessBundle(childbundle, null,
-//					status, processBundle));
-//		}
-//
-//		store = postProcessJoinedCompositeBundle(composite, store.getContent(), status);
-//
-//		// Store the collected resources as a single file, both in text and gzip
-//		// formats.
-//		if (processBundle) {
-//
-//			resourceBundleHandler.storeBundle(composite.getId(), store);
-//			// Set the data hascode in the bundle, in case the prefix needs to
-//			// be generated
-//			initBundleDataHashcode(composite, store, null);
-//		}
 	}
 
 	/**
@@ -728,7 +707,28 @@ public class ResourceBundlesHandlerImpl implements ResourceBundlesHandler {
 		bundle.setBundleDataHashCode(variant, bundleHashcode);
 	}
 
-	
+	/* (non-Javadoc)
+	 * @see net.jawr.web.resource.bundle.handler.ResourceBundlesHandler#containsValidBundleHashcode(java.lang.String)
+	 */
+	public boolean containsValidBundleHashcode(String requestedPath) {
+		
+		boolean validHashcode = false;
+		
+		String[] pathInfos = PathNormalizer.extractBundleInfoFromPath(requestedPath);
+		String bundleId = pathInfos[0];
+		String variantKey = pathInfos[1];
+		String hashcode = pathInfos[2];
+		
+		JoinableResourceBundle bundle = resolveBundleForPath(bundleId);
+		if(bundle != null){
+			String bundleHashcode = bundle.getBundleDataHashCode(variantKey);
+			if(hashcode == null && bundleHashcode == null ||
+					hashcode!= null && hashcode.equals(bundleHashcode)){
+				validHashcode = true;
+			}
+		}
+		return validHashcode;
+	}
 	
 	/**
 	 * Joins the members of a bundle and stores it

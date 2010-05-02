@@ -83,6 +83,9 @@ public class JawrImageRequestHandler extends JawrRequestHandler {
 	/** The resource handler */
 	private ResourceBundleHandler rsBundleHandler;
 
+	/** The image resource handler */
+	private ImageResourcesHandler imgRsHandler;
+	
 	/** The bundle mapping */
 	private Properties bundleMapping;
 
@@ -150,6 +153,9 @@ public class JawrImageRequestHandler extends JawrRequestHandler {
 			jawrConfig.setServletMapping(mapping);
 		}
 
+		// Initialize the IllegalBundleRequest handler
+		initIllegalBundleRequestHandler();
+		
 		// Initialize the resource handler
 		rsReaderHandler = initResourceReaderHandler();
 		rsBundleHandler = initResourceBundleHandler();
@@ -170,7 +176,7 @@ public class JawrImageRequestHandler extends JawrRequestHandler {
 			bundleMapping = new Properties();
 		}
 
-		ImageResourcesHandler imgRsHandler = new ImageResourcesHandler(
+		imgRsHandler = new ImageResourcesHandler(
 				jawrConfig, rsReaderHandler, rsBundleHandler);
 		initImageMapping(imgRsHandler);
 
@@ -389,50 +395,30 @@ public class JawrImageRequestHandler extends JawrRequestHandler {
 		if (LOGGER.isDebugEnabled())
 			LOGGER.debug("Request received for path:" + requestedPath);
 
-		// Retrieve the file path
-		//String filePath = getFilePath(request);
-		if (requestedPath == null) {
-			response.sendError(HttpServletResponse.SC_NOT_FOUND);
+		if(handleSpecificRequest(requestedPath, requestedPath, request, response)){
 			return;
 		}
-
-		// Retrieve the content type
-		String imgContentType = getContentType(request, requestedPath);
-		if (imgContentType == null) {
-			response.sendError(HttpServletResponse.SC_NOT_FOUND);
-			return;
-		}
+		
+		// Handle the strict mode
+		boolean validBundle = isValidBundle(requestedPath);
 
 		// Set the content type
-		response.setContentType(imgContentType);
-		// If debug mode is off, check for If-Modified-Since and If-none-match
-		// headers and set response caching headers.
-		if (!this.jawrConfig.isDebugModeOn()) {
-			// If a browser checks for changes, always respond 'no changes'.
-			if (null != request.getHeader(IF_MODIFIED_SINCE_HEADER)
-					|| null != request.getHeader(IF_NONE_MATCH_HEADER)) {
-				response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
-				if (LOGGER.isDebugEnabled())
-					LOGGER.debug("Returning 'not modified' header. ");
-				return;
-			}
-
-			// Add caching headers
-			setResponseHeaders(response);
+		response.setContentType(getContentType(requestedPath, request));
+		if(handleResponseHeader(request, response, validBundle)){
+			return; 
 		}
 
 		// Returns the real file path
 		String filePath = getRealFilePath(requestedPath);
 
 		try {
-			if (isValidRequestedPath(filePath)) {
+			if(isValidRequestedPath(filePath) && (validBundle || illegalBundleRequestHandler.canWriteContent())){
 				writeContent(response, filePath);
-			} else {
+			}else{
 				LOGGER.error("Unable to load the image for the request URI : "
 						+ request.getRequestURI());
 				response.sendError(HttpServletResponse.SC_NOT_FOUND);
 			}
-
 		} catch (Exception ex) {
 
 			LOGGER.error("Unable to load the image for the request URI : "
@@ -444,6 +430,41 @@ public class JawrImageRequestHandler extends JawrRequestHandler {
 			LOGGER.debug("request succesfully attended");
 	}
 
+	/* (non-Javadoc)
+	 * @see net.jawr.web.servlet.JawrRequestHandler#isValidBundle(java.lang.String)
+	 */
+	protected boolean isValidBundle(String requestedPath) {
+		boolean validBundle = true;
+		if(jawrConfig.isStrictMode()){
+			validBundle = imgRsHandler.containsValidBundleHashcode(requestedPath);
+		}
+		return validBundle;
+	}
+
+	/* (non-Javadoc)
+	 * @see net.jawr.web.servlet.JawrRequestHandler#handleSpecificRequest(java.lang.String, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+	 */
+	protected boolean handleSpecificRequest(String requestedPath,String contentType,
+			HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		
+		boolean processed = false;
+		// Retrieve the file path
+		//String filePath = getFilePath(request);
+		if (requestedPath == null) {
+			response.sendError(HttpServletResponse.SC_NOT_FOUND);
+			processed = true;
+		}else{
+			// Ckeck the content type
+			if (contentType == null) {
+				response.sendError(HttpServletResponse.SC_NOT_FOUND);
+				processed = true;
+			}
+		}
+		
+		return processed;
+	}
+
 	/**
 	 * Returns the content type for the image
 	 * 
@@ -453,7 +474,7 @@ public class JawrImageRequestHandler extends JawrRequestHandler {
 	 *            the image file path
 	 * @return the content type of the image
 	 */
-	private String getContentType(HttpServletRequest request, String filePath) {
+	protected String getContentType(String filePath, HttpServletRequest request) {
 		String requestUri = request.getRequestURI();
 
 		// Retrieve the extension

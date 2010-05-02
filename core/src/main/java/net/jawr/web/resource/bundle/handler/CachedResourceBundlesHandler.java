@@ -266,4 +266,11 @@ public class CachedResourceBundlesHandler implements ResourceBundlesHandler {
 		return rsHandler.isGlobalResourceBundle(resourceBundleId);
 	}
 
+	/* (non-Javadoc)
+	 * @see net.jawr.web.resource.bundle.handler.ResourceBundlesHandler#containsValidBundleHashcode(java.lang.String)
+	 */
+	public boolean containsValidBundleHashcode(String requestedPath) {
+		return rsHandler.containsValidBundleHashcode(requestedPath);
+	}
+
 }

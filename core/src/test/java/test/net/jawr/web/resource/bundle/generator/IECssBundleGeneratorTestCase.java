@@ -209,6 +209,11 @@ public class IECssBundleGeneratorTestCase extends TestCase {
 					Map variants) {
 				return null;
 			}
+
+			public boolean containsValidBundleHashcode(String requestedPath) {
+				// TODO Auto-generated method stub
+				return false;
+			}
 			
 		};
 		return bundlesHandler;

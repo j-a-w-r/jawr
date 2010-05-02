@@ -24,6 +24,7 @@ import java.util.StringTokenizer;
 import net.jawr.web.JawrConstant;
 import net.jawr.web.exception.JawrLinkRenderingException;
 import net.jawr.web.resource.bundle.generator.GeneratorRegistry;
+import net.jawr.web.resource.bundle.renderer.BundleRenderer;
 import net.jawr.web.servlet.JawrRequestHandler;
 import net.jawr.web.util.StringUtils;
 
@@ -63,9 +64,52 @@ public final class PathNormalizer {
 			String suffix = '@' + variantPrefix + resultPath.substring(resultPath.lastIndexOf('.'));
 			resultPath = resultPath.substring(resultPath.indexOf("/"), resultPath.lastIndexOf('.')) + suffix;
 		} else
-			resultPath = resultPath.substring(resultPath.indexOf("/"), resultPath.length());
+			resultPath = resultPath.substring(resultPath.indexOf("/"));
 		
 		return resultPath;
+	}
+	
+	/**
+	 * Removes the URL prefix defined in the configuration from a path. If the prefix contains a variant information, it adds it to the name.
+	 * 
+	 * @param path the path
+	 * @return the bundle info from the  
+	 */
+	public static String[] extractBundleInfoFromPath(String path) {
+		
+		String[] result = new String[3];
+		
+		String resultPath = null;
+		if(path.startsWith(BundleRenderer.GZIP_PATH_PREFIX)){
+			// Remove the gzip prefix
+			resultPath = path.substring(BundleRenderer.GZIP_PATH_PREFIX.length());
+		}else{
+			// Remove first slash
+			resultPath = path.substring(1);
+		}
+		
+		// eval the existence of a suffix
+		int realPathStartIdx = resultPath.indexOf("/");
+		String prefix = resultPath.substring(0, realPathStartIdx);
+
+		String hashcode = null;
+		String variantPrefix = null;
+		// The prefix also contains variant information after a '.'
+		int hashCodeVariantSeparatorIdx = prefix.indexOf('.');
+		if (hashCodeVariantSeparatorIdx != -1) {
+			hashcode = prefix.substring(0, hashCodeVariantSeparatorIdx);
+			variantPrefix = prefix.substring(hashCodeVariantSeparatorIdx + 1);
+			resultPath = resultPath.substring(realPathStartIdx);
+		} else{
+			hashcode = prefix.substring(0, realPathStartIdx);
+			resultPath = resultPath.substring(realPathStartIdx);
+		}
+		
+		result[0] = resultPath;
+		result[1] = variantPrefix;
+		result[2] = hashcode;
+		
+		return result;
 	}
 	
 	/**

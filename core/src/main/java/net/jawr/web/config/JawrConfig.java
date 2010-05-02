@@ -166,6 +166,11 @@ public class JawrConfig implements Serializable {
 	 * The property name for the image resources.
 	 */
 	public static final String JAWR_IMAGE_RESOURCES = "jawr.image.resources";
+	
+	/**
+	 * The property name for the Jawr strict mode.
+	 */
+	public static final String JAWR_STRICT_MODE = "jawr.strict.mode";
 
 	/**
 	 * The generator registry
@@ -197,6 +202,12 @@ public class JawrConfig implements Serializable {
 	 */
 	private Charset resourceCharset;
 
+	/**
+	 * Flag to switch on the strict mode. defaults to false.
+	 * In strict mode, Jawr checks that the hashcode of the bundle requested is the right one or not.
+	 */
+	private boolean strictMode = false;
+	
 	/**
 	 * Flag to switch on the debug mode. defaults to false.
 	 */
@@ -308,6 +319,10 @@ public class JawrConfig implements Serializable {
 			this.debugOverrideKey = props.getProperty(JAWR_DEBUG_OVERRIDE_KEY);
 		}
 		
+		if (null != props.getProperty(JAWR_STRICT_MODE)) {
+			this.strictMode = Boolean.valueOf(props.getProperty(JAWR_STRICT_MODE)).booleanValue();
+		}
+		
 		if (null != props.getProperty(JAWR_USE_BUNDLE_MAPPING)) {
 			this.useBundleMapping = Boolean.valueOf(props.getProperty(JAWR_USE_BUNDLE_MAPPING)).booleanValue();
 		}
@@ -383,6 +398,22 @@ public class JawrConfig implements Serializable {
 		
 	}
 	
+	/**
+	 * Returns the flag indicating if we are in strict mode or not
+	 * @return the strict mode flag
+	 */
+	public boolean isStrictMode() {
+		return strictMode;
+	}
+
+	/**
+	 * Sets the flag indicating if we are in strict mode or not
+	 * @param strictMode the flag to set
+	 */
+	public void setStrictMode(boolean strictMode) {
+		this.strictMode = strictMode;
+	}
+
 	/**
 	 * Get the debugOverrideKey
 	 * 
