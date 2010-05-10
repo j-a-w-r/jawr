@@ -80,6 +80,33 @@ public class CSSURLRewriterPostProcessorTest extends TestCase {
 		
 	}
 	
+	public void testBasicURLWithAbsolutePathRewriting() {
+		// basic test
+		StringBuffer data = new StringBuffer("background-image:url(/images/someImage.gif);");
+		//StringBuffer data = new StringBuffer("background-image:url(../../../../images/someImage.gif);");
+		// the image is at /images
+		String filePath = "/css/folder/subfolder/subfolder/someCSS.css";
+		// Expected: goes 1 back for servlet mapping, 1 back for prefix, 1 back for the id having a subdir path. 
+		String expectedURL = "background-image:url(/images/someImage.gif);";
+		status.setLastPathAdded(filePath);		
+		String result = processor.postProcessBundle(status, data).toString();		
+		assertEquals("URL was not rewritten properly",expectedURL, result);
+		
+	}
+	
+	public void testBasicURLWithAbsolutePathInContextPathRewriting() {
+		// basic test
+		StringBuffer data = new StringBuffer("background-image:url(/myApp/images/someImage.gif);");
+		config.getConfigProperties().put("jawr.css.url.rewriter.context.path", "/myApp/");
+		//StringBuffer data = new StringBuffer("background-image:url(../../../../images/someImage.gif);");
+		// the image is at /images
+		String filePath = "/css/folder/subfolder/subfolder/someCSS.css";
+		// Expected: goes 1 back for servlet mapping, 1 back for prefix, 1 back for the id having a subdir path. 
+		String expectedURL = "background-image:url(../../../images/someImage.gif);";
+		status.setLastPathAdded(filePath);		
+		String result = processor.postProcessBundle(status, data).toString();		
+		assertEquals("URL was not rewritten properly",expectedURL, result);
+	}
 	
 	public void testBackReferenceAndSpaces() {
 		// Now a back reference must be created, and there are quotes and spaces

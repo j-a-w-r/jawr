@@ -17,6 +17,10 @@ import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang.StringUtils;
+
+import net.jawr.web.JawrConstant;
+import net.jawr.web.config.JawrConfig;
 import net.jawr.web.resource.bundle.factory.util.PathNormalizer;
 import net.jawr.web.resource.bundle.factory.util.RegexUtil;
 
@@ -36,6 +40,7 @@ public class CssImageUrlRewriter {
 	/** The URL separator */
 	private static final String URL_SEPARATOR = "/";
 
+	/** The URL regexp pattern */
 	public static String URL_REGEXP = "url\\(\\s*" // 'url('
 		// and any number of whitespaces
 		+ "(?!(\"|')?(data|mhtml|cid):)(((\\\\\\))|[^)])*)" // any sequence of
@@ -51,11 +56,40 @@ public class CssImageUrlRewriter {
 	public static final Pattern URL_PATTERN = Pattern.compile(URL_REGEXP, // Any number of whitespaces, then ')'
 			Pattern.CASE_INSENSITIVE); // works with 'URL('
 
+	/** The context path */
+	protected String contextPath;
+	
 	/**
 	 * Constructor
 	 */
 	public CssImageUrlRewriter() {
 		
+	}
+	
+	/**
+	 * Constructor
+	 * @param config the jawr config
+	 */
+	public CssImageUrlRewriter(JawrConfig config) {
+		setContextPath(config.getProperty(JawrConstant.JAWR_CSS_URL_REWRITER_CONTEXT_PATH));
+	}
+
+	/**
+	 * Sets the context path
+	 * @param contextPath the contextPath to set
+	 */
+	public void setContextPath(String contextPath) {
+		if(StringUtils.isNotEmpty(contextPath)){
+			if(contextPath.charAt(0) != '/'){
+				contextPath = '/'+contextPath;
+			}
+			if(contextPath.charAt(contextPath.length()-1) != '/'){
+				contextPath = contextPath+'/';
+			}
+			this.contextPath = contextPath;
+		}else{
+			this.contextPath = null;
+		}
 	}
 
 	/**
@@ -107,6 +141,12 @@ public class CssImageUrlRewriter {
 			url = url.substring(1, url.length() - 1);
 		}
 
+		// Check if the URL is absolute, but in the application itself
+		if(StringUtils.isNotEmpty(contextPath) && url.startsWith(contextPath)){
+			String rootRelativePath = PathNormalizer.getRootRelativePath(originalPath);
+			url = rootRelativePath + url.substring(contextPath.length());
+		}
+		
 		// Check if the URL is absolute, if it is return it as is.
 		int firstSlash = url.indexOf('/');
 		if (0 == firstSlash

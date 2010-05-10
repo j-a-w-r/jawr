@@ -119,12 +119,6 @@ public class JawrRequestHandler implements ConfigChangeListener, Serializable {
 	/** The generated image pattern */
 	private static final Pattern GENERATED_IMG_PATTERN = Pattern.compile("(url\\(([\"' ]*))(([a-zA-Z]+)(?! (http|data)):(/)?)([^\\)\"']*)([\"']?\\))");
 
-	/** The URL separator pattern */
-	private static final Pattern URL_SEPARATOR_PATTERN = Pattern.compile("([^/]*)/");
-
-	/** The pattern to go to the root */
-	private static final String ROOT_REPLACE_PATTERN = "../";
-
 	/** The resource bundles handler */
 	protected ResourceBundlesHandler bundlesHandler;
 	
@@ -724,7 +718,7 @@ public class JawrRequestHandler implements ConfigChangeListener, Serializable {
 		}
 
 		// Define the replacement pattern for the generated image (like jar:img/myImg.png)
-		String relativeRootUrlPath = getRootRelativeCssUrlPath(getRequestPath(request));
+		String relativeRootUrlPath = PathNormalizer.getRootRelativePath(getRequestPath(request));
 		String replacementPattern = PathNormalizer.normalizePath("$1" + relativeRootUrlPath + imageServletMapping + "/$4_cbDebug/$7$8");
 		
 		Matcher matcher = GENERATED_IMG_PATTERN.matcher(content);
@@ -770,31 +764,6 @@ public class JawrRequestHandler implements ConfigChangeListener, Serializable {
 	protected String getExtension(String requestedPath) {
 		
 		return FileNameUtils.getExtension(requestedPath);
-	}
-
-	/**
-	 * Returns the relative path of an url to go back to the root.
-	 * For example : if the url path is defined as "/cssServletPath/css/myStyle.css" -> "../../"
-	 * 
-	 * @param url the requested url
-	 * @return the relative path of an url to go back to the root.
-	 */
-	private String getRootRelativeCssUrlPath(String url) {
-
-		Matcher matcher = URL_SEPARATOR_PATTERN.matcher(url);
-		StringBuffer result = new StringBuffer();
-		boolean first = true;
-		while (matcher.find()) {
-			if (first) {
-				matcher.appendReplacement(result, "");
-				first = false;
-			} else {
-				matcher.appendReplacement(result, ROOT_REPLACE_PATTERN);
-			}
-
-		}
-
-		return result.toString();
 	}
 
 	/**

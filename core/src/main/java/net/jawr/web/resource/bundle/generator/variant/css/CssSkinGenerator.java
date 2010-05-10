@@ -170,7 +170,7 @@ public class CssSkinGenerator extends AbstractCSSGenerator implements VariantRes
 			StringWriter writer = new StringWriter();
 			try {
 				IOUtils.copy(reader, writer);
-				CssImageUrlRewriter rewriter = new CssImageUrlRewriter();
+				CssImageUrlRewriter rewriter = new CssImageUrlRewriter(context.getConfig());
 				String bundlePath = PathNormalizer.concatWebPath(context.getConfig().getServletMapping(), ResourceGenerator.CSS_DEBUGPATH);
 				StringBuffer result = rewriter.rewriteUrl(path, bundlePath, writer.toString());
 				reader = new StringReader(result.toString());

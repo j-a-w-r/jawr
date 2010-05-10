@@ -113,12 +113,11 @@ public class CSSImportPostProcessor extends
 		
 		// Retrieve the image servlet mapping
 		ImageResourcesHandler imgRsHandler = (ImageResourcesHandler) jawrConfig.getContext().getAttribute(JawrConstant.IMG_CONTEXT_ATTRIBUTE);
-		GeneratorRegistry generatorRegistry = jawrConfig.getGeneratorRegistry();
 		if(imgRsHandler != null){
-			generatorRegistry = imgRsHandler.getJawrConfig().getGeneratorRegistry();
+			jawrConfig = imgRsHandler.getJawrConfig();
 		}
 		// Rewrite image URL
-		CssImportedUrlRewriter urlRewriter = new CssImportedUrlRewriter(generatorRegistry);
+		CssImportedUrlRewriter urlRewriter = new CssImportedUrlRewriter(jawrConfig);
 		StringBuffer result = new StringBuffer();
 		boolean isMediaAttributeSet = StringUtils.isNotEmpty(media);
 		if(isMediaAttributeSet){
@@ -145,9 +144,10 @@ public class CSSImportPostProcessor extends
 		 * Constructor
 		 * @param generatorRegistry the generator registry
 		 */
-		public CssImportedUrlRewriter(GeneratorRegistry generatorRegistry) {
+		public CssImportedUrlRewriter(JawrConfig jawrConfig) {
 
-			this.generatorRegistry = generatorRegistry;
+			super(jawrConfig);
+			this.generatorRegistry = jawrConfig.getGeneratorRegistry();
 		}
 
 		

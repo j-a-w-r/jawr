@@ -108,6 +108,48 @@ public class CSSBase64ImageRewriterPostProcessorTest extends TestCase {
 		assertEquals("URL was not rewritten properly", expectedURL, result);
 	}
 	
+	public void testBasicImgAsolutURLCssRewriting() {
+
+		// Set the properties
+		Properties props = new Properties();
+		props.setProperty(JawrConfig.JAWR_CSS_IMG_USE_CLASSPATH_SERVLET, "true");
+		props.setProperty(JawrConstant.JAWR_CSS_URL_REWRITER_CONTEXT_PATH, "/myApp");
+		config = new JawrConfig(props);
+		ServletContext servletContext = new MockServletContext();
+		config.setContext(servletContext);
+		config.setServletMapping("/css");
+		config.setCharsetName("UTF-8");
+		addGeneratorRegistryToConfig(config, "css");
+		
+		// Set up the Image servlet Jawr config
+		props = new Properties();
+		JawrConfig imgServletJawrConfig = new JawrConfig(props);
+		imgServletJawrConfig.setServletMapping("/cssImg/");
+		addGeneratorRegistryToConfig(imgServletJawrConfig, "img");
+		FakeResourceReaderHandler rsHandler = new FakeResourceReaderHandler();
+		config.getGeneratorRegistry().setResourceReaderHandler(rsHandler);
+		ImageResourcesHandler imgRsHandler = new ImageResourcesHandler(imgServletJawrConfig, rsHandler, null);
+		imgServletJawrConfig.getGeneratorRegistry().setResourceReaderHandler(rsHandler);
+		servletContext.setAttribute(JawrConstant.IMG_CONTEXT_ATTRIBUTE, imgRsHandler);
+		
+		status = new BundleProcessingStatus(bundle, null, config);
+
+		// Css data
+		StringBuffer data = new StringBuffer("background-image:url(/myApp/images/logo.png);");
+		
+		// Css path
+		String filePath = "style/default/assets/someCSS.css";
+		
+		// Expected: goes 3 back to the context path, then add the CSS image servlet mapping,
+		// then go to the image path
+		// the image is at classPath:/style/images/someImage.gif
+		String expectedURL = "background-image:url(data:image/png;base64,RmFrZSB2YWx1ZQ==);";
+		status.setLastPathAdded(filePath);
+
+		String result = processor.postProcessBundle(status, data).toString();
+		assertEquals("URL was not rewritten properly", expectedURL, result);
+	}
+	
 	public void testEncodeTooBigImgCssRewriting() {
 
 		// Set the properties

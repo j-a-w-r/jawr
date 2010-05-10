@@ -193,5 +193,7 @@ public class JawrConstant {
 	public static final String JAWR_BUNDLE_PATH_PLACEHOLDER_PATTERN = "\\{JAWR_BUNDLE_PATH\\}";
 
 	public static final String ILLEGAL_BUNDLE_REQUEST_HANDLER = "jawr.illegal.bundle.request.handler";
+
+	public static final String JAWR_CSS_URL_REWRITER_CONTEXT_PATH = "jawr.css.url.rewriter.context.path";
 	
 }

@@ -48,6 +48,7 @@ public class PostProcessorCssImageUrlRewriter extends CssImageUrlRewriter {
 	 * @param status the bundle processing status
 	 */
 	public PostProcessorCssImageUrlRewriter(BundleProcessingStatus status) {
+		super(status.getJawrConfig());
 		this.status = status;
 	}
 	

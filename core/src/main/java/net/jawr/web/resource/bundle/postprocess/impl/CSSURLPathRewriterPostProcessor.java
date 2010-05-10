@@ -37,9 +37,6 @@ import org.apache.log4j.Logger;
 public class CSSURLPathRewriterPostProcessor extends
 		AbstractChainedResourceBundlePostProcessor {
 	
-	/** Logger */
-	private static Logger LOGGER = Logger.getLogger(CSSURLPathRewriterPostProcessor.class);
-	
 	/** This variable is used to fake the gzip prefix for the full bundle path */
 	private static final String FAKE_BUNDLE_PREFIX = "/prefix/";
 

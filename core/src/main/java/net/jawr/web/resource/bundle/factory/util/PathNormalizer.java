@@ -20,6 +20,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.StringTokenizer;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import net.jawr.web.JawrConstant;
 import net.jawr.web.exception.JawrLinkRenderingException;
@@ -38,6 +40,12 @@ import net.jawr.web.util.StringUtils;
  */
 public final class PathNormalizer {
 	
+	/** The URL separator pattern */
+	private static final Pattern URL_SEPARATOR_PATTERN = Pattern.compile("([^/]*)/");
+
+	/** The pattern to go to the root */
+	private static final String ROOT_REPLACE_PATTERN = "../";
+
 	/**
 	 * Constructor 
 	 */
@@ -835,5 +843,27 @@ public final class PathNormalizer {
         return relativePath.toString();
     }
 
-	
+    /**
+	 * Returns the relative path of an url to go back to the root.
+	 * For example : if the url path is defined as "/cssServletPath/css/myStyle.css" -> "../../"
+	 * 
+	 * @param url the requested url
+	 * @return the relative path of an url to go back to the root.
+	 */
+	public static String getRootRelativePath(String url) {
+
+		Matcher matcher = URL_SEPARATOR_PATTERN.matcher(url);
+		StringBuffer result = new StringBuffer();
+		boolean first = true;
+		while (matcher.find()) {
+			if (first) {
+				matcher.appendReplacement(result, "");
+				first = false;
+			} else {
+				matcher.appendReplacement(result, ROOT_REPLACE_PATTERN);
+			}
+		}
+
+		return result.toString();
+	}
 }
