@@ -30,10 +30,12 @@ import net.jawr.web.resource.bundle.JoinableResourceBundle;
 import net.jawr.web.resource.bundle.JoinableResourceBundleImpl;
 import net.jawr.web.resource.bundle.factory.util.PathNormalizer;
 import net.jawr.web.resource.bundle.handler.ResourceBundlesHandler;
+import net.jawr.web.resource.bundle.iterator.ConditionalCommentCallbackHandler;
 import net.jawr.web.resource.bundle.iterator.ListPathsIteratorImpl;
 import net.jawr.web.resource.bundle.iterator.ResourceBundlePathsIterator;
 import net.jawr.web.resource.bundle.postprocess.BundleProcessingStatus;
 import net.jawr.web.resource.bundle.postprocess.impl.CSSURLPathRewriterPostProcessor;
+import net.jawr.web.resource.bundle.renderer.ConditionalCommentRenderer;
 
 import org.apache.log4j.Logger;
 
@@ -101,7 +103,6 @@ public class IECssBundleGenerator extends AbstractCSSGenerator {
 			ResourceBundlesHandler bundlesHandler, String bundlePath,
 			Map variants) {
 		
-		StringBuffer result =  new StringBuffer();
 		// Here we create a new context where the bundle name is the Jawr
 		// generator CSS path
 		String cssGeneratorBundlePath = PathNormalizer.concatWebPath(context
@@ -118,12 +119,16 @@ public class IECssBundleGenerator extends AbstractCSSGenerator {
 		CSSURLPathRewriterPostProcessor postProcessor = new CSSURLPathRewriterPostProcessor();
 
 		ResourceBundlePathsIterator it = null;
+		
+		StringWriter resultWriter = new StringWriter();
+		StringBuffer result = resultWriter.getBuffer();
+		ConditionalCommentCallbackHandler callbackHandler = new ConditionalCommentRenderer(resultWriter);
 		if (bundlesHandler.isGlobalResourceBundle(bundlePath)) {
 			it = new ListPathsIteratorImpl(bundlePath);
-			it = bundlesHandler.getGlobalResourceBundlePaths(bundlePath, null,
+			it = bundlesHandler.getGlobalResourceBundlePaths(bundlePath, callbackHandler,
 					variants);
 		} else {
-			it = bundlesHandler.getBundlePaths(bundlePath, null, variants);
+			it = bundlesHandler.getBundlePaths(bundlePath, callbackHandler, variants);
 		}
 
 		while (it.hasNext()) {
