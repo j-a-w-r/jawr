@@ -6,15 +6,12 @@ package test.net.jawr.web.resource.bundle.sorting;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
-
-import test.net.jawr.web.resource.bundle.MockJoinableResourceBundle;
 
 import junit.framework.TestCase;
 import net.jawr.web.resource.bundle.InclusionPattern;
 import net.jawr.web.resource.bundle.JoinableResourceBundle;
-import net.jawr.web.resource.bundle.postprocess.ResourceBundlePostProcessor;
 import net.jawr.web.resource.bundle.sorting.GlobalResourceBundleComparator;
+import test.net.jawr.web.resource.bundle.MockJoinableResourceBundle;
 
 /**
  * @author jhernandez

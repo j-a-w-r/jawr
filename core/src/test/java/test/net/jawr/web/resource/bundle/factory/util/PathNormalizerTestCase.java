@@ -1,6 +1,5 @@
 package test.net.jawr.web.resource.bundle.factory.util;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 
 import junit.framework.TestCase;

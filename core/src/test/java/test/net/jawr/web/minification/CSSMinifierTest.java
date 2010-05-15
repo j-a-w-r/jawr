@@ -4,7 +4,6 @@ import java.io.File;
 
 import junit.framework.TestCase;
 import net.jawr.web.minification.CSSMinifier;
-import net.jawr.web.resource.bundle.postprocess.impl.yui.YUICSSCompressor;
 import test.net.jawr.web.FileUtils;
 
 public class CSSMinifierTest extends TestCase {

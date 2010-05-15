@@ -79,6 +79,16 @@
                   ]]>
             </description>
         </attribute>
+        <attribute>
+            <name>base64</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <description>
+                <![CDATA[
+                  <p>The flag indicating if the base64 encoded image should be rendered.</p>
+                ]]>
+            </description>
+        </attribute>
     </tag>
     <tag>
         <name>img</name>
@@ -130,6 +140,16 @@
                   <p>And alternative text to be displayed in browsers that
                      don't support graphics.  Also used often as type of
                      context help over images.</p>
+                ]]>
+            </description>
+        </attribute>
+        <attribute>
+            <name>base64</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <description>
+                <![CDATA[
+                  <p>The flag indicating if the base64 encoded image should be rendered.</p>
                 ]]>
             </description>
         </attribute>
@@ -447,7 +467,17 @@
                 ]]>
             </description>
         </attribute>
-       <attribute>
+       	<attribute>
+            <name>base64</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <description>
+                <![CDATA[
+                  <p>The flag indicating if the base64 encoded image should be rendered.</p>
+                ]]>
+            </description>
+        </attribute>
+        <attribute>
             <name>border</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>

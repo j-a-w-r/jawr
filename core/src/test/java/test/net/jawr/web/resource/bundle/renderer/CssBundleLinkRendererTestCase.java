@@ -527,15 +527,15 @@ public class CssBundleLinkRendererTestCase extends ResourceHandlerBasedTest {
 		assertEquals("Invalid number of tags written. ",3, tk.countTokens());
 		next = tk.nextElement().toString();
 		assertTrue("Unexpected tag added at position 0:" + next, next.startsWith(CSS_PRE_TAG + "/ctxPathCss/srvMapping/"));
-		assertTrue("Unexpected tag added at position 0:" + next, next.endsWith("/jawr_generator.css?generationConfigParam=ieCssGen%3A%2F1915621739%2Flibrary.css" + CSS_POST_TAG));
+		assertTrue("Unexpected tag added at position 0:" + next, next.endsWith("/jawr_generator.css?generationConfigParam=ieCssGen%3A%2F393444215%2Flibrary.css" + CSS_POST_TAG));
 		
 		next = tk.nextElement().toString();
 		assertTrue("Unexpected tag added at position 1:" + next, next.startsWith(CSS_PRE_TAG + "/ctxPathCss/srvMapping/"));
-		assertTrue("Unexpected tag added at position 1:" + next, next.endsWith("/jawr_generator.css?generationConfigParam=ieCssGen%3A%2FN1486721868%2Fglobal.css" + CSS_POST_TAG));
+		assertTrue("Unexpected tag added at position 1:" + next, next.endsWith("/jawr_generator.css?generationConfigParam=ieCssGen%3A%2F1635989638%2Fglobal.css" + CSS_POST_TAG));
 		
 		next = tk.nextElement().toString();
 		assertTrue("Unexpected tag added at position 2:" + next, next.startsWith(CSS_PRE_TAG + "/ctxPathCss/srvMapping/"));
-		assertTrue("Unexpected tag added at position 2:" + next, next.endsWith("/jawr_generator.css?generationConfigParam=ieCssGen%3A%2F953154765%2FdebugOn.css" + CSS_POST_TAG));
+		assertTrue("Unexpected tag added at position 2:" + next, next.endsWith("/jawr_generator.css?generationConfigParam=ieCssGen%3A%2F1249645215%2FdebugOn.css" + CSS_POST_TAG));
 		
 		// Reusing the set, we test that no repeats are allowed. 
 		//result = renderToString(cssRenderer,"/css/lib/lib.css", CSS_CTX_PATH, includedBundles, false, false);

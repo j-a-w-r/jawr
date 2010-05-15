@@ -22,8 +22,6 @@ import net.jawr.web.resource.bundle.postprocess.AbstractChainedResourceBundlePos
 import net.jawr.web.resource.bundle.postprocess.BundleProcessingStatus;
 import net.jawr.web.resource.bundle.postprocess.PostProcessFactoryConstant;
 
-import org.apache.log4j.Logger;
-
 /**
  * Single file postprocessor used to rewrite CSS URLs according to the new relative locations of the references when
  * added to a bundle. Since the path changes, the URLs must be rewritten accordingly.  

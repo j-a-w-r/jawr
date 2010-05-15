@@ -31,8 +31,6 @@ import javax.servlet.Servlet;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 
-import net.jawr.web.exception.InvalidPathException;
-
 import org.apache.commons.collections.iterators.IteratorEnumeration;
 import org.apache.log4j.Logger;
 

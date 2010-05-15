@@ -13,6 +13,9 @@
  */
 package net.jawr.web.servlet;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -42,6 +45,9 @@ public class RendererRequestUtils {
 	
 	/** The bundle renderer context attribute name */
 	private static final String BUNDLE_RENDERER_CONTEXT_ATTR_PREFIX = "net.jawr.web.resource.renderer.BUNDLE_RENDERER_CONTEXT";
+	
+	/** The IE user agent pattern */
+	private static Pattern IE_USER_AGENT_PATTERN = Pattern.compile("MSIE (\\d+)");
 	
 	/**
 	 * Returns the bundle renderer context.
@@ -120,19 +126,43 @@ public class RendererRequestUtils {
 	 */
 	public static boolean isIE6orLess(HttpServletRequest req) {
 	
-		boolean rets = false;
+		return isIEVersionInferiorOrEqualTo(req, 6);
+	}
+
+	/**
+	 * Checks if the user agent is IE7 or less
+	 * @param req the request
+	 * @return true if the user agent is IE7 or less
+	 */
+	public static boolean isIE7orLess(HttpServletRequest req) {
+	
+		return isIEVersionInferiorOrEqualTo(req, 7);
+	}
+
+	/**
+	 * Checks if the user agent is IE and the version is equal or less than the one passed in parameter
+	 * @param req the request
+	 * @param the ie version to check
+	 * @return true if the user agent is IE and the version is equal or less than the one passed in parameter
+	 */
+	private static boolean isIEVersionInferiorOrEqualTo(HttpServletRequest req, int ieVersion) {
+		
+		boolean result = false;
 		String agent = req.getHeader("User-Agent");
 		if (LOGGER.isDebugEnabled()){
 			LOGGER.debug("User-Agent for this request:" + agent);
 		}
 		
-		if (null != agent && agent.indexOf("MSIE") != -1) {
-			rets = agent.indexOf("MSIE 4") != -1 || agent.indexOf("MSIE 5") != -1 || agent.indexOf("MSIE 6") != -1;
+		Matcher matcher = IE_USER_AGENT_PATTERN.matcher(agent);
+		if(matcher.find()){
+			int version = Integer.parseInt(matcher.group(1));
+			if(version <= ieVersion){
+				result = true;
+			}
 		}
-		
-		return rets;
+		return result;
 	}
-
+	
 	/**
 	 * Determines wether to override the debug settings. Sets the debugOverride status on ThreadLocalJawrContext
 	 * 

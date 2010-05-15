@@ -7,14 +7,11 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import net.jawr.web.exception.DuplicateBundlePathException;
-import net.jawr.web.resource.bundle.InclusionPattern;
 import net.jawr.web.resource.bundle.JoinableResourceBundle;
 import net.jawr.web.resource.bundle.factory.mapper.OrphanResourceBundlesMapper;
-import net.jawr.web.resource.bundle.postprocess.ResourceBundlePostProcessor;
 import net.jawr.web.resource.handler.reader.ResourceReaderHandler;
 import test.net.jawr.web.resource.bundle.MockJoinableResourceBundle;
 import test.net.jawr.web.resource.bundle.handler.ResourceHandlerBasedTest;

@@ -204,7 +204,6 @@ public class AbstractImageTag extends ImagePathTag {
 		super.release();
 		this.attributeMap = new HashMap();
 	}
-	
 	/**
 	 * Render the IMG tag.
 	 * 
@@ -212,8 +211,10 @@ public class AbstractImageTag extends ImagePathTag {
 	 */
 	public int doEndTag() throws JspException {
 
+		
 		try {
-			this.renderer.renderImage(getSrc(), 
+			
+			this.renderer.renderImage(getImgSrcToRender(), 
 	   								  getAttributeMap(), 
 	   								  pageContext.getOut());
 		} catch (IOException e) {

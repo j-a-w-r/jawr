@@ -17,12 +17,12 @@ import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.lang.StringUtils;
-
 import net.jawr.web.JawrConstant;
 import net.jawr.web.config.JawrConfig;
 import net.jawr.web.resource.bundle.factory.util.PathNormalizer;
 import net.jawr.web.resource.bundle.factory.util.RegexUtil;
+
+import org.apache.commons.lang.StringUtils;
 
 /**
  * This class rewrites is used to rewrite CSS URLs according to the new

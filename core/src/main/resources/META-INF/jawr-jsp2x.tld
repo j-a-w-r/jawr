@@ -88,6 +88,16 @@
             <required>false</required>
             <rtexprvalue>false</rtexprvalue>
         </attribute>
+        <attribute>
+            <description>
+                <![CDATA[
+                  <p>The flag indicating if the base64 encoded image should be rendered.</p>
+                ]]>
+            </description>
+            <name>base64</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
     </tag>
     
 	<tag>
@@ -140,6 +150,16 @@
                 ]]>
             </description>
             <name>alt</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>
+                <![CDATA[
+                  <p>The flag indicating if the base64 encoded image should be rendered.</p>
+                ]]>
+            </description>
+            <name>base64</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
@@ -457,7 +477,17 @@
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
-       <attribute>
+       	<attribute>
+            <description>
+                <![CDATA[
+                  <p>The flag indicating if the base64 encoded image should be rendered.</p>
+                ]]>
+            </description>
+            <name>base64</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
             <description>
                 <![CDATA[
                 <p>The width (in pixels) of the border around this image.</p>
