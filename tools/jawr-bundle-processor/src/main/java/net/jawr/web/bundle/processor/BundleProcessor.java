@@ -600,7 +600,7 @@ public class BundleProcessor {
 					setRequestUrl(request, variantMap, path, config);
 					
 					// We can't use path for generated resources because it's not a valid file path ( /jawr_generator.js?xxx.... ) 
-					if(!path.contains("?") || !keepUrlMapping){
+					if(!(path.indexOf("?") != -1) || !keepUrlMapping){
 						File bundleFile = new File(destDirPath, finalBundlePath);
 						createBundleFile(servlet, response, request, path, bundleFile, servletMapping);
 					}
