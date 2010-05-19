@@ -140,9 +140,9 @@ public class SmartSpritesResourceHandler implements ResourceHandler {
 		String generatedFilePath = resourceName.substring(workingDir.length());
 		if(!FileNameUtils.isExtension(generatedFilePath, JawrConstant.CSS_TYPE) && imgGeneratorRegistry.isGeneratedImage(generatedFilePath)){
 			// for generated image put it  in the generated Image directory
-			generatedFilePath = workingDir+JawrConstant.SPRITE_GENERATED_IMG_DIR+generatedFilePath.replace(":","/");
+			generatedFilePath = workingDir+JawrConstant.SPRITE_GENERATED_IMG_DIR+generatedFilePath.replace(':','/');
 		}else if(cssGeneratorRegistry.isPathGenerated(generatedFilePath)) { // Rename resource for For generated CSS
-			generatedFilePath = workingDir+JawrConstant.SPRITE_GENERATED_CSS_DIR+generatedFilePath.replace(":","/");
+			generatedFilePath = workingDir+JawrConstant.SPRITE_GENERATED_CSS_DIR+generatedFilePath.replace(':','/');
 		}else{
 			generatedFilePath = resourceName;
 		}

@@ -129,7 +129,7 @@ public class CssBundleLinkRendererTestCase extends ResourceHandlerBasedTest {
 		BufferedReader reader = new BufferedReader(new StringReader(content));
 		String line = null;
 		while((line = reader.readLine()) != null){
-			if(line.contains("<link")){
+			if(line.indexOf("<link") != -1){
 				result.append(line.replaceAll("(\\?|&)d=\\d+", "")+"\n");
 			}
 		}

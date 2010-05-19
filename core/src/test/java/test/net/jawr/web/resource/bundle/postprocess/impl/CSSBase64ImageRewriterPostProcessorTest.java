@@ -567,7 +567,7 @@ public class CSSBase64ImageRewriterPostProcessorTest extends TestCase {
 			}
 			
 			InputStream is = null;
-			if(resourceName.contains("bigImage")){
+			if(resourceName.indexOf("bigImage") != -1){
 				
 				int length = 400000;
 				byte[] data = new byte[length];

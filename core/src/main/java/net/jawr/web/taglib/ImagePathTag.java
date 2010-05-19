@@ -146,7 +146,7 @@ public class ImagePathTag extends TagSupport {
 		
 		boolean isIE6orIE7 = RendererRequestUtils.isIE7orLess(request);
 		
-		if(!isIE6orIE7 && Boolean.parseBoolean(base64)){
+		if(!isIE6orIE7 && Boolean.valueOf(base64).booleanValue()){
 			imgSrc = ImageTagUtils.getBase64EncodedImage(src, pageContext);
 		}else{
 			imgSrc = ImageTagUtils.getImageUrl(src, imgRsHandler, request, response);

@@ -794,7 +794,7 @@ public class ResourceBundlesHandlerImpl implements ResourceBundlesHandler {
 	 */
 	private boolean bundleMustBeProcessedInLive(
 			String content) {
-		return content.contains(JawrConstant.JAWR_BUNDLE_PATH_PLACEHOLDER);
+		return content.indexOf(JawrConstant.JAWR_BUNDLE_PATH_PLACEHOLDER) != -1;
 	}
 
 	/**

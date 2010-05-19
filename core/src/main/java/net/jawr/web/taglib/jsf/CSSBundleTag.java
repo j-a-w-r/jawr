@@ -38,8 +38,8 @@ public class CSSBundleTag extends AbstractResourceBundleTag {
 
 		ResourceBundlesHandler rsHandler = (ResourceBundlesHandler) handler;
 		String media = (String)getAttributes().get(JawrConstant.MEDIA_ATTR); 
-		boolean alternate = Boolean.parseBoolean((String) getAttributes().get(JawrConstant.ALTERNATE_ATTR));
-		boolean displayAlternate = Boolean.parseBoolean((String) getAttributes().get(JawrConstant.DISPLAY_ALTERNATE_ATTR));
+		boolean alternate = Boolean.valueOf((String) getAttributes().get(JawrConstant.ALTERNATE_ATTR)).booleanValue();
+		boolean displayAlternate = Boolean.valueOf((String) getAttributes().get(JawrConstant.DISPLAY_ALTERNATE_ATTR)).booleanValue();
 		String title = (String)getAttributes().get(JawrConstant.TITLE_ATTR);
 		
         return  new CSSHTMLBundleLinkRenderer(rsHandler, this.useRandomParam, media, alternate, displayAlternate, title);

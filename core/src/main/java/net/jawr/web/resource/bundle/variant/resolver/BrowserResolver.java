@@ -62,11 +62,11 @@ public class BrowserResolver implements VariantResolver {
 		Matcher matcher = IE_PATTERN.matcher(userAgent);
 		if(matcher.find()){
 			browser = "ie"+matcher.group(1);
-		}else if(userAgent.contains("AppleWebkit")){
+		}else if(userAgent.indexOf("AppleWebkit") != -1){
 			browser = "webkit";
-		}else if(userAgent.contains("Firefox")){
+		}else if(userAgent.indexOf("Firefox") != -1){
 			browser = "firefox";
-		}else if(userAgent.contains("Opera")){
+		}else if(userAgent.indexOf("Opera") != -1){
 			browser = "opera";
 		}
 		

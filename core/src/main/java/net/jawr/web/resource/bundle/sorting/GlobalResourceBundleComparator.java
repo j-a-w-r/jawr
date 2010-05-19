@@ -37,8 +37,8 @@ public class GlobalResourceBundleComparator implements Comparator, Serializable 
 	public int compare(Object bundleA, Object bundleB) {
 		JoinableResourceBundle colA = (JoinableResourceBundle) bundleA;
 		JoinableResourceBundle colB = (JoinableResourceBundle) bundleB;
-		Integer a = Integer.valueOf(colA.getInclusionPattern().getInclusionOrder());
-		Integer b = Integer.valueOf(colB.getInclusionPattern().getInclusionOrder());
+		Integer a = new Integer(colA.getInclusionPattern().getInclusionOrder());
+		Integer b = new Integer(colB.getInclusionPattern().getInclusionOrder());
 		return a.compareTo(b);
 	}
 

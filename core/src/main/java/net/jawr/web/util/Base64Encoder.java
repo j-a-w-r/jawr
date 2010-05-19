@@ -105,7 +105,7 @@ public class Base64Encoder {
 			throw new IllegalArgumentException();
 		int lines = (iLen + blockLen - 1) / blockLen;
 		int bufLen = ((iLen + 2) / 3) * 4 + lines * lineSeparator.length();
-		StringBuilder buf = new StringBuilder(bufLen);
+		StringBuffer buf = new StringBuffer(bufLen);
 		int ip = 0;
 		while (ip < iLen) {
 			int l = Math.min(iLen - ip, blockLen);

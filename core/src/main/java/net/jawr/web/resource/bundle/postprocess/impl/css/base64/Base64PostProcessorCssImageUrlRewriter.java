@@ -129,7 +129,7 @@ public class Base64PostProcessorCssImageUrlRewriter extends
 			String annotation = matcher.group(ANNOTATION_GROUP);
 
 			skipBase64Encoding = StringUtils.isNotEmpty(annotation)
-					&& annotation.contains(ANNOTATION_BASE64_SKIP);
+					&& annotation.indexOf(ANNOTATION_BASE64_SKIP) != -1;
 			
 			StringBuffer sbUrl = new StringBuffer();
 			Matcher urlMatcher = URL_PATTERN.matcher(matcher.group());
