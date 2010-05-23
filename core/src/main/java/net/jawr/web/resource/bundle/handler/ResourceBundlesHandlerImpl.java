@@ -49,6 +49,7 @@ import net.jawr.web.resource.bundle.JoinableResourceBundlePropertySerializer;
 import net.jawr.web.resource.bundle.factory.util.PathNormalizer;
 import net.jawr.web.resource.bundle.global.preprocessor.GlobalPreprocessingContext;
 import net.jawr.web.resource.bundle.global.preprocessor.GlobalPreprocessor;
+import net.jawr.web.resource.bundle.hash.BundleHashcodeGenerator;
 import net.jawr.web.resource.bundle.iterator.ConditionalCommentCallbackHandler;
 import net.jawr.web.resource.bundle.iterator.DebugModePathsIteratorImpl;
 import net.jawr.web.resource.bundle.iterator.PathsIteratorImpl;
@@ -117,6 +118,9 @@ public class ResourceBundlesHandlerImpl implements ResourceBundlesHandler {
 	/** The client side handler generator */
 	private ClientSideHandlerGenerator clientSideHandlerGenerator;
 
+	/** The bundle hashcode generator */
+	private BundleHashcodeGenerator bundleHashcodeGenerator;
+	
 	/** The bundle mapping */
 	private Properties bundleMapping;
 
@@ -159,6 +163,7 @@ public class ResourceBundlesHandlerImpl implements ResourceBundlesHandler {
 		this.resourceHandler = resourceHandler;
 		this.resourceBundleHandler = resourceBundleHandler;
 		this.config = config;
+		this.bundleHashcodeGenerator = config.getBundleHashcodeGenerator();
 		this.postProcessor = postProcessor;
 		this.unitaryPostProcessor = unitaryPostProcessor;
 		this.resourceTypeProcessor = resourceTypeProcessor;
@@ -703,7 +708,8 @@ public class ResourceBundlesHandlerImpl implements ResourceBundlesHandler {
 	 */
 	private void initBundleDataHashcode(JoinableResourceBundle bundle,
 			JoinableResourceBundleContent store, String variant) {
-		int bundleHashcode = store.toString().hashCode();
+		
+		String bundleHashcode = bundleHashcodeGenerator.generateHashCode(config, store.toString());
 		bundle.setBundleDataHashCode(variant, bundleHashcode);
 	}
 

@@ -98,8 +98,11 @@ public final class PathNormalizer {
 		
 		// eval the existence of a suffix
 		int realPathStartIdx = resultPath.indexOf("/");
-		String prefix = resultPath.substring(0, realPathStartIdx);
-
+		String prefix = "";
+		if(realPathStartIdx != -1){
+			prefix = resultPath.substring(0, realPathStartIdx);
+		}
+		
 		String hashcode = null;
 		String variantPrefix = null;
 		// The prefix also contains variant information after a '.'

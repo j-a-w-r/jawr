@@ -209,7 +209,7 @@ public class FullMappingPropertiesBasedBundlesHandlerFactoryTestCase extends
 		GeneratorRegistry generatorRegistry = new GeneratorRegistry();
 		JoinableResourceBundle bundle = new JoinableResourceBundleImpl("/bundle/myGlobalBundle.js", bundleName, ".js", inclusionPattern, handler, generatorRegistry);
 		bundle.setMappings(mappings);
-		bundle.setBundleDataHashCode(null, 123456);
+		bundle.setBundleDataHashCode(null, "123456");
 		
 		return bundle;
 	}
@@ -229,9 +229,9 @@ public class FullMappingPropertiesBasedBundlesHandlerFactoryTestCase extends
 		Map variants = new HashMap();
 		variants.put(JawrConstant.LOCALE_VARIANT_TYPE, new VariantSet(JawrConstant.LOCALE_VARIANT_TYPE, "fr", Arrays.asList(new String[]{"fr", "en_US"})));
 		bundle.setVariants(variants);
-		bundle.setBundleDataHashCode(null, -123456);
-		bundle.setBundleDataHashCode("fr", 123456);
-		bundle.setBundleDataHashCode("en_US", 789);
+		bundle.setBundleDataHashCode(null, "N123456");
+		bundle.setBundleDataHashCode("fr", "123456");
+		bundle.setBundleDataHashCode("en_US", "789");
 		
 		ResourceBundlePostProcessor bundlePostProcessor = new AbstractChainedResourceBundlePostProcessor("myBundlePostProcessor1,myBundlePostProcessor2"){
 
@@ -287,11 +287,11 @@ public class FullMappingPropertiesBasedBundlesHandlerFactoryTestCase extends
 		variants.put(JawrConstant.SKIN_VARIANT_TYPE, new VariantSet(JawrConstant.SKIN_VARIANT_TYPE, "summer", Arrays.asList(new String[]{"summer", "winter"})));
 		variants.put(JawrConstant.LOCALE_VARIANT_TYPE, new VariantSet(JawrConstant.LOCALE_VARIANT_TYPE, "fr", Arrays.asList(new String[]{"fr", "en_US"})));
 		bundle.setVariants(variants);
-		bundle.setBundleDataHashCode(null, -123456);
-		bundle.setBundleDataHashCode("fr@summer", 123456);
-		bundle.setBundleDataHashCode("en_US@summer", 789);
-		bundle.setBundleDataHashCode("fr@winter", 123456);
-		bundle.setBundleDataHashCode("en_US@winter", 789);
+		bundle.setBundleDataHashCode(null, "N123456");
+		bundle.setBundleDataHashCode("fr@summer", "123456");
+		bundle.setBundleDataHashCode("en_US@summer", "789");
+		bundle.setBundleDataHashCode("fr@winter", "123456");
+		bundle.setBundleDataHashCode("en_US@winter", "789");
 		
 		ResourceBundlePostProcessor bundlePostProcessor = new AbstractChainedResourceBundlePostProcessor("myBundlePostProcessor1,myBundlePostProcessor2"){
 

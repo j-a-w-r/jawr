@@ -118,15 +118,6 @@ public interface JoinableResourceBundle {
      * Used to generate an automatic version url prefix. 
      * 
      * @param the variant key
-     * @param hashCode the hash code
-     */
-    public void setBundleDataHashCode(String variantKey, int bundleDataHashCode);
-	
-    /**
-     * Set the hashcode of the string representing the bundled files. 
-     * Used to generate an automatic version url prefix. 
-     * 
-     * @param the variant key
      * @param hashCode the string representation of the hash code where the minus is replace by a "N" character.
      */
     public void setBundleDataHashCode(String variantKey, String bundleDataHashCode);

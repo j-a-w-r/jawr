@@ -123,6 +123,15 @@ public class JawrConstant {
 	/** The directory for image created the sprite generator */
 	public static final String SPRITE_GENERATED_IMG_DIR = "/generatedSpriteImg/";
 
+	/** The name for the default value */
+	public static final String DEFAULT = "default";
+	
+	/** The MD5 algorithm name */
+	public static final String MD5_ALGORITHM = "MD5";
+
+	/** The CRC32 algorithm name */
+	public static final String CRC32_ALGORITHM = "CRC32";
+
 	/** The name of the cookie where the Jawr skin is stored by default */
 	public static final String JAWR_SKIN = "jawrSkin";
 

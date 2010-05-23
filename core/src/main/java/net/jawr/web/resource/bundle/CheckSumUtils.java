@@ -13,10 +13,12 @@
  */
 package net.jawr.web.resource.bundle;
 
+import java.io.ByteArrayInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigInteger;
+import java.nio.charset.Charset;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -38,12 +40,6 @@ import net.jawr.web.resource.handler.reader.ResourceReaderHandler;
  */
 public final class CheckSumUtils {
 
-	/** The MD5 algorithm name */
-	private static final String MD5_ALGORITHM = "MD5";
-
-	/** The CRC32 algorithm name */
-	private static final String CRC32_ALGORITHM = "CRC32";
-	
 	/**
 	 * Return the cache busted url associated to the url passed in parameter,
 	 * if the resource is not found, null will b returned. 
@@ -111,9 +107,9 @@ public final class CheckSumUtils {
 	 */
 	public static String getChecksum(InputStream is, String algorithm) throws IOException {
 	
-		if(algorithm.equals(CRC32_ALGORITHM)){
+		if(algorithm.equals(JawrConstant.CRC32_ALGORITHM)){
 			return getCRC32Checksum(is);
-		}else if(algorithm.equals(MD5_ALGORITHM)){
+		}else if(algorithm.equals(JawrConstant.MD5_ALGORITHM)){
 			return getMD5Checksum(is);
 		}else{
 			throw new BundlingProcessException("The checksum algorithm '"+algorithm+"' is not supported.\n" +
@@ -144,6 +140,20 @@ public final class CheckSumUtils {
 	}
 
 	/**
+	 * Returns the MD5 Checksum of the string passed in parameter
+	 * 
+	 * @param is the input stream
+	 * 
+	 * @return the Checksum of the input stream
+	 * @throws IOException if an IO exception occurs
+	 */
+	public static String getMD5Checksum(String str, Charset charset) throws IOException {
+
+		InputStream is = new ByteArrayInputStream(str.getBytes(charset.name()));
+		return getMD5Checksum(is);
+	}
+	
+	/**
 	 * Returns the MD5 Checksum of the input stream
 	 * 
 	 * @param is the input stream
@@ -155,7 +165,7 @@ public final class CheckSumUtils {
 
 		byte[] digest = null;
 		try {
-			MessageDigest md = MessageDigest.getInstance(MD5_ALGORITHM);
+			MessageDigest md = MessageDigest.getInstance(JawrConstant.MD5_ALGORITHM);
 			InputStream digestIs = new DigestInputStream(is, md);
 			// read stream to EOF as normal...
 			while (digestIs.read() != -1) {

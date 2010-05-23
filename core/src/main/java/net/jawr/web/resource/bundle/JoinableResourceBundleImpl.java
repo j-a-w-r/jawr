@@ -585,22 +585,6 @@ public class JoinableResourceBundleImpl implements JoinableResourceBundle {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see net.jawr.web.resource.bundle.JoinableResourceBundle#setBundleDataHashCode(java.lang.String, int)
-	 */
-	public void setBundleDataHashCode(String variantKey, int bundleDataHashCode) {
-		String prefix;
-		// Since this number is used as part of urls, the -sign is converted to 'N'
-		if (bundleDataHashCode < 0) {
-			prefix = "N" + bundleDataHashCode * -1;
-		} else
-			prefix = Integer.toString(bundleDataHashCode);
-
-		setBundleDataHashCode(variantKey, prefix);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
 	 * @see net.jawr.web.resource.bundle.JoinableResourceBundle#setBundleDataHashCode(java.lang.String, java.lang.String)
 	 */
 	public void setBundleDataHashCode(String variantKey,

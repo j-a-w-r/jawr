@@ -435,7 +435,7 @@ public class JawrImageRequestHandler extends JawrRequestHandler {
 	 */
 	protected boolean isValidBundle(String requestedPath) {
 		boolean validBundle = true;
-		if(jawrConfig.isStrictMode()){
+		if(!jawrConfig.isDebugModeOn() && jawrConfig.isStrictMode()){
 			validBundle = imgRsHandler.containsValidBundleHashcode(requestedPath);
 		}
 		return validBundle;

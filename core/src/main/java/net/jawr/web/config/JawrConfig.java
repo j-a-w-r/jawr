@@ -24,6 +24,9 @@ import net.jawr.web.context.ThreadLocalJawrContext;
 import net.jawr.web.resource.bundle.factory.util.ClassLoaderResourceUtils;
 import net.jawr.web.resource.bundle.factory.util.PathNormalizer;
 import net.jawr.web.resource.bundle.generator.GeneratorRegistry;
+import net.jawr.web.resource.bundle.hash.DefaultBundleHashcodeGenerator;
+import net.jawr.web.resource.bundle.hash.BundleHashcodeGenerator;
+import net.jawr.web.resource.bundle.hash.MD5BundleHascodeGenerator;
 import net.jawr.web.resource.bundle.locale.DefaultLocaleResolver;
 import net.jawr.web.resource.bundle.locale.LocaleResolver;
 import net.jawr.web.resource.bundle.locale.LocaleVariantResolverWrapper;
@@ -64,6 +67,11 @@ public class JawrConfig implements Serializable {
 	 * The property name for the URL scheme resolver
 	 */
 	public static final String JAWR_URL_SCHEME_RESOLVER = "jawr.url.scheme.resolver";
+	
+	/**
+	 * The property name for the bundle hashcode generator
+	 */
+	public static final String JAWR_BUNDLE_HASHCODE_GENERATOR = "jawr.bundle.hashcode.generator";
 	
 	/**
 	 * The property name for the connection type resolver
@@ -182,6 +190,9 @@ public class JawrConfig implements Serializable {
 	 */
 	private LocaleResolver localeResolver;
 
+	/** The bundle hashcode generator */
+	private BundleHashcodeGenerator bundleHashcodeGenerator;
+	
 	/**
 	 * The servlet context
 	 */
@@ -368,6 +379,15 @@ public class JawrConfig implements Serializable {
 			localeResolver = (LocaleResolver) ClassLoaderResourceUtils.buildObjectInstance(props.getProperty(JAWR_LOCALE_RESOLVER));
 		}
 		
+		String bundleHashCodeGenerator = props.getProperty(JAWR_BUNDLE_HASHCODE_GENERATOR, "").trim();
+		if(bundleHashCodeGenerator.length() == 0 || JawrConstant.DEFAULT.equalsIgnoreCase(bundleHashCodeGenerator)){
+			bundleHashcodeGenerator = new DefaultBundleHashcodeGenerator();
+		}else if(JawrConstant.MD5_ALGORITHM.equalsIgnoreCase(bundleHashCodeGenerator)){
+			bundleHashcodeGenerator = new MD5BundleHascodeGenerator();
+		}else{
+			bundleHashcodeGenerator = (BundleHashcodeGenerator) ClassLoaderResourceUtils.buildObjectInstance(bundleHashCodeGenerator);
+		}
+		
 		if (null != props.getProperty(JAWR_CSS_SKIN_COOKIE)) {
 			skinCookieName = props.getProperty(JAWR_CSS_SKIN_COOKIE).trim();
 		}
@@ -523,6 +543,14 @@ public class JawrConfig implements Serializable {
 		if (!Charset.isSupported(charsetName))
 			throw new IllegalArgumentException("The specified charset [" + charsetName + "] is not supported by the jvm.");
 		this.charsetName = charsetName;
+	}
+
+	/**
+	 * Returns the bundle hashcode generator
+	 * @return the bundleHashcodeGenerator
+	 */
+	public BundleHashcodeGenerator getBundleHashcodeGenerator() {
+		return bundleHashcodeGenerator;
 	}
 
 	/**

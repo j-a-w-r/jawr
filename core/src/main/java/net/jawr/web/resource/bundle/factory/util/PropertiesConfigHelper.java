@@ -29,6 +29,7 @@ import java.util.regex.Pattern;
 
 import net.jawr.web.resource.bundle.factory.PropertiesBundleConstant;
 import net.jawr.web.resource.bundle.variant.VariantSet;
+import net.jawr.web.util.StringUtils;
 
 /**
  * Helper class to make properties access less verbose.
@@ -187,11 +188,12 @@ public class PropertiesConfigHelper {
 			String type = mapEntry[0];
 			String defaultVariant = mapEntry[1];
 			String values = mapEntry[2];
-			StringTokenizer valueTk = new StringTokenizer(values, ",");
+			String[] variantsArray = StringUtils.split(values, ",");
 			List variants = new ArrayList();
-			while (valueTk.hasMoreTokens()){
-				variants.add(valueTk.nextToken().trim());
+			for (int i = 0; i < variantsArray.length; i++) {
+				variants.add(variantsArray[i]);
 			}
+			
 			VariantSet variantSet = new VariantSet(type, defaultVariant, variants);
 			variantSets.put(type, variantSet);
 		}

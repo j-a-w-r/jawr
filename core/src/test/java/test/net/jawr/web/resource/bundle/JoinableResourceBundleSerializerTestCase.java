@@ -48,7 +48,7 @@ public class JoinableResourceBundleSerializerTestCase extends TestCase {
 		InclusionPattern inclusionPattern = new InclusionPattern(true, 0);
 		JoinableResourceBundleImpl bundle = new JoinableResourceBundleImpl("/bundle/myBundle.js", bundleName, ".js", inclusionPattern, handler, generatorRegistry);
 		bundle.setMappings(mappings);
-		bundle.setBundleDataHashCode(null, 123456);
+		bundle.setBundleDataHashCode(null, "123456");
 		
 		Properties props = new Properties();
 		JoinableResourceBundlePropertySerializer.serializeInProperties(bundle, resourceType, props);
@@ -84,9 +84,9 @@ public class JoinableResourceBundleSerializerTestCase extends TestCase {
 		Map variants = new HashMap();
 		variants.put(JawrConstant.LOCALE_VARIANT_TYPE, new VariantSet(JawrConstant.LOCALE_VARIANT_TYPE, "fr", Arrays.asList(new String[]{"fr", "en_US"})));
 		bundle.setVariants(variants);
-		bundle.setBundleDataHashCode(null, -123456);
-		bundle.setBundleDataHashCode("fr", 123456);
-		bundle.setBundleDataHashCode("en_US", 789);
+		bundle.setBundleDataHashCode(null, "N123456");
+		bundle.setBundleDataHashCode("fr", "123456");
+		bundle.setBundleDataHashCode("en_US", "789");
 		
 		ResourceBundlePostProcessor bundlePostProcessor = new AbstractChainedResourceBundlePostProcessor("myBundlePostProcessor1,myBundlePostProcessor2"){
 

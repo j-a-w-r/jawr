@@ -552,7 +552,7 @@ public class JawrRequestHandler implements ConfigChangeListener, Serializable {
 	 */
 	protected boolean isValidBundle(String requestedPath) {
 		boolean validBundle = true;
-		if(jawrConfig.isStrictMode()){
+		if(!jawrConfig.isDebugModeOn() && jawrConfig.isStrictMode()){
 			validBundle = bundlesHandler.containsValidBundleHashcode(requestedPath);
 		}
 		return validBundle;
