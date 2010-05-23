@@ -23,6 +23,12 @@ import javax.management.ObjectName;
  */
 public final class ThreadLocalJawrContext {
 
+	/** The java version system property name */
+	private static final String JAVA_VERSION_SYSTEM_PROPERTY = "java.version";
+
+	/** The java 1.4 version prefix */
+	private static final String JAVA_VERSION_1_4_PREFIX = "1.4";
+
 	/**
 	 * debugOverride will allow us to override production mode on a request by request basis.
 	 * ThreadLocal is used to hold the overridden status throughout a given request.
@@ -35,7 +41,7 @@ public final class ThreadLocalJawrContext {
 		protected Object initialValue() {
 			return new JawrContext();
 		}
-		
+	    
 	};
 	
 	/**
@@ -119,8 +125,12 @@ public final class ThreadLocalJawrContext {
 	 */
 	public static void reset() {
 
-		((JawrContext) jawrContext.get()).reset();
+		if (System.getProperty(JAVA_VERSION_SYSTEM_PROPERTY).startsWith(JAVA_VERSION_1_4_PREFIX)) {
+			((JawrContext) jawrContext.get()).reset();
+		}else{
+			jawrContext.remove();
+		}
+		
 	}
-	
 	
 }
