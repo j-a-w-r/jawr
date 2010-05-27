@@ -33,7 +33,8 @@ public class CSSMinifier {
 	private static final String COMMENT_REGEX ="(/\\*[^*]*\\*+([^/][^*]*\\*+)*/)"; 
 	
 	// Captures CSS strings
-	private static final String QUOTED_CONTENT_REGEX = "('(\\\\'|[^'])*')|(\"(\\\\\"|[^\"])*\")";
+	//private static final String QUOTED_CONTENT_REGEX = "('(\\\\'|[^'])*?')|(\"(\\\\\"|[^\"])*?\")";
+	private static final String QUOTED_CONTENT_REGEX = "(([\"'])(?!data:|(\\s*\\)))(?:\\\\?+.)*?\\2)";
 	
 	// A placeholder string to replace and restore CSS strings
 	private static final String STRING_PLACEHOLDER = "______'JAWR_STRING'______";
@@ -95,6 +96,7 @@ public class CSSMinifier {
 		// Temporarily replace the strings with a placeholder
 		final List strings = new ArrayList();		
 		Matcher stringMatcher = QUOTED_CONTENT_PATTERN.matcher(compressed);
+		
 		compressed = new MatcherProcessorCallback(){
 			String matchCallback(Matcher matcher) {
 				String match = matcher.group();

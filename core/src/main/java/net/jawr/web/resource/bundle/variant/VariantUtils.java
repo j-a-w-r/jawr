@@ -44,22 +44,24 @@ public class VariantUtils {
 	public static List getAllVariants(Map variantSets){
 		
 		List variantKeys = new ArrayList();
-		for (Iterator itVariantSets = new TreeMap(variantSets).entrySet().iterator(); itVariantSets.hasNext();) {
-			
-			Entry variantEntry = (Entry) itVariantSets.next();
-			String variantType = (String) variantEntry.getKey();
-			Collection variantList = (Collection) variantEntry.getValue();
-			if(variantKeys.isEmpty()){
-				variantKeys = getVariants(null, variantType, variantList);
-			}else{
+		if(variantSets != null){
+			for (Iterator itVariantSets = new TreeMap(variantSets).entrySet().iterator(); itVariantSets.hasNext();) {
 				
-				List tmpResult = new ArrayList();
-				for (Iterator itCurVariantKeys = variantKeys.iterator(); itCurVariantKeys
-						.hasNext();) {
-					Map curVariant = (Map) itCurVariantKeys.next();
-					tmpResult.addAll(getVariants(curVariant, variantType, variantList));
+				Entry variantEntry = (Entry) itVariantSets.next();
+				String variantType = (String) variantEntry.getKey();
+				Collection variantList = (Collection) variantEntry.getValue();
+				if(variantKeys.isEmpty()){
+					variantKeys = getVariants(null, variantType, variantList);
+				}else{
+					
+					List tmpResult = new ArrayList();
+					for (Iterator itCurVariantKeys = variantKeys.iterator(); itCurVariantKeys
+							.hasNext();) {
+						Map curVariant = (Map) itCurVariantKeys.next();
+						tmpResult.addAll(getVariants(curVariant, variantType, variantList));
+					}
+					variantKeys = tmpResult;
 				}
-				variantKeys = tmpResult;
 			}
 		}
 		

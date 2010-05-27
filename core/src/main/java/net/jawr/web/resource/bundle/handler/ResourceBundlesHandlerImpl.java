@@ -813,20 +813,21 @@ public class ResourceBundlesHandlerImpl implements ResourceBundlesHandler {
 			BundleProcessingStatus status, boolean processBundle) {
 		
 		JoinableResourceBundleContent store;
-		if (null != bundle.getVariants()) {
-			List allVariants = VariantUtils.getAllVariants(bundle.getVariants()); 
-			for (Iterator it = allVariants.iterator(); it
-					.hasNext();) {
-				Map variantMap = (Map) it.next();
-				status.setBundleVariants(variantMap);
-				String variantKey = VariantUtils.getVariantKey(variantMap);
-				String name = VariantUtils.getVariantBundleName(bundle
-						.getId(), variantKey);
-				store = joinAndPostprocessBundle(bundle, variantMap,
-						status, processBundle);
-				storeBundle(name, store);
-				initBundleDataHashcode(bundle, store, variantKey);
-			}
+		List allVariants = VariantUtils.getAllVariants(bundle.getVariants());
+		// Add the default bundle variant (the non variant one)
+		allVariants.add(null);
+		
+		for (Iterator it = allVariants.iterator(); it
+				.hasNext();) {
+			Map variantMap = (Map) it.next();
+			status.setBundleVariants(variantMap);
+			String variantKey = VariantUtils.getVariantKey(variantMap);
+			String name = VariantUtils.getVariantBundleName(bundle
+					.getId(), variantKey);
+			store = joinAndPostprocessBundle(bundle, variantMap,
+					status, processBundle);
+			storeBundle(name, store);
+			initBundleDataHashcode(bundle, store, variantKey);
 		}
 	}
 	

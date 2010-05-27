@@ -16,6 +16,7 @@ package net.jawr.web.resource.bundle.postprocess.impl.css.base64;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
+import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -25,7 +26,9 @@ import net.jawr.web.resource.FileNameUtils;
 import net.jawr.web.resource.ImageResourcesHandler;
 import net.jawr.web.resource.bundle.IOUtils;
 import net.jawr.web.resource.bundle.factory.util.RegexUtil;
+import net.jawr.web.resource.bundle.generator.GeneratorRegistry;
 import net.jawr.web.resource.bundle.postprocess.BundleProcessingStatus;
+import net.jawr.web.resource.bundle.postprocess.PostProcessFactoryConstant;
 import net.jawr.web.resource.bundle.postprocess.impl.PostProcessorCssImageUrlRewriter;
 import net.jawr.web.servlet.util.MIMETypesSupport;
 import net.jawr.web.util.Base64Encoder;
@@ -59,15 +62,15 @@ public class Base64PostProcessorCssImageUrlRewriter extends
 	private static final String MHTML_PREFIX = "mhtml:";
 
 	/** The annotation to skip the base64 encoding */
-	private static final String ANNOTATION_BASE64_SKIP = "jawr:base64-skip";
+	private static final Pattern ANNOTATION_BASE64_SKIP_PATTERN = Pattern.compile("jawr(\\s)*:(\\s)*base64-skip");
 
 	/** The annotation group in the URL pattern */
-	private static final int ANNOTATION_GROUP = 10;
+	private static final int ANNOTATION_GROUP = 9;
 
 	/** The url pattern */
 	private static final Pattern URL_WITH_ANNOTATION_PATTERN = Pattern.compile(
 			"((" + URL_REGEXP + "\\s*)+)" + "([^;]*);?"
-					+ "\\s*(/\\*\\*+((.|[\\r\\n])*?)\\*/)?", // Any number of
+					+ "\\s*(/\\*\\*(?:.|[\\n\\r])*?\\*/)?", // Any number of
 			// whitespaces and then
 			// an annotation
 
@@ -78,8 +81,12 @@ public class Base64PostProcessorCssImageUrlRewriter extends
 
 	/** The maximum image file size authorized to be encoded in base64 */
 	private int maxFileSize;
-
+	
+	/** The map of encoded resources */
 	private Map encodedResources = null;
+	
+	/** The flag indicating if we must encode the sprites or not */
+	private boolean encodeSprite;
 
 	/** The flag indicating if we must skip the base64 encoding */
 	private boolean skipBase64Encoding;
@@ -95,12 +102,19 @@ public class Base64PostProcessorCssImageUrlRewriter extends
 		encodedResources = (Map) status
 				.getData(JawrConstant.BASE64_ENCODED_RESOURCES);
 		maxFileSize = MAX_LENGTH_FILE;
-		String maxLengthProperty = (String) status.getJawrConfig()
-				.getConfigProperties().get(
+		Properties configProperties = status.getJawrConfig()
+		.getConfigProperties();
+		String maxLengthProperty = (String) configProperties.get(
 						JawrConstant.BASE64_MAX_IMG_FILE_SIZE);
+		
 		if (StringUtils.isNotEmpty(maxLengthProperty)) {
 			maxFileSize = Integer.parseInt(maxLengthProperty);
 		}
+		
+		String strEncodeSprite = (String) configProperties.get(
+				JawrConstant.BASE64_ENCODE_SPRITE);
+		encodeSprite = Boolean.parseBoolean(strEncodeSprite);
+		
 		LOGGER.debug("max file length: " + maxFileSize);
 	}
 
@@ -127,19 +141,29 @@ public class Base64PostProcessorCssImageUrlRewriter extends
 		while (matcher.find()) {
 
 			String annotation = matcher.group(ANNOTATION_GROUP);
-
-			skipBase64Encoding = StringUtils.isNotEmpty(annotation)
-					&& annotation.indexOf(ANNOTATION_BASE64_SKIP) != -1;
+			if(StringUtils.isNotEmpty(annotation)){
+				Matcher annotationMatcher = ANNOTATION_BASE64_SKIP_PATTERN.matcher(annotation);
+				skipBase64Encoding = annotationMatcher.find();
+			}else{
+				skipBase64Encoding = false;
+			}
 			
 			StringBuffer sbUrl = new StringBuffer();
 			Matcher urlMatcher = URL_PATTERN.matcher(matcher.group());
 			while (urlMatcher.find()) {
 				
-				if(LOGGER.isDebugEnabled()){
-					LOGGER.debug("Skip encoding image resource : "+urlMatcher.group());
+				String url = urlMatcher.group();
+				
+				// Skip sprite encoding if it is configured so
+				if(!encodeSprite && url.indexOf(GeneratorRegistry.SPRITE_GENERATOR_PREFIX+GeneratorRegistry.PREFIX_SEPARATOR) != -1){
+					skipBase64Encoding = true;
 				}
 				
-				String url = getUrlPath(urlMatcher.group(), originalCssPath,
+				if(LOGGER.isDebugEnabled()){
+					LOGGER.debug("Skip encoding image resource : "+url);
+				}
+				
+				url = getUrlPath(url, originalCssPath,
 						newCssPath);
 
 				urlMatcher.appendReplacement(sbUrl, RegexUtil
@@ -171,7 +195,7 @@ public class Base64PostProcessorCssImageUrlRewriter extends
 		String imgUrl = url;
 		String browser = status.getVariant(JawrConstant.BROWSER_VARIANT_TYPE);
 
-		// Skip base64 encoding if a annotation has been set
+		// Skip base64 encoding if it has ben deactivated
 		if (skipBase64Encoding) {
 			imgUrl = super.rewriteURL(status, imgUrl, imgServletPath,
 					newCssPath, imgRsHandler);

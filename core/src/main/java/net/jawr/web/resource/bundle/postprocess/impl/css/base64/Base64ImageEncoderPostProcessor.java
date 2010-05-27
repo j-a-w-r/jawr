@@ -109,7 +109,7 @@ public class Base64ImageEncoderPostProcessor extends
 			Map bundleVariants = status.getBundleVariants();
 			if(bundleVariants != null){
 				String browser = (String) bundleVariants.get(JawrConstant.BROWSER_VARIANT_TYPE);
-				if(StringUtils.isNotEmpty(browser) && JawrConstant.BROWSER_IE6.equals(browser)){
+				if(StringUtils.isNotEmpty(browser) && (JawrConstant.BROWSER_IE6.equals(browser) || JawrConstant.BROWSER_IE7.equals(browser))){
 					prependBase64EncodedResources(sb, encodedResources);
 				}
 			}

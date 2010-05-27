@@ -185,6 +185,8 @@ public class JawrConstant {
 	public static final String BASE64_MAX_IMG_FILE_SIZE = 
 		"jawr.css.postprocessor.base64ImageEncoder.maxFileLength";
 
+	public static final Object BASE64_ENCODE_SPRITE = "jawr.css.postprocessor.base64ImageEncoder.encode.sprite";
+	
 	public static final String POST_PROCESSING_CTX_JAWR_IMAGE_MAPPING = "jawrImageMapping";
 
 	public static final String BASE64_ENCODED_RESOURCES = "BASE64_ENCODED_RESOURCES";
@@ -204,5 +206,6 @@ public class JawrConstant {
 	public static final String ILLEGAL_BUNDLE_REQUEST_HANDLER = "jawr.illegal.bundle.request.handler";
 
 	public static final String JAWR_CSS_URL_REWRITER_CONTEXT_PATH = "jawr.css.url.rewriter.context.path";
+
 	
 }
