@@ -28,7 +28,6 @@ import net.jawr.web.resource.bundle.IOUtils;
 import net.jawr.web.resource.bundle.factory.util.RegexUtil;
 import net.jawr.web.resource.bundle.generator.GeneratorRegistry;
 import net.jawr.web.resource.bundle.postprocess.BundleProcessingStatus;
-import net.jawr.web.resource.bundle.postprocess.PostProcessFactoryConstant;
 import net.jawr.web.resource.bundle.postprocess.impl.PostProcessorCssImageUrlRewriter;
 import net.jawr.web.servlet.util.MIMETypesSupport;
 import net.jawr.web.util.Base64Encoder;
@@ -113,7 +112,7 @@ public class Base64PostProcessorCssImageUrlRewriter extends
 		
 		String strEncodeSprite = (String) configProperties.get(
 				JawrConstant.BASE64_ENCODE_SPRITE);
-		encodeSprite = Boolean.parseBoolean(strEncodeSprite);
+		encodeSprite = Boolean.valueOf(strEncodeSprite).booleanValue();
 		
 		LOGGER.debug("max file length: " + maxFileSize);
 	}
