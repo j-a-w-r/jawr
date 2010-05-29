@@ -80,6 +80,9 @@ public class GeneratorRegistry {
 	/** The sprite generator prefix */
 	public static final String SKIN_GENERATOR_PREFIX = "skin";
 
+	/** The message bundle prefix */
+	public static final String THEME_SWTICHER_PREFIX = "themeSwitcher";
+	
 	/** The generator prefix separator */
 	public static final String PREFIX_SEPARATOR = ":";
 	
@@ -127,6 +130,7 @@ public class GeneratorRegistry {
 		prefixRegistry.add(IE_CSS_GENERATOR_PREFIX + PREFIX_SEPARATOR);
 		prefixRegistry.add(SPRITE_GENERATOR_PREFIX + PREFIX_SEPARATOR);
 		prefixRegistry.add(SKIN_GENERATOR_PREFIX + PREFIX_SEPARATOR);
+		prefixRegistry.add(THEME_SWTICHER_PREFIX + PREFIX_SEPARATOR);
 		
 	}
 	
@@ -178,6 +182,8 @@ public class GeneratorRegistry {
 			generator = new SpriteGenerator(rsHandler, config);
 		}else if(resourceType.equals(JawrConstant.CSS_TYPE) && (SKIN_GENERATOR_PREFIX+PREFIX_SEPARATOR).equals(generatorKey)){
 			generator = new CssSkinGenerator(rsHandler, config);
+		}else if(resourceType.equals(JawrConstant.JS_TYPE) && (THEME_SWTICHER_PREFIX+PREFIX_SEPARATOR).equals(generatorKey)){
+			generator = new ThemeSwitcherJsGenerator();
 		}
 		
 		if(generator != null){
