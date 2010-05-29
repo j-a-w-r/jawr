@@ -22,7 +22,6 @@ import javax.servlet.jsp.tagext.TagSupport;
 
 import net.jawr.web.JawrConstant;
 import net.jawr.web.resource.ImageResourcesHandler;
-import net.jawr.web.servlet.RendererRequestUtils;
 
 /**
  * This class defines the tag which generate the URL used by Jawr to reference an image resource.
@@ -48,7 +47,7 @@ public class ImagePathTag extends TagSupport {
     /**
      * The flag indicating if the image should be encoded in base 64
      */
-    private String base64;
+    private boolean base64;
     
 	/**
 	 * @return the var
@@ -90,7 +89,7 @@ public class ImagePathTag extends TagSupport {
 	 * Returns the flag indicating if the image should be encoded in base 64
 	 * @return the flag value to return
 	 */
-	public String getBase64() {
+	public boolean getBase64() {
 		return base64;
 	}
 
@@ -98,7 +97,7 @@ public class ImagePathTag extends TagSupport {
 	 * Returns the flag indicating if the image should be encoded in base 64
 	 * @param base64 the base64 to set
 	 */
-	public void setBase64(String base64) {
+	public void setBase64(boolean base64) {
 		this.base64 = base64;
 	}
 
@@ -142,17 +141,7 @@ public class ImagePathTag extends TagSupport {
 		HttpServletRequest request = (HttpServletRequest) pageContext
 				.getRequest();
 
-		String imgSrc = null;
-		
-		boolean isIE6orIE7 = RendererRequestUtils.isIE7orLess(request);
-		
-		if(!isIE6orIE7 && Boolean.valueOf(base64).booleanValue()){
-			imgSrc = ImageTagUtils.getBase64EncodedImage(src, pageContext);
-		}else{
-			imgSrc = ImageTagUtils.getImageUrl(src, imgRsHandler, request, response);
-		}
-		
-		return imgSrc;
+		return ImageTagUtils.getImageUrl(src, base64, imgRsHandler, request, response);
 	}
 
 	/* (non-Javadoc)

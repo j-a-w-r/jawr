@@ -28,6 +28,12 @@ public class ELImageInputTag extends ImageInputTag {
 	private static final long serialVersionUID = -7065803916220144608L;
 
 	/**
+     * Instance variable mapped to "base64" tag attribute. (Mapping set in
+     * associated BeanInfo class.)
+     */
+    private String base64Expr;
+    
+	/**
      * Instance variable mapped to "align" tag attribute. (Mapping set in
      * associated BeanInfo class.)
      */
@@ -184,6 +190,14 @@ public class ELImageInputTag extends ImageInputTag {
     private String valueExpr;
 
     /**
+	 * Returns the base64 flag expression
+	 * @return the base64 flag expression
+	 */
+	public String getBase64Expr() {
+		return base64Expr;
+	}
+
+	/**
      * Getter method for "align" tag attribute. (Mapping set in associated
      * BeanInfo class.)
      */
@@ -392,6 +406,14 @@ public class ELImageInputTag extends ImageInputTag {
     }
 
     /**
+     * Setter method for "base64" tag attribute. (Mapping set in associated
+     * BeanInfo class.)
+     */
+    public void setBase64Expr(String base64Expr) {
+		this.base64Expr = base64Expr;
+	}
+
+	/**
      * Setter method for "align" tag attribute. (Mapping set in associated
      * BeanInfo class.)
      */
@@ -604,6 +626,7 @@ public class ELImageInputTag extends ImageInputTag {
      */
     public void release() {
         super.release();
+        setBase64Expr(null);
         setAlignExpr(null);
         setAltExpr(null);
         setBorderExpr(null);
@@ -654,7 +677,12 @@ public class ELImageInputTag extends ImageInputTag {
         String string = null;
         Boolean bool = null;
 
-
+        if ((bool =
+	            EvalHelper.evalBoolean("base64", getBase64Expr(), this,
+	                pageContext)) != null) {
+	        setBase64(bool.booleanValue());
+	    }
+        
         //  The "align" attribute is deprecated.  This needs to be removed when
         //  the "align" attribute is finally removed.
         if ((string =

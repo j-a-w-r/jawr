@@ -34,6 +34,12 @@ public class ELImgHtmlTagBeanInfo extends SimpleBeanInfo {
 		ArrayList proplist = new ArrayList();
 
 		try {
+            proplist.add(new PropertyDescriptor("base64", ELImageInputTag.class, null,
+                    "setBase64Expr"));
+        } catch (IntrospectionException ex) {
+        }
+        
+        try {
 			proplist.add(new PropertyDescriptor("align", ELImgHtmlTag.class, null, "setAlignExpr"));
 		} catch (IntrospectionException ex) {
 		}

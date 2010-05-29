@@ -28,6 +28,12 @@ public class ELImgHtmlTag extends ImgHtmlTag {
 	private static final long serialVersionUID = 6424440497284669731L;
 
 	/**
+     * Instance variable mapped to "base64" tag attribute. (Mapping set in
+     * associated BeanInfo class.)
+     */
+    private String base64Expr;
+    
+    /**
      * Instance variable mapped to "action" tag attribute. (Mapping set in
      * associated BeanInfo class.)
      */
@@ -292,6 +298,14 @@ public class ELImgHtmlTag extends ImgHtmlTag {
     private String widthExpr;
 
     /**
+	 * Returns the base64 flag expression
+	 * @return the base64 flag expression
+	 */
+	public String getBase64Expr() {
+		return base64Expr;
+	}
+
+	/**
      * Getter method for "action" tag attribute. (Mapping set in associated
      * BeanInfo class.)
      */
@@ -644,6 +658,14 @@ public class ELImgHtmlTag extends ImgHtmlTag {
     }
 
     /**
+     * Setter method for "base64" tag attribute. (Mapping set in associated
+     * BeanInfo class.)
+     */
+    public void setBase64Expr(String base64Expr) {
+		this.base64Expr = base64Expr;
+	}
+
+	/**
      * Setter method for "action" tag attribute. (Mapping set in associated
      * BeanInfo class.)
      */
@@ -1000,6 +1022,7 @@ public class ELImgHtmlTag extends ImgHtmlTag {
      */
     public void release() {
         super.release();
+        setBase64Expr(null);
         setActionExpr(null);
         setModuleExpr(null);
         setAlignExpr(null);
@@ -1066,7 +1089,13 @@ public class ELImgHtmlTag extends ImgHtmlTag {
     private void evaluateExpressions()
         throws JspException {
         String string = null;
-
+        Boolean bool = null;
+		if ((bool =
+	            EvalHelper.evalBoolean("base64", getBase64Expr(), this,
+	                pageContext)) != null) {
+	        setBase64(bool.booleanValue());
+	    }
+		
         if ((string =
                 EvalHelper.evalString("align", getAlignExpr(), this, pageContext)) != null) {
             setAlign(string);

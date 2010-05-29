@@ -17,8 +17,6 @@ import javax.servlet.jsp.JspException;
 
 import net.jawr.web.taglib.ImagePathTag;
 
-import org.apache.taglibs.standard.lang.support.ExpressionEvaluatorManager;
-
 /**
  * This class defines the EL version of image path tag
  * 
@@ -31,10 +29,24 @@ public class ELImagePathTag extends ImagePathTag {
 	private static final long serialVersionUID = 8105212407595262330L;
 	
 	/**
+     * Instance variable mapped to "base64" tag attribute. (Mapping set in
+     * associated BeanInfo class.)
+     */
+    private String base64Expr;
+    
+    /**
 	 * Instance variable mapped to "src" tag attribute. (Mapping set in
 	 * associated BeanInfo class.)
 	 */
 	private String srcExpr;
+
+	/**
+	 * Returns the base64 flag expression
+	 * @return the base64 flag expression
+	 */
+	public String getBase64Expr() {
+		return base64Expr;
+	}
 
 	/**
 	 * Returns the srcExpr
@@ -43,6 +55,14 @@ public class ELImagePathTag extends ImagePathTag {
 	 */
 	public String getSrcExpr() {
 		return srcExpr;
+	}
+
+	/**
+     * Setter method for "base64" tag attribute. (Mapping set in associated
+     * BeanInfo class.)
+     */
+    public void setBase64Expr(String base64Expr) {
+		this.base64Expr = base64Expr;
 	}
 
 	/**
@@ -63,10 +83,16 @@ public class ELImagePathTag extends ImagePathTag {
 	public int doStartTag() throws JspException {
 
 		String string = null;
-
-		if (srcExpr != null) {
-			string = (String) ExpressionEvaluatorManager.evaluate("srcExpr",
-					srcExpr, String.class, this, pageContext);
+		Boolean bool = null;
+		if ((bool =
+	            EvalHelper.evalBoolean("base64", getBase64Expr(), this,
+	                pageContext)) != null) {
+	        setBase64(bool.booleanValue());
+	    }
+    
+		if ((string = EvalHelper.evalString("srcExpr",
+					getSrcExpr(), this, pageContext)) != null){
+			
 			setSrc(string);
 		}
 
@@ -81,5 +107,6 @@ public class ELImagePathTag extends ImagePathTag {
 	public void release() {
 		super.release();
 		setSrcExpr(null);
+		setBase64Expr(null);
 	}
 }

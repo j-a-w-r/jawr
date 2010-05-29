@@ -72,7 +72,8 @@ public abstract class AbstractJawrImageReference extends WebMarkupContainer {
             final IValueMap attributes = tag.getAttributes();
 
             String src = (String) attributes.get("src");
-
+            boolean base64 = Boolean.valueOf((String) attributes.get("src")).booleanValue();
+            
             // src is mandatory
             if (null == src) {
                 throw new IllegalStateException("The src attribute is mandatory for this Jawr tag. ");
@@ -89,8 +90,10 @@ public abstract class AbstractJawrImageReference extends WebMarkupContainer {
 		
 		
             final Response response = getResponse();
-            src =  ImageTagUtils.getImageUrl(src, imgRsHandler, request, getHttpServletResponseUrlEncoder(response));
-            Writer writer = new RedirectWriter(response);
+            
+    		src = ImageTagUtils.getImageUrl(src, base64, imgRsHandler, request, getHttpServletResponseUrlEncoder(response));
+    		
+    		Writer writer = new RedirectWriter(response);
               
            	this.renderer.renderImage(src, 
            								attributes, 

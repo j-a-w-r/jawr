@@ -158,7 +158,8 @@ public abstract class AbstractHtmlImageTag extends ImagePathTag {
 			throws IOException {
 
 		String src = (String) getAttributes().get("src");
-		prepareAttribute(results, "src", getImageUrl(context, src));
+		boolean base64 = Boolean.valueOf((String) getAttributes().get("base64")).booleanValue();
+		prepareAttribute(results, "src", getImageUrl(context, src, base64));
 	}
 
 }
