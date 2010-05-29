@@ -13,6 +13,7 @@
  */
 package net.jawr.web.servlet;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
@@ -26,17 +27,17 @@ public class IllegalBundleRequestHandlerImpl implements
 		IllegalBundleRequestHandler {
 
 	/* (non-Javadoc)
-	 * @see net.jawr.web.servlet.IllegalBundleRequestHandler#canWriteContent()
-	 */
-	public boolean canWriteContent() {
-		return false;
-	}
-
-	/* (non-Javadoc)
 	 * @see net.jawr.web.servlet.IllegalBundleRequestHandler#writeResponseHeader(javax.servlet.http.HttpServletResponse)
 	 */
 	public boolean writeResponseHeader(HttpServletResponse response) {
 		return false;
 	}
 
+	/* (non-Javadoc)
+	 * @see net.jawr.web.servlet.IllegalBundleRequestHandler#canWriteContent(java.lang.String, javax.servlet.http.HttpServletRequest)
+	 */
+	public boolean canWriteContent(String requestedPath,
+			HttpServletRequest request) {
+		return false;
+	}
 }

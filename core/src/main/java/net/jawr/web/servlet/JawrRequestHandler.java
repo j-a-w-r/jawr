@@ -570,18 +570,18 @@ public class JawrRequestHandler implements ConfigChangeListener, Serializable {
 			HttpServletRequest request, HttpServletResponse response,
 			String contentType, boolean validBundle) throws IOException {
 		
-		if(handleResponseHeader(request, response, validBundle)){
+		if(handleResponseHeader(requestedPath, request, response, validBundle)){
 			return; 
 		}
 		
 		if (this.jawrConfig.isDebugModeOn() && null != request.getParameter(GENERATION_PARAM))
 			requestedPath = request.getParameter(GENERATION_PARAM);
 
-		// By setting content type, the response writer will use appropiate encoding
+		// By setting content type, the response writer will use appropriate encoding
 		response.setContentType(contentType);
 		
 		try {
-			if(validBundle || illegalBundleRequestHandler.canWriteContent()){
+			if(validBundle || illegalBundleRequestHandler.canWriteContent(requestedPath, request)){
 				writeContent(requestedPath, request, response);
 				if (LOGGER.isDebugEnabled())
 					LOGGER.debug("request succesfully attended");
@@ -600,12 +600,13 @@ public class JawrRequestHandler implements ConfigChangeListener, Serializable {
 
 	/**
 	 * Handle the response header
+	 * @param requestedPath the requestedPath
 	 * @param request the request
 	 * @param response the response
 	 * @param validBundle the flag indicating if the bundle is a valid one or not
 	 * @return true if the request has been fully processed
 	 */
-	protected boolean handleResponseHeader(HttpServletRequest request,
+	protected boolean handleResponseHeader(String requestedPath, HttpServletRequest request,
 			HttpServletResponse response, boolean validBundle) {
 
 		boolean requestFullyProcessed = false;
@@ -620,7 +621,7 @@ public class JawrRequestHandler implements ConfigChangeListener, Serializable {
 			}
 
 			if(validBundle || (!illegalBundleRequestHandler.writeResponseHeader(response)
-					&& illegalBundleRequestHandler.canWriteContent())){
+					&& illegalBundleRequestHandler.canWriteContent(requestedPath, request))){
 				// Add caching headers
 				setResponseHeaders(response);
 			}

@@ -404,7 +404,7 @@ public class JawrImageRequestHandler extends JawrRequestHandler {
 
 		// Set the content type
 		response.setContentType(getContentType(requestedPath, request));
-		if(handleResponseHeader(request, response, validBundle)){
+		if(handleResponseHeader(requestedPath, request, response, validBundle)){
 			return; 
 		}
 
@@ -412,7 +412,7 @@ public class JawrImageRequestHandler extends JawrRequestHandler {
 		String filePath = getRealFilePath(requestedPath);
 
 		try {
-			if(isValidRequestedPath(filePath) && (validBundle || illegalBundleRequestHandler.canWriteContent())){
+			if(isValidRequestedPath(filePath) && (validBundle || illegalBundleRequestHandler.canWriteContent(requestedPath, request))){
 				writeContent(response, filePath);
 			}else{
 				LOGGER.error("Unable to load the image for the request URI : "
