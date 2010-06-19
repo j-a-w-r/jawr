@@ -622,13 +622,15 @@ public class BundleProcessor {
 		String domainURL = JawrConstant.HTTP_URL_PREFIX+DEFAULT_WEBAPP_URL;
 		
 		if(JawrConstant.SSL.equals(variantMap.get(JawrConstant.CONNECTION_TYPE_VARIANT_TYPE))){
-			if(StringUtils.isNotEmpty(config.getContextPathSslOverride())){
+			// Use the contextPathSslOverride property if it's an absolute URL
+			if(StringUtils.isNotEmpty(config.getContextPathSslOverride()) && config.getContextPathSslOverride().startsWith(JawrConstant.HTTPS_URL_PREFIX)){
 				domainURL = config.getContextPathSslOverride();
 			}else{
 				domainURL = JawrConstant.HTTPS_URL_PREFIX+DEFAULT_WEBAPP_URL;
 			}
 		}else{
-			if(StringUtils.isNotEmpty(config.getContextPathOverride())){
+			// Use the contextPathOverride property if it's an absolute URL
+			if(StringUtils.isNotEmpty(config.getContextPathOverride()) && config.getContextPathOverride().startsWith(JawrConstant.HTTP_URL_PREFIX)){
 				domainURL = config.getContextPathOverride();
 			}else{
 				domainURL = JawrConstant.HTTP_URL_PREFIX+DEFAULT_WEBAPP_URL;
