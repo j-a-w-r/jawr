@@ -44,7 +44,7 @@ public class CSSBase64ImageRewriterPostProcessorTest extends TestCase {
 		config.setContext(servletContext);
 		config.setServletMapping("/js");
 		config.setCharsetName("UTF-8");		
-		status = new BundleProcessingStatus(bundle,null,config);
+		status = new BundleProcessingStatus(BundleProcessingStatus.BUNDLE_PROCESSING_TYPE, bundle,null,config);
 		addGeneratorRegistryToConfig(config, "js");
 		status.setLastPathAdded("/css/someCSS.css");
 		processor = new Base64ImageEncoderPostProcessor();
@@ -90,7 +90,7 @@ public class CSSBase64ImageRewriterPostProcessorTest extends TestCase {
 		imgServletJawrConfig.getGeneratorRegistry().setResourceReaderHandler(rsHandler);
 		servletContext.setAttribute(JawrConstant.IMG_CONTEXT_ATTRIBUTE, imgRsHandler);
 		
-		status = new BundleProcessingStatus(bundle, null, config);
+		status = new BundleProcessingStatus(BundleProcessingStatus.BUNDLE_PROCESSING_TYPE, bundle, null, config);
 
 		// Css data
 		StringBuffer data = new StringBuffer("background-image:url(../../images/logo.png);");
@@ -132,7 +132,7 @@ public class CSSBase64ImageRewriterPostProcessorTest extends TestCase {
 		imgServletJawrConfig.getGeneratorRegistry().setResourceReaderHandler(rsHandler);
 		servletContext.setAttribute(JawrConstant.IMG_CONTEXT_ATTRIBUTE, imgRsHandler);
 		
-		status = new BundleProcessingStatus(bundle, null, config);
+		status = new BundleProcessingStatus(BundleProcessingStatus.BUNDLE_PROCESSING_TYPE, bundle, null, config);
 
 		// Css data
 		StringBuffer data = new StringBuffer("background-image:url(/myApp/images/logo.png);");
@@ -173,7 +173,7 @@ public class CSSBase64ImageRewriterPostProcessorTest extends TestCase {
 		imgServletJawrConfig.getGeneratorRegistry().setResourceReaderHandler(rsHandler);
 		servletContext.setAttribute(JawrConstant.IMG_CONTEXT_ATTRIBUTE, imgRsHandler);
 		
-		status = new BundleProcessingStatus(bundle, null, config);
+		status = new BundleProcessingStatus(BundleProcessingStatus.BUNDLE_PROCESSING_TYPE, bundle, null, config);
 
 		// Css data
 		StringBuffer data = new StringBuffer("background-image:url(../../images/logo-bigImage.png);");
@@ -214,7 +214,7 @@ public class CSSBase64ImageRewriterPostProcessorTest extends TestCase {
 		imgServletJawrConfig.getGeneratorRegistry().setResourceReaderHandler(rsHandler);
 		servletContext.setAttribute(JawrConstant.IMG_CONTEXT_ATTRIBUTE, imgRsHandler);
 		
-		status = new BundleProcessingStatus(bundle, null, config);
+		status = new BundleProcessingStatus(BundleProcessingStatus.BUNDLE_PROCESSING_TYPE, bundle, null, config);
 
 		// Css data
 		StringBuffer data = new StringBuffer("background-image:url(../../images/logo.png); /** jawr:base64-skip */");
@@ -255,7 +255,7 @@ public class CSSBase64ImageRewriterPostProcessorTest extends TestCase {
 		imgServletJawrConfig.getGeneratorRegistry().setResourceReaderHandler(rsHandler);
 		servletContext.setAttribute(JawrConstant.IMG_CONTEXT_ATTRIBUTE, imgRsHandler);
 		
-		status = new BundleProcessingStatus(bundle, null, config);
+		status = new BundleProcessingStatus(BundleProcessingStatus.BUNDLE_PROCESSING_TYPE, bundle, null, config);
 
 		// Css data
 		StringBuffer data = new StringBuffer(FileUtils.readClassPathFile("base64Postprocessor/temp.css"));

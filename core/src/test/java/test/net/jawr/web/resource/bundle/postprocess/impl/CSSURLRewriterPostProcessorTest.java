@@ -43,7 +43,7 @@ public class CSSURLRewriterPostProcessorTest extends TestCase {
 		config.setContext(servletContext);
 		config.setServletMapping("/js");
 		config.setCharsetName("UTF-8");		
-		status = new BundleProcessingStatus(bundle,null,config);
+		status = new BundleProcessingStatus(BundleProcessingStatus.BUNDLE_PROCESSING_TYPE,bundle,null,config);
 		addGeneratorRegistryToConfig(config, "js");
 		status.setLastPathAdded("/css/someCSS.css");
 		processor = new CSSURLPathRewriterPostProcessor();
@@ -311,7 +311,7 @@ public class CSSURLRewriterPostProcessorTest extends TestCase {
 		imgServletJawrConfig.getGeneratorRegistry().setResourceReaderHandler(rsHandler);
 		servletContext.setAttribute(JawrConstant.IMG_CONTEXT_ATTRIBUTE, imgRsHandler);
 		
-		status = new BundleProcessingStatus(bundle, null, config);
+		status = new BundleProcessingStatus(BundleProcessingStatus.BUNDLE_PROCESSING_TYPE, bundle, null, config);
 
 		// Css data
 		StringBuffer data = new StringBuffer(
@@ -355,7 +355,7 @@ public class CSSURLRewriterPostProcessorTest extends TestCase {
 		ImageResourcesHandler imgRsHandler = new ImageResourcesHandler(imgServletJawrConfig, rsHandler, null);
 		servletContext.setAttribute(JawrConstant.IMG_CONTEXT_ATTRIBUTE, imgRsHandler);
 		
-		status = new BundleProcessingStatus(bundle, null, config);
+		status = new BundleProcessingStatus(BundleProcessingStatus.BUNDLE_PROCESSING_TYPE, bundle, null, config);
 
 		// Css data
 		StringBuffer data = new StringBuffer(
@@ -393,7 +393,7 @@ public class CSSURLRewriterPostProcessorTest extends TestCase {
 		ImageResourcesHandler imgRsHandler = new ImageResourcesHandler(imgServletJawrConfig, null, null);
 		servletContext.setAttribute(JawrConstant.IMG_CONTEXT_ATTRIBUTE, imgRsHandler);
 		
-		status = new BundleProcessingStatus(bundle, null, config);
+		status = new BundleProcessingStatus(BundleProcessingStatus.BUNDLE_PROCESSING_TYPE, bundle, null, config);
 
 		// Css data
 		StringBuffer data = new StringBuffer(
@@ -423,7 +423,7 @@ public class CSSURLRewriterPostProcessorTest extends TestCase {
 		config.setServletMapping("/css");
 		config.setCharsetName("UTF-8");
 		addGeneratorRegistryToConfig(config, "css");
-		status = new BundleProcessingStatus(bundle, null, config);
+		status = new BundleProcessingStatus(BundleProcessingStatus.BUNDLE_PROCESSING_TYPE, bundle, null, config);
 
 		// Set up the Image servlet Jawr config
 		props = new Properties();
@@ -458,7 +458,7 @@ public class CSSURLRewriterPostProcessorTest extends TestCase {
 		config.setCharsetName("UTF-8");
 		addGeneratorRegistryToConfig(config, "css");
 		FakeResourceReaderHandler rsHandler = new FakeResourceReaderHandler();
-		status = new BundleProcessingStatus(bundle, rsHandler, config);
+		status = new BundleProcessingStatus(BundleProcessingStatus.BUNDLE_PROCESSING_TYPE, bundle, rsHandler, config);
 
 		// Set up the Image servlet Jawr config
 		props = new Properties();

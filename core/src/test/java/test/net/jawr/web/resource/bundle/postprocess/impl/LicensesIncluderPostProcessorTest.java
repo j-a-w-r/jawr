@@ -82,7 +82,7 @@ public class LicensesIncluderPostProcessorTest  extends  ResourceHandlerBasedTes
 	    WritableByteChannel wrChannel = Channels.newChannel(baOs);
 	    Writer writer = Channels.newWriter(wrChannel, jeesConfig.getResourceCharset().name());
 	    collector.writeBundleTo("/js/script.js", writer);
-	    BundleProcessingStatus status = new BundleProcessingStatus(resourcebundle,rsHandler,jeesConfig);
+	    BundleProcessingStatus status = new BundleProcessingStatus(BundleProcessingStatus.BUNDLE_PROCESSING_TYPE, resourcebundle,rsHandler,jeesConfig);
 	    StringBuffer sb = processor.postProcessBundle(status, new StringBuffer(baOs.toString(jeesConfig.getResourceCharset().name())));
 	    String contents = sb.toString();
 	    assertTrue("License in root folder not included",(contents.indexOf("/** License in folder **/")!=-1));

@@ -31,7 +31,7 @@ public class CssBundleCharsetCleanerPostProcessorTest extends TestCase {
 	public void testPostProcessBundle() throws Exception {
 		CssCharsetFilterPostProcessor processor = new CssCharsetFilterPostProcessor();
 		StringBuffer sb = new StringBuffer(FileUtils.readClassPathFile("postprocessor/cssbundlecharset/standard-bundle.css"));
-		BundleProcessingStatus status = new BundleProcessingStatus(getJoinableResourceBundle("/bundle1.css"),null,null);
+		BundleProcessingStatus status = new BundleProcessingStatus(BundleProcessingStatus.FILE_PROCESSING_TYPE, getJoinableResourceBundle("/bundle1.css"),null,null);
 		StringBuffer ret = processor.postProcessBundle(status, sb);
 		assertEquals(FileUtils.readClassPathFile("postprocessor/cssbundlecharset/standard-bundle-result.css"), ret.toString());
 	}
@@ -40,7 +40,7 @@ public class CssBundleCharsetCleanerPostProcessorTest extends TestCase {
 		
 		CssCharsetFilterPostProcessor processor = new CssCharsetFilterPostProcessor();
 		StringBuffer sb = new StringBuffer(FileUtils.readClassPathFile("postprocessor/cssbundlecharset/different-charset-decl-bundle.css"));
-		BundleProcessingStatus status = new BundleProcessingStatus(getJoinableResourceBundle("/bundle1.css"),null,null);
+		BundleProcessingStatus status = new BundleProcessingStatus(BundleProcessingStatus.FILE_PROCESSING_TYPE, getJoinableResourceBundle("/bundle1.css"),null,null);
 		StringBuffer ret = processor.postProcessBundle(status, sb);
 		assertEquals(FileUtils.readClassPathFile("postprocessor/cssbundlecharset/different-charset-decl-bundle-result.css"), ret.toString());
 		
@@ -53,7 +53,7 @@ public class CssBundleCharsetCleanerPostProcessorTest extends TestCase {
 		
 		CssCharsetFilterPostProcessor processor = new CssCharsetFilterPostProcessor();
 		StringBuffer sb = new StringBuffer(FileUtils.readClassPathFile("postprocessor/cssbundlecharset/charset-decl-not-at-the-top-bundle.css"));
-		BundleProcessingStatus status = new BundleProcessingStatus(getJoinableResourceBundle("/bundle1.css"),null,null);
+		BundleProcessingStatus status = new BundleProcessingStatus(BundleProcessingStatus.FILE_PROCESSING_TYPE, getJoinableResourceBundle("/bundle1.css"),null,null);
 		StringBuffer ret = processor.postProcessBundle(status, sb);
 		assertEquals(FileUtils.readClassPathFile("postprocessor/cssbundlecharset/charset-decl-not-at-the-top-bundle-result.css"), ret.toString());
 	}

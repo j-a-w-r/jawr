@@ -28,7 +28,7 @@ public class JSMinPostProcessorTest extends TestCase {
 		} catch (UnsupportedEncodingException ignore) {
 			fail("UnsupportedEncodingException that will never be thrown");
 		}
-	    BundleProcessingStatus status = new BundleProcessingStatus(getBundle("/myBundle.js"),null,config);
+	    BundleProcessingStatus status = new BundleProcessingStatus(BundleProcessingStatus.BUNDLE_PROCESSING_TYPE, getBundle("/myBundle.js"),null,config);
 		StringBuffer ret = processor.postProcessBundle(status, new StringBuffer(script));
 		
 		// Not really testing JSMin, that is supposed to work. 
