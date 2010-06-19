@@ -100,6 +100,14 @@ public class ImagePathTag extends TagSupport {
 	public void setBase64(boolean base64) {
 		this.base64 = base64;
 	}
+	
+	/**
+	 * Returns the flag indicating if the image should be encoded in base 64
+	 * @param base64 the base64 to set
+	 */
+	public void setBase64(String base64) {
+		this.base64 = Boolean.valueOf(base64).booleanValue();
+	}
 
 	/* (non-Javadoc)
 	 * @see javax.servlet.jsp.tagext.TagSupport#doStartTag()
