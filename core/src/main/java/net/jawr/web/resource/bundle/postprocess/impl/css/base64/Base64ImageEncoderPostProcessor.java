@@ -143,7 +143,5 @@ public class Base64ImageEncoderPostProcessor extends
 		mhtml.append(BOUNDARY_SEPARATOR_PREFIX + BOUNDARY_SEPARATOR + BOUNDARY_SEPARATOR_PREFIX + lineSeparator);
 		mhtml.append("*/" + lineSeparator + lineSeparator);
         sb.insert(0, mhtml.toString());
-
-        LOGGER.debug(MHTML_PREFIX + mhtml);
 	}
 }
