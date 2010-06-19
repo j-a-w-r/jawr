@@ -98,10 +98,11 @@ public class FullMappingPropertiesBasedBundlesHandlerFactoryTestCase extends
 		assertEquals("myBundlePostProcessor1,myBundlePostProcessor2", ((AbstractChainedResourceBundlePostProcessor) bundle.getBundlePostProcessor()).getId());
 		assertEquals("myFilePostProcessor1,myFilePostProcessor2", ((AbstractChainedResourceBundlePostProcessor) bundle.getUnitaryPostProcessor()).getId());
 		
-		Set expectedLocales = new HashSet(Arrays.asList(new String[]{"fr", "en_US"}));
+		Set expectedLocales = new HashSet(Arrays.asList(new String[]{"", "fr", "en_US"}));
 		assertEquals(expectedLocales, new HashSet(bundle.getVariantKeys()));
 		
 		assertEquals("N123456", bundle.getBundleDataHashCode(null));
+		assertEquals("N123456", bundle.getBundleDataHashCode(""));
 		assertEquals("123456", bundle.getBundleDataHashCode("fr"));
 		assertEquals("789", bundle.getBundleDataHashCode("en_US"));
 	}
@@ -149,7 +150,7 @@ public class FullMappingPropertiesBasedBundlesHandlerFactoryTestCase extends
 				assertNull(bundle.getDependencies());
 			}
 			
-			Set expectedLocales = new HashSet(Arrays.asList(new String[]{"fr", "en_US"}));
+			Set expectedLocales = new HashSet(Arrays.asList(new String[]{"", "fr", "en_US"}));
 			assertEquals(expectedLocales, new HashSet(bundle.getVariantKeys()));
 			
 			assertEquals("N123456", bundle.getBundleDataHashCode(null));
@@ -190,10 +191,12 @@ public class FullMappingPropertiesBasedBundlesHandlerFactoryTestCase extends
 		assertEquals("myBundlePostProcessor1,myBundlePostProcessor2", ((AbstractChainedResourceBundlePostProcessor) bundle.getBundlePostProcessor()).getId());
 		assertEquals("myFilePostProcessor1,myFilePostProcessor2", ((AbstractChainedResourceBundlePostProcessor) bundle.getUnitaryPostProcessor()).getId());
 		
-		Set expectedVariants = new HashSet(Arrays.asList(new String[]{"fr@summer", "fr@winter","en_US@summer","en_US@winter"}));
+		Set expectedVariants = new HashSet(Arrays.asList(new String[]{"@summer","@winter","fr@summer", "fr@winter","en_US@summer","en_US@winter"}));
 		assertEquals(expectedVariants, new HashSet(bundle.getVariantKeys()));
 		
 		assertEquals("N123456", bundle.getBundleDataHashCode(null));
+		assertEquals("178456", bundle.getBundleDataHashCode("@summer"));
+		assertEquals("418451", bundle.getBundleDataHashCode("@winter"));
 		assertEquals("123456", bundle.getBundleDataHashCode("fr@summer"));
 		assertEquals("789", bundle.getBundleDataHashCode("en_US@summer"));
 		assertEquals("123456", bundle.getBundleDataHashCode("fr@winter"));
@@ -227,9 +230,10 @@ public class FullMappingPropertiesBasedBundlesHandlerFactoryTestCase extends
 		bundle.setExplorerConditionalExpression("if lt IE 6");
 		
 		Map variants = new HashMap();
-		variants.put(JawrConstant.LOCALE_VARIANT_TYPE, new VariantSet(JawrConstant.LOCALE_VARIANT_TYPE, "fr", Arrays.asList(new String[]{"fr", "en_US"})));
+		variants.put(JawrConstant.LOCALE_VARIANT_TYPE, new VariantSet(JawrConstant.LOCALE_VARIANT_TYPE, "", Arrays.asList(new String[]{"", "fr", "en_US"})));
 		bundle.setVariants(variants);
 		bundle.setBundleDataHashCode(null, "N123456");
+		bundle.setBundleDataHashCode("", "N123456");
 		bundle.setBundleDataHashCode("fr", "123456");
 		bundle.setBundleDataHashCode("en_US", "789");
 		
@@ -285,9 +289,11 @@ public class FullMappingPropertiesBasedBundlesHandlerFactoryTestCase extends
 		
 		Map variants = new HashMap();
 		variants.put(JawrConstant.SKIN_VARIANT_TYPE, new VariantSet(JawrConstant.SKIN_VARIANT_TYPE, "summer", Arrays.asList(new String[]{"summer", "winter"})));
-		variants.put(JawrConstant.LOCALE_VARIANT_TYPE, new VariantSet(JawrConstant.LOCALE_VARIANT_TYPE, "fr", Arrays.asList(new String[]{"fr", "en_US"})));
+		variants.put(JawrConstant.LOCALE_VARIANT_TYPE, new VariantSet(JawrConstant.LOCALE_VARIANT_TYPE, "", Arrays.asList(new String[]{"","fr", "en_US"})));
 		bundle.setVariants(variants);
 		bundle.setBundleDataHashCode(null, "N123456");
+		bundle.setBundleDataHashCode("@summer", "178456");
+		bundle.setBundleDataHashCode("@winter", "418451");
 		bundle.setBundleDataHashCode("fr@summer", "123456");
 		bundle.setBundleDataHashCode("en_US@summer", "789");
 		bundle.setBundleDataHashCode("fr@winter", "123456");

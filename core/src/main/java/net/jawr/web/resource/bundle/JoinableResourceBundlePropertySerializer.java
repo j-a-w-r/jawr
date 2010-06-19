@@ -199,7 +199,9 @@ public class JoinableResourceBundlePropertySerializer {
 		for (Iterator eltIterator = coll.iterator(); eltIterator.hasNext();) {
 			String elt = (String) eltIterator.next();
 			buffer.append(elt);
-			buffer.append(",");
+			if(eltIterator.hasNext()){
+				buffer.append(",");
+			}
 		}
 		return buffer.toString();
 	}
