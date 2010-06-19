@@ -35,7 +35,11 @@ Descriptor file syntax
 *---------------+---------+--------------+----------------+
 | jawr.config.reload.refreshKey | String | Force a full refresh of all bundles on request.  Hit any bundle URL and add ?refreshKey=value to reload the bundles. | none    | 
 *---------------*---------*--------------+----------------+
-| jawr.locale.resolver | String | Name of a class implementing net.jawr.web.resource.bundle.locale.LocaleResolver. An instance of this class will be created and used to determine the Locale to use for a given request when using an {{{./messages_gen.html}i18n messages generator}}.   | none| 
+| jawr.locale.resolver | String | Name of a class implementing net.jawr.web.resource.bundle.locale.LocaleResolver. An instance of this class will be created and used to determine the Locale to use for a given request when using an {{{./messages_gen.html}i18n messages generator}}.   | none|
+*---------------*---------*--------------+----------------+
+| jawr.browser.resolver | String | Name of a class implementing net.jawr.web.resource.bundle.variant.VariantResolver. An instance of this class will be created and used to determine the Browser type to use for a given request.   | net.jawr.web.resource.bundle.variant.resolver.BrowserResolver |
+*---------------*---------*--------------+----------------+
+| jawr.url.connection.type.resolver | String | Name of a class implementing net.jawr.web.resource.bundle.variant.VariantResolver. An instance of this class will be created and used to determine the connection type (standard or ssl) of a given request.   | net.jawr.web.resource.bundle.variant.resolver.ConnectionTypeResolver |
 *---------------*---------*--------------+----------------+
 | jawr.url.contextpath.override | URL (absolute or fragment) [<<http://...>>],[<<//somepath>> protocol relative],[<</somepath >>] or [<</>>] or []. | Override the use of the application's contextpath to prefix every generated URL.  | none    | 
 | | | Using '<</>>' will cause Jawr to skip the context path altogether ('/001/bundles/mybundle.js').  |     | 
@@ -54,6 +58,24 @@ Descriptor file syntax
 | jawr.csslinks.flavor | String | Sets how the LINK tags are rendered by the style tag. See the {{{./taglibs.html}taglib docs.}}   | xhtml | 
 *---------------*---------*--------------+----------------+
 | jawr.dwr.mapping | String | Value of the servlet-mapping that points to a DWR servlet instance. See {{{../integration/dwr.html}DWR integration}}.   | none| 
+*---------------*---------*--------------+----------------+
+| jawr.strict.mode | Boolean | Enable/disable strict mode for bundle request.   | False| 
+*---------------*---------*--------------+----------------+
+| jawr.illegal.bundle.request.handler | String |The class name of the handler for illegal bundle request.  | net.jawr.web.servlet.IllegalBundleRequestHandlerImpl | 
+*---------------*---------*--------------+----------------+
+| jawr.bundle.hashcode.generator | String | The class name of the hashcode bundle generator or MD5 if you want to use the MD5 algorithm for the hashcode.  | none| 
+*---------------*---------*--------------+----------------+
+| jawr.css.url.rewriter.context.path | String |The webapp context path. This property is used in the CSS URL rewriter to determine if an absolute path is in the web application or not.  | none| 
+*---------------*---------*--------------+----------------+
+| jawr.css.postprocessor.base64ImageEncoder.maxFileLength | Integer | The maximum size of the image to encode in base64 in bytes.  | 40000 | 
+*---------------*---------*--------------+----------------+
+| jawr.css.postprocessor.base64ImageEncoder.encode.sprite | Boolean | Enable/disable the base64 image encode on generated sprite image.  | False| 
+*---------------*---------*--------------+----------------+
+| jawr.css.skin.type.mapping | String | The type of mapping for the skin directory structure. The acceptable values are : <skin_locale> and <locale_skin>.  | skin_locale | 
+*---------------*---------*--------------+----------------+
+| jawr.css.skin.default.root.dirs | String | The comma separated list of skin base directory.  | none| 
+*---------------*---------*--------------+----------------+
+| jawr.css.skin.cookie | String | The name of the cookie where the current user CSS skin name is store.  | jawrSkin | 
 *---------------*---------*--------------+----------------+
 
 
@@ -161,6 +183,15 @@ Descriptor file syntax
 | <<Property name>> | <<Type>>    | <<Purpose>>      | <<Default value>>  |
 *---------------+---------+--------------+----------------+
 | jawr.custom.generators  | Comma separated list.  | List of all the ResourceGenerator implementations you want to use.    | None    | 
+*---------------+---------+--------------+----------------+
+
+* JS/CSS custom resolvers definition properties
+
+
+*---------------+---------+--------------+----------------+
+| <<Property name>> | <<Type>>    | <<Purpose>>      | <<Default value>>  |
+*---------------+---------+--------------+----------------+
+| jawr.custom.resolvers  | Comma separated list.  | List of all the VariantResolver implementations you want to use.    | None    | 
 *---------------+---------+--------------+----------------+
 
 	

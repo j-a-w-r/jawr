@@ -29,6 +29,8 @@
       <item name="Use in HTML pages" href="/docs/plain_html.html"/>
       <item name="Debug and production modes" href="/docs/modes.html"/>
       <item name="i18n message generator" href="/docs/messages_gen.html"/>
+      <item name="Variant bundles" href="/docs/variant_bundle.html"/>
+      <item name="Jawr strict mode - Illegal bundle request handler" href="/docs/illegalBundleRequestHander.html"/>
       <item name="JMX Support" href="/docs/jmx_support.html"/>
       <item name="Bundle preprocessing" href="/docs/bundle_preprocessing.html"/>
       <item name="Jawr Maven plugin" href="/docs/jawr_maven_plugin.html"/>
@@ -48,7 +50,9 @@
     <menu name="Tutorials">
       <item name="Quick start" href="/tutorials/quickstart.html"/>
       <item name="How to use Jawr to serve image resources" href="/tutorials/howToUseJawrToServeImage.html"/>
+      <item name="How to use Jawr to generate CSS skin" href="/tutorials/howToUseJawrCssSkin.html"/>
       <item name="How to generate Image sprites with Jawr" href="/tutorials/jawrSpriteImage.html"/>
+      <item name="How to generate base64 images in CSS with Jawr" href="/tutorials/howToUseJawrToGenerateBase64Image.html"/>
       <item name="FAQ-Howto" href="/tutorials/faq_howto.html"/>
       <item name="Using popular libraries" href="/tutorials/libraries.html"/>   
     </menu>

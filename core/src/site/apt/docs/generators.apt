@@ -50,19 +50,39 @@ Jawr Generators
 
 	Jawr comes with several generators, each accomplishing a special kind of task. The currently provided generators are: 
 	
+*	All-around generators
+
+<<i18n messages script generator>>
 	
-	* <<i18n messages script generator>>: generates javascript code with locale specific variants which are loaded depending on the user's 
-	specific language. Full documentation is {{{./messages_gen.html}here}}. 
-	
-	* <<DWR scripts generator>>: allows you to bundle and compress together DWR generated interfaces, plus all the utility scripts required 
-	by them. Full documentation is {{{../integration/dwr.html}here}}. 
-	
-	* <<Commons Validator generator>>: this one will let you generate compressed and cacheable versions of the validation scripts 
-	generated in Struts by the Apache Commons Validator taglib. Full docs  {{{../integration/validator.html}here}}. 
+	* <<Prefix>>: message
 	
 	[]
 	
-	Also available is the <<classpath resource generator>>. It allows you to include resources present within jar files or simply located 
+	This generator generates javascript code with locale specific variants which are loaded depending on the user's 
+	specific language. Full documentation is {{{./messages_gen.html}here}}.  
+
+	
+<<DWR scripts generator>>: 
+	* <<Prefix>>: dwr
+	
+	[]
+	
+	This generator allows you to bundle and compress together DWR generated interfaces, plus all the utility scripts required by them. Full documentation is {{{../integration/dwr.html}here}}. 
+	
+<<Commons Validator generator>>
+	* <<Prefix>>: acv
+	
+	[]
+	
+	This one will let you generate compressed and cacheable versions of the validation scripts 
+	generated in Struts by the Apache Commons Validator taglib. Full docs  {{{../integration/validator.html}here}}. 
+
+<<classpath resource generator>>
+	* <<Prefix>>: jar
+
+	[]
+
+ 	It allows you to include resources present within jar files or simply located 
 	anywhere in the application classpath. You will need to use different prefixes if you are generating js or css files. 
 	To add javascript resources from the classpath you use <<jar:>> as the prefix, followed by the path to the resource using / as separator: 
 	
@@ -90,6 +110,45 @@ Jawr Generators
 	  
 	Unlike the normal mapping, this way of referring to resources does not yet allow wildcards (i.e.: <jar:/com/mycompany/myapp/**> would not 
 	work).  
+	
+		
+<<Skin generator>>
+	* <<Prefix>>: skin
+	
+	[]
+	
+	This one will help you to define CSS skin in your bundles. Full docs  {{{../tutorials/howToUseJawrCssSkin.html}here}}.
+	 
+	
+<<Skin swicther generator>>  
+	* <<Prefix>>: skinSwitcher
+	
+	[]
+	
+	This one will generates the JS content for CSS skin switcher. \ 
+	To use it you must configure your Jawr configuration file like this :
+	
++------------------------------------------+
+jawr.js.bundle.common.id=/js/common.js
+jawr.js.bundle.common.mappings=skinSwitcher:switcher.js
++------------------------------------------+
+	
+	When you use the Jawr style tag for a bundle containing different CSS skin,
+	you can force Jawr to render the links to the alternate CSS skin by using the <<displayAlternate>> property.
+	 	
++------------------------------------------+
+	<jwr:style src="/css/skinnedBundle.css" displayAlternate="true" media="all" />
++------------------------------------------+
+
+	This will force Jawr to render the links to all the skin associated to <</css/skinnedBundle.css>>.
+	This generator will generates the script to switch from a skin to another by calling the following JS function and passing as parameter the name of the style to switch to:
+	
++------------------------------------------+
+	JAWR.skin.switchToStyle(newStyle);
++------------------------------------------+
+	
+	You can find an example of it's use in the basic webapplication sample.		
+	For more information about CSS skin, you can take a look to the following {{{../tutorials/howToUseJawrCssSkin.html}documentation}}. 
 	
 *	Implementing a generator
 

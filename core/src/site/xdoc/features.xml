@@ -54,6 +54,15 @@
 			technology), Jawr can be used on every page. 
 			 <a href="./docs/plain_html.html" > Learn more</a>. </li> 
 			 
+			<li> <strong>CSS skin</strong>: Jawr allows you to define skin (theme) for your CSS bundle. This means that the user will get the CSS bundle skin depending on his current skin setting.  
+			 <a href="/tutorials/howToUseJawrCssSkin.html" > Learn more</a>. </li> 
+			
+			<li> <strong>Sprite generation support</strong>: You can define you sprite in your CSS by putting annotations and Jawr will generate the CSS bundles and the image sprites associated.  
+			 <a href="./tutorials/jawrSpriteImage.html" > Learn more</a>. </li> 
+			
+			<li> <strong>Base64 encoded image support</strong>: Jawr allows you to define the image which you want to encode in base64 to minimize the HTTP request. It also support MHTML generation for IE6 and IE7.  
+			 <a href="/tutorials/howToUseJawrToGenerateBase64Image.html" > Learn more</a>. </li> 
+			
 			<li> <strong>JMX support</strong>: You could modify the behaviour of Jawr at runtime using a JMX console. For example, you could pass an entire application from production mode to debug mode,
 			or modify only one session.  
 			 <a href="./docs/jmx_support.html" > Learn more</a>. </li> 

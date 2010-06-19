@@ -64,7 +64,7 @@ Jawr Advanced Generators
 	You will find below the class diagram for the locale aware resource generator.
 	
 	
-[../images/generator/jawr_variantResourceGenerator.png] Variant Resource Generator class diagram
+[../images/generator/jawr_variantResourceGenerator.png] Locale Resource Generator class diagram
 
 	** <<net.jawr.web.resource.bundle.generator.LocaleAwareResourceGenerator>>\
 	This interface provides a method, which is called to know what are the available locale variants for a path.
@@ -78,7 +78,34 @@ Jawr Advanced Generators
 	
 	Your generator must return a list of String corresponding to the available locale variants, in our case :
 	("", "fr", "en") 
+
+*	Variant Resource generator
+
+	Since the version 3.3, Jawr is able to generate variant bundle contents. Like for locale aware bundles, Jawr
+	is able to generate different bundle depending on request header, attributes, parameters, cookies... \
+	So Jawr is for example able to generate bundle depending on the browser.
 	
+[../images/variants/variantBundleGenerator.jpg] Variant Bundle generator class diagram
+	 
+	** <<net.jawr.web.resource.bundle.generator.variant.VariantResourceGenerator>>\
+	This interface provides a method, which is called to know what are the available variants for a path.
+	
++------------------------------------------+
+	/**
+	 * Returns the map of available variant for a resource.
+	 * The key of the map is the type of variant (for ex: locale, skin...)
+	 * The values associated are the list of variant for the type. 
+	 * @param resource the resource name
+	 * @return the map of available variant for a resource 
+	 */
+	Map getAvailableVariants(String resource);
++------------------------------------------+
+
+	This method defines the map of variants available for a specific resource.
+	For the returned map of variants, the key is the variant type, and the value is the VariantSet.
+	
+	For more information about variant bundle, please take a look at the {{{./variant_bundle.html}documentation about variant bundle}}.
+
 *	CSS Resource generator
 
 	As for every resource, Jawr allows you to create a generator for the CSS files.\

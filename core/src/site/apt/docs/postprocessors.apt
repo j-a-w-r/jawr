@@ -109,12 +109,29 @@ jawr.js.bundle.factory.bundlepostprocessors=JSMin,func,sample,license
 jawr.js.bundle.foo.bundlepostprocessors=license=func,license
 +------------------------------------------+		
 	
-	
 =====================
 	Grails users will unfortunately need to pack their classes in a jar and add it to the lib folder of their application. The reason for this is a 
 	known flaw in the Grails classloading strategy that keeps plugins from accessing application classes.
 	 
 =====================
+
+*	Custom postprocessors for composite bundle
+
+	For a composite bundle, you can define the child bundle associated to it using the <<child.names>> property like follow.
+
++------------------------------------------+		
+jawr.css.bundle.myCompositeBundle.child.names=child_1,child_2
++------------------------------------------+		
+		
+	When you define a filepostprocessor on a composite bundle, this postprocessor will be applied on the child bundle content. The child bundle content will be treated as a single file.
+	If you define a bundle postprocessor on a composite bundle, the postprocessor will be applied on the whole bundle. 
+
+	To disable postprocessing on the composite bundle, you just need to configure you composite bundle as such :
+
++------------------------------------------+		
+jawr.css.bundle.myCompositeBundle.fileprocessors=none
+jawr.css.bundle.myCompositeBundle.bundlepostprocessors=none
++------------------------------------------+		
 
 * Jawr included postprocessors reference
 
@@ -197,7 +214,36 @@ jawr.js.bundle.foo.bundlepostprocessors=license=func,license
 	This processor removes comments and unneeded whitespace using search and replace with regular expressions. It is on by default 
 	and is almost as efficient as the YUI compressor. 
 		  
+<<CSS combine Media>>
+	
+	* <<Type>>: Bundle
+	
+	* <<Properties Key>>: cssCombineMedia
+	
+	[]
+	
+	This processor will wrap the content of the bundle with the "media" value defined in the Jawr configuration file associated to this bundle.\
+	Jawr will search for th value associated to : jawr.css.bundle.<<bundleName>>.media to find the media value to set.
+	If no media value is found, Jawr will set the media to <<screen>>.
+	
+	For example, if your bundle is define like this :
+	
++-------------------------------+
+	jawr.css.bundle.combine_print.id=/bundles/combine_print.css
+	jawr.css.bundle.combine_print.mappings=/resources/css/combine/print_1.css,/resources/css/combine/print_2.css
+	jawr.css.bundle.combine_print.bundlepostprocessors=cssCombineMedia
+	jawr.css.bundle.combine_print.media=print
++-------------------------------+	  
 
+	The content of the bundle will be wrap around a media rule declaration set to "print".
+	
++-------------------------------+
+@media print {
+
+	... /* Content of the bundle goes here */
+} 	 
++-------------------------------+
+	
 <<CSS Path rewriter>>
 	
 	* <<Type>>: File
@@ -217,7 +263,20 @@ jawr.js.bundle.foo.bundlepostprocessors=license=func,license
 	
 	[]
 	
-	This processor import the CSS resources referenced by <<@import url(...)>> statement. These resources are included in the generated CSS bundle.  
+	This processor imports the CSS resources referenced by <<@import url(...)>> statement. These resources are included in the generated CSS bundle.  
+
+	
+<<CSS base64 postprocessor>>
+	
+	* <<Type>>: Bundle
+	
+	* <<Properties Key>>: base64ImageEncoder
+	
+	[]
+	
+	This processor encodes the CSS images in base64 except for the images which has as annotation<< /** jawr:base64-skip */ >> statement.
+	This postprocessor should not be used with the <<csspathrewriter>>, because they are doing the same job rewriting the image URL.
+	<<WARNING :>> You should not use this postprocessor as a <<filepostprocessor>> but only as <<bundlepostprocessor>>.
 
 *	User submitted postprocessors
 

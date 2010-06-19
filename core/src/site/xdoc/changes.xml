@@ -8,7 +8,133 @@
 	
     <section name="Announcementes and change log">
     <ul>
-    	 <li> <strong>02/01/2009</strong>: Version 3.2.1 released:<br/>
+    	 <li> <strong>06/XX/2009</strong>: Version 3.3 released:<br/>
+	      	This version contains new features and bug fixes.<br/><br/>
+	      	<strong>New features: </strong>
+	    	<ul>
+      		 <li>
+      		 	One of the big new features of this release is the ability to define variant bundles.
+      		 	A variant bundle is the generalisation of what already exist for the locale aware bundle.
+      		 	A variant bundle is a bundle which can change depending on some defined criteria.
+      		 	This means for example that you can define a specific bundle for IE, and for the same bundle sent another content to Firefox, Chrome, Opera...
+      		 	For more information about the variant bundle, please check the following <a href="./docs/variant_bundle.html">variant bundle documentation</a> for more detail.
+      		 </li>
+      		 <li>
+      		 	One of the feature derived from the use of variant bundle is the support for CSS bundle skin.
+      		 	Jawr allow you to define CSS bundle, where the skin variant will be sent back to the user depending on the skin
+      		 	used by the user defined a cookie.
+      		 	The good news is that the CSS skin can also be combined with the user locale, which means that Jawr is able to
+      		 	sent to the user the CSS bundle depending on the user skin and also depending on the user locale.
+      			For more information about how to use the new skin feature, please check the following <a href="./tutorials/howToUseJawrCssSkin.html">Jawr skin documentation</a> for more detail.
+      		 </li>
+      		 <li>
+      		 	The Jawr CSS tag has been updated to be able to generate title and alternate attributes for CSS bundles.
+      		 	The Jawr CSS tag has also been updated to be able to generate alternate for CSS skin bundles.
+      		 	Look for the CSS tag at the <a href="./docs/taglibs.html">tag library doc</a> for extra info.
+      		 </li>
+      		 <li>
+      		 	The Jawr skin swicther javascript generator has been created to generate the javascript file for the skin switcher.
+      		 	You can take a look to the <a href="./docs/generators.html">generators documentation</a> for extra info.
+      		 </li>
+      		 <li>
+      		 	Jawr now supports base64 image encoding.<br/>
+      		 	Jawr is now able to generate base64 encoded image in your CSS bundle using a new postprocessor.<br/>
+      		 	Please check the tutorial on <a href="./tutorials/howToUseJawrToGenerateBase64Image.html">how to use Jawr to generate base64 image in CSS bundle</a> for more detail.
+      		 	<br/>
+      		 	The Jawr image tags have been updated to be able to generate base64 encoded image. 
+      		 	Please check the documentation on the <a href="./docs/taglibs.html">taglib description</a> for more detail.
+      		 </li>
+      		 <li>
+      		 	Jawr supports hashcode bundle generator. This means that you can now define your own implementation of the id used to identify the bundle.
+      		 	For more detail, about how to implement your own hashcode bundle generator, take a look at the documentation about <a href="./docs/hashCodeBundleGenerator.html">hashcode bundle generator</a>.
+      		 </li>
+      		 <li>
+      		 	Jawr provides a MD5 hashcode bundle generator, which use MD5 to create the bundle hashcode. Take a look at the documentation about <a href="./docs/hashCodeBundleGenerator.html">hashcode bundle generator</a>.
+      		 </li>
+      		 <li>
+      		 	Jawr introduces the <b>strict mode</b>. For earlier version, Jawr didn't take in account the hashcode of the requested bundle.<br/>
+      		 	This means that if a user request a bundle which the hashcode is different from the current one, Jawr will send it the current bundle<br/>
+      		 	This may be an issue if you are using an application on a clustered environment. If you deploy a new version of your application on one server,
+      		 	while the other is still up. You can face cases where the user request a page on one server, and try to retrieve the web resource bundles one another.<br/>
+      		 	This may lead to strange behaviors.<br/>
+      		 	To overcome this issue, Jawr introduces the <b>strict mode</b>. In this mode, Jawr will allow you to define how you want to handle such request by defining your own <b>IllegalBundleRequestHandler</b>.
+      		 	Jawr also provides a default implementation whch returns a "404" if it receive a such request.  
+      		 	Take a look at the documentation about <a href="./docs/illegalBundleRequestHandler.html">strict mode & illegal bundle request handler</a>.
+      		 	Jawr provides just a default implementation, if you want to contribute and share your implementation with the community,
+      		 	feel free to create and attach a patch in the issue tracker. 
+      		 </li>
+      		 <li>
+      		 	Jawr use now alphabetical ordering for bundle resources by default.
+      		 </li>
+      		 <li>
+      		 	Jawr supports media keyword in CSS Import PostProcessor. Please check the <a href="./docs/postprocessors.html">CSS import postprocessor documentation</a> for more detail.
+      		 </li>
+      		  <li>
+      		 	Jawr introduce a new postprocessor to combine CSS media. Please check the <a href="./docs/postprocessors.html">CSS combine media postprocessor documentation</a> for more detail.
+      		 	Thanks to Gerben Jorna for the implementation of this feature.
+      		 </li>
+      		</ul>
+      		<strong>Fixed issues: </strong>
+	    	 <ul>   
+	    	 	 <li>
+	      		 	<strong>Issue #41 fixed:</strong> Add title attribute to style tag      
+	      		 </li>      
+	      		 <li>
+	      		 	<strong>Issue #127 fixed:</strong> Problem parsing jawr-jsp2x.tld in Resin      
+	      		 </li>
+	      		 <li>
+	      		 	<strong>Issue #132 fixed:</strong> CSS image URL not written properly for generators which don't handle CSS images      
+	      		 </li>
+	      		 <li>
+	      		 	<strong>Issue #133 fixed:</strong> Issue on Jawr context management for debug mode and JMX in the JawrSpringController
+	      		 </li>
+	      		 <li>
+	      		 	<strong>Issue #134 fixed:</strong> In debug mode, Jawr generates wrong CSS image paths for generated Css resources when using JawrSpringController      
+	      		 </li>
+	      		 <li>
+	      		 	<strong>Issue #139 fixed:</strong> Jawr don't handle *.ico files as image files      
+	      		 </li>
+	      		 <li>
+	      		 	<strong>Issue #141 fixed:</strong> Issue on Jawr CssMinifier which doesn't handle properly CSS rules with linefeed inside      
+	      		 </li>
+	      		 <li>
+	      		 	<strong>Issue #144 fixed:</strong> NPE when using jawr.debug.ie.force.css.bundle=true and ieonly.condition bundle property.      
+	      		 </li>     
+	      		 <li>
+	      		 	<strong>Issue #145 fixed:</strong> Jawr not compatible with Java 1.4.      
+	      		 </li>     
+	      		 <li>
+	      		 	<strong>Issue #146 fixed:</strong> ThreadLocal memory leak.
+	      		 </li>      
+	      		 Thanks to eliotsykes, mkkoch, wangg3, Martin Jönsson, jnichols959 and all those who participate through the discusion forum for reporting issues and giving feedbacks. <br/>
+	      		 Thanks also to Gerben Jorna for his implementation of the combine media post processor and for the base implementation of the base64 CSS image postprocessor. 
+	      	</ul>
+	      	<br/><br/>
+	      	<strong>Jawr ant task and maven plugin</strong> - Version 1.4 released:<br/>
+		    This version contains one new feature and one bug fix.<br/><br/>
+		    <strong>New feature: </strong>
+	    	 <ul>    	 	
+	      		 <li>
+	      		 For IE6 and IE7 CSS bundles which use the new <b>base64ImageEncoder</b>, the bundle processor generates a placeholder for the web application URL.
+	      		 Please take a look to the following <a href="./tutorials/howToUseJawrToGenerateBase64Image.html">documentation</a> for more detail.   
+	      		 </li>      
+	      	</ul> 
+      	  	<strong>Fixed issue: </strong>
+	    	 <ul>    	 	
+	      		 <li>
+	      		 	<strong>Issue #142 fixed:</strong> Add support to generate exact path mapping for Jawr bundle processor .      
+	      		 </li>      
+	      	</ul> 
+      	  	<br/><br/>
+      	  	
+			It is important to notice that this version will be the last version which supports Java 1.4.
+	      	The next major release will target Java 5.
+	      	
+	      	Thanks to all of you who contributed and provided feedback in the discussion forum.<br/>
+			There still a lot to do. So any contribution is more than welcome.<br/>
+			If you want to be part of the Jawr project, don't hesitate. Join us, we will be glad to have new contributors in the project. 
+     	  </li>
+     	  <li> <strong>02/01/2009</strong>: Version 3.2.1 released:<br/>
 	      	This version contains mainly bug fixes.<br/><br/>
 	      	<strong>New feature: </strong>
 	    	<ul>

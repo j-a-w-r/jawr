@@ -130,17 +130,54 @@ Jawr JSP tag libraries
 	
 +------------------------------------------+
 
-	Depending on which type of pages you are serving (html or xhtml) you might need the link tags to be closed in different ways in order 
-	for your pages to validate or even work properly across all browsers. To change the way the tags are closed, you can set a configuration
-	property (at your jawr.properties file), named <<jawr.csslinks.flavor>>. The possible values and their result is: 
-	
-	* <<xhtml>>: this is the default, so you don't really need to set the property unless you need to be explicit about it. 
-	With this value, the tags are closed inline as in the previous example (/>). 
-	
-	* <<xhtml_ext>>: tags will be closed with a separate closing tab (></link>). 
-	
-	* <<html>>: tags will not be closed, as determined by the HTML spec (>).    
+	* Style links closing type
+		Depending on which type of pages you are serving (html or xhtml) you might need the link tags to be closed in different ways in order 
+		for your pages to validate or even work properly across all browsers. To change the way the tags are closed, you can set a configuration
+		property (at your jawr.properties file), named <<jawr.csslinks.flavor>>. The possible values and their result is: 
+		
+		* <<xhtml>>: this is the default, so you don't really need to set the property unless you need to be explicit about it. 
+		With this value, the tags are closed inline as in the previous example (/>). 
+		
+		* <<xhtml_ext>>: tags will be closed with a separate closing tab (></link>). 
+		
+		* <<html>>: tags will not be closed, as determined by the HTML spec (>).    
 
+	* Display CSS skin alternate styles
+	
+		Since the version 3.3, Jawr support CSS skins. This means that a CSS bundle can have multiple skins, which will be
+		displayed depending on the user current skin. This skin information is stored in a cookie. Please check the following {{{../tutorials/howToUseJawrCssSkin.html}link}} for more detail.\
+		By default, if you reference a skinned CSS bundle, Jawr will render the one which match the user defined skin.\
+		If you use the property <<displayAlternate>>, Jawr will render one link to the bundle which match the user skin, and
+		it will also renders the other CSS links as <<alternate>> stylesheets.\
+		For example, if you have the bundle which has 3 skins : "aqua","greyStorm" and "blueSky".\
+		If the current user skin is greyStorm, Jawr will render the links as followed.  
+		
++------------------------------------------+
+
+	<jwr:style src="/css/skinnedBundle.css" displayAlternate="true"/>
+	
++------------------------------------------+
+		
+		will generate :
+				 
++------------------------------------------+
+
+	<link href="/myWarContext/gzip_6c3901a019f50bad406084bd7a1b8a5.greyStorm/css/skinnedBundle.css" media="all" type="text/css" rel="stylesheet">
+	<link href="/myWarContext/gzip_f569a1f55841b7a97f0d176719fe872.aqua/css/skinnedBundle.css" title="aqua" media="all" type="text/css" rel="alternate stylesheet">
+ 	<link href="/myWarContext/gzip_f45cd4b558411325870d176719fe872.blueSky/css/skinnedBundle.css" title="blueSky" media="all" type="text/css" rel="alternate stylesheet">
+	
++------------------------------------------+
+	
+	Jawr provides also a Javascript generator <<skinSwitcher>>, whose defined a function to swicth from one skin to another.\
+	You need to add the skinSwitcher to a JS bundle and then you will be able to use the following function.
+	
++------------------------------------------+
+	JAWR.skin.switchToStyle("aqua"); 
++------------------------------------------+
+	 
+	The above code snipset will set the current user skin to "aqua" in the cookie and it will switch the current skin to "aqua".\ 
+	For more information about the <<skinSwitcher>> generator, please take a look at the {{{./generators.html}generators}} documentation.
+	
 * The image tags
 
 	Jawr provides 3 tags for images. One tag will generate an HTML image, the second will generate an input image,
@@ -195,6 +232,29 @@ Jawr JSP tag libraries
 	The url of the clock image is : jawrImg/cb465465321/img/icons/clock.png
 	
 +------------------------------------------+
+
+	* base64 encoded images
+	
+	It is also possible to generate base64 encoded image with any image tags using the property base64 as followed.
+	
++------------------------------------------+
+	<!-- 
+			Display the HTML image tag. 
+	-->
+	<jwr:img src="/img/icons/ok.png" base64="true"/>
++------------------------------------------+
+	  
+	This will generate something like :
+	
++------------------------------------------+
+	<!-- 
+			Display the HTML image tag. 
+	-->
+	<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUg...Z7oYAAAAASUVORK5CYII="/>
++------------------------------------------+
+
+	Its is important to note that Jawr will generate the base64 encoded image for all browsers except IE6 and IE7,
+	which doesn't handle base64 encoded image.  
 		
 * How to skip/modify the context path
 	
