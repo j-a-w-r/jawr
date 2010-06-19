@@ -112,7 +112,7 @@ public class IECssBundleGenerator extends AbstractCSSGenerator {
 		JoinableResourceBundle tempBundle = new JoinableResourceBundleImpl(
 				cssGeneratorBundlePath, null, null, null, null, null);
 
-		BundleProcessingStatus tempStatus = new BundleProcessingStatus(
+		BundleProcessingStatus tempStatus = new BundleProcessingStatus(BundleProcessingStatus.BUNDLE_PROCESSING_TYPE,
 				tempBundle, context.getResourceReaderHandler(), context
 						.getConfig());
 

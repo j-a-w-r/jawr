@@ -32,11 +32,13 @@ import org.apache.log4j.Logger;
  * @author Ibrahim Chaehoi
  *
  */
-public class ThemeSwitcherJsGenerator extends AbstractJavascriptGenerator {
+public class SkinSwitcherJsGenerator extends AbstractJavascriptGenerator {
 
-	private static final Logger LOGGER = Logger.getLogger(ThemeSwitcherJsGenerator.class);
+	/** The logger */
+	private static final Logger LOGGER = Logger.getLogger(SkinSwitcherJsGenerator.class);
 	
-	private static final String SCRIPT_TEMPLATE = "/net/jawr/web/resource/bundle/themeSwitcher.js";
+	/** The script template */
+	private static final String SCRIPT_TEMPLATE = "/net/jawr/web/resource/bundle/skin/skinSwitcher.js";
 	
 	/* (non-Javadoc)
 	 * @see net.jawr.web.resource.bundle.generator.ResourceGenerator#createResource(net.jawr.web.resource.bundle.generator.GeneratorContext)
@@ -72,7 +74,7 @@ public class ThemeSwitcherJsGenerator extends AbstractJavascriptGenerator {
 	 * @see net.jawr.web.resource.bundle.generator.PrefixedResourceGenerator#getMappingPrefix()
 	 */
 	public String getMappingPrefix() {
-		return GeneratorRegistry.THEME_SWTICHER_PREFIX;
+		return GeneratorRegistry.SKIN_SWTICHER_GENERATOR_PREFIX;
 	}
 
 }
