@@ -13,8 +13,12 @@
  */
 package net.jawr.web.servlet;
 
+import java.io.IOException;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.apache.log4j.Logger;
 
 /**
  * This class defines the default Illegal bundle request handler, 
@@ -26,11 +30,18 @@ import javax.servlet.http.HttpServletResponse;
 public class IllegalBundleRequestHandlerImpl implements
 		IllegalBundleRequestHandler {
 
+	/** The logger */
+	private static final Logger LOGGER = Logger.getLogger(IllegalBundleRequestHandlerImpl.class);
+
 	/* (non-Javadoc)
-	 * @see net.jawr.web.servlet.IllegalBundleRequestHandler#writeResponseHeader(javax.servlet.http.HttpServletResponse)
+	 * @see net.jawr.web.servlet.IllegalBundleRequestHandler#writeResponseHeader(java.lang.String, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
 	 */
-	public boolean writeResponseHeader(HttpServletResponse response) {
-		return false;
+	public boolean writeResponseHeader(String requestedPath,
+			HttpServletRequest request, HttpServletResponse response) throws IOException {
+		LOGGER.debug("Illegal access to bundle : "
+				+ requestedPath+". The hashcode don't match the existing one.");
+		response.sendError(HttpServletResponse.SC_NOT_FOUND);
+		return true;
 	}
 
 	/* (non-Javadoc)
@@ -40,4 +51,5 @@ public class IllegalBundleRequestHandlerImpl implements
 			HttpServletRequest request) {
 		return false;
 	}
+	
 }

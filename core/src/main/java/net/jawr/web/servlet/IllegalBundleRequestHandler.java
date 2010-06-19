@@ -13,6 +13,8 @@
  */
 package net.jawr.web.servlet;
 
+import java.io.IOException;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -25,19 +27,25 @@ import javax.servlet.http.HttpServletResponse;
 public interface IllegalBundleRequestHandler {
 
 	/**
-	 * This method should return true if Jawr should send back the content of the bundle.
+	 * This method can update the response header and 
+	 * returns true if the header has been written 
+	 * and false if Jawr must write the response header.
 	 * @param requestedPath the requested path
 	 * @param request the request
-	 * @return true if if Jawr should send back the content of the bundle.
+	 * @param response the response
+	 * @return true if the header has been written 
+	 * and false if Jawr must write the response header.
+	 * @throws IOException if an IOException occurs
 	 */
-	boolean canWriteContent(String requestedPath, HttpServletRequest request);
+	boolean writeResponseHeader(String requestedPath, HttpServletRequest request, HttpServletResponse response) throws IOException;
 	
 	/**
-	 * This method can update the response header and 
-	 * returns true if Jawr must write the response header or false otherwise.
-	 * @param response the response
-	 * @return true if Jawr must write the response header
+	 * This method should return true if Jawr should send back the content of the bundle.
+	 * It is important to note that if this method return false
+	 * @param requestedPath the requested path
+	 * @param request the request
+	 * @return true if if Jawr should send back the content of the bundle
 	 */
-	boolean writeResponseHeader(HttpServletResponse response);
+	boolean canWriteContent(String requestedPath, HttpServletRequest request);
 	
 }

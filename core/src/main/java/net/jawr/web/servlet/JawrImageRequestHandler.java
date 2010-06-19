@@ -404,10 +404,32 @@ public class JawrImageRequestHandler extends JawrRequestHandler {
 
 		// Set the content type
 		response.setContentType(getContentType(requestedPath, request));
-		if(handleResponseHeader(requestedPath, request, response, validBundle)){
-			return; 
-		}
+		
+		boolean writeResponseHeader = false;
+		
+		// If debug mode is off, check for If-Modified-Since and If-none-match headers and set response caching headers.
+		if (!this.jawrConfig.isDebugModeOn()) {
+			// If a browser checks for changes, always respond 'no changes'.
+			if (validBundle && (null != request.getHeader(IF_MODIFIED_SINCE_HEADER) || null != request.getHeader(IF_NONE_MATCH_HEADER))) {
+				response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
+				if (LOGGER.isDebugEnabled())
+					LOGGER.debug("Returning 'not modified' header. ");
+				return;
+			}
 
+			if(validBundle){
+				// Add caching headers
+				setResponseHeaders(response);
+			}else{
+				
+				writeResponseHeader = illegalBundleRequestHandler.writeResponseHeader(requestedPath, request, response);
+				if(!writeResponseHeader){
+					// Add caching headers
+					setResponseHeaders(response);
+				}
+			}
+		}
+		
 		// Returns the real file path
 		String filePath = getRealFilePath(requestedPath);
 
@@ -415,9 +437,11 @@ public class JawrImageRequestHandler extends JawrRequestHandler {
 			if(isValidRequestedPath(filePath) && (validBundle || illegalBundleRequestHandler.canWriteContent(requestedPath, request))){
 				writeContent(response, filePath);
 			}else{
-				LOGGER.error("Unable to load the image for the request URI : "
-						+ request.getRequestURI());
-				response.sendError(HttpServletResponse.SC_NOT_FOUND);
+				if(!writeResponseHeader){
+					LOGGER.error("Unable to load the image for the request URI : "
+							+ request.getRequestURI());
+					response.sendError(HttpServletResponse.SC_NOT_FOUND);
+				}
 			}
 		} catch (Exception ex) {
 
