@@ -17,7 +17,6 @@ import java.io.IOException;
 
 import net.jawr.web.resource.bundle.postprocess.AbstractChainedResourceBundlePostProcessor;
 import net.jawr.web.resource.bundle.postprocess.BundleProcessingStatus;
-import net.jawr.web.resource.bundle.postprocess.CompositeResourceBundlePostProcessor;
 import net.jawr.web.resource.bundle.postprocess.ResourceBundlePostProcessor;
 
 /**
@@ -50,12 +49,4 @@ public class CustomPostProcessorChainWrapper extends AbstractChainedResourceBund
 		return customPostProcessor.postProcessBundle(status, bundleData);
 	}
 
-	/* (non-Javadoc)
-	 * @see net.jawr.web.resource.bundle.postprocess.AbstractChainedResourceBundlePostProcessor#containsCompositeBundleProcessor()
-	 */
-	public boolean containsCompositeBundleProcessor() {
-		return customPostProcessor instanceof CompositeResourceBundlePostProcessor;
-	}
-
-	
 }

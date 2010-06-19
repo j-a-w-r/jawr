@@ -588,8 +588,7 @@ public class ResourceBundlesHandlerImpl implements ResourceBundlesHandler {
 	private void joinAndStoreCompositeResourcebundle(
 			CompositeResourceBundle composite, boolean processBundle) {
 
-		// TODO check if all this is usefull when we use the already created bundle
-		BundleProcessingStatus status = new BundleProcessingStatus(composite,
+		BundleProcessingStatus status = new BundleProcessingStatus(BundleProcessingStatus.FILE_PROCESSING_TYPE, composite,
 				resourceHandler, config);
 		
 		// Collect all variant names from child bundles
@@ -641,10 +640,14 @@ public class ResourceBundlesHandlerImpl implements ResourceBundlesHandler {
 					.hasNext();) {
 				JoinableResourceBundle childbundle = (JoinableResourceBundle) it
 						.next();
-				status.setCompositeBundle(true);
-				status.setChildCompositeBundle(true);
-				store.append(joinAndPostprocessBundle(childbundle, variants,
-						status, processBundle));
+				
+				JoinableResourceBundleContent childContent = joinAndPostprocessBundle(childbundle, variants,
+						status, processBundle);
+				// Do unitary postprocessing.
+				status.setProcessingType(BundleProcessingStatus.FILE_PROCESSING_TYPE);
+				StringBuffer content = executeUnitaryPostProcessing(composite, status, childContent.getContent());
+				childContent.setContent(content);
+				store.append(childContent);
 			}
 			
 			// Post process composite bundle as needed
@@ -673,18 +676,14 @@ public class ResourceBundlesHandlerImpl implements ResourceBundlesHandler {
 		
 		JoinableResourceBundleContent store = new JoinableResourceBundleContent();
 		StringBuffer processedContent = null;
-		
+		status.setProcessingType(BundleProcessingStatus.BUNDLE_PROCESSING_TYPE);
 		ResourceBundlePostProcessor bundlePostProcessor = composite.getBundlePostProcessor();
-		if (null != bundlePostProcessor && 
-				((ChainedResourceBundlePostProcessor)bundlePostProcessor).containsCompositeBundleProcessor()){
+		if (null != bundlePostProcessor){
 			
-			status.setCompositeBundle(true);
-			status.setChildCompositeBundle(false);
 			processedContent = bundlePostProcessor.postProcessBundle(
 					status, content);
 		}
-		else if (null != this.postProcessor &&
-				((ChainedResourceBundlePostProcessor)postProcessor).containsCompositeBundleProcessor()){
+		else if (null != this.postProcessor){
 			
 			processedContent = this.postProcessor.postProcessBundle(status, content);
 		}
@@ -749,7 +748,7 @@ public class ResourceBundlesHandlerImpl implements ResourceBundlesHandler {
 		
 		if(processBundle){
 			
-			BundleProcessingStatus status = new BundleProcessingStatus(bundle,
+			BundleProcessingStatus status = new BundleProcessingStatus(BundleProcessingStatus.FILE_PROCESSING_TYPE, bundle,
 					resourceHandler, config);
 			JoinableResourceBundleContent store = null;
 			
@@ -902,6 +901,7 @@ public class ResourceBundlesHandlerImpl implements ResourceBundlesHandler {
 				}
 				
 				// Do unitary postprocessing.
+				status.setProcessingType(BundleProcessingStatus.FILE_PROCESSING_TYPE);
 				bundleData.append(executeUnitaryPostProcessing(bundle, status, writer.getBuffer()));
 			}
 
@@ -929,6 +929,7 @@ public class ResourceBundlesHandlerImpl implements ResourceBundlesHandler {
 			BundleProcessingStatus status, StringBuffer content) {
 		
 		StringBuffer bundleData = new StringBuffer();
+		status.setProcessingType(BundleProcessingStatus.FILE_PROCESSING_TYPE);
 		if (null != bundle.getUnitaryPostProcessor()) {
 			StringBuffer resourceData = bundle
 					.getUnitaryPostProcessor().postProcessBundle(
@@ -961,6 +962,7 @@ public class ResourceBundlesHandlerImpl implements ResourceBundlesHandler {
 			StringBuffer bundleData) {
 		
 		StringBuffer store;
+		status.setProcessingType(BundleProcessingStatus.BUNDLE_PROCESSING_TYPE);
 		if (null != bundle.getBundlePostProcessor())
 			store = bundle.getBundlePostProcessor().postProcessBundle(
 					status, bundleData);

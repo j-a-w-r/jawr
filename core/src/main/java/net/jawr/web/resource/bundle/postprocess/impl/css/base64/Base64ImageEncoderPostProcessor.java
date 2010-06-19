@@ -20,8 +20,8 @@ import java.util.Map;
 
 import net.jawr.web.JawrConstant;
 import net.jawr.web.resource.bundle.postprocess.BundleProcessingStatus;
-import net.jawr.web.resource.bundle.postprocess.CompositeResourceBundlePostProcessor;
 import net.jawr.web.resource.bundle.postprocess.PostProcessFactoryConstant;
+import net.jawr.web.resource.bundle.postprocess.ResourceBundlePostProcessor;
 import net.jawr.web.resource.bundle.postprocess.impl.CSSURLPathRewriterPostProcessor;
 import net.jawr.web.resource.bundle.postprocess.impl.PostProcessorCssImageUrlRewriter;
 import net.jawr.web.resource.bundle.variant.VariantSet;
@@ -36,7 +36,7 @@ import org.apache.log4j.Logger;
  * @author Ibrahim Chaehoi
  */
 public class Base64ImageEncoderPostProcessor extends
-	CSSURLPathRewriterPostProcessor implements CompositeResourceBundlePostProcessor {
+	CSSURLPathRewriterPostProcessor implements ResourceBundlePostProcessor {
 
 	/** The logger */
 	protected static final Logger LOGGER = 
@@ -65,7 +65,6 @@ public class Base64ImageEncoderPostProcessor extends
 	 */
 	public Base64ImageEncoderPostProcessor() {
 		super(PostProcessFactoryConstant.BASE64_IMAGE_ENCODER);
-		containsCompositeBundlePostProcessor = true;
 	}
 
 	/* (non-Javadoc)
@@ -92,19 +91,16 @@ public class Base64ImageEncoderPostProcessor extends
 			status.putData(JawrConstant.BASE64_ENCODED_RESOURCES, encodedResources);
 		}
 		
-		StringBuffer sb = bundleData;
-		if(!status.isCompositeBundle() || status.isChildCompositeBundle()){
-			sb = super.doPostProcessBundle(status, bundleData);
-		}
-		
+		StringBuffer sb = super.doPostProcessBundle(status, bundleData);
+
 		if(!encodedResources.isEmpty() && status.isSearchingPostProcessorVariants()){
 			VariantSet variantSet = new VariantSet(JawrConstant.BROWSER_VARIANT_TYPE, "", new String[]{"", JawrConstant.BROWSER_IE6,JawrConstant.BROWSER_IE7});
-			status.adPostProcessVariant(JawrConstant.BROWSER_VARIANT_TYPE, variantSet);
+			status.addPostProcessVariant(JawrConstant.BROWSER_VARIANT_TYPE, variantSet);
 			variantSet = new VariantSet(JawrConstant.CONNECTION_TYPE_VARIANT_TYPE, "", new String[]{"", JawrConstant.SSL});
-			status.adPostProcessVariant(JawrConstant.CONNECTION_TYPE_VARIANT_TYPE, variantSet);
+			status.addPostProcessVariant(JawrConstant.CONNECTION_TYPE_VARIANT_TYPE, variantSet);
 		}
 		
-		if(!status.isChildCompositeBundle() && !status.isSearchingPostProcessorVariants()){
+		if(!status.isSearchingPostProcessorVariants()){
 				
 			Map bundleVariants = status.getBundleVariants();
 			if(bundleVariants != null){
@@ -131,7 +127,7 @@ public class Base64ImageEncoderPostProcessor extends
 		Iterator it = encodedImages.entrySet().iterator();
 		StringBuffer mhtml = new StringBuffer();
 		String lineSeparator = net.jawr.web.util.StringUtils.LINE_SEPARATOR;
-		mhtml.append("/*" + lineSeparator);
+		mhtml.append("/*!" + lineSeparator);
 		mhtml.append("Content-Type: multipart/related; boundary=\"" + BOUNDARY_SEPARATOR + "\"" + lineSeparator + lineSeparator);
 		
 		while (it.hasNext()) {
@@ -146,7 +142,7 @@ public class Base64ImageEncoderPostProcessor extends
 		
 		mhtml.append(BOUNDARY_SEPARATOR_PREFIX + BOUNDARY_SEPARATOR + BOUNDARY_SEPARATOR_PREFIX + lineSeparator);
 		mhtml.append("*/" + lineSeparator + lineSeparator);
-        sb.insert(0, mhtml);
+        sb.insert(0, mhtml.toString());
 
         LOGGER.debug(MHTML_PREFIX + mhtml);
 	}

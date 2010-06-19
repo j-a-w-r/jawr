@@ -26,14 +26,14 @@ import javax.servlet.http.HttpServletRequest;
 public interface VariantResolver {
 
 	/**
-	 * Resolve the variant to use for the user associated to a request.
+	 * Resolves the variant to use for the user associated to a request.
 	 * @param request the request
 	 * @return A string identifying the variant.
 	 */
 	String resolveVariant(HttpServletRequest request); 
 	
 	/**
-	 * Resolve the variant to use for the user associated to a request.
+	 * Resolves the variant to use for the user associated to a request.
 	 * @param request the request
 	 * @return A string identifying the variant.
 	 */
