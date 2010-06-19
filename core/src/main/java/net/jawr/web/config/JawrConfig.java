@@ -64,11 +64,6 @@ public class JawrConfig implements Serializable {
 	public static final String JAWR_BROWSER_RESOLVER = "jawr.browser.resolver";
 	
 	/**
-	 * The property name for the URL scheme resolver
-	 */
-	public static final String JAWR_URL_SCHEME_RESOLVER = "jawr.url.scheme.resolver";
-	
-	/**
 	 * The property name for the bundle hashcode generator
 	 */
 	public static final String JAWR_BUNDLE_HASHCODE_GENERATOR = "jawr.bundle.hashcode.generator";
@@ -161,7 +156,7 @@ public class JawrConfig implements Serializable {
 	public static final String JAWR_CSS_CLASSPATH_HANDLE_IMAGE = "jawr.css.classpath.handle.image";
 	
 	/**
-	 * The property name for the flag indicating if the CSS image for the CSS retrieved from classpath must be also retrieved from classpath
+	 * The property name for the name of the cookie used to store the CSS skin
 	 */
 	public static final String JAWR_CSS_SKIN_COOKIE = "jawr.css.skin.cookie";
 	
