@@ -17,6 +17,7 @@ import net.jawr.web.resource.bundle.postprocess.AbstractChainedResourceBundlePos
 import net.jawr.web.resource.bundle.postprocess.ChainedResourceBundlePostProcessor;
 import net.jawr.web.resource.bundle.postprocess.PostProcessFactoryConstant;
 import net.jawr.web.resource.bundle.postprocess.ResourceBundlePostProcessor;
+import net.jawr.web.resource.bundle.postprocess.impl.CSSCombineMediaPostProcessor;
 import net.jawr.web.resource.bundle.postprocess.impl.CSSImportPostProcessor;
 import net.jawr.web.resource.bundle.postprocess.impl.CSSMinPostProcessor;
 import net.jawr.web.resource.bundle.postprocess.impl.CSSURLPathRewriterPostProcessor;
@@ -68,6 +69,8 @@ public class CSSPostProcessorChainFactory extends
 			return new CSSImportPostProcessor();
 		else if(PostProcessFactoryConstant.CSS_CHARSET_FILTER.equals(processorKey))
 			return new CssCharsetFilterPostProcessor();
+		else if(PostProcessFactoryConstant.CSS_COMBINE_MEDIA.equals(processorKey))
+			return new CSSCombineMediaPostProcessor();
 		else if (PostProcessFactoryConstant.URL_PATH_REWRITER.equals(processorKey))
 			return new CSSURLPathRewriterPostProcessor();
 		else if (PostProcessFactoryConstant.BASE64_IMAGE_ENCODER.equals(processorKey))
