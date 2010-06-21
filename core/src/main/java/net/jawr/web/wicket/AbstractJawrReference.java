@@ -94,7 +94,7 @@ public abstract class AbstractJawrReference extends WebMarkupContainer {
  		   
             final Response response = getResponse();
             Writer writer = new RedirectWriter(response);
-            BundleRendererContext ctx = RendererRequestUtils.getBundleRendererContext(request, renderer);
+            BundleRendererContext ctx =  RendererRequestUtils.getBundleRendererContext(request, renderer);
 			   
             renderer.renderBundleLinks(src,
             		ctx,
@@ -106,14 +106,18 @@ public abstract class AbstractJawrReference extends WebMarkupContainer {
         markupStream.skipComponent();
     }
 
+    /**
+     * Returns the reference path
+     * @param attributes the attributes
+     * @return the reference path
+     */
     protected abstract String getReferencePath(final IValueMap attributes);
-
+    
     /**
      * Create the tag renderer.
      * @param tag the tag
      * @return the tag renderer.
      */
     protected abstract BundleRenderer createRenderer(ComponentTag tag);
-    
     
 }

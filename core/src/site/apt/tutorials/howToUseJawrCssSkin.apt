@@ -90,6 +90,31 @@ Introduction
 	By default the name of the cookie used is <<jawrSkin>>. 
 	
 	
+	* Jawr style tag
+	
+	There are 3 attributes of the Jawr style tag, which can be related to the CSS skin.
+	
+*---------------+---------+--------------+----------------+
+| <<Attribute name>> | <<Type>>    | <<Purpose>>      | <<Default value>>  | 
+*---------------+---------+--------------+----------------+
+| alternate | Boolean | This flag is used to render link as an alternate style.  | false | 
+*---------------*---------*--------------+----------------+
+| title | String | The title to use for the style.  | false | 
+*---------------*---------*--------------+----------------+
+| displayAlternate | Boolean | This flag is used to render the skin variants of the CSS bundle as alternate style.  | false | 
+*---------------*---------*--------------+----------------+
+
+		* <<alternate>>
+		This attribute allows you to define the CSS bundle as an alternate style.
+		 
+		* <<title>>
+		This attribute allows you to define the title attribute of the stylesheet link.
+		
+		* <<displayAlternate>>
+		This attribute allows you to render all the skin variants of the CSS bundle as alternate styles. 
+		
+	Please take a look at the Jawr style tag {{{../dos/taglibs.html}documentation}} for more detail.
+	
 * Set up Jawr in your project
 
 	Please check the {{{./quickstart.html}quickstart}} tutorial for the instruction about Jawr installation in your project.

@@ -142,6 +142,28 @@ Jawr JSP tag libraries
 		
 		* <<html>>: tags will not be closed, as determined by the HTML spec (>).    
 
+	* Alternate / title attribute
+	
+		Jawr allows you to define alternate stylesheets and to set the title attibute of your CSS links.
+		
++------------------------------------------+
+
+	<jwr:style src="/css/cssBundle.css" alternate="true" title="myBlueStyle"/>
+	
++------------------------------------------+
+		
+		will generate :
+				 
++------------------------------------------+
+
+	<link href="/myWarContext/gzip_6c3901a019f50bad406084bd7a1b8a5/css/cssBundle.css" media="all" type="text/css" rel="alternate stylesheet" title="myBlueStyle">
+	
++------------------------------------------+
+
+		<<Warning>>:\
+		If the reference of your cssBundle is a CSS bundle with skin variants, you can <<force>> the skin variant to use by setting the alternate attribute to <<true>>
+		and to set the title to the skin name to use. This will override the skin set by the user.		
+		
 	* Display CSS skin alternate styles
 	
 		Since the version 3.3, Jawr support CSS skins. This means that a CSS bundle can have multiple skins, which will be
@@ -177,6 +199,39 @@ Jawr JSP tag libraries
 	 
 	The above code snipset will set the current user skin to "aqua" in the cookie and it will switch the current skin to "aqua".\ 
 	For more information about the <<skinSwitcher>> generator, please take a look at the {{{./generators.html}generators}} documentation.
+	
+	To sum up:
+	
+*---------------+---------+--------------+----------------+
+| <<Attribute name>> | <<Type>>    | <<Purpose>>      | <<Default value>>  | 
+*---------------+---------+--------------+----------------+
+| src | String | The bundle path.  |  | 
+*---------------*---------*--------------+----------------+
+| media | String | The media attribute of the stylesheet.  |  | 
+*---------------*---------*--------------+----------------+
+| useRandomParam | Boolean | The flag indicating if we must use random parameter in debug mode.  | true | 
+*---------------*---------*--------------+----------------+
+| alternate | Boolean | This flag is used to render link as an alternate style.  | false | 
+*---------------*---------*--------------+----------------+
+| title | String | The title to use for the style.  | false | 
+*---------------*---------*--------------+----------------+
+| displayAlternate | Boolean | This flag is used to render the skin variants of the CSS bundle as alternate style.  | false | 
+*---------------*---------*--------------+----------------+
+
+		* <<src>>
+		This attribute defines the CSS bundle path to use.
+
+		* <<src>>
+		This attribute defines the CSS bundle path to use.
+
+		* <<alternate>>
+		This attribute allows you to define the CSS bundle as an alternate style.
+		 
+		* <<title>>
+		This attribute allows you to define the title attribute of the stylesheet link.
+		
+		* <<displayAlternate>>
+		This attribute allows you to render all the skin variants of the CSS bundle as alternate styles. 
 	
 * The image tags
 

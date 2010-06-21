@@ -71,8 +71,7 @@ public abstract class AbstractResourceBundleTag extends UIOutput {
 
 		super.encodeBegin(context);
 	}
-	
-    
+
 	/**
 	 * Retrieve the ResourceCollector from context. Each implementation will use a different key
 	 * to retrieve it. 

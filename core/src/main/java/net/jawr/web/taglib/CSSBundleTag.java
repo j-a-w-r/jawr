@@ -14,7 +14,6 @@
 package net.jawr.web.taglib;
 
 import java.io.IOException;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
@@ -25,9 +24,6 @@ import net.jawr.web.resource.bundle.renderer.BundleRenderer;
 import net.jawr.web.resource.bundle.renderer.BundleRendererContext;
 import net.jawr.web.resource.bundle.renderer.CSSHTMLBundleLinkRenderer;
 import net.jawr.web.servlet.RendererRequestUtils;
-import net.jawr.web.util.StringUtils;
-
-import org.apache.log4j.Logger;
 
 /**
  * JSP taglib which uses a CSSHTMLBundleLinkRenderer to render links for CSS bundles. 
@@ -40,11 +36,7 @@ public class CSSBundleTag  extends AbstractResourceBundleTag {
 	/** The serial version UID */
 	private static final long serialVersionUID = 5087323727715427592L;
 
-	/** The logger */
-	private static final Logger LOGGER = Logger
-			.getLogger(CSSBundleTag.class);
-	
-    /** The media */
+	/** The media */
     private String media;
 
     /** The flag indicating if it's an alternate stylesheet */
@@ -56,61 +48,7 @@ public class CSSBundleTag  extends AbstractResourceBundleTag {
     /** The title */
     private String title;
     
-    /*
-	 * (non-Javadoc)
-	 * 
-	 * @see javax.servlet.jsp.tagext.TagSupport#doStartTag()
-	 */
-	public int doStartTag() throws JspException {
-
-		// Renderer istance which takes care of generating the response
-		this.renderer = createRenderer();
-
-		HttpServletRequest request = (HttpServletRequest) pageContext
-				.getRequest();
-
-		// set the debug override
-		RendererRequestUtils.setRequestDebuggable(request, renderer
-				.getBundler().getConfig());
-
-		try {
-			BundleRendererContext ctx = RendererRequestUtils
-					.getBundleRendererContext(request, renderer);
-			
-			if(alternate && StringUtils.isNotEmpty(title)){
-				
-				if(LOGGER.isInfoEnabled()){
-					LOGGER.info("Force CSS to alternate skin '"+title+"'");
-				}
-				
-				// force alternate variant
-				Map variants = ctx.getVariants();
-				variants.put(JawrConstant.SKIN_VARIANT_TYPE, title);
-			}
-			
-			renderer.renderBundleLinks(src, ctx, pageContext.getOut());
-			
-		} catch (IOException ex) {
-			throw new JspException(
-					"Unexpected IOException when writing script tags for path "
-							+ src, ex);
-		}
-
-		return SKIP_BODY;
-	}
-	
-    /* (non-Javadoc)
-	 * @see net.jawr.web.taglib.AbstractResourceBundleTag#createRenderer()
-	 */
-	protected BundleRenderer createRenderer() {
-		if(null == pageContext.getServletContext().getAttribute(JawrConstant.CSS_CONTEXT_ATTRIBUTE))
-			throw new IllegalStateException("ResourceBundlesHandler not present in servlet context. Initialization of Jawr either failed or never occurred.");
-
-		ResourceBundlesHandler rsHandler = (ResourceBundlesHandler) pageContext.getServletContext().getAttribute(JawrConstant.CSS_CONTEXT_ATTRIBUTE);
-		return  new CSSHTMLBundleLinkRenderer(rsHandler, this.useRandomParam, this.media, this.alternate, this.displayAlternate, this.title);
-	}
-
-	/**
+    /**
      * Set the media type to use in the css tag
      * @param media 
      */
@@ -140,6 +78,49 @@ public class CSSBundleTag  extends AbstractResourceBundleTag {
 	 */
 	public void setTitle(String title) {
 		this.title = title;
+	}
+
+    /*
+	 * (non-Javadoc)
+	 * 
+	 * @see javax.servlet.jsp.tagext.TagSupport#doStartTag()
+	 */
+	public int doStartTag() throws JspException {
+
+		// Renderer istance which takes care of generating the response
+		this.renderer = createRenderer();
+
+		HttpServletRequest request = (HttpServletRequest) pageContext
+				.getRequest();
+
+		// set the debug override
+		RendererRequestUtils.setRequestDebuggable(request, renderer
+				.getBundler().getConfig());
+
+		try {
+			BundleRendererContext ctx = RendererRequestUtils
+					.getBundleRendererContext(request, renderer);
+			
+			renderer.renderBundleLinks(src, ctx, pageContext.getOut());
+			
+		} catch (IOException ex) {
+			throw new JspException(
+					"Unexpected IOException when writing script tags for path "
+							+ src, ex);
+		}
+
+		return SKIP_BODY;
+	}
+	
+    /* (non-Javadoc)
+	 * @see net.jawr.web.taglib.AbstractResourceBundleTag#createRenderer()
+	 */
+	protected BundleRenderer createRenderer() {
+		if(null == pageContext.getServletContext().getAttribute(JawrConstant.CSS_CONTEXT_ATTRIBUTE))
+			throw new IllegalStateException("ResourceBundlesHandler not present in servlet context. Initialization of Jawr either failed or never occurred.");
+
+		ResourceBundlesHandler rsHandler = (ResourceBundlesHandler) pageContext.getServletContext().getAttribute(JawrConstant.CSS_CONTEXT_ATTRIBUTE);
+		return  new CSSHTMLBundleLinkRenderer(rsHandler, this.useRandomParam, this.media, this.alternate, this.displayAlternate, this.title);
 	}
 
 	/* (non-Javadoc)

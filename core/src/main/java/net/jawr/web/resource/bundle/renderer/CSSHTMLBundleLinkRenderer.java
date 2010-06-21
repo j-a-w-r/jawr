@@ -188,6 +188,17 @@ public class CSSHTMLBundleLinkRenderer extends AbstractBundleLinkRenderer implem
 			BundleRendererContext ctx, Map variant, Writer out, boolean debugOn)
 			throws IOException {
 		
+		if(alternate && StringUtils.isNotEmpty(title)){
+			
+			if(LOGGER.isInfoEnabled()){
+				LOGGER.info("Force CSS to alternate skin '"+title+"'");
+			}
+			
+			// force alternate variant
+			Map variants = ctx.getVariants();
+			variants.put(JawrConstant.SKIN_VARIANT_TYPE, title);
+		}
+		
 		if(isForcedToRenderIeCssBundleInDebug(ctx, debugOn)){
 			
 			ResourceBundlePathsIterator it = bundler.getBundlePaths(false, bundle.getId(), new ConditionalCommentRenderer(out), variant);
