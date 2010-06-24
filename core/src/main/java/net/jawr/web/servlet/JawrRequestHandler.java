@@ -255,9 +255,6 @@ public class JawrRequestHandler implements ConfigChangeListener, Serializable {
 			props.putAll(overrideProperties);
 		}
 		
-		// init registry
-		generatorRegistry = new GeneratorRegistry(resourceType);
-
 		// hang onto the propertiesSource for manual reloads
 		this.propertiesSource = propsSrc;
 
@@ -302,10 +299,15 @@ public class JawrRequestHandler implements ConfigChangeListener, Serializable {
 	 * @throws ServletException if an exception occurs
 	 */
 	protected void initializeJawrConfig(Properties props) throws ServletException {
-		// Initialize config
-		if (null != jawrConfig)
-			jawrConfig.invalidate();
+		
+		// init registry
+		generatorRegistry = new GeneratorRegistry(resourceType);
 
+		// Initialize config
+		if (null != jawrConfig){
+			jawrConfig.invalidate();
+		}
+		
 		createJawrConfig(props);
 		
 		jawrConfig.setContext(servletContext);

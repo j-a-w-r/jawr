@@ -13,6 +13,7 @@
  */
 package net.jawr.web.resource.bundle.locale;
 
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -20,6 +21,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.Set;
+
+import javax.servlet.ServletContext;
 
 import net.jawr.web.resource.bundle.factory.util.ClassLoaderResourceUtils;
 import net.jawr.web.util.StringUtils;
@@ -68,7 +71,19 @@ public class LocaleUtils {
 	 */
 	public static List getAvailableLocaleSuffixesForBundle(String messageBundlePath) {
 
-		return getAvailableLocaleSuffixesForBundle(messageBundlePath, MSG_RESOURCE_BUNDLE_SUFFIX);
+		return getAvailableLocaleSuffixesForBundle(messageBundlePath, MSG_RESOURCE_BUNDLE_SUFFIX, null);
+	}
+	
+	/**
+	 * Returns the list of available locale suffixes for a message resource bundle
+	 * 
+	 * @param messageBundlePath the resource bundle path
+	 * @param servletContext the servlet context
+	 * @return the list of available locale suffixes for a message resource bundle
+	 */
+	public static List getAvailableLocaleSuffixesForBundle(String messageBundlePath, ServletContext servletContext) {
+
+		return getAvailableLocaleSuffixesForBundle(messageBundlePath, MSG_RESOURCE_BUNDLE_SUFFIX, servletContext);
 	}
 	
 	/**
@@ -76,9 +91,10 @@ public class LocaleUtils {
 	 * 
 	 * @param messageBundlePath the resource bundle path
 	 * @param fileSuffix the file suffix
+	 * @param servletContext the servlet context
 	 * @return the list of available locale suffixes for a message resource bundle
 	 */
-	public static List getAvailableLocaleSuffixesForBundle(String messageBundlePath, String fileSuffix) {
+	public static List getAvailableLocaleSuffixesForBundle(String messageBundlePath, String fileSuffix, ServletContext servletContext) {
 
 		int idxNameSpace = messageBundlePath.indexOf("(");
 		int idxFilter = messageBundlePath.indexOf("[");
@@ -97,7 +113,7 @@ public class LocaleUtils {
 		}else{
 			messageBundle = messageBundlePath;
 		}
-		return getAvailableLocaleSuffixes(messageBundle, fileSuffix);
+		return getAvailableLocaleSuffixes(messageBundle, fileSuffix, servletContext);
 	}
 
 	/**
@@ -106,9 +122,9 @@ public class LocaleUtils {
 	 * @param messageBundle the resource bundle path
 	 * @return the list of available locale suffixes for a message resource bundle
 	 */
-	public static List getAvailableLocaleSuffixes(String messageBundle) {
+	public static List getAvailableLocaleSuffixes(String messageBundle, ServletContext servletContext) {
 		
-		return getAvailableLocaleSuffixes(messageBundle, MSG_RESOURCE_BUNDLE_SUFFIX);
+		return getAvailableLocaleSuffixes(messageBundle, MSG_RESOURCE_BUNDLE_SUFFIX, servletContext);
 	}
 	
 	/**
@@ -116,17 +132,18 @@ public class LocaleUtils {
 	 * 
 	 * @param messageBundle the resource bundle path
 	 * @param fileSuffix the file suffix
+	 * @param servletContext the servlet context 
 	 * @return the list of available locale suffixes for a message resource bundle
 	 */
-	public static List getAvailableLocaleSuffixes(String messageBundle, String fileSuffix) {
+	public static List getAvailableLocaleSuffixes(String messageBundle, String fileSuffix, ServletContext servletContext) {
 		List availableLocaleSuffixes = new ArrayList();
 		Locale[] availableLocales = Locale.getAvailableLocales();
 	
-		addSuffixIfAvailable(messageBundle, availableLocaleSuffixes, null, fileSuffix);
+		addSuffixIfAvailable(messageBundle, availableLocaleSuffixes, null, fileSuffix, servletContext);
 	
 		for (int i = 0; i < availableLocales.length; i++) {
 			Locale locale = availableLocales[i];
-			addSuffixIfAvailable(messageBundle, availableLocaleSuffixes, locale, fileSuffix);
+			addSuffixIfAvailable(messageBundle, availableLocaleSuffixes, locale, fileSuffix, servletContext);
 		}
 	
 		return availableLocaleSuffixes;
@@ -140,13 +157,21 @@ public class LocaleUtils {
 	 * @param locale the locale to check.
 	 * @param fileSuffix the file suffix
 	 */
-	private static void addSuffixIfAvailable(String messageBundlePath, List availableLocaleSuffixes, Locale locale, String fileSuffix) {
+	private static void addSuffixIfAvailable(String messageBundlePath, List availableLocaleSuffixes, Locale locale, String fileSuffix, ServletContext servletContext) {
 		String localMsgResourcePath = toBundleName(messageBundlePath, locale) + fileSuffix;
 		URL resourceUrl = null;
 		try {
 			resourceUrl = ClassLoaderResourceUtils.getResourceURL(localMsgResourcePath, LocaleUtils.class);
 		} catch (Exception e) {
 			// Nothing to do
+		}
+		
+		if(resourceUrl == null && servletContext != null && localMsgResourcePath.startsWith("grails-app/")){
+			try {
+				resourceUrl = servletContext.getResource("/WEB-INF/"+localMsgResourcePath);
+			} catch (MalformedURLException e) {
+				// Nothing to do
+			}
 		}
 
 		if (resourceUrl != null) {

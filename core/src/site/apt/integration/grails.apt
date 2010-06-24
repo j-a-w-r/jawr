@@ -53,8 +53,17 @@ Jawr plugin for Grails
 	
 	Jawr uses log4j to log messages, so you can configure its tracing level along with the rest of your application. All jawr packages start 
 	with net.jawr.*, so you can use that as a key for an appender.   
-	
 
+	The configuration will indicate to the plugin which Jawr servlet to start.
+	
+	So if you configure only JS bundle, the plugin will start only the Jawr JS servlet.
+	So to enable the JS or the CSS servlet, you must at least define a bundle of the specified type.
+	To enable the Jawr Image servlet, you need to define one of the following property :
+		* jawr.img.mapping
+		* jawr.css.image.classpath.use.servlet
+		* jawr.img.* (Any property which starts with jawr.img)
+		* jawr.image.* (Any property which starts with jawr.image)
+		
 ** URL mapping
 
 	There are two ways to map Jawr to requests:  
@@ -71,7 +80,7 @@ Jawr plugin for Grails
 			
 	* You can define a URL fragment as a prefix (such as '/jawr/') to prefix every URL. Jawr will only serve requests containing this prefix. To 
 	use this you must add two special parameters to your Config.groovy file, to specify the prefixes for js and css: 
-		
+
 +------------------------------------------+	
 jawr.js.mapping = '/script/' // The value can be anything you want for the prefix
 jawr.css.mapping = '/style/'
@@ -81,6 +90,17 @@ jawr.css.mapping = '/style/'
 	
 	With either method, once you have filled out the properties, you will be ready to start adding Jawr tags to your pages. 
 	 
+	* Image URL mapping
+	
+	By default, Jawr will handle the following image types : .png, .jpeg, .jpg, .gif, .ico.
+	
+	You can configure the image mapping by settings the <<jawr.img.mappings>>.
+	If you want to define a set of extension file to handle, you need to list the extension with a smi colon separator, like this :
+	
++-----------------------------------------+
+jawr.img.mapping='*.png; *.jpg; *.gif'
++-----------------------------------------+	
+	
 * Using the tag library
 
 	The tag library for grails works exactly the same as the JSP version, so you will find all the details in the 
@@ -99,6 +119,7 @@ jawr.css.mapping = '/style/'
  </head>
  <body>
 	...
+	<jawr:img src="/images/logo.png" />
  </body>
 </html>
 

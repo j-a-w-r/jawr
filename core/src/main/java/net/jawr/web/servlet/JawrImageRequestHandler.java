@@ -42,6 +42,7 @@ import net.jawr.web.resource.bundle.IOUtils;
 import net.jawr.web.resource.bundle.factory.PropertiesBundleConstant;
 import net.jawr.web.resource.bundle.factory.util.PathNormalizer;
 import net.jawr.web.resource.bundle.factory.util.PropertiesConfigHelper;
+import net.jawr.web.resource.bundle.generator.GeneratorRegistry;
 import net.jawr.web.resource.handler.bundle.ResourceBundleHandler;
 import net.jawr.web.resource.handler.reader.ResourceReaderHandler;
 import net.jawr.web.util.StringUtils;
@@ -133,6 +134,10 @@ public class JawrImageRequestHandler extends JawrRequestHandler {
 	 */
 	protected void initializeJawrConfig(Properties props)
 			throws ServletException {
+		
+		// init registry
+		generatorRegistry = new GeneratorRegistry(resourceType);
+
 		// Initialize config
 		if (null != jawrConfig)
 			jawrConfig.invalidate();

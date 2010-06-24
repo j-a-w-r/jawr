@@ -23,8 +23,12 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
+import net.jawr.web.exception.InvalidPathException;
 import net.jawr.web.resource.bundle.IOUtils;
 
 /**
@@ -417,5 +421,30 @@ public class FileUtils {
                 }
             }
         }
+    }
+    
+    /**
+     * Returns the resource names contained in a directory, and
+     * for directory resource, a trailing '/' is added
+     * @param dir the directory
+     * @return the resource names
+     */
+    public static Set getResourceNames(File dir){
+    	     
+    	Set resourceNames = new HashSet();
+		
+    	// If the path is not valid throw an exception
+		String[] resArray = dir.list();
+		String absolutePath = dir.getAbsolutePath();
+		
+		if(resArray != null){
+			// Make the returned dirs end with '/', to match a servletcontext behavior. 
+			for (int i = 0; i < resArray.length; i++) {
+				if(new File(dir, resArray[i]).isDirectory())
+					resArray[i] += '/';
+			}
+			resourceNames.addAll(Arrays.asList(resArray));
+		}
+		return resourceNames;
     }
 }

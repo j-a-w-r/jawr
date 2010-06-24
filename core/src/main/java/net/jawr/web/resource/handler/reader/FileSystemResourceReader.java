@@ -21,12 +21,10 @@ import java.io.Reader;
 import java.nio.channels.Channels;
 import java.nio.channels.FileChannel;
 import java.nio.charset.Charset;
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Set;
 
 import net.jawr.web.config.JawrConfig;
-import net.jawr.web.exception.InvalidPathException;
+import net.jawr.web.util.FileUtils;
 
 /**
  * This class defines the resource reader which is based on a file system and which can handle
@@ -108,21 +106,7 @@ public class FileSystemResourceReader implements TextResourceReader, StreamResou
 	public Set getResourceNames(String path) {
 		path = path.replace('/', File.separatorChar);
 		File resource = new File(baseDir, path);
-             
-		// If the path is not valid throw an exception
-		String[] resArray = resource.list();
-		if(null == resArray)
-			throw new InvalidPathException(baseDir + File.separator + path);
-		
-		// Make the returned dirs end with '/', to match a servletcontext behavior. 
-		for (int i = 0; i < resArray.length; i++) {
-			if(isDirectory(path + resArray[i]))
-				resArray[i] += '/';
-		}
-		Set ret = new HashSet();
-		ret.addAll(Arrays.asList(resArray));
-
-		return ret;
+        return FileUtils.getResourceNames(resource);
 	}
 
 	/* (non-Javadoc)

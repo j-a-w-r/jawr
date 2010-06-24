@@ -30,7 +30,10 @@ import net.jawr.web.config.JawrConfig;
 import net.jawr.web.exception.ResourceNotFoundException;
 import net.jawr.web.resource.bundle.generator.GeneratorRegistry;
 import net.jawr.web.resource.bundle.generator.PrefixedResourceGenerator;
+import net.jawr.web.resource.handler.reader.grails.GrailsServletContextResourceReader;
 import net.jawr.web.util.StringUtils;
+
+import org.apache.log4j.Logger;
 
 /**
  * This class defines the manager for resource reader.
@@ -39,6 +42,9 @@ import net.jawr.web.util.StringUtils;
  */
 public class ServletContextResourceReaderHandler implements ResourceReaderHandler {
 
+	/** The logger */
+	private static final Logger LOGGER = Logger.getLogger(ServletContextResourceReaderHandler.class);
+	
 	/** The servlet context */
 	private ServletContext servletContext;
 	
@@ -80,7 +86,23 @@ public class ServletContextResourceReaderHandler implements ResourceReaderHandle
 		} 
 		this.workingDirectory = tempWorkingDirectory;
 		
-		ServletContextResourceReader rd = new ServletContextResourceReader(servletContext, jawrConfig);
+		ServletContextResourceReader rd = null;
+		
+		// In grails apps, the generator uses a special implementation
+		if(null == servletContext.getAttribute(JawrConstant.GRAILS_WAR_DEPLOYED)){
+			if(LOGGER.isDebugEnabled()){
+				LOGGER.debug("Using standard servlet context resource reader.");
+			}
+		
+			rd = new ServletContextResourceReader(servletContext, jawrConfig);
+		}else{
+			
+			if(LOGGER.isDebugEnabled()){
+				LOGGER.debug("Using grails context resource reader.");
+			}
+		
+			rd = new GrailsServletContextResourceReader(servletContext, jawrConfig);
+		}
 		addResourceReaderToEnd(rd);
 	}
 	

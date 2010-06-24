@@ -19,7 +19,7 @@ public class LocalUtilsTestCase extends TestCase {
 
 	public void testGetLocaleAvailablePrefixes(){
 		
-		List result = LocaleUtils.getAvailableLocaleSuffixesForBundle("bundleLocale.messages");
+		List result = LocaleUtils.getAvailableLocaleSuffixesForBundle("bundleLocale.messages", null);
 		Assert.assertEquals(2, result.size());
 		Assert.assertEquals("",result.get(0));
 		Assert.assertEquals("es",result.get(1));
@@ -27,7 +27,7 @@ public class LocalUtilsTestCase extends TestCase {
 	
 	public void testGetLocaleAvailablePrefixesWithNamespace(){
 		
-		List result = LocaleUtils.getAvailableLocaleSuffixesForBundle("bundleLocale.messages(mynamespace)");
+		List result = LocaleUtils.getAvailableLocaleSuffixesForBundle("bundleLocale.messages(mynamespace)", null);
 		Assert.assertEquals(2, result.size());
 		Assert.assertEquals("",result.get(0));
 		Assert.assertEquals("es",result.get(1));
@@ -35,7 +35,7 @@ public class LocalUtilsTestCase extends TestCase {
 	
 	public void testGetLocaleAvailablePrefixesWithFilter(){
 		
-		List result = LocaleUtils.getAvailableLocaleSuffixesForBundle("bundleLocale.messages[ui.msg]");
+		List result = LocaleUtils.getAvailableLocaleSuffixesForBundle("bundleLocale.messages[ui.msg]", null);
 		Assert.assertEquals(2, result.size());
 		Assert.assertEquals("",result.get(0));
 		Assert.assertEquals("es",result.get(1));
@@ -43,9 +43,11 @@ public class LocalUtilsTestCase extends TestCase {
 	
 	public void testGetLocaleAvailablePrefixesWithFilterAndNamespace(){
 		
-		List result = LocaleUtils.getAvailableLocaleSuffixesForBundle("bundleLocale.messages(mynamespace)[ui.msg]");
+		List result = LocaleUtils.getAvailableLocaleSuffixesForBundle("bundleLocale.messages(mynamespace)[ui.msg]", null);
 		Assert.assertEquals(2, result.size());
 		Assert.assertEquals("",result.get(0));
 		Assert.assertEquals("es",result.get(1));
 	}
+	
+	// TODO test for Grails with servlet context
 }

@@ -187,6 +187,7 @@ public class GeneratorRegistry {
 		}
 		
 		if(generator != null){
+			initializeGeneratorProperties(generator);
 			updateRegistries(generator, generatorKey);
 			ResourceReader proxy = ResourceGeneratorReaderProxyFactory.getResourceReaderProxy(generator, rsHandler, config);
 			rsHandler.addResourceReaderToEnd(proxy);
@@ -500,5 +501,4 @@ public class GeneratorRegistry {
 		return availableVariantMap;
 	}
 
-	
 }
