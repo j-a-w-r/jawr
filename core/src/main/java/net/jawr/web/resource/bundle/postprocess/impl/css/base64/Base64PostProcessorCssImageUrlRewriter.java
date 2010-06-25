@@ -76,7 +76,7 @@ public class Base64PostProcessorCssImageUrlRewriter extends
 			Pattern.CASE_INSENSITIVE); // works with 'URL('
 
 	/** The default max file size */
-	private static final int MAX_LENGTH_FILE = 40000;
+	private static final int MAX_LENGTH_FILE = 30000;
 
 	/** The maximum image file size authorized to be encoded in base64 */
 	private int maxFileSize;
