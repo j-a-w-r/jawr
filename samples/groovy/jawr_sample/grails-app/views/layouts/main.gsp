@@ -1,18 +1,15 @@
 <html>
     <head>
         <title><g:layoutTitle default="Grails" /></title>
-        <link rel="stylesheet" href="${createLinkTo(dir:'css',file:'main.css')}" />
-        <link rel="shortcut icon" href="${createLinkTo(dir:'images',file:'favicon.ico')}" type="image/x-icon" />
+        <link rel="shortcut icon" href="<jawr:imagePath src="/images/favicon.ico" />" type="image/x-icon" />
         <g:layoutHead />
-        <g:javascript library="application" />				
-		<jawr:script src="/bundles/yui.js"  />
-		<jawr:style src="/bundles/all.css" />
+    	
     </head>
-    <body>
-        <div id="spinner" class="spinner" style="display:none;">
-            <img src="${createLinkTo(dir:'images',file:'spinner.gif')}" alt="Spinner" />
-        </div>	
-        <div class="logo"><img src="${createLinkTo(dir:'images',file:'grails_logo.jpg')}" alt="Grails" /></div>	
-        <g:layoutBody />		
-    </body>	
+    <body class="yui-skin-sam">
+    	<div id="spinner" class="spinner" style="display:none;">
+            <img src="${resource(dir:'images',file:'spinner.gif')}" alt="Spinner" />
+        </div>
+        <div id="grailsLogo" class="logo"><a href="https://jawr.dev.java.net/"><jawr:img src="/images/logo-small.png" alt="Jawr" border="0" /></a>&nbsp;&nbsp;&nbsp;<a href="http://grails.org"><jawr:img src="/images/grails_logo.png" alt="Grails" border="0" /></a></div>
+        <g:layoutBody />
+    </body>
 </html>

@@ -5,8 +5,7 @@ class UrlMappings {
 			 // apply constraints here
 		  }
 	  }
-	  //"/script/**"(controller:'jawrJavascript')
-    //"/style/**"(controller:'jawrCSS')
+      "/"(view:"/index")
 	  "500"(view:'/error')
 	}
 }

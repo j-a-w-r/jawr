@@ -10,14 +10,22 @@
 			<arguments>
 			</arguments>
 		</buildCommand>
-		<buildCommand>
-			<name>org.codehaus.groovy.eclipse.groovyBuilder</name>
-			<arguments>
-			</arguments>
-		</buildCommand>
 	</buildSpec>
 	<natures>
+		<nature>com.springsource.sts.grails.core.nature</nature>
+		<nature>org.eclipse.jdt.groovy.core.groovyNature</nature>
 		<nature>org.eclipse.jdt.core.javanature</nature>
-		<nature>org.codehaus.groovy.eclipse.groovyNature</nature>
 	</natures>
+	<linkedResources>
+		<link>
+			<name>hibernate-1.2.1-grails-app-i18n</name>
+			<type>2</type>
+			<location>C:/Documents and Settings/ibrahim/.grails/1.2.1/projects/jawr_sample/plugins/hibernate-1.2.1/grails-app/i18n</location>
+		</link>
+		<link>
+			<name>tomcat-1.2.1-src-groovy</name>
+			<type>2</type>
+			<location>C:/Documents and Settings/ibrahim/.grails/1.2.1/projects/jawr_sample/plugins/tomcat-1.2.1/src/groovy</location>
+		</link>
+	</linkedResources>
 </projectDescription>

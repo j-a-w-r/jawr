@@ -10,9 +10,10 @@
 //    grails.config.locations << "file:" + System.properties["${appName}.config.location"]
 // }
 grails.mime.file.extensions = true // enables the parsing of file extensions from URLs into the request format
+grails.mime.use.accept.header = false
 grails.mime.types = [ html: ['text/html','application/xhtml+xml'],
                       xml: ['text/xml', 'application/xml'],
-                      text: 'text-plain',
+                      text: 'text/plain',
                       js: 'text/javascript',
                       rss: 'application/rss+xml',
                       atom: 'application/atom+xml',
@@ -27,69 +28,106 @@ grails.mime.types = [ html: ['text/html','application/xhtml+xml'],
 grails.views.default.codec="none" // none, html, base64
 grails.views.gsp.encoding="UTF-8"
 grails.converters.encoding="UTF-8"
+// enable Sitemesh preprocessing of GSP pages
+grails.views.gsp.sitemesh.preprocess = true
+// scaffolding templates configuration
+grails.scaffolding.templates.domainSuffix = 'Instance'
 
+// Set to false to use the new Grails 1.2 JSONBuilder in the render method
+grails.json.legacy.builder=false
 // enabled native2ascii conversion of i18n properties files
 grails.enable.native2ascii = true
+// whether to install the java.util.logging bridge for sl4j. Disable fo AppEngine!
+grails.logging.jul.usebridge = true
+// packages to include in Spring bean scanning
+grails.spring.bean.packages = []
 
 // set per-environment serverURL stem for creating absolute links
 environments {
     production {
         grails.serverURL = "http://www.changeme.com"
     }
+    development {
+        grails.serverURL = "http://localhost:8080/${appName}"
+    }
+    test {
+        grails.serverURL = "http://localhost:8080/${appName}"
+    }
+
 }
 
 // log4j configuration
-log4j {
-    appender.stdout = "org.apache.log4j.ConsoleAppender"
-    appender.'stdout.layout'="org.apache.log4j.PatternLayout"
-    appender.'stdout.layout.ConversionPattern'='[%r] %c{2} %m%n'
-    appender.errors = "org.apache.log4j.FileAppender"
-    appender.'errors.layout'="org.apache.log4j.PatternLayout"
-    appender.'errors.layout.ConversionPattern'='[%r] %c{2} %m%n'
-    appender.'errors.File'="stacktrace.log"
-    rootLogger="error,stdout"
-    logger {
-        grails="error"
-        StackTrace="error,errors"
-        org {
-            codehaus.groovy.grails.web.servlet="error"  //  controllers
-            codehaus.groovy.grails.web.pages="error" //  GSP
-            codehaus.groovy.grails.web.sitemesh="error" //  layouts
-            codehaus.groovy.grails."web.mapping.filter"="error" // URL mapping
-            codehaus.groovy.grails."web.mapping"="error" // URL mapping
-            codehaus.groovy.grails.commons="info" // core / classloading
-            codehaus.groovy.grails.plugins="error" // plugins
-            codehaus.groovy.grails.orm.hibernate="error" // hibernate integration
-            springframework="off"
-            hibernate="off"
-        }
-        net.jawr="debug" 
-    }
-    additivity.StackTrace=false
+log4j = {
+    // Example of changing the log pattern for the default console
+    // appender:
+    //
+    //appenders {
+    //    console name:'stdout', layout:pattern(conversionPattern: '%c{2} %m%n')
+    //}
+
+
+    error  'org.codehaus.groovy.grails.web.servlet',  //  controllers
+	       'org.codehaus.groovy.grails.web.pages', //  GSP
+	       'org.codehaus.groovy.grails.web.sitemesh', //  layouts
+	       'org.codehaus.groovy.grails.web.mapping.filter', // URL mapping
+	       'org.codehaus.groovy.grails.web.mapping', // URL mapping
+	       'org.codehaus.groovy.grails.commons', // core / classloading
+	       'org.codehaus.groovy.grails.plugins', // plugins
+	       'org.codehaus.groovy.grails.orm.hibernate', // hibernate integration
+	       'org.springframework',
+	       'org.hibernate',
+           'net.sf.ehcache.hibernate'
+
+    warn   'org.mortbay.log'
+	
+	debug	'net.jawr'
 }
 
-jawr.debug.on=true;
+// Common properties
+jawr.debug.on=true
 jawr.gzip.on=false
-jawr.config.reload.interval='10'
-jawr.gzip.ie6.on=false
 jawr.charset.name='UTF-8'
-jawr.js.use.cache=true;
-jawr.js.bundle.basedir='/js'
+jawr.use.bundle.mapping=false
+jawr.factory.use.orphans.mapper=false
+jawr.debug.ie.force.css.bundle=true
+jawr.strict.mode=false
+jawr.bundle.hashcode.generator=MD5
 
-jawr.js.bundle.names='yui'
+// Custom Generator
+jawr.custom.generators='net.jawr.resource.generator.SampleImageGenerator'
 
-jawr.js.bundle.yui.id='/bundles/yui.js'
-jawr.js.bundle.yui.mappings='messages:grails-app.i18n.messages,/js/prototype/,/js/lib,/js/application.js'
+// Custom Post processors
+jawr.custom.postprocessors.sample.class='net.jawr.resource.postprocessor.SamplePostProcessor'
+jawr.custom.postprocessors.sample2.class='net.jawr.resource.postprocessor.SamplePostProcessor2'
 
-jawr.css.use.cache=true;
-jawr.css.bundle.basedir='/js'
+// Javascript properties and mappings
+jawr.js.bundle.basedir='/js/'
 
-jawr.css.bundle.names='all'
-jawr.css.bundle.all.mappings='/css/**'
-jawr.css.bundle.all.id='/bundles/all.css'
+jawr.js.bundle.one.id='/js/bundle/main.js'
+jawr.js.bundle.one.mappings='/js/global/**,/js/index/'
 
-//jawr.js.mapping = '/script/'
-jawr.css.mapping = '/style/'
-//grails.mime.file.extensions = false;
-foo = 'bar';
+jawr.js.bundle.two.id='/js/bundle/msg.js'
+jawr.js.bundle.two.mappings='messages:grails-app.i18n.messages'
 
+jawr.js.bundle.common.id='/js/common.js'
+jawr.js.bundle.common.mappings='/js/yui/yahoo-dom-event/yahoo-dom-event.js,/js/yui/element/element.js,/js/yui/tabview/tabview.js,/js/yui/container/container.js,skinSwitcher:switcher.js'
+
+// CSS properties and mappings
+
+// Comment the following line to disable the sprite generation or if you are running the application with a Java 1.4
+jawr.css.bundle.factory.global.preprocessors='smartsprites'
+
+jawr.css.skin.default.root.dirs='/css/themes/oceanBlue/en_US'
+jawr.csslinks.flavor='html'
+
+jawr.css.bundle.common.id='/css/common.css'
+jawr.css.bundle.common.mappings='/js/yui/fonts/fonts-min.css,skin:/css/themes/oceanBlue/en_US/theme.css,skin:/css/themes/oceanBlue/en_US/tabview.css,skin:/css/themes/oceanBlue/en_US/container.css'
+jawr.css.bundle.common.filepostprocessors='csspathrewriter'
+
+jawr.css.bundle.specific.id='/css/specific.css'
+jawr.css.bundle.specific.mappings='jar:fwk/css/temp.css,/css/one.css'
+jawr.css.bundle.specific.filepostprocessors='none'
+jawr.css.bundle.specific.bundlepostprocessors='cssminify,base64ImageEncoder'
+
+jawr.css.classpath.handle.image=true
+jawr.image.hash.algorithm='MD5'
