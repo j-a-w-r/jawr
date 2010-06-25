@@ -16,8 +16,6 @@
 	<p>This page demonstrates some Jawr features.</p>
 </div>
 
-<!--BEGIN SOURCE CODE FOR EXAMPLE =============================== -->
-
 <div id="panelMessage">
 	<div class="hd">Message</div>
 	<div class="bd">This is a Panel that was marked up in the document.</div>
@@ -27,7 +25,7 @@
     <ul class="yui-nav">
         <li class="selected"><a href="#tab1"><em>Internationalization</em></a></li>
         <li><a href="#tab2"><em>Skin</em></a></li>
-        <li><a href="#tab3"><em>Generate content</em></a></li>
+        <li><a href="#tab3"><em>Generated content</em></a></li>
         <li><a href="#tab4"><em>Generate sprite image</em></a></li>
         <li><a href="#tab5"><em>Generate base64 image</em></a></li>
     </ul>            
