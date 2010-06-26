@@ -397,6 +397,12 @@ public class JawrImageRequestHandler extends JawrRequestHandler {
 			HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
+		// manual reload request
+		if (this.jawrConfig.getRefreshKey().length() > 0 && null != request.getParameter("refreshKey")
+				&& this.jawrConfig.getRefreshKey().equals(request.getParameter("refreshKey"))) {
+			this.configChanged(propertiesSource.getConfigProperties());
+		}
+		
 		if (LOGGER.isDebugEnabled())
 			LOGGER.debug("Request received for path:" + requestedPath);
 
