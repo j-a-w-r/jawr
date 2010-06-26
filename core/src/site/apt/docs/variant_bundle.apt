@@ -69,13 +69,15 @@ Bundle variant map
 			but if the 2 VariantSets have different default values an exception is thrown, because Jaw is not able to define what is the 
 			default value to use for this VariantSet. 
 	
+	[]
+	
 *---------------+---------+---------+
-| <<VariantMap1>> | <<VariantMap2>>    | <<Concatenation result>>    | 
+|| <<VariantMap1>> || <<VariantMap2>>    || <<Concatenation result>>    | 
 *---------------+---------+---------+
-| {"locale" : {<<"">>, "en_US" }} | {}    | {"locale" : {<<"">>, "en_US" }} |
-| {"locale" : {<<"">>, "en_US" }} | {"browser" : {<<"">>, "IE6" }}    | {"locale" : {<<"">>, "en_US" }; "browser" : {<<"">>, "IE6" }} |
-| {"locale" : {<<"">>, "en_US" }; {"browser" : <<"">>, "IE7"}} | {"browser" : {<<"">>, "IE6" }}    | {"locale" : {<<"">>, "en_US" }; "browser" : {<<"">>, "IE6", "IE7" }} |
-| {"locale" : {<<"">>, "en_US" }; {"browser" : <<"IE6">>, "IE7"}} | {"browser" : {<<"">>, "IE6" }}    | An exception is thrown. The default values are not the same. |
+| ["locale" : [<<"">>, "en_US" ]] | [\}    | ["locale" : [<<"">>, "en_US" ]] |
+| ["locale" : [<<"">>, "en_US" ]] | ["browser" : [<<"">>, "IE6" ]]    | ["locale" : [<<"">>, "en_US" ]; "browser" : [<<"">>, "IE6" ]] |
+| ["locale" : [<<"">>, "en_US" ]; ["browser" : <<"">>, "IE7"]] | ["browser" : [<<"">>, "IE6" ]]    | ["locale" : [<<"">>, "en_US" ]; "browser" : [<<"">>, "IE6", "IE7" ]] |
+| ["locale" : [<<"">>, "en_US" ]; ["browser" : <<"IE6">>, "IE7"]] | ["browser" : [<<"">>, "IE6" ]]    | An exception is thrown. The default values are not the same. |
 *---------------+---------+---------+
 	
 			 
@@ -112,8 +114,8 @@ Variant bundle and Generators
 +-----------------
 	 
 	If 	<myVariantGen1> and <myVariantGen2> are some custom variant generator, the variant map of the bundle will be the concatenation of the variant map of each bundle.
-	To be clear, if the variant map for <myVariantGen1:/font.css> is { "locale" : {<<"">>, "fr_FR"}} and the variant map for <myVariantGen2:/panel.css> is { "browser" : {<<"">>, "IE6"}},
-	then the variant map for the bundle will be { "locale" : {<<"">>, "fr_FR"}; "browser" : {<<"">>, "IE6"}}. For more detail about the variant map concatenation, please tale a look to the dedicated section.
+	To be clear, if the variant map for <myVariantGen1:/font.css> is [ "locale" : [<<"">>, "fr_FR"]] and the variant map for <myVariantGen2:/panel.css> is [ "browser" : [<<"">>, "IE6"]],
+	then the variant map for the bundle will be [ "locale" : [<<"">>, "fr_FR"]; "browser" : [<<"">>, "IE6"]]. For more detail about the variant map concatenation, please tale a look to the dedicated section.
 	
 Variant bundle and Postprocessors
 

@@ -1,6 +1,6 @@
 .mandatory {
 color:black;
-background-image: url('../img/myImg1.png');
+background-image: url('data:image/png;base64,RmFrZSB2YWx1ZQ==');
 background-repeat: no-repeat;
 padding-left : 20px;
 font-family: sans-serif, courier, arial;
@@ -9,7 +9,7 @@ border : thin solid rgb(250,0,255);
 
 .info {
 color:black;
-background-image: url("../img/myImg2.png"); /** jawr:base64 */
+background-image: url("data:image/png;base64,RmFrZSB2YWx1ZQ=="); /** jawr:base64 */
 background-repeat: no-repeat;
 padding-left : 20px;
 margin-top : 80px;
@@ -17,7 +17,7 @@ border : thin solid rgb(250,0,255);
 }
 .info {
 color:black;
-background-image: url("../img/myImg3.png"); /** jawr:base64-skip */
+background-image: url("../../../cssImg/cb3015770054/style/default/img/myImg3.png"); /** jawr:base64-skip */
 background-repeat: no-repeat;
 padding-left : 20px;
 margin-top : 80px;
@@ -25,7 +25,7 @@ border : thin solid rgb(250,0,255);
 }
 .tools {
 color:black;
-background-image: url("sprite:/img/mySprite.png");  
+background-image: url("../../../cssImg/sprite_cb3015770054/img/mySprite.png");  
 background-repeat: no-repeat;
 padding-left : 20px;
 margin-top : 80px;

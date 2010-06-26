@@ -60,8 +60,8 @@ public class Base64PostProcessorCssImageUrlRewriter extends
 	/** The mhtml prefix */
 	private static final String MHTML_PREFIX = "mhtml:";
 
-	/** The annotation to skip the base64 encoding */
-	private static final Pattern ANNOTATION_BASE64_SKIP_PATTERN = Pattern.compile("jawr(\\s)*:(\\s)*base64-skip");
+	/** The annotation to skip or force the base64 encoding (jawr:base64 or jawr:base64-skip ) */
+	private static final Pattern ANNOTATION_BASE64_PATTERN = Pattern.compile("jawr(?:\\s)*:(?:\\s)*(base64)(-skip)?");
 
 	/** The annotation group in the URL pattern */
 	private static final int ANNOTATION_GROUP = 9;
@@ -83,6 +83,9 @@ public class Base64PostProcessorCssImageUrlRewriter extends
 	
 	/** The map of encoded resources */
 	private Map encodedResources = null;
+	
+	/** The flag which determine if we must encode by default or not */
+	private boolean encodeByDefault;
 	
 	/** The flag indicating if we must encode the sprites or not */
 	private boolean encodeSprite;
@@ -110,11 +113,33 @@ public class Base64PostProcessorCssImageUrlRewriter extends
 			maxFileSize = Integer.parseInt(maxLengthProperty);
 		}
 		
+		String strEncodeByDefault = (String) configProperties.get(
+				JawrConstant.BASE64_ENCODE_BY_DEFAULT);
+		encodeByDefault = getBooleanValue(strEncodeByDefault, true);
+				
 		String strEncodeSprite = (String) configProperties.get(
 				JawrConstant.BASE64_ENCODE_SPRITE);
-		encodeSprite = Boolean.valueOf(strEncodeSprite).booleanValue();
+		encodeSprite = getBooleanValue(strEncodeSprite, false);
 		
 		LOGGER.debug("max file length: " + maxFileSize);
+	}
+	
+	/**
+	 * Returns the boolean value of the string passed in parameter or the default value 
+	 * if the string is null
+	 * @param strVal the string value
+	 * @param defaultValue the default value
+	 * @return the boolean value of the string passed in parameter or the default value 
+	 * if the string is null
+	 */
+	private boolean getBooleanValue(String strVal, boolean defaultValue){
+		
+		boolean result = defaultValue;
+		if(strVal != null){
+			result = Boolean.valueOf(strVal).booleanValue();
+		}
+		
+		return result;
 	}
 
 	/**
@@ -141,10 +166,13 @@ public class Base64PostProcessorCssImageUrlRewriter extends
 
 			String annotation = matcher.group(ANNOTATION_GROUP);
 			if(StringUtils.isNotEmpty(annotation)){
-				Matcher annotationMatcher = ANNOTATION_BASE64_SKIP_PATTERN.matcher(annotation);
-				skipBase64Encoding = annotationMatcher.find();
+				Matcher annotationMatcher = ANNOTATION_BASE64_PATTERN.matcher(annotation);
+				if(annotationMatcher.find()){
+					skipBase64Encoding = annotationMatcher.group(2) != null;
+				}
 			}else{
-				skipBase64Encoding = false;
+				// If no annotation use the default encoding mode
+				skipBase64Encoding = !encodeByDefault;
 			}
 			
 			StringBuffer sbUrl = new StringBuffer();

@@ -191,11 +191,96 @@ public class CSSBase64ImageRewriterPostProcessorTest extends TestCase {
 		assertEquals("URL was not rewritten properly", expectedURL, result);
 	}
 	
-	public void testBasicImgCssSkipRewriting() {
+	public void testBasicImgCssRewritingEncodeByDefault() {
 
 		// Set the properties
 		Properties props = new Properties();
 		props.setProperty(JawrConfig.JAWR_CSS_IMG_USE_CLASSPATH_SERVLET, "true");
+		props.setProperty(JawrConstant.BASE64_ENCODE_BY_DEFAULT, "true");
+		config = new JawrConfig(props);
+		ServletContext servletContext = new MockServletContext();
+		config.setContext(servletContext);
+		config.setServletMapping("/css");
+		config.setCharsetName("UTF-8");
+		addGeneratorRegistryToConfig(config, "css");
+		
+		// Set up the Image servlet Jawr config
+		props = new Properties();
+		JawrConfig imgServletJawrConfig = new JawrConfig(props);
+		imgServletJawrConfig.setServletMapping("/cssImg/");
+		addGeneratorRegistryToConfig(imgServletJawrConfig, "img");
+		FakeResourceReaderHandler rsHandler = new FakeResourceReaderHandler();
+		config.getGeneratorRegistry().setResourceReaderHandler(rsHandler);
+		ImageResourcesHandler imgRsHandler = new ImageResourcesHandler(imgServletJawrConfig, rsHandler, null);
+		imgServletJawrConfig.getGeneratorRegistry().setResourceReaderHandler(rsHandler);
+		servletContext.setAttribute(JawrConstant.IMG_CONTEXT_ATTRIBUTE, imgRsHandler);
+		
+		status = new BundleProcessingStatus(BundleProcessingStatus.BUNDLE_PROCESSING_TYPE, bundle, null, config);
+
+		// Css data
+		StringBuffer data = new StringBuffer("background-image:url(../../images/logo.png);");
+		
+		// Css path
+		String filePath = "style/default/assets/someCSS.css";
+		
+		// Expected: goes 3 back to the context path, then add the CSS image servlet mapping,
+		// then go to the image path
+		// the image is at classPath:/style/images/someImage.gif
+		String expectedURL = "background-image:url(data:image/png;base64,RmFrZSB2YWx1ZQ==);";
+		status.setLastPathAdded(filePath);
+
+		String result = processor.postProcessBundle(status, data).toString();
+		assertEquals("URL was not rewritten properly", expectedURL, result);
+	}
+	
+	public void testBasicImgCssRewritingDontEncodeByDefault() {
+
+		// Set the properties
+		Properties props = new Properties();
+		props.setProperty(JawrConfig.JAWR_CSS_IMG_USE_CLASSPATH_SERVLET, "true");
+		props.setProperty(JawrConstant.BASE64_ENCODE_BY_DEFAULT, "false");
+		config = new JawrConfig(props);
+		ServletContext servletContext = new MockServletContext();
+		config.setContext(servletContext);
+		config.setServletMapping("/css");
+		config.setCharsetName("UTF-8");
+		addGeneratorRegistryToConfig(config, "css");
+		
+		// Set up the Image servlet Jawr config
+		props = new Properties();
+		JawrConfig imgServletJawrConfig = new JawrConfig(props);
+		imgServletJawrConfig.setServletMapping("/cssImg/");
+		addGeneratorRegistryToConfig(imgServletJawrConfig, "img");
+		FakeResourceReaderHandler rsHandler = new FakeResourceReaderHandler();
+		config.getGeneratorRegistry().setResourceReaderHandler(rsHandler);
+		ImageResourcesHandler imgRsHandler = new ImageResourcesHandler(imgServletJawrConfig, rsHandler, null);
+		imgServletJawrConfig.getGeneratorRegistry().setResourceReaderHandler(rsHandler);
+		servletContext.setAttribute(JawrConstant.IMG_CONTEXT_ATTRIBUTE, imgRsHandler);
+		
+		status = new BundleProcessingStatus(BundleProcessingStatus.BUNDLE_PROCESSING_TYPE, bundle, null, config);
+
+		// Css data
+		StringBuffer data = new StringBuffer("background-image:url(../../images/logo.png);");
+		
+		// Css path
+		String filePath = "style/default/assets/someCSS.css";
+		
+		// Expected: goes 3 back to the context path, then add the CSS image servlet mapping,
+		// then go to the image path
+		// the image is at classPath:/style/images/someImage.gif
+		String expectedURL = "background-image:url(../../../cssImg/cb3015770054/style/images/logo.png);";
+		status.setLastPathAdded(filePath);
+
+		String result = processor.postProcessBundle(status, data).toString();
+		assertEquals("URL was not rewritten properly", expectedURL, result);
+	}
+	
+	public void testBasicImgCssSkipRewritingEncodeByDefault() {
+
+		// Set the properties
+		Properties props = new Properties();
+		props.setProperty(JawrConfig.JAWR_CSS_IMG_USE_CLASSPATH_SERVLET, "true");
+		props.setProperty(JawrConstant.BASE64_ENCODE_BY_DEFAULT, "true");
 		config = new JawrConfig(props);
 		ServletContext servletContext = new MockServletContext();
 		config.setContext(servletContext);
@@ -232,11 +317,138 @@ public class CSSBase64ImageRewriterPostProcessorTest extends TestCase {
 		assertEquals("URL was not rewritten properly", expectedURL, result);
 	}
 	
-	public void testMultipleImgCssSkipRewriting() throws Exception {
+	public void testBasicImgCssSkipRewritingDontEncodeByDefault() {
 
 		// Set the properties
 		Properties props = new Properties();
 		props.setProperty(JawrConfig.JAWR_CSS_IMG_USE_CLASSPATH_SERVLET, "true");
+		props.setProperty(JawrConstant.BASE64_ENCODE_BY_DEFAULT, "false");
+		config = new JawrConfig(props);
+		ServletContext servletContext = new MockServletContext();
+		config.setContext(servletContext);
+		config.setServletMapping("/css");
+		config.setCharsetName("UTF-8");
+		addGeneratorRegistryToConfig(config, "css");
+		
+		// Set up the Image servlet Jawr config
+		props = new Properties();
+		JawrConfig imgServletJawrConfig = new JawrConfig(props);
+		imgServletJawrConfig.setServletMapping("/cssImg/");
+		addGeneratorRegistryToConfig(imgServletJawrConfig, "img");
+		FakeResourceReaderHandler rsHandler = new FakeResourceReaderHandler();
+		config.getGeneratorRegistry().setResourceReaderHandler(rsHandler);
+		ImageResourcesHandler imgRsHandler = new ImageResourcesHandler(imgServletJawrConfig, rsHandler, null);
+		imgServletJawrConfig.getGeneratorRegistry().setResourceReaderHandler(rsHandler);
+		servletContext.setAttribute(JawrConstant.IMG_CONTEXT_ATTRIBUTE, imgRsHandler);
+		
+		status = new BundleProcessingStatus(BundleProcessingStatus.BUNDLE_PROCESSING_TYPE, bundle, null, config);
+
+		// Css data
+		StringBuffer data = new StringBuffer("background-image:url(../../images/logo.png); /** jawr:base64-skip */");
+		
+		// Css path
+		String filePath = "style/default/assets/someCSS.css";
+		
+		// Expected: goes 3 back to the context path, then add the CSS image servlet mapping,
+		// then go to the image path
+		// the image is at classPath:/style/images/someImage.gif
+		String expectedURL = "background-image:url(../../../cssImg/cb3015770054/style/images/logo.png); /** jawr:base64-skip */";
+		status.setLastPathAdded(filePath);
+
+		String result = processor.postProcessBundle(status, data).toString();
+		assertEquals("URL was not rewritten properly", expectedURL, result);
+	}
+	
+	public void testBasicImgCssForceBase64RewritingEncodeByDefault() {
+
+		// Set the properties
+		Properties props = new Properties();
+		props.setProperty(JawrConfig.JAWR_CSS_IMG_USE_CLASSPATH_SERVLET, "true");
+		props.setProperty(JawrConstant.BASE64_ENCODE_BY_DEFAULT, "true");
+		config = new JawrConfig(props);
+		ServletContext servletContext = new MockServletContext();
+		config.setContext(servletContext);
+		config.setServletMapping("/css");
+		config.setCharsetName("UTF-8");
+		addGeneratorRegistryToConfig(config, "css");
+		
+		// Set up the Image servlet Jawr config
+		props = new Properties();
+		JawrConfig imgServletJawrConfig = new JawrConfig(props);
+		imgServletJawrConfig.setServletMapping("/cssImg/");
+		addGeneratorRegistryToConfig(imgServletJawrConfig, "img");
+		FakeResourceReaderHandler rsHandler = new FakeResourceReaderHandler();
+		config.getGeneratorRegistry().setResourceReaderHandler(rsHandler);
+		ImageResourcesHandler imgRsHandler = new ImageResourcesHandler(imgServletJawrConfig, rsHandler, null);
+		imgServletJawrConfig.getGeneratorRegistry().setResourceReaderHandler(rsHandler);
+		servletContext.setAttribute(JawrConstant.IMG_CONTEXT_ATTRIBUTE, imgRsHandler);
+		
+		status = new BundleProcessingStatus(BundleProcessingStatus.BUNDLE_PROCESSING_TYPE, bundle, null, config);
+
+		// Css data
+		StringBuffer data = new StringBuffer("background-image:url(../../images/logo.png); /** jawr:base64 */");
+		
+		// Css path
+		String filePath = "style/default/assets/someCSS.css";
+		
+		// Expected: goes 3 back to the context path, then add the CSS image servlet mapping,
+		// then go to the image path
+		// the image is at classPath:/style/images/someImage.gif
+		String expectedURL = "background-image:url(data:image/png;base64,RmFrZSB2YWx1ZQ==); /** jawr:base64 */";
+		status.setLastPathAdded(filePath);
+
+		String result = processor.postProcessBundle(status, data).toString();
+		assertEquals("URL was not rewritten properly", expectedURL, result);
+	}
+	
+	public void testBasicImgCssForceBase64RewritingDontEncodeByDefault() {
+
+		// Set the properties
+		Properties props = new Properties();
+		props.setProperty(JawrConfig.JAWR_CSS_IMG_USE_CLASSPATH_SERVLET, "true");
+		props.setProperty(JawrConstant.BASE64_ENCODE_BY_DEFAULT, "false");
+		config = new JawrConfig(props);
+		ServletContext servletContext = new MockServletContext();
+		config.setContext(servletContext);
+		config.setServletMapping("/css");
+		config.setCharsetName("UTF-8");
+		addGeneratorRegistryToConfig(config, "css");
+		
+		// Set up the Image servlet Jawr config
+		props = new Properties();
+		JawrConfig imgServletJawrConfig = new JawrConfig(props);
+		imgServletJawrConfig.setServletMapping("/cssImg/");
+		addGeneratorRegistryToConfig(imgServletJawrConfig, "img");
+		FakeResourceReaderHandler rsHandler = new FakeResourceReaderHandler();
+		config.getGeneratorRegistry().setResourceReaderHandler(rsHandler);
+		ImageResourcesHandler imgRsHandler = new ImageResourcesHandler(imgServletJawrConfig, rsHandler, null);
+		imgServletJawrConfig.getGeneratorRegistry().setResourceReaderHandler(rsHandler);
+		servletContext.setAttribute(JawrConstant.IMG_CONTEXT_ATTRIBUTE, imgRsHandler);
+		
+		status = new BundleProcessingStatus(BundleProcessingStatus.BUNDLE_PROCESSING_TYPE, bundle, null, config);
+
+		// Css data
+		StringBuffer data = new StringBuffer("background-image:url(../../images/logo.png); /** jawr:base64 */");
+		
+		// Css path
+		String filePath = "style/default/assets/someCSS.css";
+		
+		// Expected: goes 3 back to the context path, then add the CSS image servlet mapping,
+		// then go to the image path
+		// the image is at classPath:/style/images/someImage.gif
+		String expectedURL = "background-image:url(data:image/png;base64,RmFrZSB2YWx1ZQ==); /** jawr:base64 */";
+		status.setLastPathAdded(filePath);
+
+		String result = processor.postProcessBundle(status, data).toString();
+		assertEquals("URL was not rewritten properly", expectedURL, result);
+	}
+	
+	public void testMultipleImgCssSkipRewritingEncodeByDefault() throws Exception {
+
+		// Set the properties
+		Properties props = new Properties();
+		props.setProperty(JawrConfig.JAWR_CSS_IMG_USE_CLASSPATH_SERVLET, "true");
+		props.setProperty(JawrConstant.BASE64_ENCODE_BY_DEFAULT, "true");
 		config = new JawrConfig(props);
 		ServletContext servletContext = new MockServletContext();
 		config.setContext(servletContext);
@@ -266,12 +478,55 @@ public class CSSBase64ImageRewriterPostProcessorTest extends TestCase {
 		// Expected: goes 3 back to the context path, then add the CSS image servlet mapping,
 		// then go to the image path
 		// the image is at classPath:/style/images/someImage.gif
-		String expectedURL = FileUtils.readClassPathFile("base64Postprocessor/temp-result.css"); //"background-image:url(../../../cssImg/cb3015770054/style/images/logo.png); /** jawr:base64-skip */";
+		String expectedURL = FileUtils.readClassPathFile("base64Postprocessor/temp-result-dont-encode-by-default.css"); //"background-image:url(../../../cssImg/cb3015770054/style/images/logo.png); /** jawr:base64-skip */";
 		status.setLastPathAdded(filePath);
 
 		String result = processor.postProcessBundle(status, data).toString();
 		assertEquals("URL was not rewritten properly", expectedURL, result);
 	}
+	
+	public void testMultipleImgCssSkipRewritingDontEncodeByDefault() throws Exception {
+
+		// Set the properties
+		Properties props = new Properties();
+		props.setProperty(JawrConfig.JAWR_CSS_IMG_USE_CLASSPATH_SERVLET, "true");
+		props.setProperty(JawrConstant.BASE64_ENCODE_BY_DEFAULT, "false");
+		config = new JawrConfig(props);
+		ServletContext servletContext = new MockServletContext();
+		config.setContext(servletContext);
+		config.setServletMapping("/css");
+		config.setCharsetName("UTF-8");
+		addGeneratorRegistryToConfig(config, "css");
+		
+		// Set up the Image servlet Jawr config
+		props = new Properties();
+		JawrConfig imgServletJawrConfig = new JawrConfig(props);
+		imgServletJawrConfig.setServletMapping("/cssImg/");
+		addGeneratorRegistryToConfig(imgServletJawrConfig, "img");
+		FakeResourceReaderHandler rsHandler = new FakeResourceReaderHandler();
+		config.getGeneratorRegistry().setResourceReaderHandler(rsHandler);
+		ImageResourcesHandler imgRsHandler = new ImageResourcesHandler(imgServletJawrConfig, rsHandler, null);
+		imgServletJawrConfig.getGeneratorRegistry().setResourceReaderHandler(rsHandler);
+		servletContext.setAttribute(JawrConstant.IMG_CONTEXT_ATTRIBUTE, imgRsHandler);
+		
+		status = new BundleProcessingStatus(BundleProcessingStatus.BUNDLE_PROCESSING_TYPE, bundle, null, config);
+
+		// Css data
+		StringBuffer data = new StringBuffer(FileUtils.readClassPathFile("base64Postprocessor/temp.css"));
+		
+		// Css path
+		String filePath = "style/default/assets/someCSS.css";
+		
+		// Expected: goes 3 back to the context path, then add the CSS image servlet mapping,
+		// then go to the image path
+		// the image is at classPath:/style/images/someImage.gif
+		String expectedURL = FileUtils.readClassPathFile("base64Postprocessor/temp-result-dont-encode-by-default.css"); //"background-image:url(../../../cssImg/cb3015770054/style/images/logo.png); /** jawr:base64-skip */";
+		status.setLastPathAdded(filePath);
+
+		String result = processor.postProcessBundle(status, data).toString();
+		assertEquals("URL was not rewritten properly", expectedURL, result);
+	}
+	
 	
 	private JoinableResourceBundle buildFakeBundle(final String id, final String urlPrefix) {
 		
@@ -288,7 +543,6 @@ public class CSSBase64ImageRewriterPostProcessorTest extends TestCase {
 				return urlPrefix;
 			}
 		};
-			
 	}
 	
 	private static class FakeResourceReaderHandler extends MockResourceReaderHandler {

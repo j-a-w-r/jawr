@@ -185,6 +185,8 @@ public class JawrConstant {
 	public static final String BASE64_MAX_IMG_FILE_SIZE = 
 		"jawr.css.postprocessor.base64ImageEncoder.maxFileLength";
 
+	public static final String BASE64_ENCODE_BY_DEFAULT = "jawr.css.postprocessor.base64ImageEncoder.encode.by.default";
+	
 	public static final String BASE64_ENCODE_SPRITE = "jawr.css.postprocessor.base64ImageEncoder.encode.sprite";
 	
 	public static final String POST_PROCESSING_CTX_JAWR_IMAGE_MAPPING = "jawrImageMapping";

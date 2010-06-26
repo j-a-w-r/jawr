@@ -175,7 +175,7 @@
       added over time at the <a href="./changes.html">change log.</a> </p>
       <ul>
 	      <li> <strong>06/XX/2009</strong>: Version 3.3 released:<br/>
-	      	This version contains new features and bug fixes.<br/><br/>
+	      	This version contains a lot of new features and bug fixes.<br/><br/>
 	      	<strong>New features: </strong>
 	    	<ul>
       		 <li>
@@ -211,11 +211,11 @@
       		 	Please check the documentation on the <a href="./docs/taglibs.html">taglib description</a> for more detail.
       		 </li>
       		 <li>
-      		 	Jawr supports hashcode bundle generator. This means that you can now define your own implementation of the id used to identify the bundle.
+      		 	Jawr supports hashcode bundle generator. This means that you can now define your own implementation of the id used to identify the bundle.(Ex: application version based, ...) 
       		 	For more detail, about how to implement your own hashcode bundle generator, take a look at the documentation about <a href="./docs/hashCodeBundleGenerator.html">hashcode bundle generator</a>.
       		 </li>
       		 <li>
-      		 	Jawr provides a MD5 hashcode bundle generator, which use MD5 to create the bundle hashcode. Take a look at the documentation about <a href="./docs/hashCodeBundleGenerator.html">hashcode bundle generator</a>.
+      		 	Jawr provides an MD5 hashcode bundle generator, which use MD5 to create the bundle hashcode. Take a look at the documentation about <a href="./docs/hashCodeBundleGenerator.html">hashcode bundle generator</a>.
       		 </li>
       		 <li>
       		 	Jawr introduces the <b>strict mode</b>. For earlier version, Jawr didn't take in account the hashcode of the requested bundle.<br/>
@@ -225,7 +225,7 @@
       		 	This may lead to strange behaviors.<br/>
       		 	To overcome this issue, Jawr introduces the <b>strict mode</b>. In this mode, Jawr will allow you to define how you want to handle such request by defining your own <b>IllegalBundleRequestHandler</b>.
       		 	Jawr also provides a default implementation whch returns a "404" if it receive a such request.  
-      		 	Take a look at the documentation about <a href="./docs/illegalBundleRequestHandler.html">strict mode & illegal bundle request handler</a>.
+      		 	Take a look at the documentation about <a href="./docs/illegalBundleRequestHandler.html">strict mode and illegal bundle request handler</a>.
       		 	Jawr provides just a default implementation, if you want to contribute and share your implementation with the community,
       		 	feel free to create and attach a patch in the issue tracker. 
       		 </li>
@@ -270,7 +270,7 @@
 	      		 	<strong>Issue #145 fixed:</strong> Jawr not compatible with Java 1.4.      
 	      		 </li>     
 	      		 <li>
-	      		 	<strong>Issue #146 fixed:</strong> ThreadLocal memory leak.
+	      		 	<strong>Issue #146 fixed:</strong> ThreadLocal memory leak when reloading application.
 	      		 </li>      
 	      		 Thanks to eliotsykes, mkkoch, wangg3, Martin Jönsson, jnichols959 and all those who participate through the discusion forum for reporting issues and giving feedbacks. <br/>
 	      		 Thanks also to Gerben Jorna for his implementation of the combine media post processor and for the base implementation of the base64 CSS image postprocessor. 
@@ -292,13 +292,42 @@
 	      		 </li>      
 	      	</ul> 
       	  	<br/><br/>
+      	  	<strong>Jawr Grails plugin</strong> - Version 3.3 released:<br/>
+		    We are happy to finally provide to the Grails community the latest Jawr Grails plugin, which is fully compatible with all the new features of the Jawr 3.3 version.
+		    We also would like to apologize for the discontinuation of the plugin release.<br/>
+		    We are sorry for the inconvenience made to the Grails users, which where not able to use Jawr.
+		    We hope that you will enjoy this new version with all the latest features of Jawr.
+		    <br/><br/>
+		    <strong>New feature: </strong>
+	    	 <ul>    	 	
+	      		 <li>
+	      		 Fully compatible with Jawr 3.3.   
+	      		 </li>
+	      	</ul> 
+      	  	<strong>Fixed issue: </strong>
+	    	 <ul>    
+	    	 	 <li>
+	      		 	<strong>Issue #130 fixed:</strong> In develpment Since Grails 1.2, Jawr can't reference pluing resources	 	
+	      		 </li>      
+	      		 <li>
+	      		 	<strong>Issue #148 fixed:</strong> Since grails 1.2, Jawr is not able to generate i18n messages
+	      		 </li>      
+	      		 <li>
+	      		 	<strong>Issue #149 fixed:</strong> Since grails 1.2, Jawr is not able to generate i18n messages
+	      		 </li>      
+	      	</ul> 
+      	  	<br/><br/>
+      	  	All the samples have been updated. You can have a look to them to see how to integrate the latest features.
+      	  	You can retrieve them from the SVN repository :  
+      	  	<br/>
       	  	
+      	  	<strong>Important note :</strong><br/>
 			It is important to notice that this version will be the last version which supports Java 1.4.
-	      	The next major release will target Java 5.
+	      	The next major release will target Java 5.<br/><br/>
 	      	
 	      	Thanks to all of you who contributed and provided feedback in the discussion forum.<br/>
 			There still a lot to do. So any contribution is more than welcome.<br/>
-			If you want to be part of the Jawr project, don't hesitate. Join us, we will be glad to have new contributors in the project. 
+			If you want to be part of the Jawr project, don't hesitate, join us. 
      	  </li>
       	  <li> <strong>02/01/2009</strong>: Version 3.2.1 released:<br/>
 	      	This version contains mainly bug fixes.<br/><br/>
