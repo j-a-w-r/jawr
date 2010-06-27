@@ -51,7 +51,7 @@ public class JawrWicketLinkResolver implements IComponentResolver {
 			WebMarkupContainer jawrTag = null;
 			final String id = tag.getId()+ container.getPage().getAutoIndex();
 			if(tagName.equalsIgnoreCase(IMG_TAG_NAME)){
-				jawrTag = new JawrHtmlImageReference(id);
+				jawrTag = new JawrImageReference(id);
 			}else if(tagName.equalsIgnoreCase("input") && tag.getAttribute("type").equals(IMAGE_TAG_NAME)){
 				jawrTag = new JawrHtmlImageReference(id);
 			}else if(tagName.equalsIgnoreCase("script")){

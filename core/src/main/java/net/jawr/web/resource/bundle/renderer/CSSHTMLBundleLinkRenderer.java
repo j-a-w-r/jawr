@@ -190,10 +190,6 @@ public class CSSHTMLBundleLinkRenderer extends AbstractBundleLinkRenderer implem
 		
 		if(alternate && StringUtils.isNotEmpty(title)){
 			
-			if(LOGGER.isInfoEnabled()){
-				LOGGER.info("Force CSS to alternate skin '"+title+"'");
-			}
-			
 			// force alternate variant
 			Map variants = ctx.getVariants();
 			variants.put(JawrConstant.SKIN_VARIANT_TYPE, title);

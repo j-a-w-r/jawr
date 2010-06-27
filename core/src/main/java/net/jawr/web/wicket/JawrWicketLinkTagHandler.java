@@ -99,14 +99,7 @@ public class JawrWicketLinkTagHandler extends AbstractMarkupFilter
 	{
 		if (tag.getId() == null)
 		{
-			IValueMap attributes = tag.getAttributes();
-			String ref = attributes.getString("href");
-			if (checkRef(ref))
-			{
-				return true;
-			}
-			ref = attributes.getString("src");
-			if (checkRef(ref))
+			if (checkRef(tag))
 			{
 				return true;
 			}
@@ -116,12 +109,36 @@ public class JawrWicketLinkTagHandler extends AbstractMarkupFilter
 	}
 
 	/**
-	 * Checks if if ref is not null and does not contain namespace
-	 * @param ref the reference
-	 * @return true if ref is not null and does nto contain namespace
+	 * Checks if if tag ref is a correct one or not
+	 * @param tag the component tag
+	 * @return true  if if tag ref is a correct one or not and that a component should be created
 	 */
-	private final boolean checkRef(String ref)
+	private final boolean checkRef(ComponentTag tag)
 	{
-		return (ref != null) && (ref.indexOf(":") == -1);
+		boolean ok = false;
+		IValueMap attributes = tag.getAttributes();
+		String ref = attributes.getString("href");
+		if(ref == null){
+			ref = attributes.getString("src");
+		}
+		
+		if((ref != null) && 
+				(isJawrImageTag(tag) ||
+				(ref.indexOf(":") == -1))){
+			ok = true;
+		}
+		
+		return ok;
+	}
+
+	/**
+	 * Checks if it's a Jawr image tag or not
+	 * @param tag the Component tag
+	 * @return true if it's a Jawr image tag or not
+	 */
+	private boolean isJawrImageTag(ComponentTag tag) {
+		String tagName = tag.getName();
+		return (tagName.equalsIgnoreCase("img") || (tagName.equalsIgnoreCase("input") 
+		&& tag.getAttribute("type").equals("image")));
 	}
 }
