@@ -72,7 +72,7 @@ public abstract class AbstractJawrImageReference extends WebMarkupContainer {
             final IValueMap attributes = tag.getAttributes();
 
             String src = (String) attributes.get("src");
-            boolean base64 = Boolean.valueOf((String) attributes.get("src")).booleanValue();
+            boolean base64 = Boolean.valueOf((String) attributes.get("base64")).booleanValue();
             
             // src is mandatory
             if (null == src) {
