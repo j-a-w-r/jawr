@@ -174,7 +174,7 @@
       <p>Here are the latest announcements regarding Jawr. You can find older version announcements with all the features that have been 
       added over time at the <a href="./changes.html">change log.</a> </p>
       <ul>
-	      <li> <strong>06/XX/2009</strong>: Version 3.3 released:<br/>
+	      <li> <strong>06/27/2009</strong>: Version 3.3 released:<br/>
 	      	This version contains a lot of new features and bug fixes.<br/><br/>
 	      	<strong>New features: </strong>
 	    	<ul>
@@ -271,7 +271,13 @@
 	      		 </li>     
 	      		 <li>
 	      		 	<strong>Issue #146 fixed:</strong> ThreadLocal memory leak when reloading application.
-	      		 </li>      
+	      		 </li>   
+	      		 <li>
+	      		 	<strong>Issue #151 fixed:</strong> The Wicket image tag rendering is not working properly for HTML images      
+	      		 </li>     
+	      		 <li>
+	      		 	<strong>Issue #152 fixed:</strong> For the image tags in Wicket, Jawr doesn't handle properly the URL generation of generated images
+	      		 </li>     
 	      		 Thanks to eliotsykes, mkkoch, wangg3, Martin Jönsson, jnichols959 and all those who participate through the discusion forum for reporting issues and giving feedbacks. <br/>
 	      		 Thanks also to Gerben Jorna for his implementation of the combine media post processor and for the base implementation of the base64 CSS image postprocessor. 
 	      	</ul>
@@ -301,11 +307,17 @@
 		    <strong>New feature: </strong>
 	    	 <ul>    	 	
 	      		 <li>
-	      		 Fully compatible with Jawr 3.3.   
+	      		 Compatible with Grails version > 1.2.1   
+	      		 </li>
+	      		 <li>
+	      		 Fully compatible with Jawr 3.3.
 	      		 </li>
 	      	</ul> 
-      	  	<strong>Fixed issue: </strong>
-	    	 <ul>    
+      	  	<strong>Fixed issues: </strong>
+	    	 <ul>
+	    	 	 <li>
+	    	 	 	<strong>Issue #68 fixed :</strong> jawr.config.reload.refreshKey fails on the Grails plugin
+	    	 	 </li>
 	    	 	 <li>
 	      		 	<strong>Issue #130 fixed:</strong> In develpment Since Grails 1.2, Jawr can't reference pluing resources	 	
 	      		 </li>      
@@ -317,10 +329,16 @@
 	      		 </li>      
 	      	</ul> 
       	  	<br/><br/>
-      	  	All the samples have been updated. You can have a look to them to see how to integrate the latest features.
-      	  	You can retrieve them from the SVN repository :  
+      	  	The following Jawr sample applications have been updated. You can have a look to them to see how to integrate the latest features :
+      	  		<ul>
+      	  			<li>basicwebapp</li>
+      	  			<li>spring sample</li>
+      	  			<li>wicket sample</li>
+      	  			<li>grails sample</li>
+      	  		</ul>	 
+      	  	You can retrieve them from the SVN repository : <b>https://jawr.dev.java.net/svn/jawr/trunk jawr/samples/</b>  
       	  	<br/>
-      	  	
+      	  	<br/>
       	  	<strong>Important note :</strong><br/>
 			It is important to notice that this version will be the last version which supports Java 1.4.
 	      	The next major release will target Java 5.<br/><br/>

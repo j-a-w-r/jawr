@@ -48,6 +48,10 @@ Source ordering within bundles
 	Since we have Prototype.js directly under /js/lib and everything else in a subfolder, with this mapping we can be sure that our bundle will contain
 	the Prototype library first, and then the rest of our files. 
 	
+	<<Note :>> \
+	If you use a mapping like "/js/lib/" or "/js/lib/**", by default Jawr will sort the resources in the directory by alphabetical order.\
+	 
+	
 	* <<Explicitly order files using a sorting file>> \ 
 	
 	Sorting files are simple descriptors that you place at any directory where you need to specify ordering. Following the previous examples, if we 

@@ -78,6 +78,9 @@ Definition of custom bundles
 	
 	[]
 	
+	<<Note :>> \
+	If you use a mapping like "/js/lib/" or "/js/lib/**", by default Jawr will sort the resources in the directory by alphabetical order.\
+	
 	
 	You can add any combination of the three types of mapping to your bundles. for instance, let's add another bundle to the previous example. 
 	We will name this bundle /bundles/bazBundle.js. It will contain every file under /js/baz/ and any of its subdirs, a script located at 
