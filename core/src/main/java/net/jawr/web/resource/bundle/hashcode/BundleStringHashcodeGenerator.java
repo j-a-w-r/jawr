@@ -11,7 +11,7 @@
  * either express or implied. See the License for the specific language governing permissions
  * and limitations under the License.
  */
-package net.jawr.web.resource.bundle.hash;
+package net.jawr.web.resource.bundle.hashcode;
 
 import net.jawr.web.config.JawrConfig;
 
@@ -20,7 +20,7 @@ import net.jawr.web.config.JawrConfig;
  * @author Ibrahim Chaehoi
  *
  */
-public class DefaultBundleHashcodeGenerator implements BundleHashcodeGenerator {
+public class BundleStringHashcodeGenerator implements BundleHashcodeGenerator {
 
 	/* (non-Javadoc)
 	 * @see net.jawr.web.resource.bundle.hash.IBundleHashcodeGenerator#generateHashCode(java.lang.String)

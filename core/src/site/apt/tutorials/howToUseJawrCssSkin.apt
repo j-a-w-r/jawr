@@ -58,20 +58,32 @@ Introduction
 	
 	Here is the content of the different bundle
 	
-	/css/skinnedBundle@defaultSkin.css will contain :
-			- /css/skins/defaultSkin/theme.css
-			- /css/skins/defaultSkin/treeview/treeview.css
-			- /css/skins/defaultSkin/treeview/treeview-panel.css. 
+	* /css/skinnedBundle@defaultSkin.css will contain :
 	
-	/css/skinnedBundle@blueSkin.css will contain :
-			- /css/skins/<blueSkin>/theme.css
-			- /css/skins/defaultSkin/treeview/treeview.css 
-			- /css/skins/<blueSkin/treeview/treeview-panel.css>.
+			** /css/skins/defaultSkin/theme.css
+			
+			** /css/skins/defaultSkin/treeview/treeview.css
+			
+			** /css/skins/defaultSkin/treeview/treeview-panel.css.
+			 
 	
-	/css/skinnedBundle@greenSkin.css will contain :
-			- /css/skins/greenSkin/theme.css
-			- /css/skins/defaultSkin/treeview/treeview.css
-			- /css/skins/defaultSkin/treeview/treeview-panel.css.
+	* /css/skinnedBundle@blueSkin.css will contain :
+	
+			** /css/skins/<blueSkin>/theme.css
+			
+			** /css/skins/defaultSkin/treeview/treeview.css
+			 
+			** /css/skins/<blueSkin/treeview/treeview-panel.css>.
+	
+	* /css/skinnedBundle@greenSkin.css will contain :
+			
+			** /css/skins/greenSkin/theme.css
+			
+			** /css/skins/defaultSkin/treeview/treeview.css
+			
+			** /css/skins/defaultSkin/treeview/treeview-panel.css.
+	
+	[]
 	
 	As stated before, Jawr will use the default skin resources if the resource doesn't exist for the current skin.
 

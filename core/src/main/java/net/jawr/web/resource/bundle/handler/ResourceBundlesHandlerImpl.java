@@ -49,7 +49,7 @@ import net.jawr.web.resource.bundle.JoinableResourceBundlePropertySerializer;
 import net.jawr.web.resource.bundle.factory.util.PathNormalizer;
 import net.jawr.web.resource.bundle.global.preprocessor.GlobalPreprocessingContext;
 import net.jawr.web.resource.bundle.global.preprocessor.GlobalPreprocessor;
-import net.jawr.web.resource.bundle.hash.BundleHashcodeGenerator;
+import net.jawr.web.resource.bundle.hashcode.BundleHashcodeGenerator;
 import net.jawr.web.resource.bundle.iterator.ConditionalCommentCallbackHandler;
 import net.jawr.web.resource.bundle.iterator.DebugModePathsIteratorImpl;
 import net.jawr.web.resource.bundle.iterator.PathsIteratorImpl;

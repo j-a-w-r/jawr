@@ -24,9 +24,9 @@ import net.jawr.web.context.ThreadLocalJawrContext;
 import net.jawr.web.resource.bundle.factory.util.ClassLoaderResourceUtils;
 import net.jawr.web.resource.bundle.factory.util.PathNormalizer;
 import net.jawr.web.resource.bundle.generator.GeneratorRegistry;
-import net.jawr.web.resource.bundle.hash.DefaultBundleHashcodeGenerator;
-import net.jawr.web.resource.bundle.hash.BundleHashcodeGenerator;
-import net.jawr.web.resource.bundle.hash.MD5BundleHascodeGenerator;
+import net.jawr.web.resource.bundle.hashcode.BundleHashcodeGenerator;
+import net.jawr.web.resource.bundle.hashcode.BundleStringHashcodeGenerator;
+import net.jawr.web.resource.bundle.hashcode.MD5BundleHascodeGenerator;
 import net.jawr.web.resource.bundle.locale.DefaultLocaleResolver;
 import net.jawr.web.resource.bundle.locale.LocaleResolver;
 import net.jawr.web.resource.bundle.locale.LocaleVariantResolverWrapper;
@@ -376,7 +376,7 @@ public class JawrConfig implements Serializable {
 		
 		String bundleHashCodeGenerator = props.getProperty(JAWR_BUNDLE_HASHCODE_GENERATOR, "").trim();
 		if(bundleHashCodeGenerator.length() == 0 || JawrConstant.DEFAULT.equalsIgnoreCase(bundleHashCodeGenerator)){
-			bundleHashcodeGenerator = new DefaultBundleHashcodeGenerator();
+			bundleHashcodeGenerator = new BundleStringHashcodeGenerator();
 		}else if(JawrConstant.MD5_ALGORITHM.equalsIgnoreCase(bundleHashCodeGenerator)){
 			bundleHashcodeGenerator = new MD5BundleHascodeGenerator();
 		}else{

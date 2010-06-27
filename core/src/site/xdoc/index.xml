@@ -212,10 +212,10 @@
       		 </li>
       		 <li>
       		 	Jawr supports hashcode bundle generator. This means that you can now define your own implementation of the id used to identify the bundle.(Ex: application version based, ...) 
-      		 	For more detail, about how to implement your own hashcode bundle generator, take a look at the documentation about <a href="./docs/hashCodeBundleGenerator.html">hashcode bundle generator</a>.
+      		 	For more detail, about how to implement your own hashcode bundle generator, take a look at the documentation about <a href="./docs/hashcodeBundleGenerator.html">hashcode bundle generator</a>.
       		 </li>
       		 <li>
-      		 	Jawr provides an MD5 hashcode bundle generator, which use MD5 to create the bundle hashcode. Take a look at the documentation about <a href="./docs/hashCodeBundleGenerator.html">hashcode bundle generator</a>.
+      		 	Jawr provides an MD5 hashcode bundle generator, which use MD5 to create the bundle hashcode. Take a look at the documentation about <a href="./docs/hashcodeBundleGenerator.html">hashcode bundle generator</a>.
       		 </li>
       		 <li>
       		 	Jawr introduces the <b>strict mode</b>. For earlier version, Jawr didn't take in account the hashcode of the requested bundle.<br/>
