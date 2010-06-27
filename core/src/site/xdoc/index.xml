@@ -302,7 +302,9 @@
 		    We are happy to finally provide to the Grails community the latest Jawr Grails plugin, which is fully compatible with all the new features of the Jawr 3.3 version.
 		    We also would like to apologize for the discontinuation of the plugin release.<br/>
 		    We are sorry for the inconvenience made to the Grails users, which where not able to use Jawr.
-		    We hope that you will enjoy this new version with all the latest features of Jawr.
+		    We hope that you will enjoy this new version with all the latest features of Jawr.<br/>
+		    The Grails plugin 3.3 is available <a href="https://jawr.dev.java.net/servlets/ProjectDocumentList?folderID=12287&expandFolder=12287&folderID=12287">here</a>. <br/>
+		    It will be soon available at the grails plugin repository. 
 		    <br/><br/>
 		    <strong>New feature: </strong>
 	    	 <ul>    	 	
