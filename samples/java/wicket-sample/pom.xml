@@ -35,9 +35,13 @@
 		<dependency>
 			<groupId>net.jawr</groupId>
 			<artifactId>jawr</artifactId>
-			<version>3.2</version>
+			<version>3.3</version>
 		</dependency>
-		
+		<dependency>
+			<groupId>org.carrot2</groupId>
+			<artifactId>smartsprites</artifactId>
+			<version>0.2.6</version>
+		</dependency>
 		<!-- LOGGING DEPENDENCIES - LOG4J -->
 		<dependency>
 			<groupId>org.slf4j</groupId>
