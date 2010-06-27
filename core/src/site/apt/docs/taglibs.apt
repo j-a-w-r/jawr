@@ -162,7 +162,7 @@ Jawr JSP tag libraries
 
 		<<Warning>>:\
 		If the reference of your cssBundle is a CSS bundle with skin variants, you can <<force>> the skin variant to use by setting the alternate attribute to <<true>>
-		and to set the title to the skin name to use. This will override the skin set by the user.		
+		and the title to the skin name to use. This will override the skin set by the user.		
 		
 	* Display CSS skin alternate styles
 	

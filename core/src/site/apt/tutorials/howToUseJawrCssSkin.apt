@@ -88,7 +88,7 @@ Introduction
 	As stated before, Jawr will use the default skin resources if the resource doesn't exist for the current skin.
 
 	It is also important to noticed that we are using only resources defined in the default skin resources in our bundle.
-	You must not reference a resource which is not defined as a default skin resource if you are using the JawrSkinResourceGenerator.  
+	You must not reference a resource which is not defined as a default skin resource if you are using the <<JawrSkinResourceGenerator>>.  
 	
 	At runtime, Jawr uses a cookie to define what is the value of the current CSS skin to use.\
 	Jawr allows you to define the name of the cookie to use by using the following property :
@@ -96,7 +96,7 @@ Introduction
 *---------------+---------+--------------+----------------+
 | <<Property name>> | <<Type>>    | <<Purpose>>      | <<Default value>>  | 
 *---------------+---------+--------------+----------------+
-| jawr.css.skin.cookie | String | The name of the cookie where the current user CSS skin name is store.  | jawrSkin | 
+| jawr.css.skin.cookie | String | The name of the cookie where the current user CSS skin name is stored.  | jawrSkin | 
 *---------------*---------*--------------+----------------+
 	 
 	By default the name of the cookie used is <<jawrSkin>>. 
@@ -423,5 +423,5 @@ jawr.css.skin.type.mapping=locale_skin
 +------------------------------------------+	
 
 	Deploy your application to a server and open the JSP you created.
-	Switch to another skin by clicking selecting it from the select box and switch the locale settings of your browser to "France" or "US".
+	Switch to another skin by clicking selecting it from the select box and switch the locale settings of your browser to "French" or "English US".
 	

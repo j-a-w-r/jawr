@@ -63,6 +63,7 @@ Jawr Generators
 
 	
 <<DWR scripts generator>>: 
+
 	* <<Prefix>>: dwr
 	
 	[]
@@ -70,6 +71,7 @@ Jawr Generators
 	This generator allows you to bundle and compress together DWR generated interfaces, plus all the utility scripts required by them. Full documentation is {{{../integration/dwr.html}here}}. 
 	
 <<Commons Validator generator>>
+
 	* <<Prefix>>: acv
 	
 	[]
@@ -78,6 +80,7 @@ Jawr Generators
 	generated in Struts by the Apache Commons Validator taglib. Full docs  {{{../integration/validator.html}here}}. 
 
 <<classpath resource generator>>
+
 	* <<Prefix>>: jar
 
 	[]
@@ -113,6 +116,7 @@ Jawr Generators
 	
 		
 <<Skin generator>>
+
 	* <<Prefix>>: skin
 	
 	[]
@@ -121,6 +125,7 @@ Jawr Generators
 	 
 	
 <<Skin swicther generator>>  
+
 	* <<Prefix>>: skinSwitcher
 	
 	[]

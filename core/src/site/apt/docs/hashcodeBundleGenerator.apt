@@ -5,13 +5,14 @@
                                     ------
 
 Introduction
+
 	To increase performance, Jawr generates IDs (hashcode) for each bundles, which is integrated in the resource URL,
 	so the browser will be able to cache a bundle if it didn't change.
 	
 	By default, Jawr uses the String <<hashcode>> method to define the ID of the bundle.\
-	Since the version 3.3, Jawr allows the user to define their own hashcode bundle generator.
+	Since the version 3.3, Jawr allows users to define their own hashcode bundle generator.
 
-*Hashcode bundle generator
+* Hashcode bundle generator
 
 	A new interface <<net.jawr.web.resource.bundle.hashcode.BundleHashcodeGenerator>> has been created to allow the user to define their own hashcode bundle generator.
 

@@ -160,7 +160,7 @@ iVBORw0KGgoAAAANSUhEUgAAA...AAElFTkSuQmCC
 +-------------------------
 		
 		In this example, if <<jawr.css.postprocessor.base64ImageEncoder.encode.by.default>> is set to <<true>>,
-		only the first image URL will be encoded, the second one will be skipped.\
+		only the first image URL will be encoded, the second one will be skipped.
 		
 		If the <<jawr.css.postprocessor.base64ImageEncoder.encode.by.default>> is set to <<false>>, by default all the CSS images will be encoded, except if the are followed by the annotation : <<jawr:base64>>
 
@@ -192,7 +192,7 @@ iVBORw0KGgoAAAANSUhEUgAAA...AAElFTkSuQmCC
 	jawr.css.bundle.base64Bundle.bundlepostprocessors=cssminify,base64ImageEncoder
 +-------------------------	
 
-	<<Warning:>>
+	<<Warning:>>\
 	You should noticed that we have set the <<CSS minifier>> before our <<base64ImageEncoder>>.
 	We use this configuration because the CSS minifier would have removed the MHTML part which in comment.
 	
