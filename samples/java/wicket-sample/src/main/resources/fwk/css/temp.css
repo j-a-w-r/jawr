@@ -1,14 +1,18 @@
+/** sprite: myCpsprite; sprite-image: url('sprite:/img/myCpSprite.png'); sprite-layout: vertical */ 
+
 .mandatory { 
 	color:black;
-	background: #fff url(../img/iconInformation.gif) no-repeat left;
+	background-image: url(../img/iconInformation.gif);  /** sprite-ref: myCpsprite; jawr:base64-skip*/
+	background-repeat: no-repeat;
 	padding-left : 20px;
-	margin-top : 80px;
+	font-family: sans-serif, courier, arial;
 	border : thin solid rgb(250,0,255);
 }
 
-.info { 
+.tools { 
 	color:black;
-	background: #fff url(../img/iconInformation.gif) no-repeat left;
+	background-image: url(img:/cog.png);  /** sprite-ref: myCpsprite; jawr:base64-skip */
+	background-repeat: no-repeat;
 	padding-left : 20px;
 	margin-top : 80px;
 	border : thin solid rgb(250,0,255);

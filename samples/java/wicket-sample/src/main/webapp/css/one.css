@@ -1,21 +1,25 @@
-body {
-	background-image: url("../img/logo.png");
-	background-repeat: no-repeat;
+/** sprite: myCpsprite; sprite-image: url('sprite:/img/myCpSprite.png'); sprite-layout: vertical */ 
+.wicketLogo{
+	width:160px; 
+	float:right;
 }
-
-div {
-
-	padding-top : 8px;		
-}
-
 .calendar {
 	background-repeat: no-repeat;
 	padding-left : 20px;
-	background-image: url("../img/calendarIcons/calendar.png");
+	background-image: url("../img/calendarIcons/calendar.png"); /** jawr:base64-skip */
+	
+}
+
+.base64Clock {
+	background-repeat: no-repeat;
+	padding-left : 20px;
+	background-image: url("jar:net/jawr/img/clock.png"); 
+	 
 }
 
 .clock {
 	background-repeat: no-repeat;
 	padding-left : 20px;
-	background-image: url("jar:net/jawr/img/clock.png");
+	background-image: url("jar:net/jawr/img/clock.png"); /** sprite-ref: myCpsprite; */ 
+	 
 }
