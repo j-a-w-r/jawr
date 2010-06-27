@@ -91,6 +91,17 @@ public class LocaleUtils {
 	 * 
 	 * @param messageBundlePath the resource bundle path
 	 * @param fileSuffix the file suffix
+	 * @return the list of available locale suffixes for a message resource bundle
+	 */
+	public static List getAvailableLocaleSuffixesForBundle(String messageBundlePath, String fileSuffix) {
+		return getAvailableLocaleSuffixesForBundle(messageBundlePath, MSG_RESOURCE_BUNDLE_SUFFIX, null);
+	}
+	
+	/**
+	 * Returns the list of available locale suffixes for a message resource bundle
+	 * 
+	 * @param messageBundlePath the resource bundle path
+	 * @param fileSuffix the file suffix
 	 * @param servletContext the servlet context
 	 * @return the list of available locale suffixes for a message resource bundle
 	 */

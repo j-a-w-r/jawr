@@ -265,7 +265,7 @@ public class CssBundleLinkRendererTestCase extends ResourceHandlerBasedTest {
 	{
 		CSSHTMLBundleLinkRenderer renderer = getCssBundleLinkRenderer(false, false, null, true, false, "aTitle");
 		// Test regular link creation
-	    bundleRendererCtx = new BundleRendererContext(CSS_CTX_PATH, null, false, false);
+	    bundleRendererCtx = new BundleRendererContext(CSS_CTX_PATH, new HashMap(), false, false);
 	    String result = renderToString(renderer,"/css/lib/lib.css", bundleRendererCtx);
 	    
 	    assertNotSame("No css tag written ", "", result.trim());
@@ -296,7 +296,7 @@ public class CssBundleLinkRendererTestCase extends ResourceHandlerBasedTest {
 	{
 		CSSHTMLBundleLinkRenderer renderer = getCssBundleLinkRenderer(true, false, null, true, false, "aTitle");
 		// Test regular link creation
-	    bundleRendererCtx = new BundleRendererContext(CSS_CTX_PATH, null, false, false);
+	    bundleRendererCtx = new BundleRendererContext(CSS_CTX_PATH, new HashMap(), false, false);
 	    String result = renderToString(renderer,"/css/lib/lib.css", bundleRendererCtx);
 	    
 	    assertNotSame("No css tag written ", "", result.trim());

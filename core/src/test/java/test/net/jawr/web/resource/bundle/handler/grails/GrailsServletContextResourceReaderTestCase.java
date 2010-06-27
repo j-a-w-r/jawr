@@ -41,9 +41,9 @@ public class GrailsServletContextResourceReaderTestCase extends TestCase {
 	public void setUp(){
 		servletContext = new MockServletContext();
 		pluginPaths = new HashMap();
-		pluginPaths.put("testjs","C:/plugins/testjs/webapp");
+		pluginPaths.put("test","C:/plugins/test/webapp");
 		servletContext.setAttribute(JawrConstant.JAWR_GRAILS_PLUGIN_PATHS, pluginPaths);
-		
+		servletContext.setAttribute(JawrConstant.GRAILS_WAR_DEPLOYED, false);
 	}
 	
 	public void testGrailsPluginPathResolverNotFound(){
@@ -62,7 +62,7 @@ public class GrailsServletContextResourceReaderTestCase extends TestCase {
 		rsReader = new GrailsServletContextResourceReader(servletContext, config);
 		
 		String realPath = rsReader.getRealResourcePath("/plugins/test/css/myStyle.css");
-		assertEquals("C:/plugins/testjs/webapp/css/myStyle.css", realPath);
+		assertEquals("C:/plugins/test/webapp/css/myStyle.css", realPath);
 	}
 	
 	public void testGetRealResourcePathWithGeneratorPrefix(){

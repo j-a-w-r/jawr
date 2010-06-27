@@ -478,7 +478,7 @@ public class CSSBase64ImageRewriterPostProcessorTest extends TestCase {
 		// Expected: goes 3 back to the context path, then add the CSS image servlet mapping,
 		// then go to the image path
 		// the image is at classPath:/style/images/someImage.gif
-		String expectedURL = FileUtils.readClassPathFile("base64Postprocessor/temp-result-dont-encode-by-default.css"); //"background-image:url(../../../cssImg/cb3015770054/style/images/logo.png); /** jawr:base64-skip */";
+		String expectedURL = FileUtils.readClassPathFile("base64Postprocessor/temp-result-encode-by-default.css"); //"background-image:url(../../../cssImg/cb3015770054/style/images/logo.png); /** jawr:base64-skip */";
 		status.setLastPathAdded(filePath);
 
 		String result = processor.postProcessBundle(status, data).toString();

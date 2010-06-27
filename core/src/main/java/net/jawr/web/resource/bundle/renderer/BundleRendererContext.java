@@ -13,6 +13,7 @@
  */
 package net.jawr.web.resource.bundle.renderer;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -33,7 +34,7 @@ public class BundleRendererContext {
 	private String contextPath;
 	
 	/** The variants */
-	private Map variants;
+	private Map variants = new HashMap();
 	
 	/** The included bundles */
 	private Set includedBundles;
