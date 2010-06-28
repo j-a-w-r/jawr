@@ -43,7 +43,7 @@ public class GrailsServletContextResourceReaderTestCase extends TestCase {
 		pluginPaths = new HashMap();
 		pluginPaths.put("test","C:/plugins/test/webapp");
 		servletContext.setAttribute(JawrConstant.JAWR_GRAILS_PLUGIN_PATHS, pluginPaths);
-		servletContext.setAttribute(JawrConstant.GRAILS_WAR_DEPLOYED, false);
+		servletContext.setAttribute(JawrConstant.GRAILS_WAR_DEPLOYED, Boolean.FALSE);
 	}
 	
 	public void testGrailsPluginPathResolverNotFound(){
