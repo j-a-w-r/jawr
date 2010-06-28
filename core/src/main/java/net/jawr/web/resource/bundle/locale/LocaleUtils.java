@@ -94,7 +94,7 @@ public class LocaleUtils {
 	 * @return the list of available locale suffixes for a message resource bundle
 	 */
 	public static List getAvailableLocaleSuffixesForBundle(String messageBundlePath, String fileSuffix) {
-		return getAvailableLocaleSuffixesForBundle(messageBundlePath, MSG_RESOURCE_BUNDLE_SUFFIX, null);
+		return getAvailableLocaleSuffixesForBundle(messageBundlePath, fileSuffix, null);
 	}
 	
 	/**

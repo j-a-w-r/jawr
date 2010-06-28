@@ -103,6 +103,12 @@ Descriptor file syntax
 *---------------+---------+--------------+----------------+
 | jawr.js.bundle.factory.filepostprocessors  | Comma separated list. | List of postprocessors to apply to every resource before including it in a bundle. Check the {{{./postprocessors.html}postprocessors manual}} for more info.  | None    | 
 | jawr.css.bundle.factory.filepostprocessors |	    		| 																																											 |     | 
+*---------------*---------*--------------+----------------+
+| jawr.js.bundle.factory.composite.bundlepostprocessors  | Comma separated list. | List of postprocessors to apply to every composite bundle. Check the {{{./postprocessors.html}postprocessors manual}} for more info.  | None    | 
+| jawr.css.bundle.factory.composite.bundlepostprocessors |	    		| 																																											 |     | 
+*---------------+---------+--------------+----------------+
+| jawr.js.bundle.factory.composite.filepostprocessors  | Comma separated list. | List of postprocessors to apply to every resource before including it in a composite bundle. Check the {{{./postprocessors.html}postprocessors manual}} for more info.  | None    | 
+| jawr.css.bundle.factory.composite.filepostprocessors |	    		| 																																											 |     | 
 *---------------+---------+--------------+----------------+
 | jawr.js.factory.use.singlebundle  | Boolean  | If true, all resources which don't belong to any defined bundle are joined onto a single bundle, as opposed to the default behavior which is to map each one to a sinle-file bundle.  | false    | 
 | jawr.css.factory.use.singlebundle |	    		| 																																											 |     | 

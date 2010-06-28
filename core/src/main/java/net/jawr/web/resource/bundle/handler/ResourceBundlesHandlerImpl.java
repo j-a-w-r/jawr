@@ -55,7 +55,6 @@ import net.jawr.web.resource.bundle.iterator.DebugModePathsIteratorImpl;
 import net.jawr.web.resource.bundle.iterator.PathsIteratorImpl;
 import net.jawr.web.resource.bundle.iterator.ResourceBundlePathsIterator;
 import net.jawr.web.resource.bundle.postprocess.BundleProcessingStatus;
-import net.jawr.web.resource.bundle.postprocess.ChainedResourceBundlePostProcessor;
 import net.jawr.web.resource.bundle.postprocess.ResourceBundlePostProcessor;
 import net.jawr.web.resource.bundle.sorting.GlobalResourceBundleComparator;
 import net.jawr.web.resource.bundle.variant.VariantUtils;
@@ -112,6 +111,12 @@ public class ResourceBundlesHandlerImpl implements ResourceBundlesHandler {
 	/** The unitary post processor */
 	private ResourceBundlePostProcessor unitaryPostProcessor;
 
+	/** The post processor for composite bundle */
+	private ResourceBundlePostProcessor compositePostProcessor;
+
+	/** The unitary post processor for composite bundle */
+	private ResourceBundlePostProcessor unitaryCompositePostProcessor;
+
 	/** The resourceTypeBundle processor */
 	private GlobalPreprocessor resourceTypeProcessor;
 
@@ -138,7 +143,7 @@ public class ResourceBundlesHandlerImpl implements ResourceBundlesHandler {
 			ResourceReaderHandler resourceHandler,
 			ResourceBundleHandler resourceBundleHandler, JawrConfig config) {
 		this(bundles, resourceHandler, resourceBundleHandler, config, null,
-				null, null);
+				null, null, null, null);
 	}
 
 	/**
@@ -158,6 +163,8 @@ public class ResourceBundlesHandlerImpl implements ResourceBundlesHandler {
 			ResourceBundleHandler resourceBundleHandler, JawrConfig config,
 			ResourceBundlePostProcessor postProcessor,
 			ResourceBundlePostProcessor unitaryPostProcessor,
+			ResourceBundlePostProcessor compositePostProcessor,
+			ResourceBundlePostProcessor unitaryCompositePostProcessor,
 			GlobalPreprocessor resourceTypeProcessor) {
 		super();
 		this.resourceHandler = resourceHandler;
@@ -166,6 +173,8 @@ public class ResourceBundlesHandlerImpl implements ResourceBundlesHandler {
 		this.bundleHashcodeGenerator = config.getBundleHashcodeGenerator();
 		this.postProcessor = postProcessor;
 		this.unitaryPostProcessor = unitaryPostProcessor;
+		this.compositePostProcessor = compositePostProcessor;
+		this.unitaryCompositePostProcessor = unitaryCompositePostProcessor;
 		this.resourceTypeProcessor = resourceTypeProcessor;
 		this.bundles = ConcurrentCollectionsFactory.buildCopyOnWriteArrayList();
 		this.bundles.addAll(bundles);
@@ -645,7 +654,7 @@ public class ResourceBundlesHandlerImpl implements ResourceBundlesHandler {
 						status, processBundle);
 				// Do unitary postprocessing.
 				status.setProcessingType(BundleProcessingStatus.FILE_PROCESSING_TYPE);
-				StringBuffer content = executeUnitaryPostProcessing(composite, status, childContent.getContent());
+				StringBuffer content = executeUnitaryPostProcessing(composite, status, childContent.getContent(), this.unitaryCompositePostProcessor);
 				childContent.setContent(content);
 				store.append(childContent);
 			}
@@ -683,9 +692,9 @@ public class ResourceBundlesHandlerImpl implements ResourceBundlesHandler {
 			processedContent = bundlePostProcessor.postProcessBundle(
 					status, content);
 		}
-		else if (null != this.postProcessor){
+		else if (null != this.compositePostProcessor){
 			
-			processedContent = this.postProcessor.postProcessBundle(status, content);
+			processedContent = this.compositePostProcessor.postProcessBundle(status, content);
 		}
 		else{
 			processedContent = content;
@@ -902,7 +911,7 @@ public class ResourceBundlesHandlerImpl implements ResourceBundlesHandler {
 				
 				// Do unitary postprocessing.
 				status.setProcessingType(BundleProcessingStatus.FILE_PROCESSING_TYPE);
-				bundleData.append(executeUnitaryPostProcessing(bundle, status, writer.getBuffer()));
+				bundleData.append(executeUnitaryPostProcessing(bundle, status, writer.getBuffer(), this.unitaryPostProcessor));
 			}
 
 			// Post process bundle as needed
@@ -926,7 +935,7 @@ public class ResourceBundlesHandlerImpl implements ResourceBundlesHandler {
 	 * @return the processed content
 	 */
 	private StringBuffer executeUnitaryPostProcessing(JoinableResourceBundle bundle,
-			BundleProcessingStatus status, StringBuffer content) {
+			BundleProcessingStatus status, StringBuffer content, ResourceBundlePostProcessor defaultPostProcessor) {
 		
 		StringBuffer bundleData = new StringBuffer();
 		status.setProcessingType(BundleProcessingStatus.FILE_PROCESSING_TYPE);
@@ -936,11 +945,11 @@ public class ResourceBundlesHandlerImpl implements ResourceBundlesHandler {
 							status, content);
 
 			bundleData.append(resourceData);
-		} else if (null != this.unitaryPostProcessor) {
+		} else if (null != defaultPostProcessor) {
 			if (LOGGER.isDebugEnabled())
 				LOGGER.debug("POSTPROCESSING UNIT:"
 						+ status.getLastPathAdded());
-			StringBuffer resourceData = this.unitaryPostProcessor
+			StringBuffer resourceData = defaultPostProcessor
 					.postProcessBundle(status, content);
 			bundleData.append(resourceData);
 		} else{

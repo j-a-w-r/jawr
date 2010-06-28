@@ -341,6 +341,14 @@ public class FullMappingPropertiesBasedBundlesHandlerFactoryTestCase extends
 		public void setCustomPostprocessors(Map keysClassNames) {
 			
 		}
+
+		public ResourceBundlePostProcessor buildDefaultCompositeProcessorChain() {
+			return null;
+		}
+
+		public ResourceBundlePostProcessor buildDefaultUnitCompositeProcessorChain() {
+			return null;
+		}
 	}
 	
 	private static class TestChainedResourceBundlePostProcessor extends AbstractChainedResourceBundlePostProcessor{

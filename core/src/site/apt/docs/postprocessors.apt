@@ -51,6 +51,13 @@ Jawr Postprocessors
 	In this example, the bundle postprocessor for the <foo> bundle is set to <license>, meaning no minification will occur. And for the file-by-file
 	postprocessor, it is specified that none will be used. 
 	
+	Jawr allows you to define the postprocessors for composite bundles. The format of the postprocessor properties is :
+	
+		* jawr.<resourceType>.bundle.<bundleName>.composite.bundlepostprocessors
+		
+		* jawr.<resourceType>.bundle.<bundleName>.composite.filepostprocessors
+
+	
 *	Custom postprocessors
 	
 	You can also implement your own postprocessor components  (for js, css, or both) to perform any functionality not offered by the included ones. 
