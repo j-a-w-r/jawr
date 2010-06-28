@@ -91,8 +91,11 @@ public class Base64ImageEncoderPostProcessor extends
 			status.putData(JawrConstant.BASE64_ENCODED_RESOURCES, encodedResources);
 		}
 		
-		StringBuffer sb = super.doPostProcessBundle(status, bundleData);
-
+		StringBuffer sb = bundleData;
+		if(!(status.getCurrentBundle().isComposite() && status.getProcessingType().equals(BundleProcessingStatus.BUNDLE_PROCESSING_TYPE))){
+			sb = super.doPostProcessBundle(status, bundleData);
+		}
+		
 		if(!encodedResources.isEmpty() && status.isSearchingPostProcessorVariants()){
 			VariantSet variantSet = new VariantSet(JawrConstant.BROWSER_VARIANT_TYPE, "", new String[]{"", JawrConstant.BROWSER_IE6,JawrConstant.BROWSER_IE7});
 			status.addPostProcessVariant(JawrConstant.BROWSER_VARIANT_TYPE, variantSet);
@@ -100,7 +103,7 @@ public class Base64ImageEncoderPostProcessor extends
 			status.addPostProcessVariant(JawrConstant.CONNECTION_TYPE_VARIANT_TYPE, variantSet);
 		}
 		
-		if(!status.isSearchingPostProcessorVariants()){
+		if(!status.isSearchingPostProcessorVariants() && status.getCurrentBundle().isComposite() && status.getProcessingType().equals(BundleProcessingStatus.BUNDLE_PROCESSING_TYPE)){
 				
 			Map bundleVariants = status.getBundleVariants();
 			if(bundleVariants != null){
