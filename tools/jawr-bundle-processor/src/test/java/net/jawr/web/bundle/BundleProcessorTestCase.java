@@ -35,6 +35,7 @@ public class BundleProcessorTestCase extends TestCase {
 		File tmpDir = new File("temp");
 		servletContext.setAttribute(JawrConstant.SERVLET_CONTEXT_TEMPDIR, tmpDir);
 		ResourceReaderHandler handler = new ServletContextResourceReaderHandler(servletContext, jawrConfig, generatorRegistry);
+		jawrConfig.setContext(servletContext);
 		
 		// JS without servlet mapping
 		// File path for production mode
@@ -48,6 +49,7 @@ public class BundleProcessorTestCase extends TestCase {
 		
 		// File path for debug mode
 		jawrConfig.setDebugModeOn(false);
+		
 		variantMap.clear();
 		assertEquals("/jawr_generator/js/messages/messages.js", bundleProcessor.getFinalBundlePath("/jawr_generator.js?generationConfigParam=messages%3Amessages", jawrConfig, variantMap));
 		variantMap.put(JawrConstant.LOCALE_VARIANT_TYPE, "fr");

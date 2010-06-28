@@ -127,6 +127,34 @@
 			<version>1.2.0</version>
 			<scope>provided</scope>
 		</dependency>
+		<!--
+			The following dependencies are used for JMX on JDK 1.4. If you build
+			Jawr with a JDK greater or equals to JDK 1.5, you could comment the
+			following dependencies. The JMX-RI and JMX-remote have not been
+			deployed on maven, so these dependencies will only retrieve the pom information. 
+			You should download the Jars from Sun download center. 
+				- Search JMX from the download center, then select the Java Management Extensions
+				  Download Information. 
+				- Download the JMX 1.2.1 Reference implementation and JMX Remote API 1.0.1_04. 
+				- After the download, for JMX RI 1.2.1, you will have to rename the jars from jmx*.jar to
+				  jmx*-1.2.1.jar. 
+				- For JMX Remote API 1.0.1_04, you will have to rename the jar as jmxremote-1.0.1_04.jar.
+				- Then you will have to register these libraries with Maven or set it directly in your local repository under
+				  /javax/management/jmxri/1.2.1/. 
+				- Do the same for jmxremote 1.0.1_04.
+		-->
+		<dependency>
+		    <groupId>javax.management</groupId>
+		    <artifactId>jmxri</artifactId>
+		    <version>1.2.1</version>
+		  	<scope>provided</scope>
+	    </dependency>
+	    <dependency>
+		    <groupId>javax.management</groupId>
+		    <artifactId>jmxremote</artifactId>
+		    <version>1.0.1_04</version>
+		    <scope>provided</scope>
+		</dependency>
 	</dependencies>
 	<reporting>
 		<plugins>
