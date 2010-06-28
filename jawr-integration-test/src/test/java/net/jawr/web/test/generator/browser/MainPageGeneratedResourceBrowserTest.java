@@ -78,7 +78,7 @@ public class MainPageGeneratedResourceBrowserTest extends AbstractPageTest {
 		assertEquals(1, styleSheets.size());
 		final HtmlLink css = styleSheets.get(0);
 		assertEquals(
-				CONTEXT_PATH+"/N1223240491/fwk/core/component.css",
+				CONTEXT_PATH+"/1161062839/fwk/core/component.css",
 				css.getHrefAttribute());
 
 	}
