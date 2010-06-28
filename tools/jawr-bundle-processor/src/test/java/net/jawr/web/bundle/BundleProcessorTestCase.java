@@ -158,7 +158,6 @@ public class BundleProcessorTestCase extends TestCase {
 		checkContentCreated(destDirPath+"/CDN/bundles/css/component@ie6@ssl.css");
 		checkContentCreated(destDirPath+"/CDN/bundles/css/component@ie7@.css");
 		checkContentCreated(destDirPath+"/CDN/bundles/css/component@ie7@ssl.css");
-		checkContentCreated(destDirPath+"/CDN/css/one.css");
 		checkContentCreated(destDirPath+"/CDN/css/one@@.css");
 		checkContentCreated(destDirPath+"/CDN/img/calendarIcons/calendar.png");
 		checkContentCreated(destDirPath+"/CDN/js/global/jawr.js");
