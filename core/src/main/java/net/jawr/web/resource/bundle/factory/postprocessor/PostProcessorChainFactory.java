@@ -30,21 +30,32 @@ public interface PostProcessorChainFactory {
 	 * Builds the default chain for resources, be it javascript or css ones. 
 	 * @return
 	 */
-	public abstract ResourceBundlePostProcessor buildDefaultProcessorChain();
+	public ResourceBundlePostProcessor buildDefaultProcessorChain();
 
 	/**
 	 * Builds the default unitary resource chain for resources. 
 	 * @return
 	 */
-	public abstract ResourceBundlePostProcessor buildDefaultUnitProcessorChain();
+	public ResourceBundlePostProcessor buildDefaultUnitProcessorChain();
 
+	/**
+	 * Returns the default composite bundle processor chain
+	 * @return the default composite bundle processor chain
+	 */
+	public ResourceBundlePostProcessor buildDefaultCompositeProcessorChain();
+	
+	/**
+	 * Returns the default composite bundle unit processor chain
+	 * @return the default composite bundle unit processor chain
+	 */
+	public ResourceBundlePostProcessor buildDefaultUnitCompositeProcessorChain();
+	
 	/**
 	 * Builds a chain based on a comma-separated list of postprocessor keys. 
 	 * @param processorKeys
 	 * @return
 	 */
-	public abstract ResourceBundlePostProcessor buildPostProcessorChain(String processorKeys);
-	
+	public ResourceBundlePostProcessor buildPostProcessorChain(String processorKeys);
 	
 	/**
 	 * Sets a map of custom postprocessors to use. 
@@ -54,6 +65,6 @@ public interface PostProcessorChainFactory {
 	 * 
 	 * @param keysClassNames
 	 */
-	public abstract void setCustomPostprocessors(Map keysClassNames);
+	public void setCustomPostprocessors(Map keysClassNames);
 
 }

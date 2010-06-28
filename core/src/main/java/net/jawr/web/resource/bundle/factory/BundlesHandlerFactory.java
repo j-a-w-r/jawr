@@ -81,6 +81,12 @@ public class BundlesHandlerFactory {
 	/** The keys of the unitary post processors */
 	private String unitPostProcessorKeys;
 	
+	/** The keys of the global post composite processors */
+	private String globalCompositePostProcessorKeys;
+	
+	/** The keys of the unitary post composite processors */
+	private String unitCompositePostProcessorKeys;
+	
 	/** The keys of the resource type processors */
 	private String resourceTypeProcessorKeys;
 	
@@ -168,21 +174,42 @@ public class BundlesHandlerFactory {
 
 		// Build the postprocessor for bundles
 		ResourceBundlePostProcessor processor = null;
-		if (null == this.globalPostProcessorKeys)
+		if (null == this.globalPostProcessorKeys){
 			processor = this.chainFactory.buildDefaultProcessorChain();
-		else
+		}else{
 			processor = this.chainFactory
 					.buildPostProcessorChain(globalPostProcessorKeys);
-
+		}
+		
 		// Build the postprocessor to use on resources before adding them to the bundle.
 		ResourceBundlePostProcessor unitProcessor = null;
-		if (null == this.unitPostProcessorKeys)
+		if (null == this.unitPostProcessorKeys){
 			unitProcessor = this.chainFactory.buildDefaultUnitProcessorChain();
-		else
+		}else{
 			unitProcessor = this.chainFactory
 					.buildPostProcessorChain(unitPostProcessorKeys);
+		}
 		
-		// Build the reource type processor to use on resources.
+		// Build the postprocessor for bundles
+		ResourceBundlePostProcessor compositeBundleProcessor = null;
+		if (null == this.globalCompositePostProcessorKeys){
+			compositeBundleProcessor = this.chainFactory.buildDefaultCompositeProcessorChain();
+		}else{
+			compositeBundleProcessor = this.chainFactory
+					.buildPostProcessorChain(globalCompositePostProcessorKeys);
+		}
+		
+		// Build the postprocessor to use on resources before adding them to the bundle.
+		ResourceBundlePostProcessor compositeUnitProcessor = null;
+		if (null == this.unitCompositePostProcessorKeys){
+			compositeUnitProcessor = this.chainFactory.buildDefaultUnitCompositeProcessorChain();
+		}else{
+			compositeUnitProcessor = this.chainFactory
+					.buildPostProcessorChain(unitCompositePostProcessorKeys);
+		}
+		
+		
+		// Build the resource type processor to use on resources.
 		// Initialize custom postprocessors before using the factory to build the postprocessing chains
 		if (null != customGlobalPreprocessors)
 			resourceTypeChainFactory.setCustomGlobalPreprocessors(customGlobalPreprocessors);
@@ -197,7 +224,7 @@ public class BundlesHandlerFactory {
 		// Build the handler
 		ResourceBundlesHandler collector = new ResourceBundlesHandlerImpl(
 				resourceBundles, resourceReaderHandler, resourceBundleHandler, jawrConfig, processor,
-				unitProcessor, resourceTypeProcessor);
+				unitProcessor, compositeBundleProcessor, compositeUnitProcessor, resourceTypeProcessor);
 
 		// Use the cached proxy if specified when debug mode is off.
 		if (useInMemoryCache && !jawrConfig.isDebugModeOn())
@@ -646,6 +673,24 @@ public class BundlesHandlerFactory {
 		this.unitPostProcessorKeys = unitPostProcessorKeys;
 	}
 	
+	/**
+	 * Sets the postprocessor keys for composite bundle
+	 * @param globalCompositePostProcessorKeys Comma separated list of processor keys. 
+	 */
+	public void setGlobalCompositePostProcessorKeys(
+			String globalCompositePostProcessorKeys) {
+		this.globalCompositePostProcessorKeys = globalCompositePostProcessorKeys;
+	}
+
+	/**
+	 * Sets the unitary postprocessor keys for composite bundle
+	 * @param globalCompositePostProcessorKeys Comma separated list of processor keys. 
+	 */
+	public void setUnitCompositePostProcessorKeys(
+			String unitCompositePostProcessorKeys) {
+		this.unitCompositePostProcessorKeys = unitCompositePostProcessorKeys;
+	}
+
 	/**
 	 * Set the keys to pass to the processor factory upon global processors creation. If none specified, the default version is used.
 	 * 

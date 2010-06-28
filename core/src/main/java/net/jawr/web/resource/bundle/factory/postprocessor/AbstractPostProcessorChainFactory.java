@@ -46,6 +46,21 @@ public abstract class AbstractPostProcessorChainFactory implements	PostProcessor
 	}
 
 	/* (non-Javadoc)
+	 * @see net.jawr.web.resource.bundle.factory.postprocessor.PostProcessorChainFactory#buildDefaultCompositeProcessorChain()
+	 */
+	public ResourceBundlePostProcessor buildDefaultCompositeProcessorChain() {
+		return new EmptyResourceBundlePostProcessor();
+	}
+
+	/* (non-Javadoc)
+	 * @see net.jawr.web.resource.bundle.factory.postprocessor.PostProcessorChainFactory#buildDefaultUnitCompositeProcessorChain()
+	 */
+	public ResourceBundlePostProcessor buildDefaultUnitCompositeProcessorChain() {
+		return new EmptyResourceBundlePostProcessor();
+	}
+
+
+	/* (non-Javadoc)
 	 * @see net.jawr.web.resource.bundle.factory.processor.PostProcessorChainFactory#buildPostProcessorChain(java.lang.String)
 	 */
 	public ResourceBundlePostProcessor buildPostProcessorChain(String processorKeys) {

@@ -95,6 +95,10 @@ public class PropertiesBasedBundlesHandlerFactory {
 				.getProperty(PropertiesBundleConstant.BUNDLE_FACTORY_POSTPROCESSOR));
 		factory.setUnitPostProcessorKeys(props
 				.getProperty(PropertiesBundleConstant.BUNDLE_FACTORY_FILE_POSTPROCESSOR));
+		factory.setGlobalCompositePostProcessorKeys(props
+				.getProperty(PropertiesBundleConstant.COMPOSITE_BUNDLE_FACTORY_POSTPROCESSOR));
+		factory.setUnitCompositePostProcessorKeys(props
+				.getProperty(PropertiesBundleConstant.COMPOSITE_BUNDLE_FACTORY_FILE_POSTPROCESSOR));
 		factory.setResourceTypeProcessorKeys(props
 				.getProperty(PropertiesBundleConstant.BUNDLE_FACTORY_PROCESSOR));
 		
