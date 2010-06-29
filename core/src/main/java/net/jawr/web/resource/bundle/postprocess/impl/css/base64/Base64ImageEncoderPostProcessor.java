@@ -25,8 +25,8 @@ import net.jawr.web.resource.bundle.postprocess.ResourceBundlePostProcessor;
 import net.jawr.web.resource.bundle.postprocess.impl.CSSURLPathRewriterPostProcessor;
 import net.jawr.web.resource.bundle.postprocess.impl.PostProcessorCssImageUrlRewriter;
 import net.jawr.web.resource.bundle.variant.VariantSet;
+import net.jawr.web.util.StringUtils;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 /**

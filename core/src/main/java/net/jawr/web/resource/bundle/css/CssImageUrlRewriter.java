@@ -21,8 +21,7 @@ import net.jawr.web.JawrConstant;
 import net.jawr.web.config.JawrConfig;
 import net.jawr.web.resource.bundle.factory.util.PathNormalizer;
 import net.jawr.web.resource.bundle.factory.util.RegexUtil;
-
-import org.apache.commons.lang.StringUtils;
+import net.jawr.web.util.StringUtils;
 
 /**
  * This class rewrites is used to rewrite CSS URLs according to the new

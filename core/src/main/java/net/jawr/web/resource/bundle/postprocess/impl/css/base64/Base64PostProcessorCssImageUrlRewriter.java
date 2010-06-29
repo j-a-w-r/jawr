@@ -13,6 +13,7 @@
  */
 package net.jawr.web.resource.bundle.postprocess.impl.css.base64;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
@@ -31,9 +32,8 @@ import net.jawr.web.resource.bundle.postprocess.BundleProcessingStatus;
 import net.jawr.web.resource.bundle.postprocess.impl.PostProcessorCssImageUrlRewriter;
 import net.jawr.web.servlet.util.MIMETypesSupport;
 import net.jawr.web.util.Base64Encoder;
+import net.jawr.web.util.StringUtils;
 
-import org.apache.commons.io.output.ByteArrayOutputStream;
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 /**

@@ -13,6 +13,7 @@
  */
 package net.jawr.web.taglib;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -34,7 +35,6 @@ import net.jawr.web.servlet.RendererRequestUtils;
 import net.jawr.web.servlet.util.MIMETypesSupport;
 import net.jawr.web.util.Base64Encoder;
 
-import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.log4j.Logger;
 
 /**
