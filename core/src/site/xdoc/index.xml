@@ -40,7 +40,7 @@
 	<img src="./images/index/logo.png" style="border:0 !important" id="mainJawrLogo"  />
 	
 	<div id="jawrlinks">
-		<b>Latest version : 3.3</b><br/>
+		<b>Latest version : 3.3.1</b><br/>
 		<a href="https://jawr.dev.java.net/servlets/ProjectDocumentList?folderID=8543">
 			<img src="./images/index/download.png" style="border:0 !important" title="Download the latest version of Jawr"  /></a> 
 		<a href="https://jawr.dev.java.net/tutorials/quickstart.html" >
@@ -174,7 +174,7 @@
       <p>Here are the latest announcements regarding Jawr. You can find older version announcements with all the features that have been 
       added over time at the <a href="./changes.html">change log.</a> </p>
       <ul>
-	      <li> <strong>06/28/2009</strong>: Version 3.3 released:<br/>
+	      <li> <strong>06/29/2009</strong>: Version 3.3.1 released:<br/>
 	      	This version contains a lot of new features and bug fixes.<br/><br/>
 	      	<strong>New features: </strong>
 	    	<ul>
@@ -302,12 +302,12 @@
 	      		 </li>      
 	      	</ul> 
       	  	<br/><br/>
-      	  	<strong>Jawr Grails plugin</strong> - Version 3.3 released:<br/>
-		    We are happy to finally provide to the Grails community the latest Jawr Grails plugin, which is fully compatible with all the new features of the Jawr 3.3 version.
+      	  	<strong>Jawr Grails plugin</strong> - Version 3.3.1 released:<br/>
+		    We are happy to finally provide to the Grails community the latest Jawr Grails plugin, which is fully compatible with all the new features of the Jawr 3.3.1 version.
 		    We also would like to apologize for the discontinuation of the plugin release.<br/>
 		    We are sorry for the inconvenience made to the Grails users, which where not able to use Jawr.
 		    We hope that you will enjoy this new version with all the latest features of Jawr.<br/>
-		    The Grails plugin 3.3 is available <a href="https://jawr.dev.java.net/servlets/ProjectDocumentList?folderID=8991">here</a>. <br/>
+		    The Grails plugin 3.3.1 is available <a href="https://jawr.dev.java.net/servlets/ProjectDocumentList?folderID=8991">here</a>. <br/>
 		    It will be soon available at the grails plugin repository. 
 		    <br/><br/>
 		    <strong>New feature: </strong>
@@ -316,7 +316,7 @@
 	      		 Compatible with Grails version > 1.2.1   
 	      		 </li>
 	      		 <li>
-	      		 Fully compatible with Jawr 3.3.
+	      		 Fully compatible with Jawr 3.3.1.
 	      		 </li>
 	      	</ul> 
       	  	<strong>Fixed issues: </strong>
