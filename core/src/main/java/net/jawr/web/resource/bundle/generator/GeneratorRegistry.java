@@ -42,8 +42,8 @@ import net.jawr.web.resource.bundle.variant.VariantSet;
 import net.jawr.web.resource.handler.reader.ResourceReader;
 import net.jawr.web.resource.handler.reader.ResourceReaderHandler;
 import net.jawr.web.servlet.JawrRequestHandler;
+import net.jawr.web.util.StringUtils;
 
-import org.apache.commons.lang.StringUtils;
 
 /**
  * Registry for resource generators, which create scripts or CSS data dynamically, 

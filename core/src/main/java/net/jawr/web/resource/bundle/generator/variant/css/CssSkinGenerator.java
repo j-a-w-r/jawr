@@ -44,8 +44,7 @@ import net.jawr.web.resource.bundle.variant.VariantResourceReaderStrategy;
 import net.jawr.web.resource.bundle.variant.VariantSet;
 import net.jawr.web.resource.handler.reader.ResourceBrowser;
 import net.jawr.web.resource.handler.reader.ResourceReaderHandler;
-
-import org.apache.commons.lang.StringUtils;
+import net.jawr.web.util.StringUtils;
 
 /**
  * This class defines the generator which will handle CSS skin.
