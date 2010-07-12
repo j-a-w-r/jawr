@@ -59,15 +59,17 @@ public class BrowserResolver implements VariantResolver {
 		
 		String browser = null;
 		String userAgent = request.getHeader("User-Agent");
-		Matcher matcher = IE_PATTERN.matcher(userAgent);
-		if(matcher.find()){
-			browser = "ie"+matcher.group(1);
-		}else if(userAgent.indexOf("AppleWebkit") != -1){
-			browser = "webkit";
-		}else if(userAgent.indexOf("Firefox") != -1){
-			browser = "firefox";
-		}else if(userAgent.indexOf("Opera") != -1){
-			browser = "opera";
+		if(userAgent != null){
+			Matcher matcher = IE_PATTERN.matcher(userAgent);
+			if(matcher.find()){
+				browser = "ie"+matcher.group(1);
+			}else if(userAgent.indexOf("AppleWebKit") != -1){
+				browser = "webkit";
+			}else if(userAgent.indexOf("Firefox") != -1){
+				browser = "firefox";
+			}else if(userAgent.indexOf("Opera") != -1){
+				browser = "opera";
+			}
 		}
 		
 		return browser;
