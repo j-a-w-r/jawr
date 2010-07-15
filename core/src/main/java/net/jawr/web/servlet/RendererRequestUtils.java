@@ -152,14 +152,17 @@ public class RendererRequestUtils {
 		if (LOGGER.isDebugEnabled()){
 			LOGGER.debug("User-Agent for this request:" + agent);
 		}
-		
-		Matcher matcher = IE_USER_AGENT_PATTERN.matcher(agent);
-		if(matcher.find()){
-			int version = Integer.parseInt(matcher.group(1));
-			if(version <= ieVersion){
-				result = true;
+		if(agent != null){
+
+			Matcher matcher = IE_USER_AGENT_PATTERN.matcher(agent);
+			if(matcher.find()){
+				int version = Integer.parseInt(matcher.group(1));
+				if(version <= ieVersion){
+					result = true;
+				}
 			}
 		}
+		
 		return result;
 	}
 	
