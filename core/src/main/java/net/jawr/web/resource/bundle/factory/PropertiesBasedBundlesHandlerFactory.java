@@ -329,8 +329,12 @@ public class PropertiesBasedBundlesHandlerFactory {
 		String dependenciesProperty = props.getCustomBundleProperty(bundleName,
 				PropertiesBundleConstant.BUNDLE_FACTORY_CUSTOM_DEPENDENCIES);
 		if(!StringUtils.isEmpty(dependenciesProperty)){
-			String[] dependencies = dependenciesProperty.split(JawrConstant.COMMA_SEPARATOR);
-			bundle.setDependencies(Arrays.asList(dependencies));
+			StringTokenizer tk = new StringTokenizer(dependenciesProperty, JawrConstant.COMMA_SEPARATOR);
+			List dependencies = new ArrayList();
+			while (tk.hasMoreTokens()){
+				dependencies.add(tk.nextToken().trim());
+			}
+			bundle.setDependencies(dependencies);
 		}
 		
 		return bundle;
