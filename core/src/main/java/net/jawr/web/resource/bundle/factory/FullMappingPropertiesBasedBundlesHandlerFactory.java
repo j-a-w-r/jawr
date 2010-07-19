@@ -16,7 +16,6 @@
 package net.jawr.web.resource.bundle.factory;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -25,7 +24,6 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.StringTokenizer;
 
-import net.jawr.web.JawrConstant;
 import net.jawr.web.resource.bundle.InclusionPattern;
 import net.jawr.web.resource.bundle.JoinableResourceBundle;
 import net.jawr.web.resource.bundle.JoinableResourceBundleImpl;
@@ -112,13 +110,12 @@ public class FullMappingPropertiesBasedBundlesHandlerFactory {
 		Iterator bundleNames = props.getPropertyBundleNameSet().iterator();
 		while (bundleNames.hasNext()) {
 			String bundleName = (String) bundleNames.next();
-			String dependenciesProperty = props.getCustomBundleProperty(bundleName,
+			List bundleNameDependencies = props.getCustomBundlePropertyAsList(bundleName,
 					PropertiesBundleConstant.BUNDLE_FACTORY_CUSTOM_DEPENDENCIES);
-			if(dependenciesProperty != null){
-				String[] tokens = dependenciesProperty.split(JawrConstant.COMMA_SEPARATOR);
+			if(!bundleNameDependencies.isEmpty()){
 				JoinableResourceBundle bundle = getBundleFromName(bundleName, customBundles);
-				List dependencies = getBundlesFromName(Arrays.asList(tokens), customBundles);
-				bundle.setDependencies(dependencies);
+				List bundleDependencies = getBundlesFromName(bundleNameDependencies, customBundles);
+				bundle.setDependencies(bundleDependencies);
 			}
 		}
 		
@@ -236,9 +233,9 @@ public class FullMappingPropertiesBasedBundlesHandlerFactory {
 			bundle.setLicensesPathList(licencePathList);
 		}
 
-		String mappingsProperty = props.getCustomBundleProperty(bundleName,
+		List mappings = props.getCustomBundlePropertyAsList(bundleName,
 				PropertiesBundleConstant.BUNDLE_FACTORY_CUSTOM_MAPPINGS);
-		if (null == mappingsProperty) {
+		if (mappings.isEmpty()) {
 			throw new IllegalArgumentException(
 					"No mappings were defined for the bundle with name:"
 							+ bundleName
@@ -246,8 +243,7 @@ public class FullMappingPropertiesBasedBundlesHandlerFactory {
 		}
 		
 		// Add the mappings
-		String[] tokens = mappingsProperty.split(JawrConstant.COMMA_SEPARATOR);
-		bundle.setMappings(Arrays.asList(tokens));
+		bundle.setMappings(mappings);
 		
 		Set localeKeys = new HashSet();
 		Map variants = props.getCustomBundleVariantSets(bundleName);

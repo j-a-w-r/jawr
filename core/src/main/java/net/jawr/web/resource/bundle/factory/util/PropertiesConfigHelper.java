@@ -134,6 +134,20 @@ public class PropertiesConfigHelper {
 	}
 
 	/**
+	 * Returns as a list, the comma separated values of a property 
+	 * @param key the key of the property
+	 * @return a list of the comma separated values of a property 
+	 */
+	public List getCustomBundlePropertyAsList(String bundleName, String key) {
+		List propertiesList = new ArrayList();
+		StringTokenizer tk = new StringTokenizer(getCustomBundleProperty(bundleName, key, ""),
+				",");
+		while (tk.hasMoreTokens())
+			propertiesList.add(tk.nextToken().trim());
+		return propertiesList;
+	}
+	
+	/**
 	 * Returns as a set, the comma separated values of a property 
 	 * @param key the key of the property
 	 * @return a set of the comma separated values of a property 
