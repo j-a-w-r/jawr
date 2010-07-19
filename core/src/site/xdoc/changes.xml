@@ -8,7 +8,20 @@
 	
     <section name="Announcementes and change log">
     <ul>
-    	<li> <strong>06/29/2009</strong>: Version 3.3.1 released:<br/>
+    	<li> <strong>07/20/2009</strong>: Version 3.3.2 released:<br/>
+	      	This version contains only bug fixes.<br/><br/>
+	      	<strong>Fixed issues: </strong>
+	    	 <ul>   
+	    	 	 <li>
+	      		 	<strong>Issue #157 fixed:</strong> NullPointerException thrown in BrowserResolver when no user agent found in HTTP header      
+	      		 </li>      
+	      		 <li>
+	      		 	<strong>Issue #159 fixed:</strong> Space in the dependencies configuration lead to omitted dependencies      
+	      		 </li>
+	      		 Thanks to Trygve Lie for reporting the issue #159.
+	      	</ul>
+      	  </li>	
+	      <li> <strong>06/29/2009</strong>: Version 3.3.1 released:<br/>
 	      	This version contains a lot of new features and bug fixes.<br/><br/>
 	      	<strong>New features: </strong>
 	    	<ul>
