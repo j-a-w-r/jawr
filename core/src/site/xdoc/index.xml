@@ -184,7 +184,7 @@
 	      		 <li>
 	      		 	<strong>Issue #159 fixed:</strong> Space in the dependencies configuration lead to omitted dependencies      
 	      		 </li>
-	      		 Thanks to Trygve Lie for reporting the issue #159.
+	      		 Thanks to zafo and Trygve Lie for reporting these issues.
 	      	</ul>
       	  </li>	
 	      <li> <strong>06/29/2009</strong>: Version 3.3.1 released:<br/>
