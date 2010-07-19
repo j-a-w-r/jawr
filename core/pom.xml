@@ -6,7 +6,7 @@
   <artifactId>jawr</artifactId>
   <packaging>jar</packaging>
   <name>Java web resources bundling and compression</name>
-  <version>3.3.1</version>
+  <version>3.3.2</version>
   <description>Javascript/CSS bundling and compressing tool for java web apps.
   	By using jawr resources are automatically bundled together and optionally minified and gzipped. 
   	Jawr provides tag libraries to reference a generated bundle either by id or by using the name of any of its members.</description>
