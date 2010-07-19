@@ -6,7 +6,7 @@
 	<artifactId>maven-jawr-plugin</artifactId>
 	<packaging>maven-plugin</packaging>
 	<name>JAWR Maven Plugin</name>
-	<version>1.4</version>
+	<version>1.4.1</version>
 	<url>https://sourceforge.net/projects/maven-jawr-plugin/</url>
 	<description>
 		The Maven JAWR Plugin contains the compression goal and compresses JavaScript/css in a web application.
