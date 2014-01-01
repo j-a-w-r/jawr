@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>net.jawr</groupId>
+	<artifactId>jawr-bundle-processor</artifactId>
+	<packaging>jar</packaging>
+	<name>Bundle processor for Jawr</name>
+	<version>1.4.2</version>
+	<description>This artifact will contain the processor used to bundle the web resources at build time.
+  	</description>
+  	<url>https://jawr.dev.java.net/</url>
+	<developers>
+		<developer>
+			<id>icefox</id>
+			<name>Ibrahim CHAEHOI</name>
+			<roles>
+				<role>Project owner</role>
+			</roles>
+		</developer>
+	</developers>
+	<licenses>
+		<license>
+			<name>The Apache Software License, Version 2.0</name>
+			<url>license.txt</url>
+		</license>
+	</licenses>
+	<scm>
+	    <connection>scm:svn:https://jawr.dev.java.net/svn/jawr/</connection>
+	    <developerConnection>scm:svn:https://jawr.dev.java.net/svn/jawr/</developerConnection>
+	    <url>https://jawr.dev.java.net/source/browse/jawr/</url>
+	</scm>
+	<build>
+		<extensions>
+			<extension>
+				<groupId>org.jvnet.wagon-svn</groupId>
+				<artifactId>wagon-svn</artifactId>
+				<version>1.8</version>
+			</extension>
+		</extensions>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.4</source>
+					<target>1.4</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+	<repositories>
+		<repository>
+			<id>maven2-repository.dev.java.net</id>
+			<name>Java.net Repository for Maven</name>
+			<url>http://download.java.net/maven/2/</url>
+		</repository>
+		<repository>
+	      <id>maven2-repository.smartsprites</id>
+	      <name>Smartsprites Maven Repository</name>
+	      <url>http://download.csssprites.org/maven2/</url>
+	    </repository>
+	</repositories>
+	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>3.8.1</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.carrot2</groupId>
+			<artifactId>smartsprites</artifactId>
+			<version>0.2.6</version>
+			<scope>test</scope>
+		</dependency>
+	    <dependency>
+			<groupId>net.jawr</groupId>
+			<artifactId>jawr</artifactId>
+			<version>3.3.3</version>
+		</dependency>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+			<version>2.3</version>
+		</dependency>
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>1.2.9</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.yahoo.platform.yui</groupId>
+			<artifactId>yuicompressor</artifactId>
+			<version>2.2.5</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.directwebremoting</groupId>
+			<artifactId>dwr</artifactId>
+			<version>2.0.2</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring</artifactId>
+			<version>2.0.2</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>commons-validator</groupId>
+			<artifactId>commons-validator</artifactId>
+			<version>1.2.0</version>
+			<scope>provided</scope>
+		</dependency>
+		<!--
+			The following dependencies are used for JMX on JDK 1.4. If you build
+			Jawr with a JDK greater or equals to JDK 1.5, you could comment the
+			following dependencies. The JMX-RI and JMX-remote have not been
+			deployed on maven, so these dependencies will only retrieve the pom information. 
+			You should download the Jars from Sun download center. 
+				- Search JMX from the download center, then select the Java Management Extensions
+				  Download Information. 
+				- Download the JMX 1.2.1 Reference implementation and JMX Remote API 1.0.1_04. 
+				- After the download, for JMX RI 1.2.1, you will have to rename the jars from jmx*.jar to
+				  jmx*-1.2.1.jar. 
+				- For JMX Remote API 1.0.1_04, you will have to rename the jar as jmxremote-1.0.1_04.jar.
+				- Then you will have to register these libraries with Maven or set it directly in your local repository under
+				  /javax/management/jmxri/1.2.1/. 
+				- Do the same for jmxremote 1.0.1_04.
+		-->
+		<dependency>
+		    <groupId>javax.management</groupId>
+		    <artifactId>jmxri</artifactId>
+		    <version>1.2.1</version>
+		  	<scope>provided</scope>
+	    </dependency>
+	    <dependency>
+		    <groupId>javax.management</groupId>
+		    <artifactId>jmxremote</artifactId>
+		    <version>1.0.1_04</version>
+		    <scope>provided</scope>
+		</dependency>
+	</dependencies>
+	<reporting>
+		<plugins>
+			<plugin>
+				<artifactId>maven-javadoc-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>jxr-maven-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<artifactId>maven-pmd-plugin</artifactId>
+				<configuration>
+					<targetjdk>1.4</targetjdk>
+					<rulesets>
+						<ruleset>/rulesets/basic.xml</ruleset>
+					</rulesets>
+					<format>xml</format>
+					<linkXref>true</linkXref>
+					<sourceEncoding>utf-8</sourceEncoding>
+					<minimumTokens>100</minimumTokens>
+				</configuration>
+			</plugin>
+		</plugins>
+	</reporting>
+	<distributionManagement>
+		<repository>
+			<id>java.net-m2-repository</id>
+			<url>java-net:/maven2-repository/trunk/repository/</url>
+		</repository>
+	</distributionManagement>
+</project>

@@ -1,0 +1,10 @@
+.header {
+	background-image: url("../../../../images/logo_fr.png");
+	background-repeat: no-repeat;
+	height : 81px;
+}
+
+.flag {
+	background : #ffffff url("../../../../images/flags/fr.png") no-repeat;
+	height : 20px;
+}
