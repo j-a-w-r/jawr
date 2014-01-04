@@ -424,7 +424,14 @@
       	  			<li>wicket sample</li>
       	  			<li>grails sample</li>
       	  		</ul>	 
-      	  	You can retrieve them from the SVN repository : <b>https://jawr.dev.java.net/svn/jawr/trunk jawr/samples/</b>  
+      	  	You can retrieve them from the SVN repository respectiveley from :
+      	  	 <b></b>
+      	  	 <ul>
+      	  			<li>https://svn.java.net/svn/jawr~svn/core/tags/jawr-core-parent-&lt;version&gt;/basicwebapp</li>
+      	  			<li>https://svn.java.net/svn/jawr~svn/extenstions/spring-2.0.x/tags/jawr-spring-2.0.x-parent-&lt;version&gt;/jawr-spring-2.0.x-webapp-sample</li>
+      	  			<li>https://svn.java.net/svn/jawr~svn/extenstions/wicket/tags/wicket-parent-&lt;version&gt;/jawr-wicket-webapp-sample</li>
+      	  			<li>https://svn.java.net/svn/jawr~svn/extenstions/grails/tags/grails-parent-&lt;version&gt;/jawr-grails-sample</li>
+      	  		</ul>  
       	  	<br/>
       	  	<br/>
       	  	<strong>Important note :</strong><br/>
