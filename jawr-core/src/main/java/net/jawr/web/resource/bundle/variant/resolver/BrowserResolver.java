@@ -31,6 +31,7 @@ import net.jawr.web.resource.bundle.variant.VariantSet;
 public class BrowserResolver implements VariantResolver {
 
 	private static Pattern IE_PATTERN = Pattern.compile("MSIE (\\d+)");
+	public static String USER_AGENT_HEADER = "User-Agent";
 	
 	/* (non-Javadoc)
 	 * @see net.jawr.web.resource.bundle.variant.VariantResolver#getVariantType()
@@ -57,8 +58,8 @@ public class BrowserResolver implements VariantResolver {
 	 */
 	public String resolveVariant(HttpServletRequest request) {
 		
-		String browser = null;
-		String userAgent = request.getHeader("User-Agent");
+		String browser = "other";
+		String userAgent = request.getHeader(USER_AGENT_HEADER);
 		if(userAgent != null){
 			Matcher matcher = IE_PATTERN.matcher(userAgent);
 			if(matcher.find()){
