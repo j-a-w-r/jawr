@@ -860,10 +860,12 @@ public class ResourceBundlesHandlerImpl implements ResourceBundlesHandler {
 					resourceHandler, config);
 			JoinableResourceBundleContent store = null;
 
-			// Process the bundle
+			// Process the bundle for searching variants
 			status.setSearchingPostProcessorVariants(true);
 			joinAndPostProcessBundle(bundle, status, processBundle);
 
+			// Process the bundle variants
+			status.setSearchingPostProcessorVariants(false);
 			Map<String, VariantSet> postProcessVariants = status
 					.getPostProcessVariants();
 			if (!postProcessVariants.isEmpty()) {
@@ -875,7 +877,6 @@ public class ResourceBundlesHandlerImpl implements ResourceBundlesHandler {
 						.concatVariants(bundle.getVariants(),
 								postProcessVariants);
 				bundle.setVariants(newVariants);
-				status.setSearchingPostProcessorVariants(false);
 				joinAndPostProcessBundle(bundle, status, processBundle);
 			}
 
